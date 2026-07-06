@@ -1,0 +1,24 @@
+# fly.toml file for Beyond Data Analytics LMS
+
+app = "beyond-data-analytics-lms"
+primary_region = "ord" # Change to your preferred region (e.g. lhr, fra, ams, hkg)
+
+[build]
+  dockerfile = "Dockerfile"
+
+[http_service]
+  internal_port = 3000
+  force_https = true
+  auto_stop_machines = true
+  auto_start_machines = true
+  min_machines_running = 0
+  processes = ["app"]
+
+[[mounts]]
+  source = "bda_data"
+  destination = "/app/server/data"
+
+[vm]
+  cpu_kind = "shared"
+  cpus = 1
+  memory_mb = 512
