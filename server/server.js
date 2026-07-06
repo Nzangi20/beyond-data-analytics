@@ -14,6 +14,14 @@ const PORT = process.env.PORT || 3000;
 // Initialize database
 initializeDatabase();
 
+// Run automatic course importer to sync database and materials
+try {
+    console.log('Running automatic course importer...');
+    require('./utils/import_courses');
+} catch (importError) {
+    console.error('Failed to run automatic course importer:', importError);
+}
+
 // Ensure uploads directory exists
 const uploadsDir = path.join(__dirname, 'uploads');
 ['materials', 'videos', 'exercises'].forEach(sub => {
