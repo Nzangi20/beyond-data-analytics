@@ -1,4 +1,4 @@
-const Mysql = require('sync-mysql');
+const Mysql = require('./sync-mysql2');
 const path = require('path');
 const bcrypt = require('bcryptjs');
 
