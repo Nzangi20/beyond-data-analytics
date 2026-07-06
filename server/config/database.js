@@ -519,12 +519,13 @@ function initializeDatabase() {
     try { db.exec("ALTER TABLE consultancy_requests ADD COLUMN client_id INTEGER REFERENCES users(id) ON DELETE SET NULL"); } catch(e){}
     try { db.exec("ALTER TABLE news_articles ADD COLUMN file_path TEXT"); } catch(e){}
 
-    // Payments CHECK constraint migration for 'enrollment'
+    // Payments CHECK constraint migration for 'enrollment' (SQLite only)
     try {
-        const schema = db.prepare("SELECT sql FROM sqlite_master WHERE type='table' AND name='payments'").get();
-        if (schema && !schema.sql.includes('enrollment')) {
-            db.exec("ALTER TABLE payments RENAME TO payments_old");
-            db.exec(`
+        if (!connectionConfig) {
+            const schema = db.prepare("SELECT sql FROM sqlite_master WHERE type='table' AND name='payments'").get();
+            if (schema && !schema.sql.includes('enrollment')) {
+                db.exec("ALTER TABLE payments RENAME TO payments_old");
+                db.exec(`
                 CREATE TABLE payments (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                     user_id INTEGER NOT NULL,
@@ -541,6 +542,7 @@ function initializeDatabase() {
             db.exec("INSERT OR IGNORE INTO payments (id, user_id, target_type, target_id, amount, payment_method, transaction_ref, status, created_at) SELECT id, user_id, target_type, target_id, amount, payment_method, transaction_ref, status, created_at FROM payments_old");
             db.exec("DROP TABLE payments_old");
             console.log("Migrated payments table successfully");
+            }
         }
     } catch(e) {
         console.error("Migration of payments table failed:", e);
