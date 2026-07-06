@@ -39,6 +39,10 @@ if (connectionConfig) {
         // SQLite primary key autoincrement to MySQL auto_increment
         newSql = newSql.replace(/INTEGER\s+PRIMARY\s+KEY\s+AUTOINCREMENT/gi, 'INT AUTO_INCREMENT PRIMARY KEY');
         
+        // Convert any TEXT columns with DEFAULT values to VARCHAR to prevent MySQL default-value restrictions
+        newSql = newSql.replace(/([a-zA-Z0-9_]+)\s+TEXT\s+DEFAULT\s+([^,;)]+)/gi, '$1 VARCHAR(255) DEFAULT $2');
+        newSql = newSql.replace(/([a-zA-Z0-9_]+)\s+TEXT\s+NOT\s+NULL\s+DEFAULT\s+([^,;)]+)/gi, '$1 VARCHAR(255) NOT NULL DEFAULT $2');
+        
         // Convert SQLite TEXT columns used in keys to VARCHAR
         newSql = newSql.replace(/([a-zA-Z0-9_]+)\s+TEXT\s+NOT\s+NULL\s+UNIQUE/gi, '$1 VARCHAR(255) NOT NULL UNIQUE');
         newSql = newSql.replace(/([a-zA-Z0-9_]+)\s+TEXT\s+UNIQUE/gi, '$1 VARCHAR(255) UNIQUE');
