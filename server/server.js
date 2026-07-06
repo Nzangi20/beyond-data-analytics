@@ -9,18 +9,11 @@ const fs = require('fs');
 const { initializeDatabase } = require('./config/database');
 
 const app = express();
+app.set('trust proxy', 1);
 const PORT = process.env.PORT || 3000;
 
 // Initialize database
 initializeDatabase();
-
-// Run automatic course importer to sync database and materials
-try {
-    console.log('Running automatic course importer...');
-    require('./utils/import_courses');
-} catch (importError) {
-    console.error('Failed to run automatic course importer:', importError);
-}
 
 // Ensure uploads directory exists
 const uploadsDir = path.join(__dirname, 'uploads');
@@ -100,4 +93,14 @@ app.listen(PORT, () => {
 ║     Environment: ${process.env.NODE_ENV || 'development'}                  ║
 ╚══════════════════════════════════════════════════╝
     `);
+
+    // Run automatic course importer asynchronously to avoid blocking port binding on Render
+    setTimeout(() => {
+        try {
+            console.log('Running automatic course importer...');
+            require('./utils/import_courses');
+        } catch (importError) {
+            console.error('Failed to run automatic course importer:', importError);
+        }
+    }, 1000);
 });
