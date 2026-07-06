@@ -1,21 +1,156 @@
-const { DatabaseSync } = require('node:sqlite');
+const Mysql = require('sync-mysql');
 const path = require('path');
 const bcrypt = require('bcryptjs');
 
-const DB_PATH = path.join(__dirname, '..', 'data', 'bda.db');
+// Parse database URL or use individual parameters
+// Aiven connection URL: mysql://avnadmin:password@mysql-instance.aivencloud.com:port/defaultdb?ssl-mode=REQUIRED
+const dbUrl = process.env.DATABASE_URL;
 
-// Ensure data directory exists
-const fs = require('fs');
-const dataDir = path.dirname(DB_PATH);
-if (!fs.existsSync(dataDir)) {
-    fs.mkdirSync(dataDir, { recursive: true });
+let connectionConfig;
+if (dbUrl) {
+    try {
+        const url = new URL(dbUrl);
+        connectionConfig = {
+            host: url.hostname,
+            port: url.port || 3306,
+            user: url.username,
+            password: url.password,
+            database: url.pathname.substring(1), // remove leading /
+            ssl: {
+                rejectUnauthorized: false // required for Aiven secure connection
+            }
+        };
+    } catch (e) {
+        console.error('Invalid DATABASE_URL format, using default SQLite database config.', e.message);
+    }
 }
 
-const db = new DatabaseSync(DB_PATH);
+// Fallback to SQLite (local file) if MySQL is not configured
+let db;
 
-// Enable WAL mode for better concurrent performance
-db.exec('PRAGMA journal_mode = WAL');
-db.exec('PRAGMA foreign_keys = ON');
+if (connectionConfig) {
+    console.log(`Connecting to MySQL Database at ${connectionConfig.host}:${connectionConfig.port}...`);
+    const mysqlConn = new Mysql(connectionConfig);
+
+    function translateSql(sql) {
+        if (!sql) return sql;
+        let newSql = sql;
+        
+        // SQLite primary key autoincrement to MySQL auto_increment
+        newSql = newSql.replace(/INTEGER\s+PRIMARY\s+KEY\s+AUTOINCREMENT/gi, 'INT AUTO_INCREMENT PRIMARY KEY');
+        
+        // Convert SQLite TEXT columns used in keys to VARCHAR
+        newSql = newSql.replace(/([a-zA-Z0-9_]+)\s+TEXT\s+NOT\s+NULL\s+UNIQUE/gi, '$1 VARCHAR(255) NOT NULL UNIQUE');
+        newSql = newSql.replace(/([a-zA-Z0-9_]+)\s+TEXT\s+UNIQUE/gi, '$1 VARCHAR(255) UNIQUE');
+        
+        // Convert specific TEXT columns to VARCHAR to avoid key specification errors or for standard efficiency
+        newSql = newSql.replace(/username\s+TEXT/gi, 'username VARCHAR(255)');
+        newSql = newSql.replace(/email\s+TEXT/gi, 'email VARCHAR(255)');
+        newSql = newSql.replace(/full_name\s+TEXT/gi, 'full_name VARCHAR(255)');
+        newSql = newSql.replace(/password_hash\s+TEXT/gi, 'password_hash VARCHAR(255)');
+        newSql = newSql.replace(/slug\s+TEXT/gi, 'slug VARCHAR(255)');
+        newSql = newSql.replace(/cert_number\s+TEXT/gi, 'cert_number VARCHAR(255)');
+        newSql = newSql.replace(/transaction_ref\s+TEXT/gi, 'transaction_ref VARCHAR(255)');
+        newSql = newSql.replace(/action\s+TEXT/gi, 'action VARCHAR(255)');
+        newSql = newSql.replace(/ip_address\s+TEXT/gi, 'ip_address VARCHAR(45)');
+        newSql = newSql.replace(/violation_type\s+TEXT/gi, 'violation_type VARCHAR(255)');
+        newSql = newSql.replace(/name\s+TEXT/gi, 'name VARCHAR(255)');
+        newSql = newSql.replace(/company\s+TEXT/gi, 'company VARCHAR(255)');
+        newSql = newSql.replace(/phone\s+TEXT/gi, 'phone VARCHAR(50)');
+        newSql = newSql.replace(/service_type\s+TEXT/gi, 'service_type VARCHAR(100)');
+        newSql = newSql.replace(/target_type\s+TEXT/gi, 'target_type VARCHAR(50)');
+        newSql = newSql.replace(/payment_method\s+TEXT/gi, 'payment_method VARCHAR(50)');
+        newSql = newSql.replace(/category\s+TEXT/gi, 'category VARCHAR(100)');
+        newSql = newSql.replace(/priority\s+TEXT/gi, 'priority VARCHAR(50)');
+        newSql = newSql.replace(/image_path\s+TEXT/gi, 'image_path VARCHAR(500)');
+        newSql = newSql.replace(/file_path\s+TEXT/gi, 'file_path VARCHAR(500)');
+        newSql = newSql.replace(/link_url\s+TEXT/gi, 'link_url VARCHAR(500)');
+        newSql = newSql.replace(/meeting_link\s+TEXT/gi, 'meeting_link VARCHAR(500)');
+        newSql = newSql.replace(/topic\s+TEXT/gi, 'topic VARCHAR(255)');
+        newSql = newSql.replace(/subject\s+TEXT/gi, 'subject VARCHAR(255)');
+        newSql = newSql.replace(/grade\s+TEXT/gi, 'grade VARCHAR(50)');
+        
+        newSql = newSql.replace(/status\s+TEXT/gi, 'status VARCHAR(50)');
+        newSql = newSql.replace(/content_type\s+TEXT/gi, 'content_type VARCHAR(50)');
+        newSql = newSql.replace(/question_type\s+TEXT/gi, 'question_type VARCHAR(50)');
+        
+        newSql = newSql.replace(/REAL/gi, 'DOUBLE');
+        newSql = newSql.replace(/INSERT\s+OR\s+IGNORE/gi, 'INSERT IGNORE');
+        
+        return newSql;
+    }
+
+    class MySQLStatement {
+        constructor(mysqlConn, sql) {
+            this.mysqlConn = mysqlConn;
+            this.sql = translateSql(sql);
+        }
+
+        get(...params) {
+            const rows = this.mysqlConn.query(this.sql, params);
+            if (rows && rows.length > 0) {
+                return rows[0];
+            }
+            return undefined;
+        }
+
+        all(...params) {
+            return this.mysqlConn.query(this.sql, params);
+        }
+
+        run(...params) {
+            const result = this.mysqlConn.query(this.sql, params);
+            return {
+                changes: result.affectedRows || 0,
+                lastInsertRowid: result.insertId || 0
+            };
+        }
+    }
+
+    db = {
+        exec(sql) {
+            const cleanSql = sql.trim();
+            if (cleanSql.toUpperCase().startsWith('PRAGMA')) {
+                return;
+            }
+            const statements = cleanSql.split(';').map(s => s.trim()).filter(s => s.length > 0);
+            for (const statement of statements) {
+                const translated = translateSql(statement);
+                try {
+                    mysqlConn.query(translated);
+                } catch (e) {
+                    if (translated.toUpperCase().includes('ALTER TABLE')) {
+                        console.log('Alter table warning (ignored):', e.message);
+                    } else {
+                        throw e;
+                    }
+                }
+            }
+        },
+
+        prepare(sql) {
+            return new MySQLStatement(mysqlConn, sql);
+        }
+    };
+} else {
+    // If no MySQL Database URL is set, fallback to local SQLite
+    console.log('No DATABASE_URL found. Falling back to local SQLite...');
+    const { DatabaseSync } = require('node:sqlite');
+    const DB_PATH = path.join(__dirname, '..', 'data', 'bda.db');
+    
+    // Ensure data directory exists
+    const fs = require('fs');
+    const dataDir = path.dirname(DB_PATH);
+    if (!fs.existsSync(dataDir)) {
+        fs.mkdirSync(dataDir, { recursive: true });
+    }
+    
+    const sqliteDb = new DatabaseSync(DB_PATH);
+    sqliteDb.exec('PRAGMA journal_mode = WAL');
+    sqliteDb.exec('PRAGMA foreign_keys = ON');
+    
+    db = sqliteDb;
+}
 
 function initializeDatabase() {
     db.exec(`
