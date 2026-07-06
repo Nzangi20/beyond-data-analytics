@@ -3,11 +3,11 @@
   "rewrites": [
     {
       "source": "/api/:path*",
-      "destination": "https://YOUR_BACKEND_URL.onrender.com/api/:path*"
+      "destination": "https://beyond-data-analytics.onrender.com/api/:path*"
     },
     {
       "source": "/uploads/:path*",
-      "destination": "https://YOUR_BACKEND_URL.onrender.com/uploads/:path*"
+      "destination": "https://beyond-data-analytics.onrender.com/uploads/:path*"
     },
     {
       "source": "/login",
