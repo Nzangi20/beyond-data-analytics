@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Module 2: Estimation and Hypothesis Testing | Beyond Data Analytics</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Highlight.js for Code Syntax Highlighting -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark.min.css">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary-color: #0d6efd;
+            --secondary-color: #6c757d;
+            --accent-color: #0dcaf0;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+            padding-top: 70px; /* Space for fixed navbar */
+        }
+
+        /* Navbar Styling */
+        .navbar {
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            background: linear-gradient(90deg, #0d6efd 0%, #0a58ca 100%);
+        }
+        .navbar-brand {
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+        .nav-link {
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        .nav-link:hover {
+            color: #ffc107 !important;
+            transform: translateY(-2px);
+        }
+
+        /* Hero Section */
+        .hero-section {
+            background: url('https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80') no-repeat center center/cover;
+            height: 450px;
+            position: relative;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+        .hero-overlay {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.75);
+        }
+        .hero-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Content Cards */
+        .card {
+            border: none;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            transition: transform 0.3s;
+            margin-bottom: 20px;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        .card-header {
+            background-color: #fff;
+            border-bottom: 2px solid #0d6efd;
+            font-weight: 700;
+            color: #0d6efd;
+        }
+
+        /* Code Blocks */
+        pre {
+            border-radius: 8px;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+        }
+        code {
+            font-family: 'Consolas', 'Monaco', monospace;
+        }
+
+        /* Section Titles */
+        .section-title {
+            position: relative;
+            padding-bottom: 15px;
+            margin-bottom: 30px;
+            font-weight: 700;
+        }
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 4px;
+            background-color: #0d6efd;
+        }
+
+        /* Tables */
+        .table-custom {
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .table-custom thead {
+            background: linear-gradient(90deg, #0d6efd 0%, #0a58ca 100%);
+            color: white;
+        }
+
+        /* Footer */
+        footer {
+            background-color: #212529;
+            color: white;
+            padding: 40px 0;
+            margin-top: 50px;
+        }
+        
+        /* Exercise Area */
+        .exercise-area {
+            background: #f8f9fa;
+            border: 1px dashed #0d6efd;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 10px;
+        }
+
+        /* Beyond Data Section */
+        .beyond-data-section {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 30px 35px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            border-left: 6px solid #28a745;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            position: relative;
+            overflow: hidden;
+        }
+        .beyond-data-section::before {
+            content: "📊";
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 5em;
+            opacity: 0.1;
+        }
+        .beyond-data-section h2 {
+            color: #1e3c72;
+            font-size: 1.6em;
+            margin-bottom: 15px;
+        }
+        .beyond-data-section .highlight {
+            color: #28a745;
+            font-weight: bold;
+        }
+
+        /* Math Blocks (Pure HTML/CSS Equations) */
+        .math-block {
+            background: #f8f9fa;
+            border-left: 4px solid #6f42c1;
+            padding: 15px 25px;
+            margin: 20px 0;
+            border-radius: 0 8px 8px 0;
+            font-family: 'Cambria Math', 'Times New Roman', serif;
+            font-size: 1.25rem;
+            color: #212529;
+            overflow-x: auto;
+            line-height: 1.8;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        .math-block .var { font-style: italic; }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="#"><i class="fas fa-chart-line me-2"></i>Beyond Data Analytics</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="#point-est">2.1 Point Est</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#interval-est">2.2 Interval Est</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#hyp-steps">2.3 Hypothesis Steps</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#param-tests">2.4 Parametric Tests</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#practical">2.5 Practical</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="#exercises">Exercises</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header id="home" class="hero-section">
+        <div class="hero-overlay"></div>
+        <div class="hero-content container">
+            <h1 class="display-3 fw-bold">Module 2: Estimation & Hypothesis Testing</h1>
+            <p class="lead fs-4">From point estimates to rigorous statistical decision-making</p>
+            <h3 class="text-info fw-light fst-italic">Beyond Data Analytics</h3>
+            <p class="fs-5 text-light">Transforming Raw Data into Insights</p>
+            <a href="#objectives" class="btn btn-primary btn-lg mt-3 px-5 rounded-pill">Start Learning</a>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <div class="container my-5">
+
+        <!-- Beyond Data Analytics Section -->
+        <section class="beyond-data-section mb-5">
+            <h2>🌐 Beyond Data Analytics</h2>
+            <p>At <span class="highlight">Beyond Data Analytics</span>, we believe that data is more than just numbers and tables—it is the strategic foundation of modern decision-making. Our curriculum is meticulously designed to bridge the gap between theoretical knowledge and real-world application, empowering professionals to extract actionable insights, drive business value, and innovate across industries.</p>
+            <p>By mastering estimation and hypothesis testing, you transition from merely summarizing data to making <span class="highlight">rigorous, probability-backed decisions about populations</span>. This module equips you with the statistical framework to quantify uncertainty, test scientific claims, and confidently validate business strategies using sample data.</p>
+        </section>
+
+        <!-- Learning Objectives -->
+        <section id="objectives" class="mb-5">
+            <h2 class="section-title">Learning Objectives</h2>
+            <div class="card bg-light">
+                <div class="card-body">
+                    <p class="lead mb-3">By the end of this module, participants will be able to:</p>
+                    <ul class="list-unstyled mb-0">
+                        <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> Estimate population parameters using point estimates and evaluate their statistical properties.</li>
+                        <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> Construct and interpret confidence intervals to quantify the precision of estimates.</li>
+                        <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> Formulate null and alternative hypotheses and conduct formal hypothesis tests.</li>
+                        <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> Understand and calculate Type I/II errors, statistical power, and p-values.</li>
+                        <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> Apply Z-tests and t-tests (one-sample, two-sample, and paired) to real-world scenarios.</li>
+                        <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> Perform statistical tests and interpret findings using R and Python.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-5">
+
+        <!-- 2.1 Point Estimation -->
+        <section id="point-est" class="mb-5">
+            <h2 class="section-title">2.1 Point Estimation</h2>
+            <p class="lead">A point estimate is a single value (statistic) calculated from sample data that serves as the "best guess" for an unknown population parameter.</p>
+            <div class="card">
+                <div class="card-body">
+                    <h5>Common Point Estimators</h5>
+                    <table class="table table-custom">
+                        <thead>
+                            <tr><th>Population Parameter</th><th>Symbol</th><th>Point Estimator (Statistic)</th><th>Symbol</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>Population Mean</td><td><i>μ</i></td><td>Sample Mean</td><td><i>X̄</i></td></tr>
+                            <tr><td>Population Proportion</td><td><i>P</i> or <i>π</i></td><td>Sample Proportion</td><td><i>p̂</i></td></tr>
+                            <tr><td>Population Variance</td><td><i>σ</i><sup>2</sup></td><td>Sample Variance</td><td><i>s</i><sup>2</sup></td></tr>
+                        </tbody>
+                    </table>
+
+                    <h5 class="mt-4">Properties of Good Estimators</h5>
+                    <p>How do we know if an estimator is "good"? We evaluate it based on three mathematical properties:</p>
+                    <ul>
+                        <li><strong>Unbiasedness:</strong> The expected value (mean) of the estimator equals the true population parameter. Over many samples, it doesn't systematically over- or under-estimate.
+                            <div class="math-block"><i>E</i>[<i>θ̂</i>] = <i>θ</i></div>
+                        </li>
+                        <li><strong>Consistency:</strong> As the sample size (<i>n</i>) approaches infinity, the estimator converges in probability to the true parameter. Larger samples yield better estimates.
+                            <div class="math-block">lim<sub><i>n</i>&rarr;&infin;</sub> <i>P</i>(|<i>θ̂</i> - <i>θ</i>| &lt; &epsilon;) = 1</div>
+                        </li>
+                        <li><strong>Efficiency:</strong> Among all unbiased estimators, the "efficient" one has the smallest variance. It provides the most precise estimates (narrowest sampling distribution).</li>
+                    </ul>
+
+                    <h5 class="mt-4">Maximum Likelihood Estimation (MLE) - Introduction</h5>
+                    <p>MLE is a powerful method for finding point estimates. Instead of just using intuitive formulas (like the sample mean), MLE asks: <em>"What value of the parameter makes the observed data most probable?"</em></p>
+                    <p>It finds the parameter value (<i>θ</i>) that maximizes the <strong>Likelihood Function</strong>, <i>L</i>(<i>θ</i>), which is the joint probability of observing the sample data given that parameter.</p>
+                    <div class="math-block">
+                        <i>θ̂</i><sub>MLE</sub> = argmax<sub><i>θ</i></sub> <i>L</i>(<i>θ</i> | <i>Data</i>) = argmax<sub><i>θ</i></sub> &prod;<sub><i>i</i>=1</sub><sup><i>n</i></sup> <i>f</i>(<i>x<sub>i</sub></i> | <i>θ</i>)
+                    </div>
+                    <div class="alert alert-info mt-3">
+                        <strong>Why MLE?</strong> Under general conditions, MLEs are consistent, asymptotically normal, and asymptotically efficient, making them the gold standard in advanced statistical modeling (including Logistic Regression and Neural Networks).
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-5">
+
+        <!-- 2.2 Interval Estimation -->
+        <section id="interval-est" class="mb-5">
+            <h2 class="section-title">2.2 Interval Estimation</h2>
+            <p class="lead">A point estimate is rarely exactly equal to the true parameter. Interval estimation provides a range of plausible values, quantifying the uncertainty of our estimate.</p>
+            <div class="card">
+                <div class="card-body">
+                    <h5>Confidence Intervals (CI)</h5>
+                    <p>A <strong>Confidence Interval</strong> is a range of values constructed from sample data such that the true population parameter is likely to fall within this range at a specified confidence level (e.g., 95%).</p>
+                    <div class="alert alert-warning">
+                        <strong>Crucial Interpretation:</strong> A 95% CI does <em>not</em> mean "there is a 95% probability that the true mean is in this specific interval." The true mean is a fixed, unknown constant. It means: "If we were to take 100 different samples and compute a 95% CI for each, approximately 95 of those intervals would contain the true population mean."
+                    </div>
+
+                    <h5 class="mt-4">The General Formula</h5>
+                    <p>Almost all confidence intervals follow this universal structure:</p>
+                    <div class="math-block">
+                        Point Estimate &plusmn; (Critical Value &times; Standard Error)
+                    </div>
+
+                    <h5 class="mt-4">Margin of Error (ME)</h5>
+                    <p>The <strong>Margin of Error</strong> is the half-width of the confidence interval. It represents the maximum expected difference between the true population parameter and the sample statistic.</p>
+                    <div class="math-block">
+                        <i>ME</i> = <i>Z</i><sub>&alpha;/2</sub> &times; (<i>σ</i> / √<i>n</i>)
+                    </div>
+                    <p>To decrease the Margin of Error (increase precision), you can:</p>
+                    <ol>
+                        <li>Increase the sample size (<i>n</i>).</li>
+                        <li>Decrease the confidence level (e.g., from 99% to 95%).</li>
+                        <li>Reduce the population variability (<i>σ</i>), though this is usually out of the researcher's control.</li>
+                    </ol>
+
+                    <h5 class="mt-4">CI for the Population Mean (Known Variance)</h5>
+                    <p>When the population standard deviation (<i>σ</i>) is known, we use the Standard Normal (<i>Z</i>) distribution:</p>
+                    <div class="math-block">
+                        <i>CI</i> = <i>X̄</i> &plusmn; <i>Z</i><sub>&alpha;/2</sub> &times; (<i>σ</i> / √<i>n</i>)
+                    </div>
+                    <p><em>Example:</em> For a 95% CI, &alpha; = 0.05, so <i>Z</i><sub>0.025</sub> = 1.96.</p>
+
+                    <h5 class="mt-4">CI for the Population Mean (Unknown Variance)</h5>
+                    <p>In reality, <i>σ</i> is almost never known. We estimate it using the sample standard deviation (<i>s</i>). This introduces extra uncertainty, so we use the <strong>Student's t-distribution</strong> with <i>n-1</i> degrees of freedom (df):</p>
+                    <div class="math-block">
+                        <i>CI</i> = <i>X̄</i> &plusmn; <i>t</i><sub>&alpha;/2, n-1</sub> &times; (<i>s</i> / √<i>n</i>)
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-5">
+
+        <!-- 2.3 Steps in Hypothesis Testing -->
+        <section id="hyp-steps" class="mb-5">
+            <h2 class="section-title">2.3 Steps in Hypothesis Testing</h2>
+            <p class="lead">Hypothesis testing is a formal procedure used to make decisions about population parameters based on sample data. It allows us to test scientific claims objectively.</p>
+            <div class="card">
+                <div class="card-body">
+                    <h5>The 5 Steps of Hypothesis Testing</h5>
+                    <ol>
+                        <li><strong>Step 1: State the Hypotheses.</strong>
+                            <ul>
+                                <li><strong>Null Hypothesis (<i>H<sub>0</sub></i>):</strong> The default assumption. Usually states "no effect", "no difference", or "status quo". (e.g., <i>μ</i> = 100).</li>
+                                <li><strong>Alternative Hypothesis (<i>H<sub>A</sub></i> or <i>H<sub>1</sub></i>):</strong> The claim we are trying to find evidence for. (e.g., <i>μ</i> &ne; 100, <i>μ</i> &gt; 100, or <i>μ</i> &lt; 100).</li>
+                            </ul>
+                        </li>
+                        <li><strong>Step 2: Set the Significance Level (&alpha;).</strong> The probability of making a Type I error. Commonly set to 0.05 (5%).</li>
+                        <li><strong>Step 3: Calculate the Test Statistic.</strong> Convert the sample data into a single standardized number (e.g., <i>Z</i>, <i>t</i>, <i>F</i>) that measures how far the sample statistic is from the null hypothesis value.</li>
+                        <li><strong>Step 4: Determine the p-value or Critical Value.</strong>
+                            <ul>
+                                <li><strong>p-value:</strong> The probability of observing a test statistic as extreme as, or more extreme than, the one calculated, <em>assuming <i>H<sub>0</sub></i> is true</em>.</li>
+                                <li><strong>Critical Value:</strong> The threshold from the distribution that defines the rejection region.</li>
+                            </ul>
+                        </li>
+                        <li><strong>Step 5: Make a Decision.</strong>
+                            <ul>
+                                <li>If <i>p-value</i> &le; &alpha;: <strong>Reject <i>H<sub>0</sub></i></strong>. (Results are statistically significant).</li>
+                                <li>If <i>p-value</i> &gt; &alpha;: <strong>Fail to reject <i>H<sub>0</sub></i></strong>. (Not enough evidence).</li>
+                            </ul>
+                        </li>
+                    </ol>
+
+                    <h5 class="mt-4">Type I and Type II Errors</h5>
+                    <table class="table table-custom">
+                        <thead>
+                            <tr><th>Decision / Reality</th><th><i>H<sub>0</sub></i> is Actually True</th><th><i>H<sub>0</sub></i> is Actually False</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Reject <i>H<sub>0</sub></i></strong></td>
+                                <td class="table-danger"><strong>Type I Error (&alpha;)</strong><br>False Positive<br>(Crying wolf)</td>
+                                <td class="table-success"><strong>Correct Decision (Power)</strong><br>True Positive<br>(Correctly detecting the wolf)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Fail to Reject <i>H<sub>0</sub></i></strong></td>
+                                <td class="table-success"><strong>Correct Decision</strong><br>True Negative<br>(Correctly ignoring no wolf)</td>
+                                <td class="table-danger"><strong>Type II Error (&beta;)</strong><br>False Negative<br>(Missing the wolf)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h5 class="mt-4">Statistical Power</h5>
+                    <p><strong>Power</strong> is the probability of correctly rejecting a false null hypothesis. It is the ability of a test to detect an effect if one truly exists.</p>
+                    <div class="math-block">
+                        Power = 1 - <i>P</i>(Type II Error) = 1 - <i>β</i>
+                    </div>
+                    <p>A good study aims for a power of at least 0.80 (80%). Power increases if you: increase sample size, increase effect size, or increase &alpha; (though increasing &alpha; raises Type I error risk).</p>
+
+                    <h5 class="mt-4">One-Tailed vs. Two-Tailed Tests</h5>
+                    <ul>
+                        <li><strong>Two-Tailed Test:</strong> <i>H<sub>A</sub></i> contains &ne; (e.g., <i>μ</i> &ne; 100). The rejection region is split between both tails of the distribution. Used when we care about <em>any</em> difference.</li>
+                        <li><strong>One-Tailed Test (Right):</strong> <i>H<sub>A</sub></i> contains &gt; (e.g., <i>μ</i> &gt; 100). The entire rejection region is in the right tail. Used when we only care if the value is <em>greater</em>.</li>
+                        <li><strong>One-Tailed Test (Left):</strong> <i>H<sub>A</sub></i> contains &lt; (e.g., <i>μ</i> &lt; 100). The entire rejection region is in the left tail.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-5">
+
+        <!-- 2.4 Parametric Hypothesis Tests -->
+        <section id="param-tests" class="mb-5">
+            <h2 class="section-title">2.4 Parametric Hypothesis Tests</h2>
+            <p class="lead">Parametric tests assume that the data follows a specific distribution (usually the Normal distribution) and involve parameters like the mean and variance.</p>
+            <div class="card">
+                <div class="card-body">
+                    <h5>The Z-Test</h5>
+                    <p>Used when the population variance (<i>σ</i><sup>2</sup>) is <strong>known</strong>, or when the sample size is very large (<i>n</i> &gt; 30) so that <i>s</i> is a highly accurate estimate of <i>σ</i>.</p>
+                    <div class="math-block">
+                        <i>Z</i> = (<i>X̄</i> - <i>μ<sub>0</sub></i>) / (<i>σ</i> / √<i>n</i>)
+                    </div>
+
+                    <h5 class="mt-4">The One-Sample t-Test</h5>
+                    <p>Used when the population variance is <strong>unknown</strong> and the sample size is small (<i>n</i> &lt; 30), assuming the underlying population is approximately normal.</p>
+                    <div class="math-block">
+                        <i>t</i> = (<i>X̄</i> - <i>μ<sub>0</sub></i>) / (<i>s</i> / √<i>n</i>) &nbsp;&nbsp;&nbsp; [Degrees of Freedom = <i>n</i> - 1]
+                    </div>
+
+                    <h5 class="mt-4">The Two-Sample (Independent) t-Test</h5>
+                    <p>Compares the means of two <strong>independent</strong> groups to see if there is a statistically significant difference between them (e.g., Treatment vs. Control group).</p>
+                    <div class="math-block">
+                        <i>t</i> = (<i>X̄</i><sub>1</sub> - <i>X̄</i><sub>2</sub>) / √[ (<i>s</i><sub>1</sub><sup>2</sup>/<i>n</i><sub>1</sub>) + (<i>s</i><sub>2</sub><sup>2</sup>/<i>n</i><sub>2</sub>) ]
+                    </div>
+                    <p><em>Note:</em> If we assume equal variances, a pooled variance estimate is used.</p>
+
+                    <h5 class="mt-4">The Paired t-Test</h5>
+                    <p>Used when comparing means from the <strong>same</strong> group at different times (e.g., Pre-test vs. Post-test) or matched pairs. It reduces variability by controlling for individual differences.</p>
+                    <div class="math-block">
+                        <i>t</i> = <i>D̄</i> / (<i>s<sub>D</sub></i> / √<i>n</i>) &nbsp;&nbsp;&nbsp; [Where <i>D</i> is the difference between paired observations]
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-5">
+
+        <!-- 2.5 Practical Session -->
+        <section id="practical" class="mb-5">
+            <h2 class="section-title">2.5 Practical Session: Estimation & Testing in R and Python</h2>
+            <p class="lead">Let's apply the concepts of Confidence Intervals and Hypothesis Testing using real code.</p>
+            <div class="card">
+                <div class="card-body">
+                    <h5>Scenario: Testing a New Drug's Effect on Blood Pressure</h5>
+                    <p>We have a sample of 25 patients. The known historical average systolic BP is 120 mmHg. We want to know if our new drug changes this average.</p>
+
+                    <h5 class="mt-4">R Implementation</h5>
+                    <pre><code class="language-r"># Sample data (Simulated BP reductions)
+set.seed(42)
+bp_sample <- rnorm(n = 25, mean = 116, sd = 8) # True mean is 116
+
+# 1. Point Estimation
+x_bar <- mean(bp_sample)
+s_dev <- sd(bp_sample)
+cat("Sample Mean (Point Estimate):", round(x_bar, 2), "\n")
+
+# 2. Confidence Interval (Using t.test)
+# By default, t.test performs a two-sided one-sample t-test AND returns the 95% CI
+ci_result <- t.test(bp_sample, mu = 120, conf.level = 0.95)
+cat("95% Confidence Interval:", ci_result$conf.int, "\n")
+
+# 3. Hypothesis Testing
+# H0: mu = 120 (Drug has no effect)
+# HA: mu != 120 (Drug has an effect)
+cat("t-statistic:", ci_result$statistic, "\n")
+cat("p-value:", ci_result$p.value, "\n")
+
+# Interpretation
+if(ci_result$p.value < 0.05) {
+  cat("Conclusion: Reject H0. The drug significantly changes BP.\n")
+} else {
+  cat("Conclusion: Fail to reject H0. No significant evidence of effect.\n")
+}</code></pre>
+
+                    <h5 class="mt-4">Python Implementation</h5>
+                    <pre><code class="language-python">import numpy as np
+import scipy.stats as stats
+
+# Sample data
+np.random.seed(42)
+bp_sample = np.random.normal(loc=116, scale=8, size=25)
+
+# 1. Point Estimation
+x_bar = np.mean(bp_sample)
+s_dev = np.std(bp_sample, ddof=1) # ddof=1 for sample standard deviation
+print(f"Sample Mean: {x_bar:.2f}")
+
+# 2. Confidence Interval
+# Calculate the margin of error using the t-distribution
+n = len(bp_sample)
+se = s_dev / np.sqrt(n)
+t_crit = stats.t.ppf(0.975, df=n-1) # 97.5th percentile for 95% two-sided CI
+margin_of_error = t_crit * se
+
+ci_lower = x_bar - margin_of_error
+ci_upper = x_bar + margin_of_error
+print(f"95% CI: [{ci_lower:.2f}, {ci_upper:.2f}]")
+
+# 3. Hypothesis Testing (One-Sample t-Test)
+# H0: mu = 120
+t_stat, p_value = stats.ttest_1samp(bp_sample, 120)
+print(f"t-statistic: {t_stat:.4f}")
+print(f"p-value: {p_value:.4f}")
+
+if p_value < 0.05:
+    print("Conclusion: Reject H0. The drug significantly changes BP.")
+else:
+    print("Conclusion: Fail to reject H0.")</code></pre>
+
+                    <h5 class="mt-4">Two-Sample and Paired t-Tests in R</h5>
+                    <pre><code class="language-r"># Two-Sample Independent t-Test
+# Comparing BP of Treatment Group vs Control Group
+treatment <- rnorm(20, mean = 115, sd = 8)
+control <- rnorm(20, mean = 120, sd = 8)
+
+t.test(treatment, control, var.equal = TRUE) # Assumes equal variances
+
+# Paired t-Test
+# Comparing Pre-test and Post-test scores for the SAME students
+pre_test <- c(85, 90, 78, 88, 92, 76, 81, 89, 94, 83)
+post_test <- c(88, 92, 82, 90, 95, 80, 85, 91, 96, 87)
+
+t.test(pre_test, post_test, paired = TRUE, alternative = "less") 
+# Testing if post_test is significantly GREATER than pre_test</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-5">
+
+        <!-- Practical Exercises -->
+        <section id="exercises" class="mb-5">
+            <h2 class="section-title">Practical Exercises</h2>
+            <p class="lead">Test your understanding of estimation and hypothesis testing. Write your answers or calculations, then click "Submit & Check Answer" to reveal the solutions.</p>
+            
+            <!-- Exercise 1 -->
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">Exercise 1: Confidence Intervals</div>
+                <div class="card-body">
+                    <div class="mb-0">
+                        <label class="form-label fw-bold">1. A sample of 49 students has a mean test score of 82 and a standard deviation of 14. Construct a 95% confidence interval for the population mean. (Hint: Since <i>n</i> &ge; 30, you can approximate using <i>Z</i> = 1.96, or use <i>t</i> with 48 df).</label>
+                        <div class="exercise-area">
+                            <textarea class="form-control font-monospace" rows="4" placeholder="Write your calculations here..."></textarea>
+                            <button class="btn btn-outline-primary btn-sm mt-2" type="button" data-bs-toggle="collapse" data-bs-target="#ans1_1">Submit & Check Answer</button>
+                            <div class="collapse mt-3" id="ans1_1">
+                                <div class="alert alert-success mb-0">
+                                    <strong><i class="fas fa-check-circle me-2"></i>Correct Answer:</strong>
+                                    <ul class="mt-2 mb-0">
+                                        <li><i>X̄</i> = 82, <i>s</i> = 14, <i>n</i> = 49</li>
+                                        <li>Standard Error (<i>SE</i>) = 14 / √49 = 14 / 7 = 2</li>
+                                        <li>Margin of Error (<i>ME</i>) = 1.96 &times; 2 = 3.92</li>
+                                        <li>95% CI = 82 &plusmn; 3.92 = <strong>[78.08, 85.92]</strong></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Exercise 2 -->
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">Exercise 2: Hypotheses Formulation</div>
+                <div class="card-body">
+                    <div class="mb-0">
+                        <label class="form-label fw-bold">1. A medical researcher claims that a new diet program reduces average weight more than the standard program (which results in a 5 kg loss). Write the Null (<i>H<sub>0</sub></i>) and Alternative (<i>H<sub>A</sub></i>) hypotheses. Is this a one-tailed or two-tailed test?</label>
+                        <div class="exercise-area">
+                            <textarea class="form-control font-monospace" rows="4" placeholder="Write your hypotheses here..."></textarea>
+                            <button class="btn btn-outline-primary btn-sm mt-2" type="button" data-bs-toggle="collapse" data-bs-target="#ans2_1">Submit & Check Answer</button>
+                            <div class="collapse mt-3" id="ans2_1">
+                                <div class="alert alert-success mb-0">
+                                    <strong><i class="fas fa-check-circle me-2"></i>Correct Answer:</strong>
+                                    <ul class="mt-2 mb-0">
+                                        <li><i>H<sub>0</sub></i>: <i>μ</i> &le; 5 (The new program reduces weight by 5 kg or less)</li>
+                                        <li><i>H<sub>A</sub></i>: <i>μ</i> &gt; 5 (The new program reduces weight by MORE than 5 kg)</li>
+                                        <li>This is a <strong>Right-Tailed (One-Tailed) Test</strong> because we are specifically testing if the mean is <em>greater than</em> the baseline.</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Exercise 3 -->
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">Exercise 3: Interpreting p-values and Errors</div>
+                <div class="card-body">
+                    <div class="mb-0">
+                        <label class="form-label fw-bold">1. You conduct a hypothesis test with &alpha; = 0.05 and obtain a p-value of 0.03. What is your decision? If the true population mean actually equals the null hypothesis value, what type of error have you committed?</label>
+                        <div class="exercise-area">
+                            <textarea class="form-control font-monospace" rows="4" placeholder="Write your interpretation here..."></textarea>
+                            <button class="btn btn-outline-primary btn-sm mt-2" type="button" data-bs-toggle="collapse" data-bs-target="#ans3_1">Submit & Check Answer</button>
+                            <div class="collapse mt-3" id="ans3_1">
+                                <div class="alert alert-success mb-0">
+                                    <strong><i class="fas fa-check-circle me-2"></i>Correct Answer:</strong>
+                                    <ul class="mt-2 mb-0">
+                                        <li>Since <i>p-value</i> (0.03) &le; &alpha; (0.05), we <strong>Reject the Null Hypothesis (<i>H<sub>0</sub></i>)</strong>.</li>
+                                        <li>If the true mean actually equals the null value, but we rejected <i>H<sub>0</sub></i>, we have committed a <strong>Type I Error (False Positive)</strong>.</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Exercise 4 -->
+            <div class="card mb-4">
+                <div class="card-header bg-danger text-white">Exercise 4: Choosing the Right Test</div>
+                <div class="card-body">
+                    <div class="mb-0">
+                        <label class="form-label fw-bold">1. Match the scenario to the correct statistical test: <br> a) Comparing the mean blood pressure of patients before and after taking a medication. <br> b) Comparing the mean income between two completely separate groups of people (Group A and Group B). <br> c) Testing if the average height of a sample of 15 students differs from the national average of 170 cm (population variance unknown).</label>
+                        <div class="exercise-area">
+                            <textarea class="form-control font-monospace" rows="4" placeholder="Write your matches here..."></textarea>
+                            <button class="btn btn-outline-danger btn-sm mt-2" type="button" data-bs-toggle="collapse" data-bs-target="#ans4_1">Submit & Check Answer</button>
+                            <div class="collapse mt-3" id="ans4_1">
+                                <div class="alert alert-success mb-0">
+                                    <strong><i class="fas fa-check-circle me-2"></i>Correct Answer:</strong>
+                                    <ul class="mt-2 mb-0">
+                                        <li>a) <strong>Paired t-Test</strong> (Same subjects measured twice / dependent samples).</li>
+                                        <li>b) <strong>Two-Sample Independent t-Test</strong> (Two distinct, unrelated groups).</li>
+                                        <li>c) <strong>One-Sample t-Test</strong> (One sample compared to a known constant, small sample, unknown population variance).</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-5">
+
+        <!-- Module Summary -->
+        <section id="summary" class="mb-5">
+            <h2 class="section-title">Module Summary & Next Steps</h2>
+            <div class="card bg-light">
+                <div class="card-body">
+                    <p>In Module 2, we transitioned from descriptive statistics to the core of inferential statistics. We learned how to use sample data to make educated guesses about population parameters through point and interval estimation. We mastered the rigorous framework of hypothesis testing, understanding the delicate balance between Type I and Type II errors, and learned how to apply Z-tests and t-tests to validate scientific claims.</p>
+                    
+                    <div class="alert alert-success mt-3 mb-0">
+                        <strong><i class="fas fa-rocket me-2"></i>What's Next?</strong>
+                        In <strong>Module 3: Analysis of Variance (ANOVA) and Chi-Square Tests</strong>, we will expand our hypothesis testing toolkit beyond comparing just two means. We will learn how to compare three or more groups simultaneously using ANOVA, and how to test for associations between categorical variables using the Chi-Square test of independence.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>Beyond Data Analytics</h5>
+                    <p class="fst-italic text-info">Transforming Raw Data into Insights</p>
+                    <p>Empowering the next generation of data professionals to master the tools that drive modern decision-making.</p>
+                </div>
+                <div class="col-md-3">
+                    <h5>Resources</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="https://cran.r-project.org/manuals.html" class="text-white text-decoration-none">R Manuals</a></li>
+                        <li><a href="https://docs.scipy.org/doc/scipy/reference/stats.html" class="text-white text-decoration-none">SciPy Stats</a></li>
+                        <li><a href="https://stackoverflow.com/questions/tagged/statistics" class="text-white text-decoration-none">Stack Overflow</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3">
+                    <h5>Program</h5>
+                    <ul class="list-unstyled">
+                        <li>Professional Certificate</li>
+                        <li>in Data Science</li>
+                        <li class="mt-2"><a href="#home" class="text-white text-decoration-none">Back to Top</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="text-center mt-4 pt-3 border-top border-secondary">
+                <small>&copy; 2026 Beyond Data Analytics. All Rights Reserved.</small>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Highlight.js JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/languages/r.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/languages/python.min.js"></script>
+    <script>hljs.highlightAll();</script>
+
+</body>
+</html>

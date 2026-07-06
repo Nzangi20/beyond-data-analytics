@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Module 3: Statistical Analysis and Predictive Modeling | Beyond Data Analytics</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Highlight.js for Code Syntax Highlighting -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark.min.css">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary-color: #0d6efd;
+            --secondary-color: #6c757d;
+            --accent-color: #0dcaf0;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+            padding-top: 70px; /* Space for fixed navbar */
+        }
+
+        /* Navbar Styling */
+        .navbar {
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            background: linear-gradient(90deg, #0d6efd 0%, #0a58ca 100%);
+        }
+        .navbar-brand {
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+        .nav-link {
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        .nav-link:hover {
+            color: #ffc107 !important;
+            transform: translateY(-2px);
+        }
+
+        /* Hero Section */
+        .hero-section {
+            background: url('https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80') no-repeat center center/cover;
+            height: 450px;
+            position: relative;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+        .hero-overlay {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.75);
+        }
+        .hero-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Content Cards */
+        .card {
+            border: none;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            transition: transform 0.3s;
+            margin-bottom: 20px;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        .card-header {
+            background-color: #fff;
+            border-bottom: 2px solid #0d6efd;
+            font-weight: 700;
+            color: #0d6efd;
+        }
+
+        /* Code Blocks */
+        pre {
+            border-radius: 8px;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+        }
+        code {
+            font-family: 'Consolas', 'Monaco', monospace;
+        }
+
+        /* Section Titles */
+        .section-title {
+            position: relative;
+            padding-bottom: 15px;
+            margin-bottom: 30px;
+            font-weight: 700;
+        }
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 4px;
+            background-color: #0d6efd;
+        }
+
+        /* Tables */
+        .table-custom {
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .table-custom thead {
+            background: linear-gradient(90deg, #0d6efd 0%, #0a58ca 100%);
+            color: white;
+        }
+
+        /* Footer */
+        footer {
+            background-color: #212529;
+            color: white;
+            padding: 40px 0;
+            margin-top: 50px;
+        }
+        
+        /* Exercise Area */
+        .exercise-area {
+            background: #f8f9fa;
+            border: 1px dashed #0d6efd;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 10px;
+        }
+
+        /* Beyond Data Section */
+        .beyond-data-section {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 30px 35px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            border-left: 6px solid #28a745;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            position: relative;
+            overflow: hidden;
+        }
+        .beyond-data-section::before {
+            content: "📊";
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 5em;
+            opacity: 0.1;
+        }
+        .beyond-data-section h2 {
+            color: #1e3c72;
+            font-size: 1.6em;
+            margin-bottom: 15px;
+        }
+        .beyond-data-section .highlight {
+            color: #28a745;
+            font-weight: bold;
+        }
+
+        /* Math Blocks (Pure HTML/CSS Equations) */
+        .math-block {
+            background: #f8f9fa;
+            border-left: 4px solid #6f42c1;
+            padding: 15px 25px;
+            margin: 20px 0;
+            border-radius: 0 8px 8px 0;
+            font-family: 'Cambria Math', 'Times New Roman', serif;
+            font-size: 1.25rem;
+            color: #212529;
+            overflow-x: auto;
+            line-height: 1.8;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="#"><i class="fas fa-chart-line me-2"></i>Beyond Data Analytics</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="#intro">3.1 Intro & Stats</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#regression">3.2 Regression</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#classification">3.3 Classification</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#clustering">3.4 Clustering</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#evaluation">3.5 Evaluation</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#practical">3.6 Practical</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="#exercises">Exercises</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header id="home" class="hero-section">
+        <div class="hero-overlay"></div>
+        <div class="hero-content container">
+            <h1 class="display-3 fw-bold">Module 3: Statistical Analysis & Predictive Modeling</h1>
+            <p class="lead fs-4">From hypothesis testing to machine learning algorithms in R</p>
+            <h3 class="text-info fw-light fst-italic">Beyond Data Analytics</h3>
+            <p class="fs-5 text-light">Transforming Raw Data into Insights</p>
+            <a href="#objectives" class="btn btn-primary btn-lg mt-3 px-5 rounded-pill">Start Learning</a>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <div class="container my-5">
+
+        <!-- Beyond Data Analytics Section -->
+        <section class="beyond-data-section mb-5">
+            <h2>🌐 Beyond Data Analytics</h2>
+            <p>At <span class="highlight">Beyond Data Analytics</span>, we believe that data is more than just numbers and tables—it is the strategic foundation of modern decision-making. Our curriculum is meticulously designed to bridge the gap between theoretical knowledge and real-world application, empowering professionals to extract actionable insights, drive business value, and innovate across industries.</p>
+            <p>In this module, we transition from describing data to <span class="highlight">modeling relationships and predicting future outcomes</span>. You will master the statistical foundations of regression and hypothesis testing, and seamlessly integrate them with modern machine learning techniques like classification and clustering using R's powerful <code>caret</code> and <code>tidymodels</code> ecosystems.</p>
+        </section>
+
+        <!-- Learning Objectives -->
+        <section id="objectives" class="mb-5">
+            <h2 class="section-title">Learning Objectives</h2>
+            <div class="card bg-light">
+                <div class="card-body">
+                    <p class="lead mb-3">By the end of this comprehensive module, participants will be able to:</p>
+                    <ul class="list-unstyled mb-0">
+                        <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> Apply fundamental statistical techniques, including hypothesis testing and confidence intervals, to answer research questions.</li>
+                        <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> Build, interpret, and diagnose Simple and Multiple Linear Regression models.</li>
+                        <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> Implement Logistic Regression for binary classification tasks and interpret Odds Ratios.</li>
+                        <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> Understand unsupervised learning concepts and apply K-Means clustering to segment data.</li>
+                        <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> Rigorously evaluate model performance using appropriate metrics (RMSE, ROC-AUC, Confusion Matrices).</li>
+                        <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> Verify model assumptions and translate complex statistical outputs into actionable business insights.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-5">
+
+        <!-- 3.1 Introduction to Statistical Analysis -->
+        <section id="intro" class="mb-5">
+            <h2 class="section-title">3.1 Introduction to Statistical Analysis & Hypothesis Testing</h2>
+            <p class="lead">Statistical analysis allows us to move beyond descriptive summaries and make inferences about populations, test theories, and quantify uncertainty.</p>
+            <div class="card">
+                <div class="card-body">
+                    <h5>Hypothesis Testing Fundamentals</h5>
+                    <p>Hypothesis testing is a formal procedure for investigating our ideas about the world using data. It involves setting up two competing statements:</p>
+                    <ul>
+                        <li><strong>Null Hypothesis (<i>H<sub>0</sub></i>):</strong> The default assumption (e.g., "The new drug has no effect", "There is no correlation between Age and Blood Pressure").</li>
+                        <li><strong>Alternative Hypothesis (<i>H<sub>A</sub></i>):</strong> The claim you are trying to find evidence for (e.g., "The new drug lowers blood pressure").</li>
+                    </ul>
+                    <p>We calculate a <strong>p-value</strong>. If the p-value is less than our chosen significance level (<i>&alpha;</i>, typically 0.05), we reject the null hypothesis, concluding the result is statistically significant.</p>
+
+                    <h5 class="mt-4">Confidence Intervals (CI)</h5>
+                    <p>Instead of a single point estimate (like a sample mean), a Confidence Interval provides a range of plausible values for the true population parameter.</p>
+                    <div class="math-block">
+                        <i>CI</i> = <i>Sample Statistic</i> &plusmn; (<i>Critical Value</i> &times; <i>Standard Error</i>)
+                    </div>
+                    <p><em>Interpretation:</em> A 95% CI means that if we were to take 100 different samples and compute a 95% CI for each, approximately 95 of those intervals would contain the true population parameter.</p>
+
+                    <h5 class="mt-4">Correlation Analysis</h5>
+                    <p>Correlation measures the strength and direction of a linear relationship between two continuous variables. It ranges from -1 to +1.</p>
+                    <ul>
+                        <li><strong>Pearson (<i>r</i>):</strong> Measures linear correlation. Assumes normality and is sensitive to outliers.</li>
+                        <li><strong>Spearman (<i>&rho;</i>):</strong> Measures monotonic correlation based on ranks. Robust to outliers and non-normal data.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-5">
+
+        <!-- 3.2 Regression Modeling -->
+        <section id="regression" class="mb-5">
+            <h2 class="section-title">3.2 Linear Regression Modeling</h2>
+            <p class="lead">Regression analysis is used to model the relationship between a dependent (response) variable and one or more independent (predictor) variables.</p>
+            <div class="card">
+                <div class="card-body">
+                    <h5>Simple Linear Regression</h5>
+                    <p>Models the relationship between one predictor (<i>X</i>) and one continuous response (<i>Y</i>).</p>
+                    <div class="math-block">
+                        <i>Y</i> = <i>&beta;<sub>0</sub></i> + <i>&beta;<sub>1</sub>X</i> + <i>&epsilon;</i>
+                    </div>
+                    <ul>
+                        <li><i>&beta;<sub>0</sub></i>: The y-intercept (value of <i>Y</i> when <i>X</i> = 0).</li>
+                        <li><i>&beta;<sub>1</sub></i>: The slope (change in <i>Y</i> for a 1-unit increase in <i>X</i>).</li>
+                        <li><i>&epsilon;</i>: The error term (residuals).</li>
+                    </ul>
+
+                    <h5 class="mt-4">Multiple Linear Regression</h5>
+                    <p>Extends simple regression to include multiple predictors. It allows us to understand the effect of one variable while <em>holding others constant</em>.</p>
+                    <div class="math-block">
+                        <i>Y</i> = <i>&beta;<sub>0</sub></i> + <i>&beta;<sub>1</sub>X<sub>1</sub></i> + <i>&beta;<sub>2</sub>X<sub>2</sub></i> + ... + <i>&beta;<sub>n</sub>X<sub>n</sub></i> + <i>&epsilon;</i>
+                    </div>
+
+                    <h5 class="mt-4">Model Fit: R-Squared (<i>R</i><sup>2</sup>)</h5>
+                    <p><i>R</i><sup>2</sup> represents the proportion of the variance in the dependent variable that is predictable from the independent variables. An <i>R</i><sup>2</sup> of 0.80 means the model explains 80% of the variability of the response data around its mean.</p>
+
+                    <h5 class="mt-4">R Implementation</h5>
+                    <pre><code class="language-r">library(tidyverse)
+
+# Simple Linear Regression: Predicting MaxHR from Age
+model_simple <- lm(MaxHR ~ Age, data = heart_data)
+summary(model_simple)
+
+# Multiple Linear Regression: Predicting MaxHR from Age, Cholesterol, and Sex
+model_multiple <- lm(MaxHR ~ Age + Chol + Sex, data = heart_data)
+summary(model_multiple)
+
+# Extracting Coefficients and Confidence Intervals
+confint(model_multiple, level = 0.95)</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-5">
+
+        <!-- 3.3 Logistic Regression & Classification -->
+        <section id="classification" class="mb-5">
+            <h2 class="section-title">3.3 Logistic Regression & Classification Concepts</h2>
+            <p class="lead">When the target variable is categorical (e.g., Yes/No, Disease/No Disease), we use classification algorithms. Logistic Regression is the foundational algorithm for binary classification.</p>
+            <div class="card">
+                <div class="card-body">
+                    <h5>Logistic Regression</h5>
+                    <p>Instead of predicting a continuous value, Logistic Regression predicts the <strong>probability</strong> that an observation belongs to a specific class. It uses the <strong>logit (sigmoid) function</strong> to squash the output between 0 and 1.</p>
+                    <div class="math-block">
+                        <i>P</i>(<i>Y</i>=1) = 1 / (1 + <i>e</i><sup>-(&beta;<sub>0</sub> + &beta;<sub>1</sub>X<sub>1</sub> + ...)</sup>)
+                    </div>
+                    <p><strong>Odds Ratios (OR):</strong> In R, exponentiating the logistic regression coefficients (<code>exp(coef)</code>) gives the Odds Ratio. An OR > 1 indicates that as the predictor increases, the odds of the event occurring increase.</p>
+
+                    <h5 class="mt-4">Classification Metrics</h5>
+                    <table class="table table-custom">
+                        <thead>
+                            <tr><th>Metric</th><th>Formula / Concept</th><th>When to Prioritize</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Accuracy</strong></td>
+                                <td>Correct Predictions / Total Predictions</td>
+                                <td>When classes are perfectly balanced.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Precision</strong></td>
+                                <td>True Positives / (True Positives + False Positives)</td>
+                                <td>When False Positives are costly (e.g., Spam detection).</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Recall (Sensitivity)</strong></td>
+                                <td>True Positives / (True Positives + False Negatives)</td>
+                                <td>When False Negatives are costly (e.g., Cancer screening).</td>
+                            </tr>
+                            <tr>
+                                <td><strong>F1-Score</strong></td>
+                                <td>Harmonic mean of Precision and Recall</td>
+                                <td>When you need a balance between Precision and Recall.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h5 class="mt-4">R Implementation (using <code>caret</code>)</h5>
+                    <pre><code class="language-r">library(caret)
+
+# Prepare data
+heart_data$HD <- factor(heart_data$HD, levels = c(0, 1), labels = c("No", "Yes"))
+set.seed(123)
+trainIndex <- createDataPartition(heart_data$HD, p = 0.8, list = FALSE)
+train_data <- heart_data[trainIndex, ]
+test_data  <- heart_data[-trainIndex, ]
+
+# Train Logistic Regression Model
+set.seed(123)
+model_glm <- train(HD ~ Age + MaxHR + Ca + Thal, 
+                   data = train_data, 
+                   method = "glm", 
+                   family = "binomial",
+                   trControl = trainControl(method = "cv", number = 10))
+
+# Predictions and Confusion Matrix
+predictions <- predict(model_glm, newdata = test_data)
+confusionMatrix(predictions, reference = test_data$HD, positive = "Yes")</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-5">
+
+        <!-- 3.4 Clustering Concepts -->
+        <section id="clustering" class="mb-5">
+            <h2 class="section-title">3.4 Clustering Concepts (Unsupervised Learning)</h2>
+            <p class="lead">Unlike regression and classification, clustering is an <strong>unsupervised learning</strong> technique. There is no target variable; the goal is to discover hidden structures or natural groupings within the data.</p>
+            <div class="card">
+                <div class="card-body">
+                    <h5>K-Means Clustering</h5>
+                    <p>The most common clustering algorithm. It partitions <i>n</i> observations into <i>k</i> distinct, non-overlapping clusters based on feature similarity (usually Euclidean distance).</p>
+                    <ol>
+                        <li>Specify the number of clusters (<i>k</i>).</li>
+                        <li>Randomly initialize <i>k</i> centroids.</li>
+                        <li>Assign each data point to the nearest centroid.</li>
+                        <li>Recalculate the centroids as the mean of the assigned points.</li>
+                        <li>Repeat steps 3 and 4 until the centroids stop moving (convergence).</li>
+                    </ol>
+
+                    <h5 class="mt-4">Determining the Optimal <i>k</i>: The Elbow Method</h5>
+                    <p>We plot the Within-Cluster Sum of Squares (WCSS) against different values of <i>k</i>. The "elbow" or inflection point of the curve indicates the optimal number of clusters where adding more clusters doesn't significantly improve the model.</p>
+
+                    <h5 class="mt-4">R Implementation</h5>
+                    <pre><code class="language-r">library(factoextra)
+
+# Select numeric features for clustering and scale them
+cluster_data <- heart_data %>%
+  select(Age, RestBP, Chol, MaxHR, Oldpeak) %>%
+  na.omit() %>%
+  scale()
+
+# Compute K-Means with k=3
+set.seed(123)
+kmeans_result <- kmeans(cluster_data, centers = 3, nstart = 25)
+
+# Visualize the clusters
+fviz_cluster(kmeans_result, data = cluster_data,
+             palette = c("#00AFBB", "#E7B800", "#FC4E07"),
+             ggtheme = theme_minimal(),
+             main = "K-Means Clustering of Patient Vitals")</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-5">
+
+        <!-- 3.5 Model Evaluation & Assumptions -->
+        <section id="evaluation" class="mb-5">
+            <h2 class="section-title">3.5 Model Evaluation, Assumptions, and Interpretation</h2>
+            <p class="lead">Building a model is only half the battle. Rigorous evaluation and assumption checking ensure your model is reliable, generalizable, and legally/ethically defensible.</p>
+            <div class="card">
+                <div class="card-body">
+                    <h5>Model Assumptions</h5>
+                    <div class="accordion" id="assumptionsAccordion">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#colLine">Linear Regression Assumptions (LINE)</button></h2>
+                            <div id="colLine" class="accordion-collapse collapse" data-bs-parent="#assumptionsAccordion">
+                                <div class="accordion-body">
+                                    <ul>
+                                        <li><strong>L</strong>inearity: The relationship between X and Y is linear.</li>
+                                        <li><strong>I</strong>ndependence: Observations are independent of each other.</li>
+                                        <li><strong>N</strong>ormality: The residuals (errors) are normally distributed.</li>
+                                        <li><strong>E</strong>qual Variance (Homoscedasticity): The variance of residuals is constant across all levels of X.</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#colLogit">Logistic Regression Assumptions</button></h2>
+                            <div id="colLogit" class="accordion-collapse collapse" data-bs-parent="#assumptionsAccordion">
+                                <div class="accordion-body">
+                                    <ul>
+                                        <li>Binary outcome variable.</li>
+                                        <li>Independence of observations.</li>
+                                        <li>Linearity of independent variables and the <em>log-odds</em> (not necessarily the probability).</li>
+                                        <li>Lack of severe multicollinearity among predictors.</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h5 class="mt-4">Advanced Evaluation Techniques</h5>
+                    <ul>
+                        <li><strong>Cross-Validation:</strong> Instead of a single train/test split, K-Fold Cross-Validation trains the model on <i>k-1</i> folds and tests on the remaining fold, rotating <i>k</i> times. This provides a much more robust estimate of model performance.</li>
+                        <li><strong>ROC Curve & AUC:</strong> The Receiver Operating Characteristic curve plots the True Positive Rate (Recall) against the False Positive Rate (1 - Specificity) across all possible probability thresholds. The Area Under the Curve (AUC) summarizes this; an AUC of 0.5 is random guessing, while 1.0 is perfect.</li>
+                        <li><strong>Regression Metrics:</strong> For continuous outcomes, we use <strong>RMSE</strong> (Root Mean Squared Error) or <strong>MAE</strong> (Mean Absolute Error) to measure the average distance between predictions and actual values.</li>
+                    </ul>
+
+                    <h5 class="mt-4">Plotting the ROC Curve in R</h5>
+                    <pre><code class="language-r">library(pROC)
+
+# Get predicted probabilities for the positive class ("Yes")
+probabilities <- predict(model_glm, newdata = test_data, type = "prob")[, "Yes"]
+
+# Calculate and plot ROC
+roc_obj <- roc(test_data$HD, probabilities)
+plot(roc_obj, col = "#0d6efd", lwd = 2, main = "ROC Curve for Heart Disease Prediction")
+auc(roc_obj) # Print the AUC value</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-5">
+
+        <!-- 3.6 Practical Session -->
+        <section id="practical" class="mb-5">
+            <h2 class="section-title">3.6 Practical Session: End-to-End Predictive Modeling</h2>
+            <p class="lead">Let's integrate statistical testing, regression, classification, and clustering into a comprehensive R workflow using the <code>Heart.csv</code> dataset.</p>
+            <div class="card">
+                <div class="card-body">
+                    <h5>Scenario: Comprehensive Clinical Data Analysis</h5>
+                    <p>We will explore correlations, predict continuous vitals using linear regression, classify disease presence using logistic regression, and segment patients using K-Means.</p>
+                    <pre><code class="language-r"># ==============================================================================
+# 1. SETUP AND DATA PREPARATION
+# ==============================================================================
+library(tidyverse)
+library(caret)
+library(pROC)
+library(factoextra)
+library(broom)
+
+# Load data
+heart <- read.csv("Heart.csv") %>% na.omit()
+heart$HD <- factor(heart$HD, levels = c(0, 1), labels = c("No", "Yes"))
+
+# ==============================================================================
+# 2. CORRELATION ANALYSIS
+# ==============================================================================
+# Calculate correlation matrix for continuous variables
+num_vars <- heart %>% select(Age, RestBP, Chol, MaxHR, Oldpeak)
+cor_matrix <- cor(num_vars)
+
+# Visualize using corrplot (if installed) or base R pairs plot
+pairs(num_vars, col = heart$HD, pch = 16, 
+      main = "Scatterplot Matrix of Continuous Variables by Disease Status")
+
+# ==============================================================================
+# 3. LINEAR REGRESSION: Predicting Maximum Heart Rate
+# ==============================================================================
+# Model: MaxHR is expected to decrease with Age and ST Depression (Oldpeak)
+lm_model <- lm(MaxHR ~ Age + Oldpeak + Sex, data = heart)
+summary(lm_model)
+
+# Interpretation:
+# If Age coefficient is -0.8, it means for every 1-year increase in age, 
+# MaxHR decreases by 0.8 bpm, holding Oldpeak and Sex constant.
+
+# ==============================================================================
+# 4. LOGISTIC REGRESSION: Predicting Heart Disease (HD)
+# ==============================================================================
+set.seed(123)
+trainIndex <- createDataPartition(heart$HD, p = 0.8, list = FALSE)
+train <- heart[trainIndex, ]
+test  <- heart[-trainIndex, ]
+
+# Fit model using caret for built-in cross-validation
+set.seed(123)
+glm_model <- train(HD ~ Age + MaxHR + Ca + Thal + ChestPain, 
+                   data = train, 
+                   method = "glm", 
+                   family = "binomial",
+                   trControl = trainControl(method = "repeatedcv", number = 10, repeats = 3),
+                   metric = "ROC")
+
+# Evaluate on Test Set
+glm_preds <- predict(glm_model, newdata = test)
+cm <- confusionMatrix(glm_preds, reference = test$HD, positive = "Yes")
+print(cm)
+
+# Calculate Odds Ratios for interpretability
+odds_ratios <- tidy(glm_model$finalModel) %>%
+  filter(term != "(Intercept)") %>%
+  mutate(OR = exp(estimate),
+         OR_lower = exp(estimate - 1.96 * std.error),
+         OR_upper = exp(estimate + 1.96 * std.error))
+print(odds_ratios)
+
+# Plot ROC Curve
+glm_probs <- predict(glm_model, newdata = test, type = "prob")[, "Yes"]
+roc_obj <- roc(test$HD, glm_probs)
+plot(roc_obj, col = "#28a745", lwd = 2, main = "Logistic Regression ROC Curve")
+
+# ==============================================================================
+# 5. K-MEANS CLUSTERING: Patient Segmentation
+# ==============================================================================
+# Prepare data for clustering (must be scaled)
+cluster_vars <- heart %>% select(Age, Chol, MaxHR, Oldpeak) %>% scale()
+
+# Find optimal K using Elbow Method (WCSS)
+wcss <- sapply(1:10, function(k) {
+  kmeans(cluster_vars, centers = k, nstart = 25)$tot.withinss
+})
+plot(1:10, wcss, type = "b", pch = 19, frame = FALSE, 
+     xlab = "Number of clusters (k)", ylab = "Within-Cluster Sum of Squares",
+     main = "Elbow Method for Optimal k")
+
+# Fit final K-Means (assuming k=3 based on elbow)
+set.seed(123)
+km_res <- kmeans(cluster_vars, centers = 3, nstart = 25)
+
+# Visualize Clusters
+fviz_cluster(km_res, data = cluster_vars,
+             palette = c("#0d6efd", "#ffc107", "#dc3545"),
+             ggtheme = theme_minimal(),
+             main = "Patient Segmentation (K-Means)")</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-5">
+
+        <!-- Practical Exercises -->
+        <section id="exercises" class="mb-5">
+            <h2 class="section-title">Practical Exercises</h2>
+            <p class="lead">Test your mastery of statistical analysis and predictive modeling. Write your answers or R code, then reveal the solutions.</p>
+            
+            <!-- Exercise 1 -->
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">Exercise 1: Interpreting Regression Coefficients</div>
+                <div class="card-body">
+                    <div class="mb-0">
+                        <label class="form-label fw-bold">1. You run a Multiple Linear Regression predicting <code>Cholesterol</code> based on <code>Age</code> and <code>MaxHR</code>. The output shows: <br> <code>Age</code> Estimate = 1.2, p-value = 0.03 <br> <code>MaxHR</code> Estimate = -0.8, p-value = 0.001 <br> Interpret the coefficient for <code>MaxHR</code> in plain English, and state whether it is statistically significant at the 0.05 level.</label>
+                        <div class="exercise-area">
+                            <textarea class="form-control font-monospace" rows="4" placeholder="Write your interpretation here..."></textarea>
+                            <button class="btn btn-outline-primary btn-sm mt-2" type="button" data-bs-toggle="collapse" data-bs-target="#ans1_1">Submit & Check Answer</button>
+                            <div class="collapse mt-3" id="ans1_1">
+                                <div class="alert alert-success mb-0">
+                                    <strong><i class="fas fa-check-circle me-2"></i>Correct Answer:</strong>
+                                    <ul class="mt-2 mb-0">
+                                        <li><strong>Interpretation:</strong> Holding Age constant, for every 1 beat-per-minute (bpm) increase in Maximum Heart Rate, the patient's Cholesterol level is expected to <em>decrease</em> by 0.8 mg/dL on average.</li>
+                                        <li><strong>Significance:</strong> Yes, it is statistically significant because the p-value (0.001) is less than the standard alpha level of 0.05.</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Exercise 2 -->
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">Exercise 2: Logistic Regression & Odds Ratios</div>
+                <div class="card-body">
+                    <div class="mb-0">
+                        <label class="form-label fw-bold">1. In a Logistic Regression model predicting Heart Disease (<code>HD</code>), the exponentiated coefficient (Odds Ratio) for the variable <code>ExAng</code> (Exercise Induced Angina) is 3.5. How do you interpret this Odds Ratio?</label>
+                        <div class="exercise-area">
+                            <textarea class="form-control font-monospace" rows="4" placeholder="Write your interpretation here..."></textarea>
+                            <button class="btn btn-outline-primary btn-sm mt-2" type="button" data-bs-toggle="collapse" data-bs-target="#ans2_1">Submit & Check Answer</button>
+                            <div class="collapse mt-3" id="ans2_1">
+                                <div class="alert alert-success mb-0">
+                                    <strong><i class="fas fa-check-circle me-2"></i>Correct Answer:</strong>
+                                    <p class="mt-2 mb-0">Patients who experience Exercise Induced Angina (<code>ExAng</code> = 1) have <strong>3.5 times higher odds</strong> of having Heart Disease compared to patients who do not experience it (<code>ExAng</code> = 0), holding all other variables in the model constant.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Exercise 3 -->
+            <div class="card mb-4">
+                <div class="card-header bg-danger text-white">Exercise 3: Choosing the Right Evaluation Metric</div>
+                <div class="card-body">
+                    <div class="mb-0">
+                        <label class="form-label fw-bold">1. You are building a machine learning model to screen for a rare, deadly infectious disease. The dataset is highly imbalanced (99% Healthy, 1% Sick). <br> a) Why is <strong>Accuracy</strong> a dangerous metric to use here? <br> b) Which metric should you prioritize optimizing to ensure you do not miss sick patients, and why?</label>
+                        <div class="exercise-area">
+                            <textarea class="form-control font-monospace" rows="4" placeholder="Write your answer here..."></textarea>
+                            <button class="btn btn-outline-danger btn-sm mt-2" type="button" data-bs-toggle="collapse" data-bs-target="#ans3_1">Submit & Check Answer</button>
+                            <div class="collapse mt-3" id="ans3_1">
+                                <div class="alert alert-success mb-0">
+                                    <strong><i class="fas fa-check-circle me-2"></i>Correct Answer:</strong>
+                                    <ul class="mt-2 mb-0">
+                                        <li><strong>a) The Accuracy Paradox:</strong> A naive model that simply predicts "Healthy" for every single patient will achieve 99% Accuracy. However, it is completely useless because it fails to identify the deadly disease. Accuracy is misleading in imbalanced datasets.</li>
+                                        <li><strong>b) Prioritize Recall (Sensitivity):</strong> In medical screening, a False Negative (telling a sick patient they are healthy) can be fatal. Recall measures the proportion of actual sick patients that the model correctly identifies. We must maximize Recall to ensure no sick patients slip through the cracks, even if it means accepting more False Positives (lower Precision).</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Exercise 4 -->
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">Exercise 4: Clustering Interpretation</div>
+                <div class="card-body">
+                    <div class="mb-0">
+                        <label class="form-label fw-bold">1. You run K-Means clustering on patient data and identify 3 distinct clusters. <br> Cluster 1: High Age, High Cholesterol, Low MaxHR. <br> Cluster 2: Low Age, Normal Cholesterol, High MaxHR. <br> Cluster 3: Medium Age, High Cholesterol, Normal MaxHR. <br> How would you label these clusters for a clinical stakeholder, and what business/clinical action might you recommend for Cluster 1?</label>
+                        <div class="exercise-area">
+                            <textarea class="form-control font-monospace" rows="4" placeholder="Write your interpretation here..."></textarea>
+                            <button class="btn btn-outline-primary btn-sm mt-2" type="button" data-bs-toggle="collapse" data-bs-target="#ans4_1">Submit & Check Answer</button>
+                            <div class="collapse mt-3" id="ans4_1">
+                                <div class="alert alert-success mb-0">
+                                    <strong><i class="fas fa-check-circle me-2"></i>Correct Answer:</strong>
+                                    <ul class="mt-2 mb-0">
+                                        <li><strong>Cluster 1:</strong> "High-Risk / Elderly Cardiovascular Profile"</li>
+                                        <li><strong>Cluster 2:</strong> "Healthy / Low-Risk Profile"</li>
+                                        <li><strong>Cluster 3:</strong> "Metabolic Risk / Pre-Symptomatic Profile"</li>
+                                        <li><strong>Clinical Action for Cluster 1:</strong> Because this group exhibits the classic triad of advanced age, hyperlipidemia, and poor cardiac reserve (low MaxHR), they should be immediately flagged for aggressive preventative interventions, such as statin therapy, cardiology referral, and lifestyle modification programs.</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-5">
+
+        <!-- Module Summary -->
+        <section id="summary" class="mb-5">
+            <h2 class="section-title">Module Summary & Next Steps</h2>
+            <div class="card bg-light">
+                <div class="card-body">
+                    <p>In Module 3, we bridged the gap between classical statistics and modern predictive machine learning. We mastered hypothesis testing and confidence intervals to quantify uncertainty. We built Linear Regression models to predict continuous outcomes and Logistic Regression models to classify binary events, interpreting their outputs through Odds Ratios and p-values. Finally, we explored the unsupervised world of K-Means clustering to discover hidden patient segments, all while rigorously evaluating our models using Cross-Validation and ROC-AUC.</p>
+                    
+                    <div class="alert alert-info mt-3 mb-0">
+                        <strong>🚀 What's Next?</strong>
+                        In <strong>Module 4: Advanced Machine Learning & Ensemble Methods</strong>, we will move beyond single algorithms. You will learn how to combine the strengths of multiple models using Random Forests, Gradient Boosting (XGBoost), and Support Vector Machines to achieve state-of-the-art predictive performance on complex, non-linear datasets.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>Beyond Data Analytics</h5>
+                    <p class="fst-italic text-info">Transforming Raw Data into Insights</p>
+                    <p>Empowering the next generation of data professionals to master the tools that drive modern decision-making.</p>
+                </div>
+                <div class="col-md-3">
+                    <h5>Resources</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="https://topepo.github.io/caret/" class="text-white text-decoration-none">Caret Package Documentation</a></li>
+                        <li><a href="https://www.tidymodels.org/" class="text-white text-decoration-none">Tidymodels</a></li>
+                        <li><a href="https://stackoverflow.com/questions/tagged/r" class="text-white text-decoration-none">Stack Overflow</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3">
+                    <h5>Program</h5>
+                    <ul class="list-unstyled">
+                        <li>Professional Certificate</li>
+                        <li>in Data Science</li>
+                        <li class="mt-2"><a href="#home" class="text-white text-decoration-none">Back to Top</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="text-center mt-4 pt-3 border-top border-secondary">
+                <small>&copy; 2026 Beyond Data Analytics. All Rights Reserved.</small>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Highlight.js JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/languages/r.min.js"></script>
+    <script>hljs.highlightAll();</script>
+
+</body>
+</html>

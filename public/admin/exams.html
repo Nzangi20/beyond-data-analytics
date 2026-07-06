@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exam Manager - Beyond Data Analytics</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/main.css">
+</head>
+<body>
+    <button class="sidebar-toggle" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+    <div class="app-layout">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-auth-links" style="display: flex; justify-content: space-around; padding: 0.75rem 1rem; border-bottom: 1px solid rgba(255,255,255,0.08); font-size: 0.85rem; font-family: 'Outfit', sans-serif; background: rgba(0,0,0,0.15);">
+                <a href="/login.html" style="color: #63b3ed; font-weight: 600; text-decoration: none; display: flex; align-items: center; gap: 0.25rem; transition: opacity 0.2s;" onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'"><i class="fas fa-sign-in-alt"></i> Sign In</a>
+                <span style="color: rgba(255,255,255,0.2);">|</span>
+                <a href="https://forms.gle/iULxMYXieuC4px8p8" target="_blank" style="color: #48bb78; font-weight: 600; text-decoration: none; display: flex; align-items: center; gap: 0.25rem; transition: opacity 0.2s;" onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'"><i class="fas fa-user-plus"></i> Sign Up</a>
+            </div>
+            <div class="sidebar-header"><div class="sidebar-logo"><i class="fas fa-chart-line"></i></div><div class="sidebar-brand"><h2>BDA Platform</h2><p>Administration</p></div></div>
+            <nav class="sidebar-nav">
+                <div class="nav-section"><div class="nav-section-title">Main</div><a href="/admin/dashboard.html" class="nav-item"><i class="fas fa-tachometer-alt"></i> Dashboard</a><a href="/admin/users.html" class="nav-item"><i class="fas fa-users-cog"></i> User Management</a></div>
+                <div class="nav-section"><div class="nav-section-title">LMS</div><a href="/admin/content.html" class="nav-item"><i class="fas fa-book-open"></i> Content Manager</a><a href="/admin/exams.html" class="nav-item active"><i class="fas fa-file-alt"></i> Exam Manager</a></div>
+                <div class="nav-section"><div class="nav-section-title">Reports</div><a href="/admin/reports.html" class="nav-item"><i class="fas fa-chart-bar"></i> Reports</a></div>
+                <div class="nav-section"><div class="nav-section-title">Other</div><a href="/" class="nav-item"><i class="fas fa-globe"></i> Public Website</a></div>
+            </nav>
+            <div class="sidebar-footer"><div class="user-info"><div class="user-avatar" id="userAvatar">AD</div><div class="user-details"><h4 id="userName">Admin</h4><p>Admin</p></div></div><button class="btn btn-sm btn-outline" style="width:100%;margin-top:1rem;color:rgba(255,255,255,0.7);border-color:rgba(255,255,255,0.2);" onclick="API.logout()"><i class="fas fa-sign-out-alt"></i> Logout</button></div>
+        </aside>
+
+        <main class="main-content">
+            <div class="main-header"><div><h1><i class="fas fa-file-alt" style="color:var(--accent);margin-right:0.5rem;"></i> Exam Manager</h1><p>Create exams and manage questions for each module</p></div></div>
+
+            <!-- Exam Selection -->
+            <div class="card" style="margin-bottom:1.5rem;">
+                <div class="card-body" style="display:flex;gap:1rem;flex-wrap:wrap;align-items:center;">
+                    <select class="form-control" id="tutorialSelect" style="max-width:220px;" onchange="loadModulesForExam()"><option value="">Select Tutorial</option></select>
+                    <select class="form-control" id="moduleSelect" style="max-width:280px;" onchange="loadExamForModule()"><option value="">Select Module</option></select>
+                    <button class="btn btn-primary btn-sm" id="createExamBtn" style="display:none;" onclick="createExam()"><i class="fas fa-plus"></i> Create Exam</button>
+                </div>
+            </div>
+
+            <!-- Exam Details & Questions -->
+            <div id="examSection" style="display:none;">
+                <div class="card" style="margin-bottom:1.5rem;">
+                    <div class="card-header">
+                        <h3 id="examTitle"><i class="fas fa-clipboard-list" style="color:var(--accent);margin-right:0.5rem;"></i> Exam</h3>
+                        <span class="badge badge-primary" id="questionCount">0 questions</span>
+                    </div>
+                    <div class="card-body" style="display:flex;gap:2rem;flex-wrap:wrap;">
+                        <div><strong>Time Limit:</strong> <span id="examTimeLimit">60</span> min</div>
+                        <div><strong>Total Marks:</strong> <span id="examTotalMarks">0</span></div>
+                        <div><strong>Pass Mark:</strong> 70%</div>
+                    </div>
+                </div>
+
+                <div class="card" style="margin-bottom:1.5rem;">
+                    <div class="card-header"><h3><i class="fas fa-plus-circle" style="color:var(--green);margin-right:0.5rem;"></i> Add Question</h3></div>
+                    <div class="card-body">
+                        <div class="form-group"><label class="form-label">Question Text *</label><textarea class="form-control" id="qText" rows="3" placeholder="Enter question..."></textarea></div>
+                        <div style="display:flex;gap:1rem;flex-wrap:wrap;">
+                            <div class="form-group" style="flex:1;min-width:150px;"><label class="form-label">Type</label><select class="form-control" id="qType" onchange="updateAnswerFields()"><option value="mcq">Multiple Choice</option><option value="true_false">True/False</option></select></div>
+                            <div class="form-group" style="width:100px;"><label class="form-label">Marks</label><input type="number" class="form-control" id="qMarks" value="1" min="1"></div>
+                        </div>
+                        <div id="answersContainer">
+                            <label class="form-label">Answer Options (mark the correct one)</label>
+                            <div id="answerFields"></div>
+                            <button class="btn btn-sm btn-outline" onclick="addAnswerField()" id="addAnswerBtn" style="margin-top:0.5rem;"><i class="fas fa-plus"></i> Add Option</button>
+                        </div>
+                        <div class="form-group" style="margin-top:1rem;"><label class="form-label">Explanation (optional)</label><input type="text" class="form-control" id="qExplanation" placeholder="Explain the correct answer..."></div>
+                        <button class="btn btn-success" onclick="addQuestion()" style="margin-top:0.5rem;"><i class="fas fa-save"></i> Save Question</button>
+                    </div>
+                </div>
+
+                <!-- Questions List -->
+                <div class="card">
+                    <div class="card-header"><h3><i class="fas fa-list" style="color:var(--purple);margin-right:0.5rem;"></i> Questions</h3></div>
+                    <div class="card-body" id="questionsList"><div class="empty-state"><i class="fas fa-inbox"></i><h3>No questions yet</h3></div></div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="/js/api.js"></script>
+    <script>
+        if (!API.requireAuth(['admin'])) throw new Error('Not authorized');
+        const user = API.getUser();
+        if (user) { document.getElementById('userName').textContent=user.fullName||user.username; document.getElementById('userAvatar').textContent=getInitials(user.fullName||user.username); }
+
+        let currentExamId = null;
+
+        async function init() {
+            const data = await API.get('/admin/tutorials');
+            const sel = document.getElementById('tutorialSelect');
+            data.tutorials.forEach(t => { const o = document.createElement('option'); o.value=t.id; o.textContent=t.name; sel.appendChild(o); });
+            updateAnswerFields();
+        }
+
+        async function loadModulesForExam() {
+            const sel = document.getElementById('moduleSelect');
+            sel.innerHTML = '<option value="">Select Module</option>';
+            document.getElementById('examSection').style.display='none';
+            document.getElementById('createExamBtn').style.display='none';
+            currentExamId=null;
+            const tid = document.getElementById('tutorialSelect').value;
+            if (!tid) return;
+            const data = await API.get(`/admin/tutorials/${tid}/modules`);
+            data.modules.forEach(m => { const o=document.createElement('option'); o.value=m.id; o.textContent=`Module ${m.module_number}: ${m.title}`; sel.appendChild(o); });
+        }
+
+        async function loadExamForModule() {
+            const mid = document.getElementById('moduleSelect').value;
+            document.getElementById('examSection').style.display='none';
+            document.getElementById('createExamBtn').style.display='none';
+            currentExamId=null;
+            if (!mid) return;
+            const data = await API.get('/admin/exams');
+            const exam = data.exams.find(e => e.module_id == mid);
+            if (exam) {
+                currentExamId = exam.id;
+                document.getElementById('examTitle').innerHTML = `<i class="fas fa-clipboard-list" style="color:var(--accent);margin-right:0.5rem;"></i> ${escapeHtml(exam.title)}`;
+                document.getElementById('examTimeLimit').textContent = exam.time_limit;
+                document.getElementById('examTotalMarks').textContent = exam.total_marks;
+                document.getElementById('examSection').style.display = '';
+                loadQuestions();
+            } else {
+                document.getElementById('createExamBtn').style.display = '';
+            }
+        }
+
+        async function createExam() {
+            const mid = document.getElementById('moduleSelect').value;
+            const mText = document.getElementById('moduleSelect').selectedOptions[0].textContent;
+            try {
+                const result = await API.post('/admin/exams', { moduleId: parseInt(mid), title: mText + ' Exam', timeLimit: 60, totalMarks: 100 });
+                showToast('Exam created', 'success');
+                loadExamForModule();
+            } catch(err) { showToast(err.error||'Failed', 'error'); }
+        }
+
+        function updateAnswerFields() {
+            const type = document.getElementById('qType').value;
+            const container = document.getElementById('answerFields');
+            const addBtn = document.getElementById('addAnswerBtn');
+            if (type === 'true_false') {
+                container.innerHTML = `
+                    <div style="display:flex;gap:0.5rem;align-items:center;margin-bottom:0.5rem;"><input type="radio" name="correct" value="0" checked><input type="text" class="form-control" value="True" readonly style="flex:1;"></div>
+                    <div style="display:flex;gap:0.5rem;align-items:center;"><input type="radio" name="correct" value="1"><input type="text" class="form-control" value="False" readonly style="flex:1;"></div>`;
+                addBtn.style.display='none';
+            } else {
+                container.innerHTML = '';
+                for (let i=0;i<4;i++) addAnswerField();
+                addBtn.style.display='';
+            }
+        }
+
+        function addAnswerField() {
+            const container = document.getElementById('answerFields');
+            const idx = container.children.length;
+            const div = document.createElement('div');
+            div.style.cssText='display:flex;gap:0.5rem;align-items:center;margin-bottom:0.5rem;';
+            div.innerHTML = `<input type="radio" name="correct" value="${idx}" ${idx===0?'checked':''}><input type="text" class="form-control answer-input" placeholder="Option ${idx+1}" style="flex:1;"><button class="btn btn-icon btn-sm btn-outline" onclick="this.parentElement.remove()" style="color:var(--red);"><i class="fas fa-times"></i></button>`;
+            container.appendChild(div);
+        }
+
+        async function addQuestion() {
+            if (!currentExamId) return;
+            const text = document.getElementById('qText').value.trim();
+            if (!text) { showToast('Enter question text', 'warning'); return; }
+
+            const type = document.getElementById('qType').value;
+            const marks = parseInt(document.getElementById('qMarks').value) || 1;
+            const explanation = document.getElementById('qExplanation').value;
+
+            const answerEls = document.getElementById('answerFields').children;
+            const correctIdx = parseInt(document.querySelector('input[name="correct"]:checked')?.value);
+            const answers = [];
+            for (let i=0; i<answerEls.length; i++) {
+                const inp = answerEls[i].querySelector('input[type="text"]');
+                if (inp && inp.value.trim()) {
+                    answers.push({ text: inp.value.trim(), isCorrect: i === correctIdx });
+                }
+            }
+            if (answers.length < 2) { showToast('Add at least 2 options', 'warning'); return; }
+            if (!answers.some(a => a.isCorrect)) { showToast('Mark the correct answer', 'warning'); return; }
+
+            try {
+                await API.post('/admin/questions', { examId: currentExamId, questionText: text, questionType: type, marks, explanation, answers });
+                showToast('Question added', 'success');
+                document.getElementById('qText').value='';
+                document.getElementById('qExplanation').value='';
+                updateAnswerFields();
+                loadQuestions();
+            } catch(err) { showToast(err.error||'Failed', 'error'); }
+        }
+
+        async function loadQuestions() {
+            if (!currentExamId) return;
+            try {
+                const data = await API.get(`/admin/exams/${currentExamId}/questions`);
+                document.getElementById('questionCount').textContent = data.questions.length + ' questions';
+                const totalMarks = data.questions.reduce((sum, q) => sum + q.marks, 0);
+                document.getElementById('examTotalMarks').textContent = totalMarks;
+                const container = document.getElementById('questionsList');
+                if (data.questions.length === 0) {
+                    container.innerHTML = '<div class="empty-state"><i class="fas fa-inbox"></i><h3>No questions yet</h3></div>';
+                    return;
+                }
+                container.innerHTML = data.questions.map((q, i) => `
+                    <div style="padding:1rem;border-bottom:1px solid var(--border);">
+                        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:1rem;">
+                            <div style="flex:1;">
+                                <div style="font-weight:600;margin-bottom:0.5rem;"><span style="color:var(--accent);margin-right:0.5rem;">Q${i+1}.</span>${escapeHtml(q.question_text)}</div>
+                                <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:0.5rem;">
+                                    <span class="badge badge-${q.question_type==='mcq'?'primary':'warning'}">${q.question_type}</span>
+                                    <span class="badge badge-dark">${q.marks} mark${q.marks>1?'s':''}</span>
+                                </div>
+                                <div style="display:grid;gap:0.3rem;">
+                                    ${q.answers.map(a => `<div style="font-size:0.85rem;display:flex;gap:0.5rem;align-items:center;${a.is_correct?'color:var(--green);font-weight:600;':'color:var(--text-light);'}">
+                                        <i class="fas ${a.is_correct?'fa-check-circle':'fa-circle'}" style="font-size:0.7rem;"></i> ${escapeHtml(a.answer_text)}
+                                    </div>`).join('')}
+                                </div>
+                            </div>
+                            <button class="btn btn-icon btn-sm btn-outline" onclick="deleteQuestion(${q.id})" style="color:var(--red);" title="Delete"><i class="fas fa-trash-alt"></i></button>
+                        </div>
+                    </div>
+                `).join('');
+            } catch(err) { showToast('Failed to load questions', 'error'); }
+        }
+
+        async function deleteQuestion(id) {
+            if (!confirm('Delete this question?')) return;
+            try { await API.delete(`/admin/questions/${id}`); showToast('Deleted', 'success'); loadQuestions(); }
+            catch(err) { showToast('Failed', 'error'); }
+        }
+
+        init();
+    </script>
+</body>
+</html>

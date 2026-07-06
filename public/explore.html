@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Explore Learning Programs - Beyond Data Analytics</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/main.css">
+    <style>
+        .cta-banner {
+            background: linear-gradient(135deg, #1a365d 0%, #2c5282 50%, #3182ce 100%);
+            color: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .cta-text h3 {
+            margin: 0 0 0.5rem 0;
+            font-size: 1.25rem;
+            font-weight: 700;
+        }
+        .cta-text p {
+            margin: 0;
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+        .cta-buttons {
+            display: flex;
+            gap: 0.75rem;
+        }
+        .program-picker {
+            margin-bottom: 1.5rem;
+        }
+        .program-picker select {
+            width: 100%;
+            padding: 0.75rem;
+            background: #2d3748;
+            border: 1px solid rgba(255,255,255,0.15);
+            color: white;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            outline: none;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .program-picker select:focus {
+            border-color: #3182ce;
+        }
+        .module-list-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            border-bottom: 1px solid var(--border);
+            cursor: pointer;
+            transition: all 0.2s;
+            border-radius: 8px;
+        }
+        .module-list-item:hover {
+            background: rgba(49, 130, 206, 0.05);
+        }
+        .module-list-item.active {
+            background: rgba(49, 130, 206, 0.1);
+            border-left: 4px solid var(--primary);
+        }
+        .module-list-item i {
+            font-size: 1.1rem;
+            color: var(--primary);
+        }
+        .module-tabs-nav {
+            display: flex;
+            gap: 0.5rem;
+            border-bottom: 2px solid var(--border);
+            margin-bottom: 1.5rem;
+            overflow-x: auto;
+        }
+        .module-tab-btn {
+            background: none;
+            border: none;
+            padding: 0.75rem 1.25rem;
+            color: var(--text-light);
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            position: relative;
+            white-space: nowrap;
+            transition: all 0.2s;
+        }
+        .module-tab-btn:hover {
+            color: var(--text);
+        }
+        .module-tab-btn.active {
+            color: var(--primary);
+        }
+        .module-tab-btn.active::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--primary);
+        }
+        .pane-content {
+            display: none;
+        }
+        .pane-content.active {
+            display: block;
+        }
+        .video-wrapper {
+            margin-bottom: 2rem;
+            background: #000;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+        }
+        .video-wrapper video {
+            width: 100%;
+            display: block;
+        }
+        .material-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem;
+            background: var(--bg-dark);
+            border-radius: 8px;
+            margin-bottom: 0.75rem;
+            border: 1px solid var(--border);
+        }
+        .material-icon {
+            font-size: 1.5rem;
+            margin-right: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <button class="sidebar-toggle" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+    <div class="app-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-auth-links" style="display: flex; justify-content: space-around; padding: 0.75rem 1rem; border-bottom: 1px solid rgba(255,255,255,0.08); font-size: 0.85rem; font-family: 'Outfit', sans-serif; background: rgba(0,0,0,0.15);">
+                <a href="/login.html" style="color: #63b3ed; font-weight: 600; text-decoration: none; display: flex; align-items: center; gap: 0.25rem; transition: opacity 0.2s;" onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'"><i class="fas fa-sign-in-alt"></i> Sign In</a>
+                <span style="color: rgba(255,255,255,0.2);">|</span>
+                <a href="https://forms.gle/iULxMYXieuC4px8p8" target="_blank" style="color: #48bb78; font-weight: 600; text-decoration: none; display: flex; align-items: center; gap: 0.25rem; transition: opacity 0.2s;" onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'"><i class="fas fa-user-plus"></i> Sign Up</a>
+            </div>
+            <div class="sidebar-header">
+                <div class="sidebar-logo"><i class="fas fa-chart-line"></i></div>
+                <div class="sidebar-brand">
+                    <h2>BDA Learning</h2>
+                    <p>Public Course Catalog</p>
+                </div>
+            </div>
+            <div class="sidebar-nav" style="padding: 0 1rem;">
+                <a href="/" class="nav-item" style="margin-bottom: 1.5rem;"><i class="fas fa-arrow-left"></i> Back to Homepage</a>
+                
+                <div class="program-picker">
+                    <label style="color: rgba(255,255,255,0.7); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; display: block; margin-bottom: 0.5rem;">Select Program</label>
+                    <select id="programSelect" onchange="onProgramChange(this.value)">
+                        <option value="">Loading programs...</option>
+                    </select>
+                </div>
+
+                <div style="color: rgba(255,255,255,0.7); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.75rem;">Course Modules</div>
+                <div id="moduleNavList" style="display:flex; flex-direction:column; gap:0.25rem;">
+                    <!-- Modules populated dynamically -->
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Top Enrollment Promo Banner -->
+            <div class="cta-banner">
+                <div class="cta-text">
+                    <h3>🎓 Study for Certificate & Access Mentorship</h3>
+                    <p>Upgrade to premium mode or register to submit assignments, take proctored exams, and unlock a verified certificate!</p>
+                </div>
+                <div class="cta-buttons">
+                    <a href="/login.html" class="btn btn-outline" style="border-color: white; color: white; background: transparent; padding: 0.6rem 1.2rem; font-size: 0.85rem;"><i class="fas fa-sign-in-alt"></i> Login / Register</a>
+                    <button id="btnEnrollNow" onclick="openEnrollmentModalFromExplore()" class="btn btn-primary" style="background: #FACC15; color: #0F172A; border: none; padding: 0.6rem 1.2rem; font-size: 0.85rem; font-weight:700; cursor: pointer;"><i class="fas fa-rocket"></i> Enroll Now</button>
+                </div>
+            </div>
+
+            <!-- Program Info Card -->
+            <div class="card" id="programInfoCard" style="margin-bottom: 1.5rem;">
+                <div class="card-body">
+                    <h1 id="programTitle" onclick="openEnrollmentModalFromExplore()" style="margin: 0 0 0.5rem 0; font-size: 1.8rem; color: var(--primary); cursor: pointer;" title="Click to view enrollment options">Loading Program...</h1>
+                    <p id="programDesc" style="color: var(--text-light); margin: 0; font-size: 0.95rem;">Select a course to start exploring its materials.</p>
+                </div>
+            </div>
+
+            <!-- Module Contents Panel -->
+            <div class="card" id="moduleContentCard" style="display: none;">
+                <div class="card-header">
+                    <h3 id="moduleTitle" style="margin: 0;">Module 1: Fundamentals</h3>
+                </div>
+                <div class="card-body" style="padding: 1.5rem;">
+                    <!-- Tab Navigator -->
+                    <div class="module-tabs-nav">
+                        <button class="module-tab-btn active" onclick="switchTab('paneNotes', this)"><i class="fas fa-book-open"></i> Study Notes</button>
+                        <button class="module-tab-btn" onclick="switchTab('paneVideos', this)"><i class="fas fa-video"></i> Video Lectures</button>
+                        <button class="module-tab-btn" onclick="switchTab('paneExercises', this)"><i class="fas fa-laptop-code"></i> Exercises</button>
+                        <button class="module-tab-btn" onclick="switchTab('paneReference', this)"><i class="fas fa-file-pdf"></i> Reference Materials</button>
+                        <button class="module-tab-btn" onclick="switchTab('paneExam', this)"><i class="fas fa-file-signature"></i> Take Exam</button>
+                    </div>
+
+                    <!-- Tab Panes -->
+                    <!-- Study Notes -->
+                    <div class="pane-content active" id="paneNotes">
+                        <div id="notesContainer">Loading notes...</div>
+                    </div>
+
+                    <!-- Video Lectures -->
+                    <div class="pane-content" id="paneVideos">
+                        <div id="videosContainer">Loading videos...</div>
+                    </div>
+
+                    <!-- Exercises -->
+                    <div class="pane-content" id="paneExercises">
+                        <div id="exercisesContainer">Loading exercises...</div>
+                    </div>
+
+                    <!-- Reference Materials -->
+                    <div class="pane-content" id="paneReference">
+                        <div id="referenceContainer">Loading reference files...</div>
+                    </div>
+
+                    <!-- Take Exam -->
+                    <div class="pane-content" id="paneExam">
+                        <div id="examContainer">Loading exam...</div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="/js/api.js"></script>
+    <script>
+        let tutorials = [];
+        let activeTutorial = null;
+        let activeModule = null;
+        let activeProgramModules = [];
+        let currentExam = null;
+        let currentQuestions = [];
+        let examAnswers = {};
+        let examTimer = null;
+        let secondsLeft = 0;
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return str
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        async function init() {
+            try {
+                // Get public list of active programs
+                const res = await API.get('/tutorials');
+                tutorials = res.tutorials;
+
+                const select = document.getElementById('programSelect');
+                select.innerHTML = tutorials.map(t => `<option value="${t.slug}">${t.name}</option>`).join('');
+
+                // Get slug from URL
+                const params = new URLSearchParams(window.location.search);
+                let currentSlug = params.get('program') || tutorials[0]?.slug;
+
+                if (currentSlug) {
+                    select.value = currentSlug;
+                    await loadProgram(currentSlug);
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        async function loadProgram(slug) {
+            try {
+                const res = await API.get(`/tutorials/${slug}`);
+                activeTutorial = res.tutorial;
+
+                // Update info details
+                document.getElementById('programTitle').textContent = activeTutorial.name;
+                document.getElementById('programDesc').textContent = activeTutorial.description;
+
+                // Update enroll CTA link
+                // document.getElementById('btnEnrollNow').href = ...;
+                // document.getElementById('btnEnrollNow').target = ...;
+
+                activeProgramModules = res.modules;
+
+                if (activeProgramModules.length === 0) {
+                    const navList = document.getElementById('moduleNavList');
+                    navList.innerHTML = '<div style="color:rgba(255,255,255,0.5); font-size:0.85rem; padding: 1rem 0;">No modules published.</div>';
+                    document.getElementById('moduleContentCard').style.display = 'none';
+                    return;
+                }
+
+                // Initial selection
+                activeModule = activeProgramModules[0];
+                await reloadModuleNav();
+
+                // Select first module by default
+                await selectModule(activeProgramModules[0].id);
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        async function reloadModuleNav() {
+            const navList = document.getElementById('moduleNavList');
+            if (activeProgramModules.length === 0) return;
+
+            navList.innerHTML = activeProgramModules.map((m, index) => {
+                let isLocked = false;
+                if (index > 0) {
+                    const prevModNum = activeProgramModules[index - 1].module_number;
+                    const prevCompleted = localStorage.getItem(`guest_progress_${activeTutorial.slug}_mod_${prevModNum}`) === 'completed';
+                    if (!prevCompleted) {
+                        isLocked = true;
+                    }
+                }
+
+                const isActive = activeModule && activeModule.id === m.id;
+                let iconClass = isLocked ? 'fa-lock' : 'fa-book-open';
+                let cursorStyle = isLocked ? 'not-allowed' : 'pointer';
+                let opacityStyle = isLocked ? 'opacity: 0.5;' : '';
+
+                return `
+                    <div class="module-list-item ${isActive ? 'active' : ''}" 
+                         data-module-number="${m.module_number}"
+                         style="cursor: ${cursorStyle}; ${opacityStyle}" 
+                         onclick="${isLocked ? '' : `selectModule(${m.id}, this)`}">
+                        <i class="fas ${iconClass}"></i>
+                        <div style="color: white; font-size:0.85rem; font-weight:600; flex: 1;">Mod ${m.module_number}: ${escapeHtml(m.title)}</div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        async function selectModule(id, element) {
+            const mod = activeProgramModules.find(m => m.id === id);
+            if (!mod) return;
+            activeModule = mod;
+
+            document.querySelectorAll('.module-list-item').forEach(el => el.classList.remove('active'));
+            if (element) {
+                element.classList.add('active');
+            } else {
+                const items = document.querySelectorAll('.module-list-item');
+                for (let item of items) {
+                    if (item.dataset.moduleNumber == mod.module_number) {
+                        item.classList.add('active');
+                        break;
+                    }
+                }
+            }
+
+            // Auto-close sidebar on mobile view
+            const sidebar = document.getElementById('sidebar');
+            if (sidebar) {
+                sidebar.classList.remove('open');
+            }
+
+            // Reset tab navigation back to study notes on module change
+            const notesBtn = document.querySelector('.module-tabs-nav button');
+            if (notesBtn) {
+                switchTab('paneNotes', notesBtn);
+            }
+
+            await loadModuleContent(id);
+        }
+
+        async function loadModuleContent(moduleId) {
+            try {
+                document.getElementById('moduleContentCard').style.display = 'block';
+                const res = await API.get(`/tutorials/modules/${moduleId}/content`);
+                
+                document.getElementById('moduleTitle').textContent = `Module ${res.module.module_number}: ${res.module.title}`;
+
+                // Populate Notes
+                const notesDiv = document.getElementById('notesContainer');
+                if (res.content.notes.length === 0) {
+                    notesDiv.innerHTML = '<div class="empty-state">No study notes uploaded for this module.</div>';
+                } else {
+                    notesDiv.innerHTML = res.content.notes.map(n => `
+                        <div style="margin-bottom: 2rem; border-bottom: 1px solid var(--border); padding-bottom: 1.5rem;">
+                            <h3>${escapeHtml(n.title)}</h3>
+                            <div style="margin-top: 1rem; white-space: pre-line; color: var(--text);">${escapeHtml(n.content_text || '')}</div>
+                            ${n.file_path ? `<button onclick="viewDocument('${n.file_path}', '${escapeHtml(n.title)}')" class="btn btn-sm btn-outline" style="margin-top:1rem;"><i class="fas fa-eye"></i> View Notes PDF</button>` : ''}
+                        </div>
+                    `).join('');
+                }
+
+                // Populate Videos
+                const videosDiv = document.getElementById('videosContainer');
+                if (res.content.videos.length === 0) {
+                    videosDiv.innerHTML = '<div class="empty-state">No video lectures uploaded for this module.</div>';
+                } else {
+                    videosDiv.innerHTML = res.content.videos.map(v => `
+                        <div style="margin-bottom: 2.5rem; max-width: 800px; margin-left: auto; margin-right: auto;">
+                            <h3>${escapeHtml(v.title)}</h3>
+                            <div class="video-wrapper" style="margin-top: 1rem;">
+                                <video controls controlsList="nodownload">
+                                    <source src="${v.file_path}" type="video/mp4">
+                                    Your browser does not support HTML5 video tags.
+                                </video>
+                            </div>
+                        </div>
+                    `).join('');
+                }
+
+                // Populate Exercises
+                const exercisesDiv = document.getElementById('exercisesContainer');
+                if (res.content.exercises.length === 0) {
+                    exercisesDiv.innerHTML = '<div class="empty-state">No practical exercises uploaded for this module.</div>';
+                } else {
+                    exercisesDiv.innerHTML = res.content.exercises.map(e => `
+                        <div style="margin-bottom: 2rem; border-bottom: 1px solid var(--border); padding-bottom: 1.5rem;">
+                            <h3>${escapeHtml(e.title)}</h3>
+                            <div style="margin-top:1rem; white-space:pre-line; background:var(--bg-dark); padding:1rem; border-radius:8px; font-family:monospace; color: var(--text-light);">${escapeHtml(e.content_text || '')}</div>
+                            ${e.file_path ? `<button onclick="viewDocument('${e.file_path}', '${escapeHtml(e.title)}')" class="btn btn-sm btn-primary" style="margin-top:1rem;"><i class="fas fa-eye"></i> View Exercise Starter File</button>` : ''}
+                        </div>
+                    `).join('');
+                }
+
+                // Populate Reference materials
+                const refDiv = document.getElementById('referenceContainer');
+                if (res.content.materials.length === 0) {
+                    refDiv.innerHTML = '<div class="empty-state">No reference materials uploaded for this module.</div>';
+                } else {
+                    refDiv.innerHTML = res.content.materials.map(m => `
+                        <div class="material-item">
+                            <div style="display:flex; align-items:center;">
+                                <div class="material-icon" style="color:var(--golden);"><i class="fas fa-file-pdf"></i></div>
+                                <div>
+                                    <h4 style="margin:0; color:white;">${escapeHtml(m.title)}</h4>
+                                    <span style="font-size:0.8rem; color:var(--text-muted);">${escapeHtml(m.file_name || 'PDF Document')}</span>
+                                </div>
+                            </div>
+                            <button onclick="viewDocument('${m.file_path}', '${escapeHtml(m.title)}')" class="btn btn-sm btn-outline"><i class="fas fa-eye"></i> View Document</button>
+                        </div>
+                    `).join('');
+                }
+
+                // Load exam for this module
+                await loadModuleExam(moduleId);
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        async function loadModuleExam(moduleId) {
+            const container = document.getElementById('examContainer');
+            container.innerHTML = '<div style="padding:1rem;">Loading exam questions...</div>';
+            currentExam = null;
+            currentQuestions = [];
+            examAnswers = {};
+            if (examTimer) clearInterval(examTimer);
+
+            try {
+                const res = await API.get(`/tutorials/modules/${moduleId}/exam`);
+                currentExam = res.exam;
+                currentQuestions = res.questions;
+
+                const isCompleted = localStorage.getItem(`guest_progress_${activeTutorial.slug}_mod_${activeModule.module_number}`) === 'completed';
+
+                if (isCompleted) {
+                    container.innerHTML = `
+                        <div class="card" style="background: rgba(72, 187, 120, 0.1); border: 1px solid #48bb78; border-radius: 8px; padding: 1.5rem; text-align: center;">
+                            <i class="fas fa-check-circle" style="font-size: 3rem; color: #48bb78; margin-bottom: 1rem;"></i>
+                            <h3 style="color: #48bb78; margin: 0 0 0.5rem 0;">Exam Passed!</h3>
+                            <p style="margin: 0; font-size: 0.95rem; color: var(--text-light);">You passed the exam for this module. You can move on to the next module.</p>
+                            <button class="btn btn-outline" onclick="restartExam()" style="margin-top: 1rem; border-color: #48bb78; color: #48bb78;"><i class="fas fa-redo"></i> Retake Practice Exam</button>
+                        </div>
+                    `;
+                    return;
+                }
+
+                renderExamIntro();
+            } catch (err) {
+                if (err.status === 404) {
+                    container.innerHTML = '<div class="empty-state"><i class="fas fa-exclamation-circle" style="font-size:2rem; margin-bottom:0.5rem;"></i><p>No exam is currently configured for this module.</p></div>';
+                } else {
+                    container.innerHTML = '<div class="empty-state"><p>Failed to load exam.</p></div>';
+                }
+            }
+        }
+
+        function restartExam() {
+            localStorage.removeItem(`guest_progress_${activeTutorial.slug}_mod_${activeModule.module_number}`);
+            renderExamIntro();
+        }
+
+        function renderExamIntro() {
+            const container = document.getElementById('examContainer');
+            container.innerHTML = `
+                <div style="background: var(--bg-dark); border: 1px solid var(--border); border-radius: 12px; padding: 2rem; text-align: center; max-width: 600px; margin: 2rem auto;">
+                    <i class="fas fa-graduation-cap" style="font-size: 4rem; color: var(--primary); margin-bottom: 1.5rem;"></i>
+                    <h2 style="margin: 0 0 1rem 0; color: var(--primary);">${escapeHtml(currentExam.title)}</h2>
+                    <p style="color: var(--text-light); margin-bottom: 1.5rem; line-height: 1.6;">
+                        This is a self-assessment exam for <strong>Module ${activeModule.module_number}</strong>. You must score <strong>${currentExam.pass_mark}%</strong> or higher to pass and unlock the next module.
+                    </p>
+                    <div style="display: flex; justify-content: center; gap: 2rem; margin-bottom: 2rem; text-align: left;">
+                        <div>
+                            <span style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase;">Time Limit</span>
+                            <h4 style="margin: 0; color: var(--text); font-size: 1.25rem;"><i class="fas fa-clock" style="color: var(--primary);"></i> ${currentExam.time_limit} mins</h4>
+                        </div>
+                        <div>
+                            <span style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase;">Questions</span>
+                            <h4 style="margin: 0; color: var(--text); font-size: 1.25rem;"><i class="fas fa-question-circle" style="color: var(--primary);"></i> ${currentQuestions.length}</h4>
+                        </div>
+                        <div>
+                            <span style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase;">Pass Mark</span>
+                            <h4 style="margin: 0; color: var(--text); font-size: 1.25rem;"><i class="fas fa-award" style="color: var(--primary);"></i> ${currentExam.pass_mark}%</h4>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" onclick="startExamTimer()" style="padding: 0.8rem 2rem; font-size: 1rem;"><i class="fas fa-play"></i> Start Exam</button>
+                </div>
+            `;
+        }
+
+        function startExamTimer() {
+            secondsLeft = currentExam.time_limit * 60;
+            renderExamQuestions();
+
+            examTimer = setInterval(() => {
+                secondsLeft--;
+                if (secondsLeft <= 0) {
+                    clearInterval(examTimer);
+                    submitExam(true);
+                } else {
+                    updateTimerDisplay();
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const timerEl = document.getElementById('examTimerDisplay');
+            if (timerEl) {
+                const mins = Math.floor(secondsLeft / 60);
+                const secs = secondsLeft % 60;
+                timerEl.textContent = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+                if (secondsLeft < 60) {
+                    timerEl.style.color = '#e53e3e';
+                }
+            }
+        }
+
+        function renderExamQuestions() {
+            const container = document.getElementById('examContainer');
+            
+            let questionsHtml = currentQuestions.map((q, idx) => {
+                let answersHtml = q.answers.map(ans => `
+                    <label style="display: flex; align-items: flex-start; gap: 0.75rem; background: var(--bg-dark); border: 1px solid var(--border); border-radius: 8px; padding: 1rem; margin-bottom: 0.75rem; cursor: pointer; transition: all 0.2s;">
+                        <input type="radio" name="question_${q.id}" value="${ans.id}" onclick="saveAnswer(${q.id}, ${ans.id})" style="margin-top: 0.25rem;">
+                        <span style="color: var(--text);">${escapeHtml(ans.answer_text)}</span>
+                    </label>
+                `).join('');
+
+                return `
+                    <div class="question-card" style="background: rgba(255,255,255,0.02); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 1rem;">
+                            <span style="font-weight: 700; color: var(--primary);">Question ${idx + 1} of ${currentQuestions.length}</span>
+                            <span style="color: var(--text-muted); font-size: 0.85rem;">(${q.marks} Mark${q.marks > 1 ? 's' : ''})</span>
+                        </div>
+                        <h4 style="margin: 0 0 1.25rem 0; color: var(--text); line-height: 1.5; font-size: 1.1rem;">${escapeHtml(q.question_text)}</h4>
+                        <div class="answers-list">
+                            ${answersHtml}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            container.innerHTML = `
+                <div style="position: sticky; top: 0; background: var(--bg-light); border-bottom: 1px solid var(--border); padding: 1rem; display: flex; justify-content: space-between; align-items: center; z-index: 10; margin-bottom: 1.5rem; border-radius: 8px;">
+                    <div>
+                        <h3 style="margin:0; font-size: 1.1rem;">Sitting Exam: ${escapeHtml(currentExam.title)}</h3>
+                    </div>
+                    <div style="font-size: 1.25rem; font-weight: 700; background: var(--bg-dark); padding: 0.5rem 1rem; border-radius: 6px; border: 1px solid var(--border);">
+                        <i class="fas fa-clock" style="color: var(--primary); margin-right: 0.5rem;"></i><span id="examTimerDisplay">--:--</span>
+                    </div>
+                </div>
+                <div id="examQuestionsContainer">
+                    ${questionsHtml}
+                </div>
+                <div style="text-align: right; padding-top: 1rem;">
+                    <button class="btn btn-primary" onclick="submitExam(false)" style="padding: 0.8rem 2rem; font-size: 1rem;"><i class="fas fa-paper-plane"></i> Submit Exam</button>
+                </div>
+            `;
+            updateTimerDisplay();
+        }
+
+        function saveAnswer(qId, ansId) {
+            examAnswers[qId] = ansId;
+        }
+
+        async function submitExam(autoSubmitted = false) {
+            if (examTimer) clearInterval(examTimer);
+
+            if (!autoSubmitted) {
+                const unansweredCount = currentQuestions.filter(q => !examAnswers[q.id]).length;
+                if (unansweredCount > 0) {
+                    if (!confirm(`You have ${unansweredCount} unanswered questions. Are you sure you want to submit?`)) {
+                        startExamTimer();
+                        return;
+                    }
+                }
+            }
+
+            const container = document.getElementById('examContainer');
+            container.innerHTML = '<div style="padding: 2rem; text-align: center;"><i class="fas fa-spinner fa-spin" style="font-size: 3rem; color: var(--primary); margin-bottom: 1rem;"></i><h3>Grading your exam...</h3></div>';
+
+            try {
+                const res = await API.post(`/tutorials/modules/${activeModule.id}/exam/submit`, {
+                    answers: examAnswers
+                });
+
+                const passed = res.passed;
+                if (passed) {
+                    localStorage.setItem(`guest_progress_${activeTutorial.slug}_mod_${activeModule.module_number}`, 'completed');
+                }
+
+                let statusColor = passed ? '#48bb78' : '#e53e3e';
+                let statusIcon = passed ? 'fa-check-circle' : 'fa-times-circle';
+                let statusText = passed ? 'Passed' : 'Failed';
+
+                let allCompleted = true;
+                for (let i = 1; i <= 4; i++) {
+                    if (i === activeModule.module_number) {
+                        if (!passed) allCompleted = false;
+                    } else {
+                        if (localStorage.getItem(`guest_progress_${activeTutorial.slug}_mod_${i}`) !== 'completed') {
+                            allCompleted = false;
+                        }
+                    }
+                }
+
+                let ctaHtml = '';
+                if (passed) {
+                    if (allCompleted) {
+                        ctaHtml = `
+                            <div style="margin-top: 2rem; padding: 1.5rem; background: rgba(246, 173, 85, 0.1); border: 1px solid #f6ad55; border-radius: 8px;">
+                                <h4 style="color: #f6ad55; margin: 0 0 0.5rem 0;"><i class="fas fa-trophy"></i> Course Completed!</h4>
+                                <p style="margin: 0 0 1rem 0; font-size: 0.9rem; color: var(--text-light);">
+                                    Outstanding job! You have successfully passed all 4 modules of the ${escapeHtml(activeTutorial.name)} course self-study path.
+                                </p>
+                                <p style="margin: 0 0 1rem 0; font-size: 0.9rem; color: var(--text-light);">
+                                    To get guided by a tutor, submit assignments, and obtain a verified official certificate, please fill our enrollment form:
+                                </p>
+                                <a href="https://forms.gle/iULxMYXieuC4px8p8" target="_blank" class="btn btn-primary" style="background: #f6ad55; color: black; border: none; font-weight:700;"><i class="fas fa-file-signature"></i> Fill Tutor Guidance Form</a>
+                            </div>
+                        `;
+                    } else {
+                        ctaHtml = `
+                            <div style="margin-top: 1.5rem;">
+                                <p style="color: var(--text-light); font-size: 0.95rem; margin-bottom: 1rem;">
+                                    The next module has been successfully unlocked for you in the left sidebar!
+                                </p>
+                                <button class="btn btn-primary" onclick="proceedToNextModule()"><i class="fas fa-arrow-right"></i> Study Next Module</button>
+                            </div>
+                        `;
+                    }
+                } else {
+                    ctaHtml = `
+                        <div style="margin-top: 1.5rem;">
+                            <p style="color: var(--text-light); font-size: 0.95rem; margin-bottom: 1rem;">
+                                Review the notes and video materials for this module and try again when you are ready.
+                            </p>
+                            <button class="btn btn-outline" onclick="loadModuleExam(${activeModule.id})"><i class="fas fa-redo"></i> Try Again</button>
+                        </div>
+                    `;
+                }
+
+                container.innerHTML = `
+                    <div style="background: var(--bg-dark); border: 1px solid var(--border); border-radius: 12px; padding: 2.5rem; text-align: center; max-width: 600px; margin: 2rem auto;">
+                        <i class="fas ${statusIcon}" style="font-size: 4.5rem; color: ${statusColor}; margin-bottom: 1.5rem;"></i>
+                        <h2 style="margin: 0 0 0.5rem 0; color: var(--text);">Exam ${statusText}</h2>
+                        <p style="font-size: 1.1rem; color: var(--text-light); margin-bottom: 1.5rem;">${escapeHtml(res.message)}</p>
+                        
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; background: rgba(255,255,255,0.02); border: 1px solid var(--border); border-radius: 8px; padding: 1.25rem; margin-bottom: 1.5rem; text-align: left;">
+                            <div>
+                                <span style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase;">Your Score</span>
+                                <h3 style="margin:0; color:var(--text); font-size: 1.5rem;">${res.score} / ${res.totalMarks}</h3>
+                            </div>
+                            <div>
+                                <span style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase;">Percentage</span>
+                                <h3 style="margin:0; color:${statusColor}; font-size: 1.5rem;">${res.percentage}%</h3>
+                            </div>
+                        </div>
+                        ${ctaHtml}
+                    </div>
+                `;
+
+                await reloadModuleNav();
+            } catch (err) {
+                console.error(err);
+                container.innerHTML = `<div class="empty-state"><p>Error submitting exam. Please try again.</p><button class="btn btn-primary" style="margin-top:1rem;" onclick="renderExamQuestions()">Back to Questions</button></div>`;
+            }
+        }
+
+        function proceedToNextModule() {
+            const nextModNum = activeModule.module_number + 1;
+            const items = document.querySelectorAll('.module-list-item');
+            for (let el of items) {
+                if (el.dataset.moduleNumber == nextModNum) {
+                    el.click();
+                    const notesBtn = document.querySelector('.module-tabs-nav button');
+                    if (notesBtn) notesBtn.click();
+                    break;
+                }
+            }
+        }
+
+        async function onProgramChange(slug) {
+            if (slug) {
+                window.history.pushState(null, '', `?program=${slug}`);
+                await loadProgram(slug);
+            }
+        }
+
+        function switchTab(paneId, btn) {
+            document.querySelectorAll('.pane-content').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.module-tab-btn').forEach(b => b.classList.remove('active'));
+            
+            document.getElementById(paneId).classList.add('active');
+            btn.classList.add('active');
+        }
+
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('open');
+        }
+
+        init();
+    </script>
+
+<!-- Enrollment Option Selection Modal -->
+<div id="enrollmentModal" class="modal-overlay">
+    <div class="modal-container" style="background: #1a202c; border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; width: 90%; max-width: 600px; max-height: 90vh; display: flex; flex-direction: column; overflow: hidden;">
+        <!-- Modal Header -->
+        <div style="padding: 1.25rem 1.5rem; border-bottom: 1px solid rgba(255,255,255,0.1); display: flex; justify-content: space-between; align-items: center; background: #2d3748; flex-shrink: 0;">
+            <h3 id="modalCourseTitle" style="margin: 0; color: white; font-size: 1.25rem; font-family: sans-serif;">Choose Enrollment Pathway</h3>
+            <button onclick="closeEnrollmentModal()" style="background: none; border: none; color: #a0aec0; font-size: 1.5rem; cursor: pointer; transition: color 0.2s;" onmouseover="this.style.color='white'" onmouseout="this.style.color='#a0aec0'">&times;</button>
+        </div>
+        <!-- Modal Body -->
+        <div class="modal-body" style="padding: 1.5rem; display: flex; flex-direction: column; gap: 1.25rem; overflow-y: auto;">
+            <p style="color: #cbd5e0; margin: 0; font-size: 0.95rem; text-align: center;">Select how you would like to proceed with your learning journey:</p>
+            
+            <div class="pathway-cards">
+                <!-- Option 1: Guided Learning with Tutor -->
+                <div class="pathway-card" style="border: 1px solid rgba(91, 75, 255, 0.3); background: rgba(91, 75, 255, 0.05); padding: 1.25rem;">
+                    <h4 style="color: #a399ff; margin: 0 0 0.5rem 0; font-size: 1.1rem; display: flex; align-items: center; gap: 0.5rem; font-family: sans-serif;">
+                        <i class="fas fa-chalkboard-teacher"></i> Guided Learning with Tutor
+                    </h4>
+                    <p style="color: #cbd5e0; font-size: 0.85rem; margin: 0 0 1rem 0; line-height: 1.5;">
+                        Get a dedicated tutor/mentor, live webinar access, video lectures, assignments evaluation, and personal progression oversight.
+                    </p>
+                    <div style="display: flex; align-items: center; justify-content: space-between; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 1rem;">
+                        <div>
+                            <span style="font-size: 0.75rem; color: #a0aec0; text-transform: uppercase; display: block;">Tuition Fee</span>
+                            <strong id="modalTutorFee" style="color: white; font-size: 1.25rem;">KES 25,000</strong>
+                        </div>
+                        <a id="modalTutorLink" href="https://forms.gle/iULxMYXieuC4px8p8" target="_blank" class="btn btn-primary" style="padding: 0.6rem 1.2rem; font-size: 0.85rem; border-radius: 6px; text-decoration: none; display: inline-block; background: var(--secondary, #5B4BFF); color: white; border: none; text-align: center; font-weight: 600;"><i class="fas fa-file-signature"></i> Enroll with Tutor</a>
+                    </div>
+                </div>
+
+                <!-- Option 2: Self-Study -->
+                <div class="pathway-card" style="border: 1px solid rgba(250, 204, 21, 0.3); background: rgba(250, 204, 21, 0.05); padding: 1.25rem;">
+                    <h4 style="color: #ffd84d; margin: 0 0 0.5rem 0; font-size: 1.1rem; display: flex; align-items: center; gap: 0.5rem; font-family: sans-serif;">
+                        <i class="fas fa-book-reader"></i> Self-Study (Free Learning)
+                    </h4>
+                    <p style="color: #cbd5e0; font-size: 0.85rem; margin: 0 0 1rem 0; line-height: 1.5;">
+                        Access learning materials, watch videos, and take module exams on your own. Pay for your verified certificate only when you pass!
+                    </p>
+                    <div style="display: flex; align-items: center; justify-content: space-between; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 1rem;">
+                        <div>
+                            <span style="font-size: 0.75rem; color: #a0aec0; text-transform: uppercase; display: block;">Certification Fee</span>
+                            <strong id="modalCertFee" style="color: white; font-size: 1.25rem;">KES 5,000</strong>
+                        </div>
+                        <a id="modalSelfLink" href="#" class="btn btn-secondary" style="padding: 0.6rem 1.2rem; font-size: 0.85rem; border-radius: 6px; text-decoration: none; display: inline-block; background: rgba(255, 255, 255, 0.1); color: white; border: 1px solid rgba(255, 255, 255, 0.2); text-align: center; font-weight: 600;"><i class="fas fa-book-open"></i> Study & Pay for Certificate</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function openEnrollmentModal(slug, name, tutorFee, certFee) {
+    document.getElementById('modalCourseTitle').textContent = 'Enroll in ' + name;
+    document.getElementById('modalTutorFee').textContent = tutorFee;
+    document.getElementById('modalCertFee').textContent = certFee;
+    document.getElementById('modalTutorLink').href = 'https://forms.gle/iULxMYXieuC4px8p8';
+    
+    // On explore page, self-study just closes modal if you're already viewing it
+    if (activeTutorial && activeTutorial.slug === slug) {
+        document.getElementById('modalSelfLink').href = 'javascript:closeEnrollmentModal()';
+    } else {
+        document.getElementById('modalSelfLink').href = '/explore.html?program=' + slug;
+    }
+    
+    document.getElementById('enrollmentModal').classList.add('active');
+}
+function openEnrollmentModalFromExplore() {
+    if (!activeTutorial) return;
+    const tutorFee = activeTutorial.enrollment_fee ? 'KES ' + activeTutorial.enrollment_fee.toLocaleString() : 'KES 25,000';
+    const certFee = activeTutorial.certificate_fee ? 'KES ' + activeTutorial.certificate_fee.toLocaleString() : 'KES 5,000';
+    openEnrollmentModal(activeTutorial.slug, activeTutorial.name, tutorFee, certFee);
+}
+function closeEnrollmentModal() {
+    document.getElementById('enrollmentModal').classList.remove('active');
+}
+window.addEventListener('click', function(event) {
+    const modal = document.getElementById('enrollmentModal');
+    if (event.target === modal) {
+        modal.classList.remove('active');
+    }
+});
+
+function viewDocument(url, title) {
+    if (url.toLowerCase().endsWith('.html') || !url.toLowerCase().endsWith('.pdf')) {
+        window.open(url, '_blank');
+        return;
+    }
+    const frame = document.getElementById('docViewerFrame');
+    const modal = document.getElementById('docViewerModal');
+    document.getElementById('docViewerTitle').textContent = title || 'Document Viewer';
+    let viewerUrl = url;
+    if (url.toLowerCase().endsWith('.pdf')) {
+        viewerUrl = url + '#toolbar=0';
+    }
+    frame.src = viewerUrl;
+    modal.classList.add('active');
+}
+
+function closeDocViewer() {
+    const frame = document.getElementById('docViewerFrame');
+    const modal = document.getElementById('docViewerModal');
+    frame.src = '';
+    modal.classList.remove('active');
+}
+</script>
+
+<!-- Document Viewer Modal -->
+<div class="modal-overlay" id="docViewerModal" style="z-index: 9999;">
+    <div class="modal" style="max-width: 90%; width: 1000px; height: 85vh; display: flex; flex-direction: column;">
+        <div class="modal-header">
+            <h3 id="docViewerTitle">Document Viewer</h3>
+            <button class="btn btn-icon btn-outline" onclick="closeDocViewer()"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="modal-body" style="flex: 1; padding: 0; overflow: hidden; position: relative;">
+            <iframe id="docViewerFrame" src="" style="width: 100%; height: 100%; border: none;" allow="autoplay"></iframe>
+        </div>
+    </div>
+</div>
+</body>
+</html>

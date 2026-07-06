@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Module 4: Data Communication, Reporting, and Decision-Making | Beyond Data Analytics</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Highlight.js for Code Syntax Highlighting -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark.min.css">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary-color: #0d6efd;
+            --secondary-color: #6c757d;
+            --accent-color: #0dcaf0;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+            padding-top: 70px; /* Space for fixed navbar */
+        }
+
+        /* Navbar Styling */
+        .navbar {
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            background: linear-gradient(90deg, #0d6efd 0%, #0a58ca 100%);
+        }
+        .navbar-brand {
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+        .nav-link {
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        .nav-link:hover {
+            color: #ffc107 !important;
+            transform: translateY(-2px);
+        }
+
+        /* Hero Section */
+        .hero-section {
+            background: url('https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80') no-repeat center center/cover;
+            height: 450px;
+            position: relative;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+        .hero-overlay {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.75);
+        }
+        .hero-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Content Cards */
+        .card {
+            border: none;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            transition: transform 0.3s;
+            margin-bottom: 20px;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        .card-header {
+            background-color: #fff;
+            border-bottom: 2px solid #0d6efd;
+            font-weight: 700;
+            color: #0d6efd;
+        }
+
+        /* Code Blocks */
+        pre {
+            border-radius: 8px;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+        }
+        code {
+            font-family: 'Consolas', 'Monaco', monospace;
+        }
+
+        /* Section Titles */
+        .section-title {
+            position: relative;
+            padding-bottom: 15px;
+            margin-bottom: 30px;
+            font-weight: 700;
+        }
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 4px;
+            background-color: #0d6efd;
+        }
+
+        /* Tables */
+        .table-custom {
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .table-custom thead {
+            background: linear-gradient(90deg, #0d6efd 0%, #0a58ca 100%);
+            color: white;
+        }
+
+        /* Footer */
+        footer {
+            background-color: #212529;
+            color: white;
+            padding: 40px 0;
+            margin-top: 50px;
+        }
+        
+        /* Exercise Area */
+        .exercise-area {
+            background: #f8f9fa;
+            border: 1px dashed #0d6efd;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 10px;
+        }
+
+        /* Beyond Data Section */
+        .beyond-data-section {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 30px 35px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            border-left: 6px solid #28a745;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            position: relative;
+            overflow: hidden;
+        }
+        .beyond-data-section::before {
+            content: "📊";
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 5em;
+            opacity: 0.1;
+        }
+        .beyond-data-section h2 {
+            color: #1e3c72;
+            font-size: 1.6em;
+            margin-bottom: 15px;
+        }
+        .beyond-data-section .highlight {
+            color: #28a745;
+            font-weight: bold;
+        }
+
+        /* Math Blocks (Pure HTML/CSS Equations) */
+        .math-block {
+            background: #f8f9fa;
+            border-left: 4px solid #6f42c1;
+            padding: 15px 25px;
+            margin: 20px 0;
+            border-radius: 0 8px 8px 0;
+            font-family: 'Cambria Math', 'Times New Roman', serif;
+            font-size: 1.25rem;
+            color: #212529;
+            overflow-x: auto;
+            line-height: 1.8;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="#"><i class="fas fa-bullhorn me-2"></i>Beyond Data Analytics</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="#interpreting">4.1 Interpreting</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#storytelling">4.2 Storytelling</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#dashboards">4.3 Dashboards</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#ethics">4.4 Ethics</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#reproducibility">4.5 Reproducibility</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#bi-tools">4.6 BI Tools</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#capstone">4.7 Capstone</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#practical">4.8 Practical</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="#exercises">Exercises</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header id="home" class="hero-section">
+        <div class="hero-overlay"></div>
+        <div class="hero-content container">
+            <h1 class="display-3 fw-bold">Module 4: Communication & Decision-Making</h1>
+            <p class="lead fs-4">Transforming complex models into actionable business and clinical insights</p>
+            <h3 class="text-info fw-light fst-italic">Beyond Data Analytics</h3>
+            <p class="fs-5 text-light">Transforming Raw Data into Insights</p>
+            <a href="#objectives" class="btn btn-primary btn-lg mt-3 px-5 rounded-pill">Start Learning</a>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <div class="container my-5">
+
+        <!-- Beyond Data Analytics Section -->
+        <section class="beyond-data-section mb-5">
+            <h2>🌐 Beyond Data Analytics</h2>
+            <p>At <span class="highlight">Beyond Data Analytics</span>, we believe that a brilliant predictive model is entirely useless if its insights cannot be understood, trusted, and acted upon by decision-makers. Our curriculum culminates in this vital module, bridging the gap between <span class="highlight">computational data science</span> and <span class="highlight">strategic business intelligence</span>.</p>
+            <p>Here, you will master the art of data storytelling, the principles of ethical AI, and the technical skills to build interactive dashboards using R. You will learn to protect data privacy, ensure reproducibility, and confidently present your findings to stakeholders, ensuring your analytical work drives real-world impact.</p>
+        </section>
+
+        <!-- Learning Objectives -->
+        <section id="objectives" class="mb-5">
+            <h2 class="section-title">Learning Objectives</h2>
+            <div class="card bg-light">
+                <div class="card-body">
+                    <p class="lead mb-3">By the end of this comprehensive module, participants will be able to:</p>
+                    <ul class="list-unstyled mb-0">
+                        <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> Translate complex statistical and machine learning outputs into clear, actionable business or clinical recommendations.</li>
+                        <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> Apply the principles of data storytelling to structure compelling narratives around data.</li>
+                        <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> Design intuitive, interactive dashboards that empower stakeholders to explore data and monitor KPIs.</li>
+                        <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> Navigate the ethical landscape of data science, including algorithmic bias, data privacy (GDPR/HIPAA), and responsible AI.</li>
+                        <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> Implement reproducible research workflows using R Markdown, version control, and environment management.</li>
+                        <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> Execute a comprehensive, end-to-end Capstone Data Analysis project and present findings to diverse audiences.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-5">
+
+        <!-- 4.1 Interpreting Analytical Results -->
+        <section id="interpreting" class="mb-5">
+            <h2 class="section-title">4.1 Interpreting Analytical Results</h2>
+            <p class="lead">The transition from a data scientist to a trusted advisor requires the ability to translate mathematical outputs into human-centric insights.</p>
+            <div class="card">
+                <div class="card-body">
+                    <h5>From Metrics to Meaning</h5>
+                    <p>Stakeholders rarely care about the underlying mathematics; they care about the <em>impact</em>. You must translate technical metrics into business value.</p>
+                    <table class="table table-custom">
+                        <thead>
+                            <tr><th>Technical Output</th><th>Business/Clinical Translation</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>"The model has a Recall of 96%."</td>
+                                <td>"Our system will successfully flag 96 out of every 100 at-risk patients, ensuring almost no one slips through the cracks for early intervention."</td>
+                            </tr>
+                            <tr>
+                                <td>"The RMSE is 4.2 days."</td>
+                                <td>"On average, our supply chain forecast is off by just 4 days, allowing us to optimize inventory holding costs."</td>
+                            </tr>
+                            <tr>
+                                <td>"Feature 'Ca' has a SHAP value of +0.4."</td>
+                                <td>"The presence of blocked vessels is the single strongest driver pushing a patient's risk profile into the 'High Danger' zone."</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h5 class="mt-4">Common Pitfalls in Interpretation</h5>
+                    <ul>
+                        <li><strong>Correlation vs. Causation:</strong> Just because ice cream sales and drowning incidents correlate (both peak in summer) does not mean one causes the other. Always seek the confounding variable.</li>
+                        <li><strong>Survivorship Bias:</strong> Focusing only on the "winners" or "survivors" while overlooking the data that didn't make the cut (e.g., analyzing only successful startups while ignoring the thousands that failed).</li>
+                        <li><strong>Simpson's Paradox:</strong> A trend that appears in different groups of data disappears or reverses when these groups are combined. Always segment your data before drawing global conclusions.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-5">
+
+        <!-- 4.2 Data Storytelling & Report Writing -->
+        <section id="storytelling" class="mb-5">
+            <h2 class="section-title">4.2 Data Storytelling & Report Writing</h2>
+            <p class="lead">Data storytelling is the synthesis of data, visuals, and narrative to communicate a clear message and compel action.</p>
+            <div class="card">
+                <div class="card-body">
+                    <h5>The Anatomy of a Data Story (SCR Framework)</h5>
+                    <ol>
+                        <li><strong>Situation (The Context):</strong> What is the current state of the business or clinical environment? (e.g., "Hospital readmission rates have remained stable at 15% for two years.")</li>
+                        <li><strong>Complication (The Conflict):</strong> What is the problem, anomaly, or opportunity? (e.g., "However, our predictive model reveals that 40% of these readmissions are driven by a specific, unmanaged post-discharge medication gap.")</li>
+                        <li><strong>Resolution (The Action):</strong> What does the data recommend we do? (e.g., "By implementing an automated SMS reminder protocol for this specific cohort, we project a 20% reduction in readmissions, saving $1.2M annually.")</li>
+                    </ol>
+
+                    <h5 class="mt-4">Structuring a Technical Data Report</h5>
+                    <p>A professional data report should follow a standardized structure to ensure clarity and reproducibility:</p>
+                    <ul>
+                        <li><strong>Executive Summary:</strong> A 1-page non-technical overview of the problem, methodology, key findings, and recommendations. <em>(Written last, read first).</em></li>
+                        <li><strong>Introduction & Objectives:</strong> The business question and success metrics.</li>
+                        <li><strong>Data & Methodology:</strong> Data sources, cleaning steps, and algorithms used. (Crucial for technical reviewers).</li>
+                        <li><strong>Findings & Visualizations:</strong> The core insights, supported by well-labeled charts.</li>
+                        <li><strong>Limitations:</strong> Honest disclosure of data gaps, biases, or model constraints.</li>
+                        <li><strong>Recommendations & Next Steps:</strong> Actionable items for stakeholders.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-5">
+
+        <!-- 4.3 Dashboard Design & Visualization -->
+        <section id="dashboards" class="mb-5">
+            <h2 class="section-title">4.3 Dashboard Design & Visualization for Decision-Making</h2>
+            <p class="lead">Dashboards are not just collections of charts; they are interactive decision-support tools. Good design reduces cognitive load and highlights what matters.</p>
+            <div class="card">
+                <div class="card-body">
+                    <h5>Core Dashboard Design Principles</h5>
+                    <ul>
+                        <li><strong>The 5-Second Rule:</strong> A user should be able to understand the primary status of the KPIs within 5 seconds of opening the dashboard.</li>
+                        <li><strong>Information Hierarchy (Z-Pattern):</strong> Place high-level, aggregated KPIs (BANs - Big Angry Numbers) at the top left. Place trends in the middle, and granular, detailed tables at the bottom right.</li>
+                        <li><strong>Decluttering (Data-Ink Ratio):</strong> Remove 3D effects, unnecessary gridlines, and redundant legends. Let the data speak.</li>
+                        <li><strong>Context is King:</strong> A number like "$1.2M Revenue" is meaningless without context. Is it up or down? Compare it to a target, a previous period, or an industry benchmark.</li>
+                    </ul>
+
+                    <h5 class="mt-4">Choosing the Right Visual for the Decision</h5>
+                    <table class="table table-custom">
+                        <thead>
+                            <tr><th>Decision Question</th><th>Recommended Visualization</th><th>Poor Choice</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>"How has sales changed over time?"</td>
+                                <td>Line Chart, Area Chart</td>
+                                <td>Pie Chart, Scatter Plot</td>
+                            </tr>
+                            <tr>
+                                <td>"Which region has the highest profit?"</td>
+                                <td>Bar Chart, Choropleth Map</td>
+                                <td>Line Chart, Word Cloud</td>
+                            </tr>
+                            <tr>
+                                <td>"What is the distribution of patient ages?"</td>
+                                <td>Histogram, Boxplot</td>
+                                <td>Pie Chart, Bar Chart</td>
+                            </tr>
+                            <tr>
+                                <td>"How do these 5 variables correlate?"</td>
+                                <td>Scatter Matrix, Heatmap</td>
+                                <td>Multiple Bar Charts</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-5">
+
+        <!-- 4.4 Presenting to Audiences & Ethics -->
+        <section id="ethics" class="mb-5">
+            <h2 class="section-title">4.4 Presenting to Audiences & Ethics in Data Analysis</h2>
+            <p class="lead">Tailoring your message to your audience is critical. Furthermore, as data practitioners, we bear a profound ethical responsibility regarding privacy and bias.</p>
+            <div class="card">
+                <div class="card-body">
+                    <h5>Presenting to Different Audiences</h5>
+                    <div class="accordion" id="audienceAccordion">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#colExec">The C-Suite / Executives</button></h2>
+                            <div id="colExec" class="accordion-collapse collapse" data-bs-parent="#audienceAccordion">
+                                <div class="accordion-body">
+                                    <strong>Focus:</strong> ROI, Risk, Strategic Impact, Bottom Line.<br>
+                                    <strong>Language:</strong> Business terminology. Avoid jargon like "hyperparameters" or "p-values."<br>
+                                    <strong>Visuals:</strong> High-level dashboards, BANs (Big Angry Numbers), trend arrows.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#colMgr">Managers / Operational Staff</button></h2>
+                            <div id="colMgr" class="accordion-collapse collapse" data-bs-parent="#audienceAccordion">
+                                <div class="accordion-body">
+                                    <strong>Focus:</strong> Tactics, Process Improvements, Team Performance, Daily Metrics.<br>
+                                    <strong>Language:</strong> Operational terms. Focus on "how" to implement the findings.<br>
+                                    <strong>Visuals:</strong> Interactive dashboards, drill-down capabilities, alert thresholds.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#colTech">Technical / Data Teams</button></h2>
+                            <div id="colTech" class="accordion-collapse collapse" data-bs-parent="#audienceAccordion">
+                                <div class="accordion-body">
+                                    <strong>Focus:</strong> Architecture, Model Performance, Data Quality, Code.<br>
+                                    <strong>Language:</strong> Technical jargon is acceptable and expected.<br>
+                                    <strong>Visuals:</strong> ROC curves, Confusion Matrices, Residual plots, SHAP values.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h5 class="mt-5">Ethics in Data Analysis & Privacy</h5>
+                    <p>With great data comes great responsibility. Data scientists must navigate several ethical frameworks:</p>
+                    <ul>
+                        <li><strong>Algorithmic Bias & Fairness:</strong> Models trained on historical data will inherit historical biases. If a hiring model is trained on past data where women were underrepresented, the model will learn to penalize female candidates. <em>Mitigation:</em> Audit datasets for representation, use fairness constraints, and test models across demographic subgroups.</li>
+                        <li><strong>Data Privacy (GDPR / HIPAA):</strong> You must protect Personally Identifiable Information (PII) and Protected Health Information (PHI). Techniques like <strong>Anonymization</strong>, <strong>Pseudonymization</strong>, and <strong>Differential Privacy</strong> are essential.</li>
+                        <li><strong>Transparency & Explainability:</strong> The "Black Box" problem. In healthcare and finance, you cannot deny a patient treatment or a loan without explaining why. XAI (Explainable AI) tools like SHAP and LIME are not just technical features; they are ethical imperatives.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-5">
+
+        <!-- 4.5 Reproducible Data Analysis -->
+        <section id="reproducibility" class="mb-5">
+            <h2 class="section-title">4.5 Reproducible Data Analysis</h2>
+            <p class="lead">Reproducibility is the cornerstone of the scientific method. If another analyst cannot run your code and get the exact same results, your analysis is not complete.</p>
+            <div class="card">
+                <div class="card-body">
+                    <h5>The Pillars of Reproducibility</h5>
+                    <ol>
+                        <li><strong>Version Control (Git):</strong> Track every change to your code and documentation. Use platforms like GitHub or GitLab. Never save files as <code>analysis_final_v2_REAL_final.R</code>.</li>
+                        <li><strong>Literate Programming:</strong> Combine code, output, and narrative text in a single document using <strong>R Markdown</strong>, <strong>Quarto</strong>, or <strong>Jupyter Notebooks</strong>.</li>
+                        <li><strong>Environment Management:</strong> Code that runs on your machine might fail on another due to different package versions. Use tools like R's <code>renv</code> or Python's <code>virtualenv</code> / <code>conda</code> to lock dependencies.</li>
+                        <li><strong>Setting Seeds:</strong> Always set a random seed (e.g., <code>set.seed(42)</code>) at the top of your script when using stochastic algorithms (train/test splits, Random Forests, Bootstrapping) to ensure deterministic results.</li>
+                    </ol>
+
+                    <h5 class="mt-4">R Markdown Template</h5>
+                    <pre><code class="language-yaml">---
+title: "Heart Disease Risk Analysis Report"
+author: "Beyond Data Analytics Team"
+date: "`r Sys.Date()`"
+output: 
+  html_document:
+    theme: cosmo
+    toc: true
+    toc_float: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
+library(tidyverse)
+set.seed(42) # Crucial for reproducibility
+```
+
+## 1. Executive Summary
+Our XGBoost model achieved an AUC of 0.96, identifying high-risk patients with 94% sensitivity. We recommend integrating this model into the EHR triage workflow.
+
+## 2. Methodology
+The model was trained on `r nrow(train_data)` patient records...
+</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-5">
+
+        <!-- 4.6 Introduction to BI Tools -->
+        <section id="bi-tools" class="mb-5">
+            <h2 class="section-title">4.6 Introduction to Business Intelligence (BI) Tools</h2>
+            <p class="lead">While R and Python are unparalleled for modeling and advanced analytics, BI tools are the industry standard for enterprise-wide reporting and dashboarding.</p>
+            <div class="card">
+                <div class="card-body">
+                    <h5>The BI Ecosystem</h5>
+                    <ul>
+                        <li><strong>Microsoft Power BI:</strong> Deeply integrated with the Microsoft ecosystem (Excel, Azure, SQL Server). Excellent for enterprise data modeling using DAX.</li>
+                        <li><strong>Tableau:</strong> Renowned for its beautiful, highly customizable, and intuitive drag-and-drop visualizations. Strong in exploratory data analysis.</li>
+                        <li><strong>R Shiny / Python Dash / Streamlit:</strong> Custom web applications built directly in code. Ideal for deploying bespoke machine learning models and interactive statistical tools to stakeholders without requiring commercial BI licenses.</li>
+                    </ul>
+
+                    <h5 class="mt-4">Building an Interactive R Shiny Dashboard</h5>
+                    <p>Shiny allows you to turn your R analysis into an interactive web app in minutes.</p>
+                    <pre><code class="language-r">library(shiny)
+library(ggplot2)
+library(dplyr)
+
+# Define the UI (User Interface)
+ui <- fluidPage(
+  titlePanel("Heart Disease Explorer Dashboard"),
+  
+  sidebarLayout(
+    sidebarPanel(
+      sliderInput("ageRange", "Select Patient Age Range:",
+                  min = 20, max = 80, value = c(30, 60)),
+      selectInput("chestPain", "Chest Pain Type:",
+                  choices = c("All", "typical", "asymptomatic"))
+    ),
+    
+    mainPanel(
+      plotOutput("hrPlot", height = "500px"),
+      tableOutput("summaryStats")
+    )
+  )
+)
+
+# Define the Server Logic
+server <- function(input, output) {
+  
+  # Reactive data filtering
+  filtered_data <- reactive({
+    df <- heart_data %>% filter(Age >= input$ageRange[1] & Age <= input$ageRange[2])
+    if(input$chestPain != "All") {
+      df <- df %>% filter(ChestPain == input$chestPain)
+    }
+    return(df)
+  })
+  
+  # Render Plot
+  output$hrPlot <- renderPlot({
+    ggplot(filtered_data(), aes(x = Age, y = MaxHR, color = AHD)) +
+      geom_point(alpha = 0.6, size = 2) +
+      geom_smooth(method = "lm", se = FALSE) +
+      labs(title = "Max Heart Rate vs. Age", color = "Disease Status") +
+      theme_minimal()
+  })
+  
+  # Render Summary Table
+  output$summaryStats <- renderTable({
+    filtered_data() %>%
+      group_by(AHD) %>%
+      summarise(Avg_MaxHR = round(mean(MaxHR), 1), Avg_Cholesterol = round(mean(Chol), 1))
+  })
+}
+
+# Run the App
+shinyApp(ui = ui, server = server)</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-5">
+
+        <!-- 4.7 Capstone Project -->
+        <section id="capstone" class="mb-5">
+            <h2 class="section-title">4.7 Capstone Data Analysis Project</h2>
+            <p class="lead">The Capstone Project is your opportunity to demonstrate mastery of the entire data science lifecycle, from raw data to executive presentation.</p>
+            <div class="card border-primary">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0"><i class="fas fa-trophy me-2"></i> Project: Clinical Risk Stratification & Operational Dashboard</h4>
+                </div>
+                <div class="card-body">
+                    <h5>Project Scenario</h5>
+                    <p>You are the Lead Data Scientist for a regional hospital network. The Chief Medical Officer (CMO) has tasked you with analyzing the <code>Heart.csv</code> dataset to build a predictive model for Atherosclerotic Heart Disease (AHD) and deploy an interactive dashboard for the triage nursing staff.</p>
+                    
+                    <h5 class="mt-4">Deliverables & Rubric</h5>
+                    <ol>
+                        <li><strong>Data Preparation & EDA (20%):</strong> Handle missing values, detect outliers, and produce a comprehensive EDA report highlighting key risk factors.</li>
+                        <li><strong>Predictive Modeling (30%):</strong> Train and tune at least three models (e.g., Logistic Regression, Random Forest, XGBoost). Select the best model based on <em>Recall</em> and <em>PR-AUC</em>, justifying your choice from a clinical perspective.</li>
+                        <li><strong>Explainable AI (XAI) (15%):</strong> Generate SHAP values to explain global feature importance and provide a local explanation for a specific high-risk patient.</li>
+                        <li><strong>Interactive Dashboard (20%):</strong> Build an R Shiny (or Tableau/PowerBI) dashboard allowing nurses to input patient vitals and receive a real-time risk probability score.</li>
+                        <li><strong>Executive Report & Presentation (15%):</strong> Write a 3-page non-technical executive summary and record a 5-minute video presentation pitching your solution to the "Hospital Board".</li>
+                    </ol>
+                    <div class="alert alert-info mt-3">
+                        <strong>Reproducibility Requirement:</strong> Your entire project must be submitted as a compiled R Markdown / Quarto document or a GitHub repository containing a <code>README.md</code>, an <code>renv.lock</code> file, and the source code.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-5">
+
+        <!-- 4.8 Practical Sessions -->
+        <section id="practical" class="mb-5">
+            <h2 class="section-title">4.8 Practical Sessions</h2>
+            <p class="lead">Hands-on exercises to solidify your skills in reporting, dashboarding, and presentation.</p>
+            <div class="card">
+                <div class="card-body">
+                    <h5>Session 1: Preparing an Analytical Report in R Markdown</h5>
+                    <p>Learn how to embed dynamic code chunks that update automatically when the underlying data changes.</p>
+                    <pre><code class="language-r">```{r dynamic-text}
+total_patients <- nrow(heart_data)
+high_risk_pct <- round(mean(heart_data$AHD == 1) * 100, 1)
+```
+
+In our analysis of `r total_patients` patients, we found that `r high_risk_pct`% presented with Atherosclerotic Heart Disease. This baseline prevalence is critical for understanding our model's Precision-Recall dynamics.</code></pre>
+
+                    <h5 class="mt-4">Session 2: Designing for Decision-Making (The BAN Concept)</h5>
+                    <p>Creating "Big Angry Numbers" (KPIs) with context using <code>ggplot2</code> and <code>patchwork</code>.</p>
+                    <pre><code class="language-r">library(ggplot2)
+library(patchwork)
+
+# KPI 1: Model Recall
+kpi_recall <- ggplot() +
+  annotate("text", x = 1, y = 1.2, label = "96.4%", size = 12, fontface = "bold", color = "#28a745") +
+  annotate("text", x = 1, y = 0.8, label = "Patient Recall Rate", size = 4, color = "gray40") +
+  annotate("text", x = 1, y = 0.5, label = "▲ +4.2% vs Last Quarter", size = 3, color = "#28a745") +
+  theme_void() + xlim(0.5, 1.5)
+
+# KPI 2: False Negatives
+kpi_fn <- ggplot() +
+  annotate("text", x = 1, y = 1.2, label = "2", size = 12, fontface = "bold", color = "#dc3545") +
+  annotate("text", x = 1, y = 0.8, label = "Missed Diagnoses (Out of 61)", size = 4, color = "gray40") +
+  annotate("text", x = 1, y = 0.5, label = "Target: < 5", size = 3, color = "gray50") +
+  theme_void() + xlim(0.5, 1.5)
+
+# Combine side-by-side
+kpi_recall + kpi_fn</code></pre>
+
+                    <h5 class="mt-4">Session 3: Presenting Findings (The "So What?" Framework)</h5>
+                    <p>When presenting, always follow the "What? So What? Now What?" framework:</p>
+                    <ul>
+                        <li><strong>What?</strong> "The XGBoost model achieved an AUC of 0.96."</li>
+                        <li><strong>So What?</strong> "This means we can reliably distinguish between healthy and diseased patients, significantly outperforming the current standard scoring system."</li>
+                        <li><strong>Now What?</strong> "We recommend deploying this model as a secondary alert in the EHR system for all patients over 50, which will require an IT sprint of approximately 3 weeks."</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-5">
+
+        <!-- Practical Exercises -->
+        <section id="exercises" class="mb-5">
+            <h2 class="section-title">Practical Exercises</h2>
+            <p class="lead">Test your mastery of data communication, ethics, and reporting. Write your answers, then reveal the solutions.</p>
+            
+            <!-- Exercise 1 -->
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">Exercise 1: Translating Metrics to Business Value</div>
+                <div class="card-body">
+                    <div class="mb-0">
+                        <label class="form-label fw-bold">1. Your machine learning model for customer churn has a Precision of 40% and a Recall of 90%. The marketing team wants to know if they should use this model to target retention offers. How do you explain these metrics to them in plain English, and what is your recommendation?</label>
+                        <div class="exercise-area">
+                            <textarea class="form-control font-monospace" rows="5" placeholder="Write your explanation here..."></textarea>
+                            <button class="btn btn-outline-primary btn-sm mt-2" type="button" data-bs-toggle="collapse" data-bs-target="#ans1_1">Submit & Check Answer</button>
+                            <div class="collapse mt-3" id="ans1_1">
+                                <div class="alert alert-success mb-0">
+                                    <strong><i class="fas fa-check-circle me-2"></i>Correct Answer:</strong>
+                                    <p class="mt-2 mb-1"><strong>Explanation:</strong> "Recall of 90% means our model successfully identifies 9 out of 10 customers who are actually going to leave. However, the Precision of 40% means that out of all the customers the model flags as 'at-risk', 60% of them were actually perfectly happy and would have stayed."</p>
+                                    <p class="mb-0"><strong>Recommendation:</strong> "If the cost of a retention offer (e.g., a 20% discount) is low, we should absolutely use this model. Catching 90% of churning customers is highly valuable, and the 'wasted' discounts on the 60% false positives are a worthwhile cost of doing business to save the high-value clients. However, if the retention offer is extremely expensive (e.g., a free year of service), we need to improve the model's Precision first to avoid bankrupting the marketing budget."</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Exercise 2 -->
+            <div class="card mb-4">
+                <div class="card-header bg-danger text-white">Exercise 2: Ethical Dilemma & Algorithmic Bias</div>
+                <div class="card-body">
+                    <div class="mb-0">
+                        <label class="form-label fw-bold">1. You are building a model to predict patient no-show rates for clinic appointments. You discover that the model is highly accurate overall, but it has a significantly higher False Positive rate for patients from low-income zip codes (i.e., it unfairly flags them as "likely to miss" when they actually show up). What ethical principle is being violated, what is the likely root cause in the data, and how do you fix it?</label>
+                        <div class="exercise-area">
+                            <textarea class="form-control font-monospace" rows="5" placeholder="Write your answer here..."></textarea>
+                            <button class="btn btn-outline-danger btn-sm mt-2" type="button" data-bs-toggle="collapse" data-bs-target="#ans2_1">Submit & Check Answer</button>
+                            <div class="collapse mt-3" id="ans2_1">
+                                <div class="alert alert-success mb-0">
+                                    <strong><i class="fas fa-check-circle me-2"></i>Correct Answer:</strong>
+                                    <ul class="mt-2 mb-0">
+                                        <li><strong>Ethical Principle Violated:</strong> Fairness and Non-Discrimination. The model is creating a disparate impact on a protected socioeconomic class.</li>
+                                        <li><strong>Root Cause:</strong> Historical bias in the training data. Perhaps patients from low-income areas historically lacked access to reliable transportation or flexible work hours, leading to higher actual no-show rates in the past. The model learned this historical proxy as a deterministic rule.</li>
+                                        <li><strong>Fix:</strong> 1) Remove zip code as a direct feature if it acts purely as a proxy for income. 2) Apply algorithmic fairness constraints (e.g., Equalized Odds) during model training to force the False Positive Rate to be equal across all demographic groups. 3) Investigate if adding features like "distance to clinic" or "public transit access" provides a more causal, equitable explanation than raw zip code.</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Exercise 3 -->
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">Exercise 3: Dashboard Design Critique</div>
+                <div class="card-body">
+                    <div class="mb-0">
+                        <label class="form-label fw-bold">1. A colleague presents a dashboard to the CEO. The dashboard contains 14 different pie charts, a 3D bar chart, and a massive table with 50 columns of raw data. The CEO asks, "So, are we making money or not?" and closes the laptop. What three specific design principles did your colleague violate, and how would you redesign it?</label>
+                        <div class="exercise-area">
+                            <textarea class="form-control font-monospace" rows="5" placeholder="Write your critique here..."></textarea>
+                            <button class="btn btn-outline-primary btn-sm mt-2" type="button" data-bs-toggle="collapse" data-bs-target="#ans3_1">Submit & Check Answer</button>
+                            <div class="collapse mt-3" id="ans3_1">
+                                <div class="alert alert-success mb-0">
+                                    <strong><i class="fas fa-check-circle me-2"></i>Correct Answer:</strong>
+                                    <ul class="mt-2 mb-0">
+                                        <li><strong>Violation 1: Poor Chart Selection.</strong> Pie charts are terrible for comparing similar values, and 3D charts distort perspective. <em>Fix:</em> Use horizontal bar charts for categorical comparisons and 2D line charts for trends.</li>
+                                        <li><strong>Violation 2: Lack of Hierarchy.</strong> The CEO had to hunt for the answer. <em>Fix:</em> Place the primary KPI (e.g., "Net Profit: $1.2M ▲ 5%") in a massive, unmissable BAN at the top left.</li>
+                                        <li><strong>Violation 3: Information Overload (Low Data-Ink Ratio).</strong> A 50-column raw data table belongs in a database, not a dashboard. <em>Fix:</em> Aggregate the data. Provide a high-level summary on the main page, and use a "drill-down" button or a separate tab for the granular raw data table for analysts who need it.</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Exercise 4 -->
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">Exercise 4: Reproducibility Checklist</div>
+                <div class="card-body">
+                    <div class="mb-0">
+                        <label class="form-label fw-bold">1. You hand over your heart disease prediction script to a junior analyst. They run it, but their ROC-AUC is 0.85, while yours was 0.96. Name three critical reproducibility steps you likely forgot to include in your code handover.</label>
+                        <div class="exercise-area">
+                            <textarea class="form-control font-monospace" rows="4" placeholder="Write your checklist here..."></textarea>
+                            <button class="btn btn-outline-primary btn-sm mt-2" type="button" data-bs-toggle="collapse" data-bs-target="#ans4_1">Submit & Check Answer</button>
+                            <div class="collapse mt-3" id="ans4_1">
+                                <div class="alert alert-success mb-0">
+                                    <strong><i class="fas fa-check-circle me-2"></i>Correct Answer:</strong>
+                                    <ol class="mt-2 mb-0">
+                                        <li><strong>Missing Random Seed:</strong> You forgot to include <code>set.seed(42)</code> at the top of the script. The train/test split and the Random Forest/XGBoost algorithms use random number generation; without a seed, every run produces different results.</li>
+                                        <li><strong>Environment/Package Versions:</strong> You didn't lock the package versions (e.g., using <code>renv</code>). A newer version of the <code>xgboost</code> or <code>caret</code> package might have changed the default algorithm parameters or handling of missing values.</li>
+                                        <li><strong>Hardcoded Local Paths:</strong> Your script likely reads data from a local path (e.g., <code>C:/Users/YourName/Desktop/Heart.csv</code>) that doesn't exist on the junior analyst's machine, causing them to silently load a different, older version of the dataset they had lying around.</li>
+                                    </ol>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-5">
+
+        <!-- Course Conclusion -->
+        <section id="summary" class="mb-5">
+            <h2 class="section-title">Course Conclusion: The Beyond Data Analytics Journey</h2>
+            <div class="card bg-light border-success">
+                <div class="card-body">
+                    <p class="lead">Congratulations! You have successfully completed the <strong>Professional Certificate in Data Science</strong>.</p>
+                    <p>Over the course of this program, you have evolved from handling raw, messy data to building state-of-the-art machine learning models, and finally, to communicating those insights ethically and effectively to drive real-world decisions.</p>
+                    
+                    <h5>Your Mastery Includes:</h5>
+                    <ul>
+                        <li><i class="fas fa-database text-primary me-2"></i> <strong>SQL & Data Wrangling:</strong> Extracting and preparing data from relational databases.</li>
+                        <li><i class="fas fa-chart-bar text-primary me-2"></i> <strong>EDA & Visualization:</strong> Uncovering hidden patterns and telling stories with data.</li>
+                        <li><i class="fas fa-square-root-alt text-primary me-2"></i> <strong>Statistical Inference:</strong> Quantifying uncertainty, hypothesis testing, and regression.</li>
+                        <li><i class="fas fa-robot text-primary me-2"></i> <strong>Machine Learning:</strong> Building predictive models using Random Forests, XGBoost, and K-Means.</li>
+                        <li><i class="fas fa-bullhorn text-primary me-2"></i> <strong>Communication & Ethics:</strong> Deploying dashboards, ensuring reproducibility, and navigating the ethical landscape of AI.</li>
+                    </ul>
+
+                    <div class="alert alert-success mt-3 mb-0">
+                        <strong><i class="fas fa-graduation-cap me-2"></i>What's Next?</strong>
+                        The world of data is vast and ever-evolving. Your next steps involve specializing in domains like <strong>Deep Learning & Neural Networks</strong>, <strong>Natural Language Processing (NLP)</strong>, <strong>Big Data Engineering (Spark/Hadoop)</strong>, or <strong>MLOps & Cloud Deployment</strong>. Keep building, keep questioning, and continue transforming raw data into insights that change the world.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>Beyond Data Analytics</h5>
+                    <p class="fst-italic text-info">Transforming Raw Data into Insights</p>
+                    <p>Empowering the next generation of data professionals to master the tools that drive modern decision-making.</p>
+                </div>
+                <div class="col-md-3">
+                    <h5>Resources</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="https://shiny.rstudio.com/" class="text-white text-decoration-none">R Shiny Documentation</a></li>
+                        <li><a href="https://rmarkdown.rstudio.com/" class="text-white text-decoration-none">R Markdown Guide</a></li>
+                        <li><a href="https://stackoverflow.com/questions/tagged/data-science" class="text-white text-decoration-none">Stack Overflow</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3">
+                    <h5>Program</h5>
+                    <ul class="list-unstyled">
+                        <li>Professional Certificate</li>
+                        <li>in Data Science</li>
+                        <li class="mt-2"><a href="#home" class="text-white text-decoration-none">Back to Top</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="text-center mt-4 pt-3 border-top border-secondary">
+                <small>&copy; 2026 Beyond Data Analytics. All Rights Reserved.</small>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Highlight.js JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/languages/r.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/languages/yaml.min.js"></script>
+    <script>hljs.highlightAll();</script>
+
+</body>
+</html>

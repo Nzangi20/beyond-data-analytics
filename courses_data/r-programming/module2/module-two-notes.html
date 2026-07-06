@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Module 2: Hypothesis Testing & Experimental Design | Beyond Data Analytics</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Highlight.js for Code Syntax Highlighting -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark.min.css">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary-color: #0d6efd;
+            --secondary-color: #6c757d;
+            --rstudio-bg: #282c34;
+            --accent-color: #0dcaf0;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+            padding-top: 70px;
+        }
+
+        /* Navbar Styling */
+        .navbar {
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            background: linear-gradient(90deg, #0d6efd 0%, #0a58ca 100%);
+        }
+        .navbar-brand { font-weight: 700; letter-spacing: 1px; }
+        .nav-link { font-weight: 500; transition: all 0.3s; }
+        .nav-link:hover { color: #ffc107 !important; transform: translateY(-2px); }
+
+        /* Hero Section */
+        .hero-section {
+            background: url('https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80') no-repeat center center/cover;
+            height: 450px;
+            position: relative;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+        .hero-overlay {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.75);
+        }
+        .hero-content { position: relative; z-index: 2; }
+
+        /* Content Cards */
+        .card {
+            border: none;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            transition: transform 0.3s;
+            margin-bottom: 20px;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        .card-header {
+            background-color: #fff;
+            border-bottom: 2px solid #0d6efd;
+            font-weight: 700;
+            color: #0d6efd;
+        }
+
+        /* Code Blocks */
+        pre {
+            border-radius: 8px;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+        }
+        code { font-family: 'Consolas', 'Monaco', monospace; }
+
+        /* MathJax Customization */
+        .math-block {
+            overflow-x: auto;
+            padding: 15px;
+            background: #fff;
+            border-left: 4px solid #0d6efd;
+            margin: 15px 0;
+            text-align: center;
+            font-size: 1.1em;
+        }
+
+        /* Footer */
+        footer {
+            background-color: #212529;
+            color: white;
+            padding: 40px 0;
+            margin-top: 50px;
+        }
+        
+        .section-title {
+            position: relative;
+            padding-bottom: 15px;
+            margin-bottom: 30px;
+            font-weight: 700;
+        }
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 4px;
+            background-color: #0d6efd;
+        }
+
+        .sub-section-title {
+            border-left: 4px solid #0dcaf0;
+            padding-left: 15px;
+            margin-top: 30px;
+            margin-bottom: 20px;
+            color: #0a58ca;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="#"><i class="fas fa-chart-line me-2"></i>Beyond Data Analytics</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link active" href="#home">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#hypothesis-intro">Inference Basics</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#ttests">T-Tests</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#chi-square">Chi-Square</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#anova">ANOVA Family</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#advanced-doe">Advanced DOE</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header id="home" class="hero-section">
+        <div class="hero-overlay"></div>
+        <div class="hero-content container">
+            <h1 class="display-3 fw-bold">Module 2: Statistical Inference & Experimental Design</h1>
+            <p class="lead fs-4">Hypothesis Testing, ANOVA, and Advanced Experimental Designs</p>
+            <p class="fs-5"><i class="fas fa-user me-2"></i> Trainer: <strong>Lumumba W. Victor</strong></p>
+            <h3 class="text-info fw-light fst-italic">Beyond Data Analytics</h3>
+            <p class="fs-5 text-light">Transforming Data Into Insights</p>
+            <a href="#hypothesis-intro" class="btn btn-primary btn-lg mt-3 px-5 rounded-pill">Start Module</a>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <div class="container my-5">
+
+        <!-- Introduction to Hypothesis Testing -->
+        <section id="hypothesis-intro" class="mb-5">
+            <h2 class="section-title">Foundations of Statistical Inference</h2>
+            <p class="lead">Hypothesis testing is the backbone of inferential statistics. It allows us to make decisions about a population based on sample data, quantifying the uncertainty of our conclusions.</p>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card h-100">
+                        <div class="card-header">The Framework</div>
+                        <div class="card-body">
+                            <ul class="list-unstyled">
+                                <li class="mb-3"><strong>1. Null Hypothesis ($H_0$):</strong> The default assumption (e.g., "no effect", "no difference"). We assume this is true until proven otherwise.</li>
+                                <li class="mb-3"><strong>2. Alternative Hypothesis ($H_1$ or $H_a$):</strong> The claim we are trying to find evidence for (e.g., "treatment works", "means differ").</li>
+                                <li class="mb-3"><strong>3. P-value:</strong> The probability of observing data as extreme as ours, assuming $H_0$ is true. 
+                                    <br><em>Rule of thumb: If $p \le \alpha$ (usually 0.05), reject $H_0$.</em></li>
+                                <li><strong>4. Errors:</strong> 
+                                    <br><strong>Type I ($\alpha$):</strong> Rejecting a true $H_0$ (False Positive).
+                                    <br><strong>Type II ($\beta$):</strong> Failing to reject a false $H_0$ (False Negative).
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card h-100">
+                        <div class="card-header">Choosing the Right Test</div>
+                        <div class="card-body">
+                            <p>The choice of test depends on your data types and research question:</p>
+                            <table class="table table-sm table-bordered">
+                                <thead class="table-light">
+                                    <tr><th>Dependent Variable</th><th>Independent Variable</th><th>Test</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td>Continuous</td><td>None (Compare to constant)</td><td>One-Sample T-Test</td></tr>
+                                    <tr><td>Continuous</td><td>Categorical (2 groups)</td><td>Two-Sample T-Test</td></tr>
+                                    <tr><td>Continuous</td><td>Categorical (3+ groups)</td><td>ANOVA</td></tr>
+                                    <tr><td>Categorical</td><td>None (Compare to dist.)</td><td>Chi-Square Goodness of Fit</td></tr>
+                                    <tr><td>Categorical</td><td>Categorical</td><td>Chi-Square Independence</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-5">
+
+        <!-- T-Tests Section -->
+        <section id="ttests" class="mb-5">
+            <h2 class="section-title">T-Tests: Comparing Means</h2>
+            <p class="lead">The T-test is used to determine if there is a statistically significant difference between the means of two groups. It is ideal for small sample sizes and unknown population variances.</p>
+
+            <!-- One-Sample T-Test -->
+            <h3 class="sub-section-title">1. One-Sample T-Test</h3>
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h5>Concept & Relevance</h5>
+                            <p>Tests whether the mean of a single sample differs from a known standard, population mean, or theoretical value.</p>
+                            <div class="math-block">$$ t = \frac{\bar{x} - \mu_0}{s / \sqrt{n}} $$</div>
+                            <h6 class="mt-3">Statistical Assumptions</h6>
+                            <ul>
+                                <li><strong>Normality:</strong> The data should be approximately normally distributed (check via Shapiro-Wilk test or Q-Q plot).</li>
+                                <li><strong>Independence:</strong> Observations are independent of each other.</li>
+                                <li><strong>Scale:</strong> The dependent variable must be continuous (interval/ratio).</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h5>R Implementation</h5>
+                            <pre><code class="language-r"># Scenario: Testing if average battery life differs from 10 hours
+battery_life <- c(9.8, 10.2, 9.5, 10.5, 10.1, 9.9, 10.3, 9.7)
+
+# Perform one-sample t-test (mu = 10)
+t_test_result <- t.test(battery_life, mu = 10)
+
+print(t_test_result)
+# Output interpretation: If p-value < 0.05, the mean is significantly different from 10.</code></pre>
+                            <h6 class="mt-3">Practical Application</h6>
+                            <p><strong>Quality Control:</strong> A manufacturer claims their cereal boxes contain 500g. You sample 30 boxes to verify if the true mean weight is actually 500g or if the machine is under/over-filling.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Two-Sample (Unpaired) T-Test -->
+            <h3 class="sub-section-title">2. Two-Sample (Unpaired/Independent) T-Test</h3>
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h5>Concept & Relevance</h5>
+                            <p>Compares the means of two independent (unrelated) groups to see if there is a significant difference between them.</p>
+                            <div class="math-block">$$ t = \frac{\bar{x}_1 - \bar{x}_2}{\sqrt{\frac{s_1^2}{n_1} + \frac{s_2^2}{n_2}}} $$</div>
+                            <h6 class="mt-3">Statistical Assumptions</h6>
+                            <ul>
+                                <li><strong>Independence:</strong> The two groups must be independent of each other.</li>
+                                <li><strong>Normality:</strong> Data in both groups should be normally distributed.</li>
+                                <li><strong>Homogeneity of Variance:</strong> Variances of the two groups should be equal (tested via Levene's or F-test). 
+                                    <br><em>Note: If variances are unequal, use <strong>Welch's T-Test</strong> (default in R).</em></li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h5>R Implementation</h5>
+                            <pre><code class="language-r"># Scenario: Comparing test scores of two teaching methods
+group_A <- c(85, 90, 78, 88, 92)
+group_B <- c(75, 80, 82, 79, 85)
+
+# Standard Student's T-test (Assumes equal variance)
+t.test(group_A, group_B, var.equal = TRUE)
+
+# Welch's T-test (Does NOT assume equal variance - Recommended)
+t.test(group_A, group_B, var.equal = FALSE)</code></pre>
+                            <h6 class="mt-3">Practical Application</h6>
+                            <p><strong>A/B Testing in Marketing:</strong> Comparing the average click-through rates of a website with a red "Buy" button (Group A) versus a green "Buy" button (Group B) to see which color drives more engagement.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Paired T-Test -->
+            <h3 class="sub-section-title">3. Paired T-Test</h3>
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h5>Concept & Relevance</h5>
+                            <p>Compares the means of two related groups. It is used when the same subjects are measured twice (e.g., before and after an intervention), or when subjects are perfectly matched.</p>
+                            <div class="math-block">$$ t = \frac{\bar{d}}{s_d / \sqrt{n}} $$ <small>Where $\bar{d}$ is the mean of the differences.</small></div>
+                            <h6 class="mt-3">Statistical Assumptions</h6>
+                            <ul>
+                                <li><strong>Paired Observations:</strong> Data points in group 1 must be naturally linked to data points in group 2.</li>
+                                <li><strong>Normality of Differences:</strong> The <em>differences</em> between the pairs should be normally distributed (not necessarily the raw data).</li>
+                                <li><strong>No extreme outliers:</strong> Outliers in the differences can heavily skew the result.</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h5>R Implementation</h5>
+                            <pre><code class="language-r"># Scenario: Testing a new diet program (Weight Before vs After)
+before <- c(85, 90, 78, 88, 92, 80)
+after  <- c(82, 86, 79, 84, 88, 78) # Same individuals
+
+# Perform paired t-test
+t.test(before, after, paired = TRUE, alternative = "greater")
+# alternative="greater" tests if 'before' is significantly greater than 'after'</code></pre>
+                            <h6 class="mt-3">Practical Application</h6>
+                            <p><strong>Clinical Trials:</strong> Measuring patients' blood pressure before administering a new drug and again after 4 weeks of treatment to determine if the drug effectively lowers blood pressure within the same cohort.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-5">
+
+        <!-- Chi-Square Section -->
+        <section id="chi-square" class="mb-5">
+            <h2 class="section-title">Chi-Square ($\chi^2$) Tests: Categorical Data</h2>
+            <p class="lead">While T-tests compare means of continuous data, Chi-Square tests analyze the distribution of categorical data, testing for goodness of fit or independence between variables.</p>
+
+            <div class="card">
+                <div class="card-body">
+                    <h4>1. Chi-Square Goodness of Fit</h4>
+                    <p><strong>Concept:</strong> Tests if a sample distribution matches a expected population distribution.</p>
+                    <div class="math-block">$$ \chi^2 = \sum \frac{(O_i - E_i)^2}{E_i} $$ <small>Where $O$ is Observed frequency and $E$ is Expected frequency.</small></div>
+                    
+                    <div class="row mt-3">
+                        <div class="col-md-6">
+                            <h6>Assumptions</h6>
+                            <ul>
+                                <li>Data consists of frequencies/categories (not percentages).</li>
+                                <li>Categories are mutually exclusive.</li>
+                                <li>Expected frequency in each category should be $\ge 5$.</li>
+                            </ul>
+                            <h6>Application</h6>
+                            <p><strong>Genetics:</strong> Testing if the offspring of a dihybrid cross follow the expected 9:3:3:1 Mendelian ratio.</p>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>R Implementation</h6>
+                            <pre><code class="language-r"># Scenario: Testing if a 6-sided die is fair
+# Observed rolls for 60 trials
+observed <- c(8, 12, 10, 10, 8, 12) 
+
+# Expected probabilities (1/6 for each side)
+expected_prob <- rep(1/6, 6)
+
+chisq.test(observed, p = expected_prob)</code></pre>
+                        </div>
+                    </div>
+
+                    <hr class="my-4">
+
+                    <h4>2. Chi-Square Test of Independence</h4>
+                    <p><strong>Concept:</strong> Tests if there is a significant association between two categorical variables.</p>
+                    
+                    <div class="row mt-3">
+                        <div class="col-md-6">
+                            <h6>Assumptions</h6>
+                            <ul>
+                                <li>Both variables are categorical.</li>
+                                <li>Independent observations (one data point per subject).</li>
+                                <li>Expected cell counts $\ge 5$ (If violated, use Fisher's Exact Test).</li>
+                            </ul>
+                            <h6>Application</h6>
+                            <p><strong>Market Research:</strong> Determining if gender (Male/Female) is independent of product preference (Brand A/Brand B/Brand C).</p>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>R Implementation</h6>
+                            <pre><code class="language-r"># Scenario: Relationship between Smoking and Exercise level
+# Create a contingency table
+survey_data <- data.frame(
+  Smoking = c("Yes", "No", "Yes", "No"),
+  Exercise = c("High", "High", "Low", "Low"),
+  Count = c(10, 30, 20, 40)
+)
+contingency_table <- xtabs(Count ~ Smoking + Exercise, data = survey_data)
+
+# Perform Chi-Square test
+chisq.test(contingency_table)
+
+# Check expected values to ensure they are >= 5
+chisq.test(contingency_table)$expected</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-5">
+
+        <!-- ANOVA Family Section -->
+        <section id="anova" class="mb-5">
+            <h2 class="section-title">The ANOVA Family: Experimental Design</h2>
+            <p class="lead">Analysis of Variance (ANOVA) generalizes the T-test to compare means across three or more groups. By partitioning the total variance into "between-group" and "within-group" components, we can determine if group means differ significantly.</p>
+            <div class="math-block">$$ F = \frac{MS_{between}}{MS_{within}} = \frac{\text{Variance explained by groups}}{\text{Unexplained variance (error)}} $$</div>
+
+            <!-- Tabs for ANOVA Family -->
+            <ul class="nav nav-tabs" id="anovaTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="anova-tab" data-bs-toggle="tab" data-bs-target="#anova-pane" type="button">ANOVA</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="ancova-tab" data-bs-toggle="tab" data-bs-target="#ancova-pane" type="button">ANCOVA</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="manova-tab" data-bs-toggle="tab" data-bs-target="#manova-pane" type="button">MANOVA</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="mancova-tab" data-bs-toggle="tab" data-bs-target="#mancova-pane" type="button">MANCOVA</button>
+                </li>
+            </ul>
+
+            <div class="tab-content border border-top-0 p-4 rounded-bottom bg-white" id="anovaTabsContent">
+                
+                <!-- ANOVA Pane -->
+                <div class="tab-pane fade show active" id="anova-pane" role="tabpanel">
+                    <h4>Analysis of Variance (ANOVA)</h4>
+                    <p><strong>Relevance:</strong> The foundational tool for comparing 3+ groups. One-Way ANOVA uses one independent variable (factor), while Two-Way ANOVA uses two, allowing us to test for interaction effects.</p>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6>Assumptions</h6>
+                            <ul>
+                                <li><strong>Normality:</strong> Residuals are normally distributed.</li>
+                                <li><strong>Homogeneity of Variance:</strong> Variances across groups are equal (Tested via Levene's Test).</li>
+                                <li><strong>Independence:</strong> Observations are independent.</li>
+                            </ul>
+                            <h6>Application</h6>
+                            <p><strong>Agriculture:</strong> Comparing the crop yield of four different types of fertilizer to see if any performs significantly better than the others.</p>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>R Implementation (One-Way)</h6>
+                            <pre><code class="language-r"># Scenario: Crop yield across 3 fertilizers
+model_aov <- aov(Yield ~ Fertilizer, data = crop_data)
+summary(model_aov)
+
+# Post-hoc test (Tukey's HSD) to see WHICH groups differ
+TukeyHSD(model_aov)</code></pre>
+                            <h6>R Implementation (Two-Way)</h6>
+                            <pre><code class="language-r"># Testing Fertilizer AND Irrigation, plus their interaction
+model_2way <- aov(Yield ~ Fertilizer * Irrigation, data = crop_data)
+summary(model_2way)</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ANCOVA Pane -->
+                <div class="tab-pane fade" id="ancova-pane" role="tabpanel">
+                    <h4>Analysis of Covariance (ANCOVA)</h4>
+                    <p><strong>Relevance:</strong> ANCOVA is ANOVA + Regression. It allows you to compare group means while statistically controlling for a continuous "nuisance" variable (covariate) that might influence the outcome. This increases statistical power by reducing error variance.</p>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6>Assumptions</h6>
+                            <ul>
+                                <li>All standard ANOVA assumptions apply.</li>
+                                <li><strong>Homogeneity of Regression Slopes:</strong> The relationship between the covariate and the dependent variable must be the same across all groups (no interaction between covariate and the independent variable).</li>
+                                <li>The covariate is measured without error.</li>
+                            </ul>
+                            <h6>Application</h6>
+                            <p><strong>Education:</strong> Comparing the final exam scores of three teaching methods (IV), while controlling for students' baseline IQ scores (Covariate) to ensure initial intelligence doesn't bias the results.</p>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>R Implementation</h6>
+                            <pre><code class="language-r"># Scenario: Final Score ~ Teaching Method + Baseline IQ
+model_ancova <- aov(Final_Score ~ Teaching_Method + Baseline_IQ, 
+                    data = student_data)
+summary(model_ancova)
+
+# Check assumption: Homogeneity of slopes
+# (Test interaction between Method and Covariate)
+model_check <- aov(Final_Score ~ Teaching_Method * Baseline_IQ, 
+                   data = student_data)
+summary(model_check) 
+# If interaction p > 0.05, assumption is met.</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- MANOVA Pane -->
+                <div class="tab-pane fade" id="manova-pane" role="tabpanel">
+                    <h4>Multivariate Analysis of Variance (MANOVA)</h4>
+                    <p><strong>Relevance:</strong> When an experiment has <strong>two or more continuous dependent variables</strong>, running multiple ANOVAs increases the Type I error rate. MANOVA tests them simultaneously, accounting for the correlations between the dependent variables.</p>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6>Assumptions</h6>
+                            <ul>
+                                <li><strong>Multivariate Normality:</strong> The dependent variables follow a multivariate normal distribution.</li>
+                                <li><strong>Homogeneity of Covariance Matrices:</strong> The variance-covariance matrices are equal across groups (Tested via Box's M test). *MANOVA is robust to minor violations if sample sizes are equal.*</li>
+                                <li>Linearity: Relationships between all pairs of DVs are linear.</li>
+                            </ul>
+                            <h6>Application</h6>
+                            <p><strong>Medicine:</strong> Testing the effect of a new drug on three related health outcomes simultaneously: systolic blood pressure, diastolic blood pressure, and heart rate.</p>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>R Implementation</h6>
+                            <pre><code class="language-r"># Scenario: Effect of Diet on Weight and Cholesterol
+# cbind() binds the multiple DVs together
+model_manova <- manova(cbind(Weight, Cholesterol) ~ Diet, 
+                       data = patient_data)
+summary(model_manova)
+
+# Use Pillai's Trace or Wilks' Lambda for the test statistic
+summary(model_manova, test = "Pillai")
+
+# Post-hoc for individual DVs
+summary.aov(model_manova)</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- MANCOVA Pane -->
+                <div class="tab-pane fade" id="mancova-pane" role="tabpanel">
+                    <h4>Multivariate Analysis of Covariance (MANCOVA)</h4>
+                    <p><strong>Relevance:</strong> The most complex of the basic family. MANCOVA is MANOVA + Covariates. It tests for differences in multiple dependent variables across groups, while controlling for one or more continuous covariates.</p>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6>Assumptions</h6>
+                            <ul>
+                                <li>All MANOVA assumptions apply.</li>
+                                <li>All ANCOVA assumptions apply (specifically, homogeneity of regression slopes for <em>all</em> dependent variables).</li>
+                                <li>Covariates are independent of the treatment (measured before treatment).</li>
+                            </ul>
+                            <h6>Application</h6>
+                            <p><strong>Psychology:</strong> Evaluating the effect of three types of therapy (IV) on depression and anxiety scores (2x DVs), while controlling for the patients' age and baseline stress levels (Covariates).</p>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>R Implementation</h6>
+                            <pre><code class="language-r"># Scenario: Therapy effect on Depression & Anxiety, controlling for Age
+model_mancova <- manova(
+  cbind(Depression_Score, Anxiety_Score) ~ Therapy_Type + Age, 
+  data = psych_data
+)
+
+summary(model_mancova, test = "Wilks")
+
+# Note: MANCOVA requires careful checking of assumptions. 
+# In modern practice, Linear Mixed Models (lme4) or 
+# Structural Equation Modeling (SEM) are often preferred 
+# for complex multivariate designs.</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-5">
+
+        <!-- Advanced DOE Section -->
+        <section id="advanced-doe" class="mb-5">
+            <h2 class="section-title">Advanced Experimental Designs</h2>
+            <p class="lead">When experiments involve repeated measurements on the same subjects, or when logistical constraints prevent complete randomization, advanced designs are required to accurately model the error structure.</p>
+
+            <!-- Tabs for Advanced DOE -->
+            <ul class="nav nav-tabs" id="advDOETabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="rm-tab" data-bs-toggle="tab" data-bs-target="#rm-pane" type="button">Repeated Measures ANOVA</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="split-tab" data-bs-toggle="tab" data-bs-target="#split-pane" type="button">Split-Plot Design</button>
+                </li>
+            </ul>
+
+            <div class="tab-content border border-top-0 p-4 rounded-bottom bg-white" id="advDOETabsContent">
+                
+                <!-- Repeated Measures Pane -->
+                <div class="tab-pane fade show active" id="rm-pane" role="tabpanel">
+                    <h4>Repeated Measures ANOVA</h4>
+                    <p><strong>Relevance:</strong> Used when the <strong>same subjects</strong> are measured three or more times under different conditions or over time. It accounts for the fact that measurements from the same person are correlated, removing "subject-to-subject" variance from the error term and drastically increasing statistical power.</p>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6>Statistical Assumptions</h6>
+                            <ul>
+                                <li><strong>Normality:</strong> The distribution of the dependent variable at each level should be normal.</li>
+                                <li><strong>Sphericity:</strong> The variances of the differences between all possible pairs of within-group conditions must be equal. 
+                                    <br><em>Tested via Mauchly's Test of Sphericity.</em>
+                                    <br><em>If violated ($p < 0.05$), apply Greenhouse-Geisser or Huynh-Feldt corrections.</em></li>
+                                <li>No carryover effects (often managed by randomizing the order of treatments or adding a washout period).</li>
+                            </ul>
+                            <h6>Application</h6>
+                            <p><strong>Ergonomics:</strong> Measuring the wrist strain of 20 workers using three different keyboard designs. Since it's the same workers, we use Repeated Measures to control for individual physical differences.</p>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>R Implementation</h6>
+                            <pre><code class="language-r"># Scenario: Strain measured at Time1, Time2, Time3 for each Subject
+# Data must be in "Long Format"
+# Columns: Subject, Time, Strain_Score
+
+# Define the Error structure to account for repeated measures
+model_rm <- aov(Strain_Score ~ Time + Error(Subject/Time), 
+                data = ergonomics_data)
+
+summary(model_rm)
+
+# Pro-Tip: For missing data or unequal time intervals, 
+# use Linear Mixed-Effects Models (lme4 package) instead:
+# library(lme4)
+# lmer(Strain_Score ~ Time + (1|Subject), data = ergonomics_data)</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Split-Plot Pane -->
+                <div class="tab-pane fade" id="split-pane" role="tabpanel">
+                    <h4>Split-Plot Design</h4>
+                    <p><strong>Relevance:</strong> A highly practical design used when an experiment has two factors, but one factor (the "Whole-Plot" factor) is harder, more expensive, or logistically more difficult to change than the other (the "Sub-Plot" factor). It involves two levels of randomization.</p>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6>Statistical Assumptions</h6>
+                            <ul>
+                                <li><strong>Normality & Homogeneity:</strong> Standard assumptions apply to the residuals.</li>
+                                <li><strong>Two Error Terms:</strong> The design inherently has two sizes of experimental units. Therefore, there are two separate error terms: one for the Whole-Plot factor and one for the Sub-Plot factor (and their interaction).</li>
+                                <li>Additivity of block and treatment effects.</li>
+                            </ul>
+                            <h6>Application</h6>
+                            <p><strong>Agriculture:</strong> 
+                            <br><strong>Whole-Plot Factor:</strong> Irrigation method (requires large plots and expensive infrastructure to change).
+                            <br><strong>Sub-Plot Factor:</strong> Fertilizer type (easy to apply to small sub-sections within the large irrigation plots).
+                            <br>The design ensures the logistical constraint doesn't ruin the statistical validity.</p>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>R Implementation</h6>
+                            <pre><code class="language-r"># Scenario: Irrigation (A) and Fertilizer (B) on Crop Yield
+# 'Block' represents the replicates (fields)
+# A is applied to whole plots, B to sub-plots
+
+# Base R approach using Error() strata
+model_split <- aov(Yield ~ A * B + Error(Block/A), 
+                   data = ag_data)
+
+summary(model_split)
+# Note the output will show two sections: 
+# Error: Block:A (Tests the Whole-plot factor A)
+# Error: Within (Tests Sub-plot factor B and A:B interaction)
+
+# Modern Approach: Linear Mixed Models (Recommended)
+# library(lme4)
+# lmer(Yield ~ A * B + (1|Block) + (1|Block:A), data = ag_data)</code></pre>
+                            <div class="alert alert-info mt-3">
+                                <strong>Note on Power:</strong> Because the whole-plot factor is applied to fewer, larger units, it has less statistical power (fewer degrees of freedom) than the sub-plot factor. Always assign the most important factor to the sub-plot if possible!
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>Beyond Data Analytics</h5>
+                    <p class="fst-italic text-info">Transforming Data Into Insights</p>
+                    <p>Empowering the next generation of data professionals in Kenya and beyond.</p>
+                </div>
+                <div class="col-md-3">
+                    <h5>Resources</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="https://cran.r-project.org/manuals.html" class="text-white text-decoration-none">R Manuals</a></li>
+                        <li><a href="https://stat.ethz.ch/R-manual/R-patched/library/stats/html/00Index.html" class="text-white text-decoration-none">R Stats Package</a></li>
+                        <li><a href="https://www.rdocumentation.org/" class="text-white text-decoration-none">R Documentation</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3">
+                    <h5>Contact Trainer</h5>
+                    <p><i class="fas fa-user me-2"></i> Lumumba W. Victor</p>
+                    <p><i class="fas fa-envelope me-2"></i> lumumbavictor172@gmail.com</p>
+                </div>
+            </div>
+            <div class="text-center mt-4 pt-3 border-top border-secondary">
+                <small>&copy; 2026 Beyond Data Analytics. All Rights Reserved.</small>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Highlight.js JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/languages/r.min.js"></script>
+    <script>hljs.highlightAll();</script>
+    <!-- MathJax for LaTeX Equations -->
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+</body>
+</html>

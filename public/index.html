@@ -1,0 +1,3104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Beyond Data Analytics - Expert Data Analytics & AI Training</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700&family=Outfit:wght@500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* ==================== CSS VARIABLES & GLOBAL STYLES ==================== */
+        :root {
+            --primary: #0F172A; /* Deep Navy */
+            --secondary: #5B4BFF; /* Professional Purple */
+            --accent: #FACC15; /* Yellow */
+            
+            --bg-white: #FFFFFF;
+            --bg-light: #F8FAFC;
+            --text-dark: #334155;
+            --text-muted: #64748B;
+            --text-light: #94A3B8;
+            
+            --border-color: #E2E8F0;
+            --border-radius: 16px;
+            --shadow-soft: 0px 4px 12px rgba(0, 0, 0, 0.06);
+            --shadow-hover: 0px 12px 24px rgba(15, 23, 42, 0.08);
+            
+            --transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--bg-white);
+            color: var(--text-dark);
+            line-height: 1.6;
+            overflow-x: hidden;
+            font-size: 16px;
+        }
+
+        h1, h2, h3, h4 {
+            font-family: 'Poppins', sans-serif;
+            color: var(--primary);
+            font-weight: 700;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+            transition: var(--transition);
+        }
+
+        img {
+            max-width: 100%;
+            display: block;
+        }
+
+        /* Common Layouts */
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        .section {
+            padding: 100px 0;
+        }
+
+        .section-light {
+            background-color: var(--bg-light);
+        }
+
+        .section-header {
+            text-align: center;
+            max-width: 700px;
+            margin: 0 auto 60px;
+        }
+
+        .section-header h2 {
+            font-size: 36px;
+            margin-bottom: 16px;
+            letter-spacing: -0.5px;
+        }
+
+        .section-header p {
+            font-size: 18px;
+            color: var(--text-muted);
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 14px 28px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn-primary {
+            background-color: var(--secondary);
+            color: var(--bg-white);
+        }
+
+        .btn-primary:hover {
+            background-color: #493cd6;
+            box-shadow: 0 4px 14px rgba(91, 75, 255, 0.3);
+        }
+
+        .btn-accent {
+            background-color: var(--accent);
+            color: var(--primary);
+        }
+
+        .btn-accent:hover {
+            background-color: #e5b810;
+            box-shadow: 0 4px 14px rgba(250, 204, 21, 0.3);
+        }
+
+        .btn-secondary {
+            background-color: transparent;
+            color: var(--primary);
+            border: 2px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--primary);
+            background-color: rgba(15, 23, 42, 0.02);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: var(--bg-white);
+        }
+
+        .btn-outline:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--bg-white);
+        }
+
+        /* ==================== NAVIGATION ==================== */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: transparent;
+            padding: 24px 0;
+            transition: all 400ms cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .navbar-scrolled {
+            background: rgba(15, 23, 42, 0.97);
+            backdrop-filter: blur(16px);
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .navbar-scrolled .logo-icon {
+            width: 32px;
+            height: 32px;
+            font-size: 14px;
+        }
+
+        .navbar-scrolled .logo-text h1 {
+            font-size: 16px;
+        }
+
+        .navbar-scrolled .logo-text p {
+            font-size: 9px;
+        }
+
+        .navbar-scrolled .nav-menu a {
+            font-size: 13px;
+        }
+
+        .navbar-scrolled .btn-accent {
+            padding: 8px 16px;
+            font-size: 13px;
+        }
+
+        .navbar-scrolled .navbar-login-btn {
+            padding: 8px 14px;
+            font-size: 13px;
+        }
+
+        .nav-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--bg-white);
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background-color: var(--secondary);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            color: var(--bg-white);
+            transition: all 400ms cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .logo-text h1 {
+            font-size: 20px;
+            color: var(--bg-white);
+            font-family: 'Outfit', sans-serif;
+            font-weight: 700;
+            transition: all 400ms cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .logo-text p {
+            font-size: 11px;
+            color: var(--text-light);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: -2px;
+            transition: all 400ms cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .nav-menu {
+            display: flex;
+            align-items: center;
+            gap: 32px;
+            list-style: none;
+        }
+
+        .nav-menu a {
+            color: var(--bg-white);
+            opacity: 0.85;
+            font-size: 15px;
+            font-weight: 500;
+        }
+
+        .nav-menu a:hover,
+        .nav-menu a.active {
+            opacity: 1;
+            color: var(--accent);
+        }
+
+        .nav-dropdown {
+            position: relative;
+        }
+
+        .dropdown-trigger {
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .dropdown-content {
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%) translateY(10px);
+            background: var(--bg-white);
+            min-width: 280px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            padding: 8px;
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition);
+        }
+
+        .nav-dropdown:hover .dropdown-content {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .dropdown-content a {
+            color: var(--text-dark) !important;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-radius: 8px;
+            font-size: 14px;
+            opacity: 1 !important;
+        }
+
+        .dropdown-content a:hover {
+            background-color: var(--bg-light);
+            color: var(--secondary) !important;
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .navbar-login-btn {
+            color: var(--bg-white);
+            font-weight: 600;
+            padding: 10px 20px;
+        }
+
+        .navbar-login-btn:hover {
+            color: var(--accent);
+        }
+
+        .nav-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--bg-white);
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        /* ==================== HERO SECTION ==================== */
+        .hero {
+            position: relative;
+            background-color: var(--primary);
+            color: var(--bg-white);
+            padding: 180px 0 120px;
+            overflow: hidden;
+        }
+
+        .hero-glow {
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 800px;
+            height: 800px;
+            background: radial-gradient(circle, rgba(91, 75, 255, 0.12) 0%, rgba(15, 23, 42, 0) 70%);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .hero-grid {
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr;
+            gap: 48px;
+            align-items: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 8px 16px;
+            border-radius: 30px;
+            font-size: 14px;
+            color: var(--accent);
+            margin-bottom: 24px;
+            font-weight: 500;
+        }
+
+        .hero-content h2 {
+            color: var(--bg-white);
+            font-size: 52px;
+            line-height: 1.15;
+            margin-bottom: 24px;
+            letter-spacing: -1px;
+        }
+
+        .hero-content p {
+            font-size: 18px;
+            color: var(--text-light);
+            margin-bottom: 36px;
+            line-height: 1.6;
+        }
+
+        .hero-ctas {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 40px;
+        }
+
+        .trust-indicators {
+            display: flex;
+            gap: 24px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 24px;
+        }
+
+        .trust-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            color: var(--text-light);
+            font-weight: 500;
+        }
+
+        .trust-item i {
+            color: var(--accent);
+        }
+
+        .hero-visual {
+            position: relative;
+        }
+
+        .hero-visual img {
+            border-radius: var(--border-radius);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* ==================== STATS SECTION ==================== */
+        .stats {
+            background-color: var(--bg-white);
+            padding: 80px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
+        }
+
+        .stat-card {
+            background: var(--bg-light);
+            padding: 32px 24px;
+            border-radius: var(--border-radius);
+            text-align: center;
+            border: 1px solid rgba(0,0,0,0.02);
+            transition: var(--transition);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .stat-num {
+            font-size: 40px;
+            font-weight: 700;
+            color: var(--secondary);
+            margin-bottom: 8px;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .stat-label {
+            font-size: 15px;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        /* ==================== WHY CHOOSE US ==================== */
+        .why-choose {
+            background-color: var(--bg-white);
+        }
+
+        .why-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+        }
+
+        .why-card {
+            background: var(--bg-white);
+            padding: 32px;
+            border-radius: var(--border-radius);
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-soft);
+            transition: var(--transition);
+        }
+
+        .why-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-hover);
+            border-color: var(--secondary);
+        }
+
+        .why-icon {
+            width: 48px;
+            height: 48px;
+            background-color: rgba(91, 75, 255, 0.08);
+            color: var(--secondary);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            margin-bottom: 24px;
+        }
+
+        .why-card h3 {
+            font-size: 20px;
+            margin-bottom: 12px;
+        }
+
+        .why-card p {
+            font-size: 15px;
+            color: var(--text-muted);
+        }
+
+        /* ==================== FEATURED COURSES ==================== */
+        .courses-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+        }
+
+        .course-card {
+            background: var(--bg-white);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-soft);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid var(--border-color);
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .course-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background-color: var(--secondary);
+        }
+
+        .course-card.accent-card::before {
+            background-color: var(--accent);
+        }
+
+        .course-card.danger-card::before {
+            background-color: #ef4444;
+        }
+
+        .course-card:hover {
+            transform: translateY(-6px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .course-header {
+            padding: 32px 32px 16px;
+            cursor: pointer;
+        }
+
+        .course-icon-wrapper {
+            width: 48px;
+            height: 48px;
+            background: var(--bg-light);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: var(--secondary);
+            margin-bottom: 20px;
+        }
+
+        .course-header h3 {
+            font-size: 22px;
+            margin-bottom: 8px;
+        }
+
+        .course-header .desc {
+            font-size: 15px;
+            color: var(--text-muted);
+        }
+
+        .course-body {
+            padding: 0 32px;
+            flex-grow: 1;
+        }
+
+        .course-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .meta-tag {
+            font-size: 12px;
+            font-weight: 600;
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+            padding: 4px 10px;
+            border-radius: 4px;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .course-highlights {
+            list-style: none;
+            border-top: 1px solid var(--border-color);
+            padding-top: 16px;
+        }
+
+        .course-highlights li {
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .course-highlights li i {
+            color: #22c55e;
+        }
+
+        .course-footer {
+            padding: 24px 32px 32px;
+        }
+
+        /* ==================== DYNAMIC NEWS & EVENTS ==================== */
+        .news-grid, .events-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+        }
+
+        .news-card, .event-card {
+            background: var(--bg-white);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-soft);
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .news-card:hover, .event-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .news-image, .event-image {
+            height: 180px;
+            background: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            color: var(--accent);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .news-image.yellow { color: var(--accent); }
+        .news-image.red { color: #ef4444; }
+        .news-image.purple { color: var(--secondary); }
+
+        .news-image img, .event-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: var(--transition);
+        }
+
+        .news-card:hover img, .event-card:hover img {
+            transform: scale(1.05);
+        }
+
+        .news-body, .event-body {
+            padding: 24px;
+            flex-grow: 1;
+        }
+
+        .news-date, .event-date {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .news-body h3, .event-body h3 {
+            font-size: 18px;
+            margin-bottom: 12px;
+            line-height: 1.4;
+        }
+
+        .news-body p, .event-body p {
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-bottom: 16px;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .news-link {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--secondary);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .news-link:hover {
+            color: var(--primary);
+        }
+
+        .event-footer {
+            padding: 16px 24px 24px;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .event-location {
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        /* ==================== TESTIMONIALS ==================== */
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+        }
+
+        .testimonial-card {
+            background: var(--bg-white);
+            padding: 32px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-soft);
+            border: 1px solid var(--border-color);
+            transition: var(--transition);
+        }
+
+        .testimonial-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .stars {
+            color: var(--accent);
+            margin-bottom: 20px;
+        }
+
+        .testimonial-card p {
+            font-size: 15px;
+            color: var(--text-muted);
+            margin-bottom: 24px;
+            font-style: italic;
+        }
+
+        .student-profile {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .student-photo {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .student-details h4 {
+            font-size: 16px;
+            margin-bottom: 2px;
+        }
+
+        .student-details p {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin: 0;
+            font-style: normal;
+        }
+
+        /* ==================== CONSULTANCY ==================== */
+        .consultancy-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+        }
+
+        .consultancy-card {
+            background: var(--bg-white);
+            padding: 32px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-soft);
+            border: 1px solid var(--border-color);
+            transition: var(--transition);
+        }
+
+        .consultancy-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-hover);
+            border-color: var(--secondary);
+        }
+
+        .consultancy-icon {
+            width: 48px;
+            height: 48px;
+            background-color: rgba(91, 75, 255, 0.08);
+            color: var(--secondary);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            margin-bottom: 24px;
+        }
+
+        .consultancy-card h3 {
+            font-size: 20px;
+            margin-bottom: 12px;
+        }
+
+        .consultancy-card p {
+            font-size: 15px;
+            color: var(--text-muted);
+        }
+
+        .consultancy-cta-block {
+            text-align: center;
+            margin-top: 60px;
+            background: var(--bg-light);
+            padding: 40px;
+            border-radius: var(--border-radius);
+            border: 1px solid var(--border-color);
+        }
+
+        .consultancy-cta-block h3 {
+            font-size: 24px;
+            margin-bottom: 12px;
+        }
+
+        .consultancy-cta-block p {
+            font-size: 16px;
+            color: var(--text-muted);
+            margin-bottom: 24px;
+        }
+
+        /* ==================== FAQ SECTION ==================== */
+        .faq-accordion {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .faq-item {
+            background: var(--bg-white);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            margin-bottom: 16px;
+            overflow: hidden;
+            box-shadow: var(--shadow-soft);
+            transition: var(--transition);
+        }
+
+        .faq-item:hover {
+            border-color: var(--secondary);
+        }
+
+        .faq-header {
+            padding: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .faq-header h3 {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .faq-header i {
+            font-size: 16px;
+            color: var(--text-muted);
+            transition: var(--transition);
+        }
+
+        .faq-body {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 300ms ease;
+            background: var(--bg-light);
+        }
+
+        .faq-body-content {
+            padding: 24px;
+            font-size: 15px;
+            color: var(--text-muted);
+            border-top: 1px solid var(--border-color);
+        }
+
+        .faq-body.active {
+            max-height: 500px;
+        }
+
+        /* ==================== FINAL CTA SECTION ==================== */
+        .final-cta {
+            background-color: var(--primary);
+            color: var(--bg-white);
+            text-align: center;
+            padding: 100px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .final-cta-glow {
+            position: absolute;
+            bottom: -50%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(91, 75, 255, 0.15) 0%, rgba(15, 23, 42, 0) 70%);
+            pointer-events: none;
+        }
+
+        .final-cta h2 {
+            color: var(--bg-white);
+            font-size: 40px;
+            margin-bottom: 16px;
+        }
+
+        .final-cta p {
+            color: var(--text-light);
+            font-size: 18px;
+            max-width: 600px;
+            margin: 0 auto 36px;
+        }
+
+        .final-cta-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+        }
+
+        /* ==================== FOOTER ==================== */
+        .footer {
+            background-color: #0B0F19;
+            color: var(--text-light);
+            padding: 80px 0 40px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr 1fr 1.5fr;
+            gap: 48px;
+            margin-bottom: 60px;
+        }
+
+        .footer-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--bg-white);
+            margin-bottom: 20px;
+        }
+
+        .footer-about p {
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 24px;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 12px;
+        }
+
+        .social-link {
+            width: 36px;
+            height: 36px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            color: var(--text-light);
+            transition: var(--transition);
+        }
+
+        .social-link:hover {
+            background: var(--secondary);
+            color: var(--bg-white);
+        }
+
+        .footer-links-col h4 {
+            color: var(--bg-white);
+            font-size: 16px;
+            margin-bottom: 24px;
+        }
+
+        .footer-links-col ul {
+            list-style: none;
+        }
+
+        .footer-links-col ul li {
+            margin-bottom: 12px;
+        }
+
+        .footer-links-col ul a {
+            font-size: 14px;
+            color: var(--text-light);
+        }
+
+        .footer-links-col ul a:hover {
+            color: var(--accent);
+        }
+
+        .footer-contact-info li {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+            font-size: 14px;
+        }
+
+        .footer-contact-info i {
+            color: var(--secondary);
+            font-size: 16px;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            padding-top: 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 14px;
+        }
+
+        /* ==================== GALLERY MODALS & FALLBACKS ==================== */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            z-index: 10002;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(8px);
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-container {
+            background: var(--bg-white);
+            border-radius: var(--border-radius);
+            width: 100%;
+            max-width: 700px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            max-height: 90vh;
+        }
+
+        .modal-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h3 {
+            font-size: 18px;
+            margin: 0;
+        }
+
+        .modal-close-btn {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 24px;
+            cursor: pointer;
+            line-height: 1;
+        }
+
+        .modal-close-btn:hover {
+            color: var(--primary);
+        }
+
+        .modal-body {
+            padding: 32px;
+            overflow-y: auto;
+        }
+
+        @media (max-width: 600px) {
+            .modal-body {
+                padding: 16px;
+            }
+            .pathway-card {
+                padding: 16px;
+            }
+            .pathway-cards {
+                gap: 12px;
+            }
+        }
+
+        /* Pathway Options */
+        .pathway-cards {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .pathway-card {
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 24px;
+            transition: var(--transition);
+        }
+
+        .pathway-card:hover {
+            border-color: var(--secondary);
+            background-color: var(--bg-light);
+        }
+
+        .pathway-card h4 {
+            font-size: 18px;
+            color: var(--secondary);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .pathway-card p {
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-bottom: 16px;
+        }
+
+        .pathway-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid var(--border-color);
+            padding-top: 16px;
+        }
+
+        .pathway-price {
+            font-size: 14px;
+            color: var(--text-muted);
+        }
+
+        .pathway-price strong {
+            display: block;
+            font-size: 20px;
+            color: var(--primary);
+        }
+
+        /* ==================== GETTING INVOLVED ==================== */
+        .involvement-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
+            margin-top: 40px;
+        }
+
+        .involvement-card {
+            background: var(--bg-white);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-soft);
+            border: 1px solid var(--border-color);
+            padding: 32px;
+            text-align: center;
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .involvement-card:hover {
+            transform: translateY(-6px);
+            box-shadow: var(--shadow-hover);
+            border-color: var(--secondary);
+        }
+
+        .involvement-icon {
+            width: 64px;
+            height: 64px;
+            background-color: var(--bg-light);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            color: var(--secondary);
+            margin-bottom: 24px;
+            transition: var(--transition);
+        }
+
+        .involvement-card:hover .involvement-icon {
+            background-color: var(--secondary);
+            color: var(--bg-white);
+        }
+
+        .involvement-card h3 {
+            font-size: 18px;
+            margin-bottom: 12px;
+        }
+
+        .involvement-card p {
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-bottom: 24px;
+            flex-grow: 1;
+        }
+
+        /* ==================== MENTORS ==================== */
+        .mentoring-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+        }
+
+        .mentor-card {
+            background: var(--bg-white);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-soft);
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .mentor-card:hover {
+            transform: translateY(-6px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .mentor-header {
+            padding: 32px;
+            background: var(--primary);
+            color: var(--bg-white);
+            text-align: center;
+            position: relative;
+        }
+
+        .mentor-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--secondary);
+        }
+
+        .mentor-avatar {
+            width: 96px;
+            height: 96px;
+            border-radius: 50%;
+            border: 3px solid rgba(255, 255, 255, 0.2);
+            overflow: hidden;
+            margin: 0 auto 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg-light);
+        }
+
+        .mentor-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .mentor-name-link {
+            color: var(--bg-white) !important;
+            display: inline-block;
+            margin-bottom: 4px;
+        }
+
+        .mentor-name {
+            font-size: 20px;
+            color: var(--bg-white) !important;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .mentor-title {
+            font-size: 14px;
+            color: var(--text-light);
+        }
+
+        .mentor-body {
+            padding: 32px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .mentor-specialties {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .mentor-specialties span {
+            font-size: 11px;
+            font-weight: 600;
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+            padding: 4px 8px;
+            border-radius: 4px;
+            text-transform: uppercase;
+        }
+
+        .mentor-body p {
+            font-size: 14px;
+            color: var(--text-muted);
+            line-height: 1.6;
+            margin-bottom: 24px;
+            flex-grow: 1;
+        }
+
+        .mentor-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            border-top: 1px solid var(--border-color);
+            padding-top: 20px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .mentor-stat .number {
+            display: block;
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .mentor-stat .label {
+            font-size: 11px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+
+        /* ==================== GALLERY ==================== */
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+        }
+
+        .gallery-item {
+            position: relative;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--shadow-soft);
+            border: 1px solid var(--border-color);
+            height: 240px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: var(--transition);
+        }
+
+        .gallery-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(15, 23, 42, 0.9), rgba(15, 23, 42, 0));
+            padding: 24px;
+            color: var(--bg-white);
+            opacity: 0;
+            transform: translateY(10px);
+            transition: var(--transition);
+        }
+
+        .gallery-item:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .gallery-item:hover img {
+            transform: scale(1.05);
+        }
+
+        .gallery-item:hover .gallery-overlay {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .gallery-overlay h4 {
+            color: var(--bg-white);
+            font-size: 18px;
+            margin-bottom: 4px;
+        }
+
+        .gallery-overlay p {
+            font-size: 13px;
+            opacity: 0.8;
+        }
+
+        /* Modal specific styling for Gallery Modals */
+        .gallery-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 2000;
+            background: rgba(15, 23, 42, 0.7);
+            backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition);
+            padding: 24px;
+        }
+
+        .gallery-modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .gallery-modal .modal-content {
+            background: var(--bg-white);
+            border-radius: var(--border-radius);
+            max-width: 900px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+            animation: modalFadeIn 300ms ease-out;
+        }
+
+        .gallery-modal .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--bg-light);
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            color: var(--text-dark);
+            z-index: 10;
+            transition: var(--transition);
+        }
+
+        .gallery-modal .modal-close:hover {
+            background: var(--primary);
+            color: var(--bg-white);
+        }
+
+        .modal-image {
+            width: 100%;
+            height: 360px;
+            object-fit: cover;
+        }
+
+        /* ==================== RESOURCES & COMMUNITY ==================== */
+        .resources-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+        }
+
+        .resource-card {
+            background: var(--bg-white);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-soft);
+            border: 1px solid var(--border-color);
+            padding: 32px;
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .resource-card:hover {
+            transform: translateY(-6px);
+            box-shadow: var(--shadow-hover);
+            border-color: var(--secondary);
+        }
+
+        .resource-icon {
+            width: 56px;
+            height: 56px;
+            background: var(--bg-light);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: var(--secondary);
+            margin-bottom: 24px;
+            transition: var(--transition);
+        }
+
+        .resource-card:hover .resource-icon {
+            background: var(--secondary);
+            color: var(--bg-white);
+        }
+
+        .resource-card h3 {
+            font-size: 18px;
+            margin-bottom: 12px;
+        }
+
+        .resource-card p {
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-bottom: 20px;
+            flex-grow: 1;
+        }
+
+        .resource-link {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--secondary);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .resource-link:hover {
+            color: var(--primary);
+        }
+
+        /* Forum & Community styling */
+        .forum-categories {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+        }
+
+        .forum-category {
+            background: var(--bg-white);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-soft);
+            border: 1px solid var(--border-color);
+            padding: 32px;
+            transition: var(--transition);
+        }
+
+        .forum-category:hover {
+            box-shadow: var(--shadow-hover);
+        }
+
+        .forum-category-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 24px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 20px;
+        }
+
+        .forum-category-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 10px;
+            background-color: var(--bg-light);
+            color: var(--secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .forum-category-header h3 {
+            font-size: 16px;
+            margin-bottom: 2px;
+        }
+
+        .forum-category-header p {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .forum-topics {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .forum-topics li {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 14px;
+        }
+
+        .forum-topic {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+            color: var(--text-dark);
+        }
+
+        .forum-topic i {
+            color: var(--text-light);
+        }
+
+        .forum-stats {
+            display: flex;
+            gap: 12px;
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .forum-stats span {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        /* ==================== RESPONSIVE DESIGN ==================== */
+        @media (max-width: 1024px) {
+            .hero-grid {
+                grid-template-columns: 1fr;
+                text-align: center;
+                gap: 40px;
+            }
+
+            .hero-ctas {
+                justify-content: center;
+            }
+
+            .trust-indicators {
+                justify-content: center;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .why-grid, .courses-grid, .testimonials-grid, .consultancy-grid, .news-grid, .events-grid, .involvement-grid, .mentoring-grid, .gallery-grid, .resources-grid, .forum-categories {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .footer-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 16px 0;
+                background: var(--primary);
+            }
+
+            .nav-menu {
+                display: none;
+                flex-direction: column;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background: var(--primary);
+                padding: 24px;
+                border-bottom: 1px solid rgba(255,255,255,0.08);
+                gap: 20px;
+            }
+
+            .nav-menu.active {
+                display: flex;
+            }
+
+            .nav-actions {
+                display: none;
+            }
+
+            .nav-toggle {
+                display: block;
+            }
+
+            .hero-content h2 {
+                font-size: 38px;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .why-grid, .courses-grid, .testimonials-grid, .consultancy-grid, .news-grid, .events-grid, .involvement-grid, .mentoring-grid, .gallery-grid, .resources-grid, .forum-categories {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-grid {
+                grid-template-columns: 1fr;
+                gap: 32px;
+            }
+
+            .footer-bottom {
+                flex-direction: column;
+                gap: 16px;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ==================== NAVIGATION ==================== -->
+    <nav class="navbar">
+        <div class="container nav-container">
+            <a href="#home" class="logo">
+                <div class="logo-icon">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <div class="logo-text">
+                    <h1>Beyond Data Analytics</h1>
+                    <p>Transforming Data Into Insights</p>
+                </div>
+            </a>
+            
+            <button class="nav-toggle" onclick="toggleNav()">
+                <i class="fas fa-bars"></i>
+            </button>
+            
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="#home" class="active">Home</a></li>
+                <li class="nav-dropdown">
+                    <a href="javascript:void(0)" class="dropdown-trigger">Courses <i class="fas fa-caret-down" style="font-size:0.75rem;"></i></a>
+                    <div class="dropdown-content">
+                        <a href="javascript:void(0)" onclick="openEnrollmentModal('data-analysis-fundamentals', 'Data Analysis Fundamentals', 'KES 25,000', 'KES 5,000')"><i class="fas fa-chart-bar" style="color:var(--secondary);"></i> Data Analysis Fundamentals</a>
+                        <a href="javascript:void(0)" onclick="openEnrollmentModal('machine-learning-bootcamp', 'Machine Learning Bootcamp', 'KES 45,000', 'KES 5,000')"><i class="fas fa-brain" style="color:var(--secondary);"></i> Machine Learning Bootcamp</a>
+                        <a href="javascript:void(0)" onclick="openEnrollmentModal('time-series-forecasting', 'Time Series Forecasting', 'KES 35,000', 'KES 5,000')"><i class="fas fa-clock" style="color:var(--secondary);"></i> Time Series Forecasting</a>
+                        <a href="javascript:void(0)" onclick="openEnrollmentModal('python', 'Python for Data Science', 'KES 30,000', 'KES 5,000')"><i class="fab fa-python" style="color:var(--secondary);"></i> Python for Data Science</a>
+                        <a href="javascript:void(0)" onclick="openEnrollmentModal('statistical-inference', 'Statistical Inference', 'KES 32,000', 'KES 5,000')"><i class="fas fa-microscope" style="color:var(--secondary);"></i> Statistical Inference</a>
+                        <a href="javascript:void(0)" onclick="openEnrollmentModal('survival-analysis', 'Survival Analysis', 'KES 38,000', 'KES 5,000')"><i class="fas fa-heartbeat" style="color:var(--secondary);"></i> Survival Analysis</a>
+                        <a href="javascript:void(0)" onclick="openEnrollmentModal('r-programming', 'R Programming', 'KES 28,000', 'KES 5,000')"><i class="fas fa-chart-area" style="color:var(--secondary);"></i> R Programming</a>
+                        <a href="javascript:void(0)" onclick="openEnrollmentModal('sql', 'SQL & Databases', 'KES 25,000', 'KES 5,000')"><i class="fas fa-database" style="color:var(--secondary);"></i> SQL & Databases</a>
+                        <a href="javascript:void(0)" onclick="openEnrollmentModal('power-bi', 'Power BI Dashboards', 'KES 20,000', 'KES 5,000')"><i class="fas fa-chart-pie" style="color:var(--secondary);"></i> Power BI Dashboards</a>
+                    </div>
+                </li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#courses">Courses</a></li>
+                <li><a href="#mentoring">Mentors</a></li>
+                <li><a href="#involved">Join Us</a></li>
+                <li><a href="#gallery">Gallery</a></li>
+                <li><a href="#consultancy">Consultancy</a></li>
+                <li><a href="#resources">Resources</a></li>
+                <li><a href="#news">News</a></li>
+                <li><a href="#faq">FAQ</a></li>
+            </ul>
+            
+            <div class="nav-actions">
+                <a href="/login.html" class="navbar-login-btn"><i class="fas fa-sign-in-alt"></i> Login</a>
+                <a href="https://forms.gle/iULxMYXieuC4px8p8" target="_blank" class="btn btn-accent" style="background-color: var(--accent); color: var(--primary); font-weight: 700; padding: 10px 22px; border-radius: 50px; font-size: 14px; box-shadow: 0 2px 12px rgba(250, 204, 21, 0.35);"><i class="fas fa-user-plus"></i> Sign Up</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ==================== HERO SECTION ==================== -->
+    <header class="hero" id="home">
+        <div class="hero-glow"></div>
+        <div class="container hero-grid">
+            <div class="hero-content">
+                <div class="hero-badge">
+                    <i class="fas fa-bolt"></i> Elevate Your Analytical Prowess
+                </div>
+                <h2>Master Data Analytics & AI Skills That Employers Need</h2>
+                <p>Build practical, industry-ready skills through hands-on projects, expert mentorship, and flexible cohort structures.</p>
+                <div class="hero-ctas">
+                    <a href="#courses" class="btn btn-accent">Start Learning</a>
+                    <a href="#consultancy" class="btn btn-outline">Book Consultation</a>
+                </div>
+                <div class="trust-indicators">
+                    <div class="trust-item"><i class="fas fa-check-circle"></i> 500+ learners</div>
+                    <div class="trust-item"><i class="fas fa-check-circle"></i> Industry-focused programs</div>
+                    <div class="trust-item"><i class="fas fa-check-circle"></i> 95% satisfaction</div>
+                </div>
+            </div>
+            <div class="hero-visual">
+                <img src="/images/data_dashboard_mockup.png" alt="Data Analytics and AI Training Platform Dashboard Mockup">
+            </div>
+        </div>
+    </header>
+
+    <!-- ==================== TRUST / STATS SECTION ==================== -->
+    <section class="stats">
+        <div class="container stats-grid">
+            <div class="stat-card">
+                <div class="stat-num">500+</div>
+                <div class="stat-label">Students Trained</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-num">10+</div>
+                <div class="stat-label">Programs</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-num">95%</div>
+                <div class="stat-label">Satisfaction Rate</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-num">4.8/5</div>
+                <div class="stat-label">Student Rating</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== WHY CHOOSE US ==================== -->
+    <section class="section section-light" id="about">
+        <div class="container">
+            <div class="section-header">
+                <h2>Why Choose Beyond Data Analytics</h2>
+                <p>We combine theoretical foundations with hands-on labs and real-world tools to ensure you excel in your career.</p>
+            </div>
+            <div class="why-grid">
+                <div class="why-card">
+                    <div class="why-icon"><i class="fas fa-laptop-code"></i></div>
+                    <h3>Industry Projects</h3>
+                    <p>Build an impressive portfolio by tackling projects structured around actual corporate datasets and scenarios.</p>
+                </div>
+                <div class="why-card">
+                    <div class="why-icon"><i class="fas fa-comments"></i></div>
+                    <h3>Expert Mentorship</h3>
+                    <p>Receive weekly guidance, coding support, and thorough project code audits from senior practitioners.</p>
+                </div>
+                <div class="why-card">
+                    <div class="why-icon"><i class="fas fa-certificate"></i></div>
+                    <h3>Verified Certificates</h3>
+                    <p>Earn verified course certificates that are widely recognized and highly valued by industry employers.</p>
+                </div>
+                <div class="why-card">
+                    <div class="why-icon"><i class="fas fa-briefcase"></i></div>
+                    <h3>Career Guidance</h3>
+                    <p>Leverage resume reviews, career alignment sessions, and strategic interview prep designed to get you hired.</p>
+                </div>
+                <div class="why-card">
+                    <div class="why-icon"><i class="fas fa-flask"></i></div>
+                    <h3>Practical Learning</h3>
+                    <p>Acquire deep competency by working interactively inside code editors and real visualization tools.</p>
+                </div>
+                <div class="why-card">
+                    <div class="why-icon"><i class="fas fa-calendar-alt"></i></div>
+                    <h3>Flexible Learning</h3>
+                    <p>Choose between structured cohort schedules or standard self-paced study formats that match your schedule.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== FEATURED COURSES SECTION ==================== -->
+    <section class="section" id="courses">
+        <div class="container">
+            <div class="section-header">
+                <h2>Featured Learning Programs</h2>
+                <p>Beginner-friendly to advanced learning paths that build high-impact skills.</p>
+            </div>
+            <div class="courses-grid">
+                <!-- Course 1 -->
+                <div class="course-card">
+                    <div class="course-header" onclick="openEnrollmentModal('data-analysis-fundamentals', 'Data Analysis Fundamentals', 'KES 25,000', 'KES 5,000')">
+                        <div class="course-icon-wrapper"><i class="fas fa-chart-bar"></i></div>
+                        <h3>Data Analysis Fundamentals</h3>
+                        <p class="desc">Master the foundations of data cleansing, exploration, and database querying.</p>
+                    </div>
+                    <div class="course-body">
+                        <div class="course-meta">
+                            <span class="meta-tag"><i class="far fa-clock"></i> 8 Weeks</span>
+                            <span class="meta-tag"><i class="fas fa-signal"></i> Beginner</span>
+                        </div>
+                        <ul class="course-highlights">
+                            <li><i class="fas fa-check-circle"></i> Excel & Advanced Formulas</li>
+                            <li><i class="fas fa-check-circle"></i> SQL Querying Foundations</li>
+                            <li><i class="fas fa-check-circle"></i> Exploratory Analysis</li>
+                            <li><i class="fas fa-check-circle"></i> Certificate Included</li>
+                        </ul>
+                    </div>
+                    <div class="course-footer">
+                        <button onclick="openEnrollmentModal('data-analysis-fundamentals', 'Data Analysis Fundamentals', 'KES 25,000', 'KES 5,000')" class="btn btn-primary" style="width: 100%;">Enroll Now</button>
+                    </div>
+                </div>
+
+                <!-- Course 2 -->
+                <div class="course-card accent-card">
+                    <div class="course-header" onclick="openEnrollmentModal('machine-learning-bootcamp', 'Machine Learning Bootcamp', 'KES 45,000', 'KES 5,000')">
+                        <div class="course-icon-wrapper"><i class="fas fa-brain"></i></div>
+                        <h3>Machine Learning Bootcamp</h3>
+                        <p class="desc">Train, tune, and deploy robust supervised and unsupervised models.</p>
+                    </div>
+                    <div class="course-body">
+                        <div class="course-meta">
+                            <span class="meta-tag"><i class="far fa-clock"></i> 12 Weeks</span>
+                            <span class="meta-tag"><i class="fas fa-signal"></i> Advanced</span>
+                        </div>
+                        <ul class="course-highlights">
+                            <li><i class="fas fa-check-circle"></i> Scikit-learn Pipelines</li>
+                            <li><i class="fas fa-check-circle"></i> Deep Learning Basics</li>
+                            <li><i class="fas fa-check-circle"></i> Explainable AI (SHAP)</li>
+                            <li><i class="fas fa-check-circle"></i> Certificate Included</li>
+                        </ul>
+                    </div>
+                    <div class="course-footer">
+                        <button onclick="openEnrollmentModal('machine-learning-bootcamp', 'Machine Learning Bootcamp', 'KES 45,000', 'KES 5,000')" class="btn btn-primary" style="width: 100%;">Enroll Now</button>
+                    </div>
+                </div>
+
+                <!-- Course 3 -->
+                <div class="course-card danger-card">
+                    <div class="course-header" onclick="openEnrollmentModal('time-series-forecasting', 'Time Series Forecasting', 'KES 35,000', 'KES 5,000')">
+                        <div class="course-icon-wrapper"><i class="fas fa-clock"></i></div>
+                        <h3>Time Series Forecasting</h3>
+                        <p class="desc">Predict macro trends, financial fluctuations, and volatile signals.</p>
+                    </div>
+                    <div class="course-body">
+                        <div class="course-meta">
+                            <span class="meta-tag"><i class="far fa-clock"></i> 10 Weeks</span>
+                            <span class="meta-tag"><i class="fas fa-signal"></i> Intermediate</span>
+                        </div>
+                        <ul class="course-highlights">
+                            <li><i class="fas fa-check-circle"></i> ARIMA & SARIMA Forecasting</li>
+                            <li><i class="fas fa-check-circle"></i> GARCH Volatility Models</li>
+                            <li><i class="fas fa-check-circle"></i> Meta Prophet & LSTM</li>
+                            <li><i class="fas fa-check-circle"></i> Certificate Included</li>
+                        </ul>
+                    </div>
+                    <div class="course-footer">
+                        <button onclick="openEnrollmentModal('time-series-forecasting', 'Time Series Forecasting', 'KES 35,000', 'KES 5,000')" class="btn btn-primary" style="width: 100%;">Enroll Now</button>
+                    </div>
+                </div>
+
+                <!-- Course 4 -->
+                <div class="course-card">
+                    <div class="course-header" onclick="openEnrollmentModal('python', 'Python for Data Science', 'KES 30,000', 'KES 5,000')">
+                        <div class="course-icon-wrapper"><i class="fab fa-python"></i></div>
+                        <h3>Python for Data Science</h3>
+                        <p class="desc">A rapid coding dive utilizing NumPy, pandas, and matplotlib.</p>
+                    </div>
+                    <div class="course-body">
+                        <div class="course-meta">
+                            <span class="meta-tag"><i class="far fa-clock"></i> 6 Weeks</span>
+                            <span class="meta-tag"><i class="fas fa-signal"></i> Beginner</span>
+                        </div>
+                        <ul class="course-highlights">
+                            <li><i class="fas fa-check-circle"></i> Python Scripting Basics</li>
+                            <li><i class="fas fa-check-circle"></i> DataFrame Manipulation</li>
+                            <li><i class="fas fa-check-circle"></i> Matplotlib & Seaborn</li>
+                            <li><i class="fas fa-check-circle"></i> Certificate Included</li>
+                        </ul>
+                    </div>
+                    <div class="course-footer">
+                        <button onclick="openEnrollmentModal('python', 'Python for Data Science', 'KES 30,000', 'KES 5,000')" class="btn btn-primary" style="width: 100%;">Enroll Now</button>
+                    </div>
+                </div>
+
+                <!-- Course 5 -->
+                <div class="course-card accent-card">
+                    <div class="course-header" onclick="openEnrollmentModal('statistical-inference', 'Statistical Inference', 'KES 32,000', 'KES 5,000')">
+                        <div class="course-icon-wrapper"><i class="fas fa-microscope"></i></div>
+                        <h3>Statistical Inference</h3>
+                        <p class="desc">Master testing, regression frameworks, and experimental layout.</p>
+                    </div>
+                    <div class="course-body">
+                        <div class="course-meta">
+                            <span class="meta-tag"><i class="far fa-clock"></i> 8 Weeks</span>
+                            <span class="meta-tag"><i class="fas fa-signal"></i> Intermediate</span>
+                        </div>
+                        <ul class="course-highlights">
+                            <li><i class="fas fa-check-circle"></i> A/B Testing & Hypothesis</li>
+                            <li><i class="fas fa-check-circle"></i> ANOVA & Chi-Square</li>
+                            <li><i class="fas fa-check-circle"></i> Regression Analysis</li>
+                            <li><i class="fas fa-check-circle"></i> Certificate Included</li>
+                        </ul>
+                    </div>
+                    <div class="course-footer">
+                        <button onclick="openEnrollmentModal('statistical-inference', 'Statistical Inference', 'KES 32,000', 'KES 5,000')" class="btn btn-primary" style="width: 100%;">Enroll Now</button>
+                    </div>
+                </div>
+
+                <!-- Course 6 -->
+                <div class="course-card danger-card">
+                    <div class="course-header" onclick="openEnrollmentModal('survival-analysis', 'Survival Analysis', 'KES 38,000', 'KES 5,000')">
+                        <div class="course-icon-wrapper"><i class="fas fa-heartbeat"></i></div>
+                        <h3>Survival Analysis</h3>
+                        <p class="desc">Model time-to-event outcomes using hazards and hazard ratios.</p>
+                    </div>
+                    <div class="course-body">
+                        <div class="course-meta">
+                            <span class="meta-tag"><i class="far fa-clock"></i> 8 Weeks</span>
+                            <span class="meta-tag"><i class="fas fa-signal"></i> Advanced</span>
+                        </div>
+                        <ul class="course-highlights">
+                            <li><i class="fas fa-check-circle"></i> Kaplan-Meier Curves</li>
+                            <li><i class="fas fa-check-circle"></i> Cox Proportional Hazards</li>
+                            <li><i class="fas fa-check-circle"></i> Competing Risks</li>
+                            <li><i class="fas fa-check-circle"></i> Certificate Included</li>
+                        </ul>
+                    </div>
+                    <div class="course-footer">
+                        <button onclick="openEnrollmentModal('survival-analysis', 'Survival Analysis', 'KES 38,000', 'KES 5,000')" class="btn btn-primary" style="width: 100%;">Enroll Now</button>
+                    </div>
+                </div>
+
+                <!-- Course 7 -->
+                <div class="course-card">
+                    <div class="course-header" onclick="openEnrollmentModal('r-programming', 'R Programming', 'KES 28,000', 'KES 5,000')">
+                        <div class="course-icon-wrapper"><i class="fas fa-chart-area"></i></div>
+                        <h3>R Programming</h3>
+                        <p class="desc">Learn tidyverse, ggplot2, and dynamic reports using markdown.</p>
+                    </div>
+                    <div class="course-body">
+                        <div class="course-meta">
+                            <span class="meta-tag"><i class="far fa-clock"></i> 8 Weeks</span>
+                            <span class="meta-tag"><i class="fas fa-signal"></i> Beginner</span>
+                        </div>
+                        <ul class="course-highlights">
+                            <li><i class="fas fa-check-circle"></i> R Syntax & Data Types</li>
+                            <li><i class="fas fa-check-circle"></i> Dplyr & Tidyr Wrangling</li>
+                            <li><i class="fas fa-check-circle"></i> Ggplot2 Custom Visuals</li>
+                            <li><i class="fas fa-check-circle"></i> Certificate Included</li>
+                        </ul>
+                    </div>
+                    <div class="course-footer">
+                        <button onclick="openEnrollmentModal('r-programming', 'R Programming', 'KES 28,000', 'KES 5,000')" class="btn btn-primary" style="width: 100%;">Enroll Now</button>
+                    </div>
+                </div>
+
+                <!-- Course 8 -->
+                <div class="course-card accent-card">
+                    <div class="course-header" onclick="openEnrollmentModal('sql', 'SQL & Databases', 'KES 25,000', 'KES 5,000')">
+                        <div class="course-icon-wrapper"><i class="fas fa-database"></i></div>
+                        <h3>SQL & Databases</h3>
+                        <p class="desc">Write advanced relational queries, Joins, and aggregations.</p>
+                    </div>
+                    <div class="course-body">
+                        <div class="course-meta">
+                            <span class="meta-tag"><i class="far fa-clock"></i> 6 Weeks</span>
+                            <span class="meta-tag"><i class="fas fa-signal"></i> Beginner</span>
+                        </div>
+                        <ul class="course-highlights">
+                            <li><i class="fas fa-check-circle"></i> PostgreSQL & MySQL</li>
+                            <li><i class="fas fa-check-circle"></i> Relational Normalization</li>
+                            <li><i class="fas fa-check-circle"></i> Subqueries & CTEs</li>
+                            <li><i class="fas fa-check-circle"></i> Certificate Included</li>
+                        </ul>
+                    </div>
+                    <div class="course-footer">
+                        <button onclick="openEnrollmentModal('sql', 'SQL & Databases', 'KES 25,000', 'KES 5,000')" class="btn btn-primary" style="width: 100%;">Enroll Now</button>
+                    </div>
+                </div>
+
+                <!-- Course 9 -->
+                <div class="course-card danger-card">
+                    <div class="course-header" onclick="openEnrollmentModal('power-bi', 'Power BI Dashboards', 'KES 20,000', 'KES 5,000')">
+                        <div class="course-icon-wrapper"><i class="fas fa-chart-pie"></i></div>
+                        <h3>Power BI Dashboards</h3>
+                        <p class="desc">Design highly interactive dashboards and utilize DAX measures.</p>
+                    </div>
+                    <div class="course-body">
+                        <div class="course-meta">
+                            <span class="meta-tag"><i class="far fa-clock"></i> 6 Weeks</span>
+                            <span class="meta-tag"><i class="fas fa-signal"></i> Beginner</span>
+                        </div>
+                        <ul class="course-highlights">
+                            <li><i class="fas fa-check-circle"></i> DAX Modeling Formulas</li>
+                            <li><i class="fas fa-check-circle"></i> Power Query Transformations</li>
+                            <li><i class="fas fa-check-circle"></i> UX/UI Dashboard Layout</li>
+                            <li><i class="fas fa-check-circle"></i> Certificate Included</li>
+                        </ul>
+                    </div>
+                    <div class="course-footer">
+                        <button onclick="openEnrollmentModal('power-bi', 'Power BI Dashboards', 'KES 20,000', 'KES 5,000')" class="btn btn-primary" style="width: 100%;">Enroll Now</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== OUR MENTORS ==================== -->
+    <section class="section" id="mentoring">
+        <div class="container">
+            <div class="section-header">
+                <h2>Our Mentors</h2>
+                <p>Learn from and connect with seasoned experts who bring deep academic rigor and industrial experience.</p>
+            </div>
+            <div class="mentoring-grid">
+                <!-- Mentor 1 -->
+                <div class="mentor-card">
+                    <div class="mentor-header">
+                        <div class="mentor-avatar">
+                            <img src="/images/profile-victor.jpg" alt="Dr. Victor W. Lumumba" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"><span class="avatar-placeholder" style="display:none; font-size:28px; font-weight:700; color:var(--primary); width:100%; height:100%; align-items:center; justify-content:center;">VL</span>
+                        </div>
+                        <a href="https://drive.google.com/uc?id=1yvIK0ZEl2mLIqxuu_Zm8IyZoa36mjYnn&export=download" target="_blank" class="mentor-name-link">
+                            <h3 class="mentor-name">Dr. Victor W. Lumumba <i class="fas fa-file-download" style="font-size:0.9rem;"></i></h3>
+                        </a>
+                        <p class="mentor-title">Lead Data Scientist & Researcher</p>
+                    </div>
+                    <div class="mentor-body">
+                        <div class="mentor-specialties">
+                            <span>Explainable AI</span>
+                            <span>Survival Analysis</span>
+                            <span>Biostatistics</span>
+                        </div>
+                        <p>Dr. Lumumba is a researcher and lecturer specializing in medical informatics, survival analysis, and Explainable AI. He leads the core curriculum development and corporate analytics consultancy.</p>
+                        <div class="mentor-stats">
+                            <div class="mentor-stat">
+                                <span class="number">10+</span>
+                                <span class="label">Years Exp</span>
+                            </div>
+                            <div class="mentor-stat">
+                                <span class="number">20+</span>
+                                <span class="label">Papers</span>
+                            </div>
+                            <div class="mentor-stat">
+                                <span class="number">500+</span>
+                                <span class="label">Mentored</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mentor 2 -->
+                <div class="mentor-card">
+                    <div class="mentor-header">
+                        <div class="mentor-avatar">
+                            <img src="/images/profile-dennis.jpg" alt="Prof. Dennis Muriithi" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"><span class="avatar-placeholder" style="display:none; font-size:28px; font-weight:700; color:var(--primary); width:100%; height:100%; align-items:center; justify-content:center;">DM</span>
+                        </div>
+                        <a href="https://drive.google.com/uc?id=1yvIK0ZEl2mLIqxuu_Zm8IyZoa36mjYnn&export=download" target="_blank" class="mentor-name-link">
+                            <h3 class="mentor-name">Prof. Dennis Muriithi <i class="fas fa-file-download" style="font-size:0.9rem;"></i></h3>
+                        </a>
+                        <p class="mentor-title">Senior Consultant & Statistician</p>
+                    </div>
+                    <div class="mentor-body">
+                        <div class="mentor-specialties">
+                            <span>Time Series</span>
+                            <span>Inference</span>
+                            <span>Financial Data</span>
+                        </div>
+                        <p>Prof. Muriithi brings years of experience in time series modeling, macroeconomic forecasting, and statistical modeling, advising financial institutions and public entities.</p>
+                        <div class="mentor-stats">
+                            <div class="mentor-stat">
+                                <span class="number">15+</span>
+                                <span class="label">Years Exp</span>
+                            </div>
+                            <div class="mentor-stat">
+                                <span class="number">35+</span>
+                                <span class="label">Projects</span>
+                            </div>
+                            <div class="mentor-stat">
+                                <span class="number">1k+</span>
+                                <span class="label">Students</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mentor 3 -->
+                <div class="mentor-card">
+                    <div class="mentor-header">
+                        <div class="mentor-avatar">
+                            <img src="/images/profile-anne.jpg" alt="Prof. Anne Mwangi" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"><span class="avatar-placeholder" style="display:none; font-size:28px; font-weight:700; color:var(--primary); width:100%; height:100%; align-items:center; justify-content:center;">AM</span>
+                        </div>
+                        <a href="https://drive.google.com/uc?id=1yvIK0ZEl2mLIqxuu_Zm8IyZoa36mjYnn&export=download" target="_blank" class="mentor-name-link">
+                            <h3 class="mentor-name">Prof. Anne Mwangi <i class="fas fa-file-download" style="font-size:0.9rem;"></i></h3>
+                        </a>
+                        <p class="mentor-title">Epidemiology & Biostatistics Advisor</p>
+                    </div>
+                    <div class="mentor-body">
+                        <div class="mentor-specialties">
+                            <span>Clinical Trials</span>
+                            <span>R Programming</span>
+                            <span>Health Policy</span>
+                        </div>
+                        <p>Prof. Mwangi advisor leads clinical study evaluations and biostatistics. She oversees the public health analytics datasets and clinical data modeling modules.</p>
+                        <div class="mentor-stats">
+                            <div class="mentor-stat">
+                                <span class="number">12+</span>
+                                <span class="label">Years Exp</span>
+                            </div>
+                            <div class="mentor-stat">
+                                <span class="number">18+</span>
+                                <span class="label">Publications</span>
+                            </div>
+                            <div class="mentor-stat">
+                                <span class="number">300+</span>
+                                <span class="label">Grads</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== GETTING INVOLVED ==================== -->
+    <section class="section section-light" id="involved">
+        <div class="container">
+            <div class="section-header">
+                <h2>Getting Involved</h2>
+                <p>Join our mission to empower communities through data analytics and AI. Explore ways to collaborate with us.</p>
+            </div>
+            <div class="involvement-grid">
+                <!-- Card 1 -->
+                <div class="involvement-card">
+                    <div class="involvement-icon"><i class="fas fa-chalkboard-teacher"></i></div>
+                    <h3>Become an Instructor</h3>
+                    <p>Share your industry expertise and teach data science cohorts. Apply to join our expert faculty.</p>
+                    <a href="https://forms.gle/VN969BBGgWsUTnwV6" target="_blank" class="btn btn-primary" style="width: 100%;">Apply Now</a>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="involvement-card">
+                    <div class="involvement-icon"><i class="fas fa-hands-helping"></i></div>
+                    <h3>Become a Mentor</h3>
+                    <p>Support aspiring analysts with one-on-one reviews, code evaluations, and career guidance.</p>
+                    <a href="https://forms.gle/oA65QqmksEZgiebz9" target="_blank" class="btn btn-primary" style="width: 100%;">Apply Now</a>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="involvement-card">
+                    <div class="involvement-icon"><i class="fas fa-graduation-cap"></i></div>
+                    <h3>Sponsor a Student</h3>
+                    <p>Provide financial sponsorship or scholarships to deserving students from underrepresented backgrounds.</p>
+                    <a href="https://forms.gle/aotGiWNqp48wFGY38" target="_blank" class="btn btn-primary" style="width: 100%;">Apply Now</a>
+                </div>
+
+                <!-- Card 4 -->
+                <div class="involvement-card">
+                    <div class="involvement-icon"><i class="fas fa-building"></i></div>
+                    <h3>Corporate Partnership</h3>
+                    <p>Collaborate on research grants, recruitment pipelines, and tailored workforce upskilling bootcamps.</p>
+                    <a href="https://forms.gle/WCc9h92NMDoX4Hsb7" target="_blank" class="btn btn-primary" style="width: 100%;">Partner With Us</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== STUDENT TESTIMONIALS ==================== -->
+    <section class="section">
+        <div class="container">
+            <div class="section-header">
+                <h2>What Our Students Say</h2>
+                <p>Read about the learning journeys and success stories of our program graduates.</p>
+            </div>
+            <div class="testimonials-grid">
+                <div class="testimonial-card">
+                    <div class="stars">
+                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                    </div>
+                    <p>"The hands-on projects and guided cohort gave me the portfolio I needed. The mentorship reviews helped refine my code and approach."</p>
+                    <div class="student-profile">
+                        <img src="/images/profile-anne.jpg" alt="Anne Wambui" class="student-photo" onerror="this.src='/images/profile-victor.jpg'">
+                        <div class="student-details">
+                            <h4>Anne Wambui</h4>
+                            <p>Data Analyst, Safaricom</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="testimonial-card">
+                    <div class="stars">
+                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                    </div>
+                    <p>"The self-study option allowed me to learn complex statistical concepts at my own pace, paying only when I passed my exams."</p>
+                    <div class="student-profile">
+                        <img src="/images/profile-dennis.jpg" alt="Dennis Kiprop" class="student-photo" onerror="this.src='/images/profile-victor.jpg'">
+                        <div class="student-details">
+                            <h4>Dennis Kiprop</h4>
+                            <p>BI Developer, Equity Bank</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="testimonial-card">
+                    <div class="stars">
+                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                    </div>
+                    <p>"Beyond Data Analytics bridges academic rigor and actual industrial applications. The projects utilize high-value enterprise setups."</p>
+                    <div class="student-profile">
+                        <img src="/images/profile-victor.jpg" alt="Dr. Victor W. Lumumba" class="student-photo">
+                        <div class="student-details">
+                            <h4>Dr. Victor Lumumba</h4>
+                            <p>Lead Data Scientist & Mentor</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== PHOTO GALLERY ==================== -->
+    <section class="section section-light" id="gallery">
+        <div class="container">
+            <div class="section-header">
+                <h2>Photo Gallery</h2>
+                <p>Explore moments from our practical cohort workshops, student presentation days, and campus meetups.</p>
+            </div>
+            <div class="gallery-grid">
+                <!-- Gallery 1 -->
+                <div class="gallery-item" onclick="openModal('galleryModal1')">
+                    <img src="/images/image1.jpg" alt="Student Presentation Day" onerror="this.style.display='none'">
+                    <div class="gallery-overlay">
+                        <h4>Cohort Presentations</h4>
+                        <p>Students demonstrating end-to-end data analysis workflows to industry judges.</p>
+                    </div>
+                </div>
+
+                <!-- Gallery 2 -->
+                <div class="gallery-item" onclick="openModal('galleryModal2')">
+                    <img src="/images/image2.jpg" alt="Python & SQL Workshop" onerror="this.style.display='none'">
+                    <div class="gallery-overlay">
+                        <h4>Python & SQL Workshop</h4>
+                        <p>Active lab hours focusing on complex subqueries and data cleansing logic.</p>
+                    </div>
+                </div>
+
+                <!-- Gallery 3 -->
+                <div class="gallery-item" onclick="openModal('galleryModal3')">
+                    <img src="/images/image3.jpg" alt="Machine Learning Lab" onerror="this.style.display='none'">
+                    <div class="gallery-overlay">
+                        <h4>Machine Learning Lab</h4>
+                        <p>Hands-on session modeling regression trees and cross-validation folds.</p>
+                    </div>
+                </div>
+
+                <!-- Gallery 4 -->
+                <div class="gallery-item" onclick="openModal('galleryModal4')">
+                    <img src="/images/image4.jpg" alt="Time Series Discussion" onerror="this.style.display='none'">
+                    <div class="gallery-overlay">
+                        <h4>Time Series Discussion</h4>
+                        <p>Group study analyzing seasonal trends and ARIMA parameters.</p>
+                    </div>
+                </div>
+
+                <!-- Gallery 5 -->
+                <div class="gallery-item" onclick="openModal('galleryModal5')">
+                    <img src="/images/image5.jpg" alt="Mentorship Coffee Hour" onerror="this.style.display='none'">
+                    <div class="gallery-overlay">
+                        <h4>Mentorship Meetup</h4>
+                        <p>One-on-one resume review and career mapping with program alumni.</p>
+                    </div>
+                </div>
+
+                <!-- Gallery 6 -->
+                <div class="gallery-item" onclick="openModal('galleryModal6')">
+                    <img src="/images/image6.jpg" alt="Graduation Day" onerror="this.style.display='none'">
+                    <div class="gallery-overlay">
+                        <h4>Graduation Day</h4>
+                        <p>Celebrating graduates who achieved verification on their portfolio assessments.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== CONSULTANCY SERVICES ==================== -->
+    <section class="section" id="consultancy">
+        <div class="container">
+            <div class="section-header">
+                <h2>Our Consultancy Services</h2>
+                <p>Tailored data science, business intelligence, and AI training solutions for modern corporate entities.</p>
+            </div>
+            <div class="consultancy-grid">
+                <div class="consultancy-card">
+                    <div class="consultancy-icon"><i class="fas fa-chart-line"></i></div>
+                    <h3>Data Analytics</h3>
+                    <p>Clean, prepare, and dissect historical information to reveal performance drivers and workflow anomalies.</p>
+                </div>
+                <div class="consultancy-card">
+                    <div class="consultancy-icon"><i class="fas fa-chart-pie"></i></div>
+                    <h3>Business Intelligence</h3>
+                    <p>Implement enterprise-grade interactive dashboards and automated tracking pipelines in Power BI.</p>
+                </div>
+                <div class="consultancy-card">
+                    <div class="consultancy-icon"><i class="fas fa-brain"></i></div>
+                    <h3>AI Solutions</h3>
+                    <p>Integrate predictive analytics, classification systems, and machine learning pipelines into standard workflows.</p>
+                </div>
+                <div class="consultancy-card">
+                    <div class="consultancy-icon"><i class="fas fa-chess"></i></div>
+                    <h3>Data Strategy</h3>
+                    <p>Architect modern relational database storage systems and layout policies for organizational governance.</p>
+                </div>
+                <div class="consultancy-card">
+                    <div class="consultancy-icon"><i class="fas fa-users-cog"></i></div>
+                    <h3>Training Services</h3>
+                    <p>Provide tailored bootcamp seminars and group study curriculum to upskill administrative teams.</p>
+                </div>
+                <div class="consultancy-card">
+                    <div class="consultancy-icon"><i class="fas fa-handshake"></i></div>
+                    <h3>Consulting</h3>
+                    <p>Audit existing procedures and provide direct advisory oversight to achieve data alignment.</p>
+                </div>
+            </div>
+            <div class="consultancy-cta-block">
+                <h3>Ready to Transform Your Data?</h3>
+                <p>Connect directly with Dr. Victor Lumumba and our consulting team to map out a solution.</p>
+                <a href="mailto:lumumbavictor172@gmail.com" class="btn btn-primary"><i class="fas fa-envelope"></i> Request a Consultation</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== LEARNING RESOURCES ==================== -->
+    <section class="section section-light" id="resources">
+        <div class="container">
+            <div class="section-header">
+                <h2>Learning Resources</h2>
+                <p>Access free materials, code repositories, statistical guides, and interactive tools compiled by our mentors.</p>
+            </div>
+            <div class="resources-grid">
+                <!-- Resource 1 -->
+                <div class="resource-card">
+                    <div class="resource-icon"><i class="fab fa-github"></i></div>
+                    <h3>GitHub Repositories</h3>
+                    <p>Review repository templates containing cleaned datasets, setup scripts, and model notebooks.</p>
+                    <a href="https://github.com/Lumumba1992" target="_blank" class="resource-link">Explore Repos <i class="fas fa-arrow-right"></i></a>
+                </div>
+
+                <!-- Resource 2 -->
+                <div class="resource-card">
+                    <div class="resource-icon"><i class="fab fa-youtube"></i></div>
+                    <h3>Video Tutorials</h3>
+                    <p>Watch recorded sessions demonstrating SQL normalization steps and R programming concepts.</p>
+                    <a href="https://www.youtube.com/@lumumbavictor1992/featured" target="_blank" class="resource-link">Watch Videos <i class="fas fa-arrow-right"></i></a>
+                </div>
+
+                <!-- Resource 3 -->
+                <div class="resource-card">
+                    <div class="resource-icon"><i class="fas fa-database"></i></div>
+                    <h3>Practice Datasets</h3>
+                    <p>Download structured CSV and SQLite databases covering retail telemetry and biostatistics.</p>
+                    <a href="https://github.com/Lumumba1992" target="_blank" class="resource-link">Download Data <i class="fas fa-arrow-right"></i></a>
+                </div>
+
+                <!-- Resource 4 -->
+                <div class="resource-card">
+                    <div class="resource-icon"><i class="fas fa-book"></i></div>
+                    <h3>E-Books & Notes</h3>
+                    <p>Read detailed study guides and research notes on explainable AI models and survival analysis.</p>
+                    <a href="https://github.com/Lumumba1992/E-Books-and-Guides/tree/main/Notes" target="_blank" class="resource-link">View Notes <i class="fas fa-arrow-right"></i></a>
+                </div>
+
+                <!-- Resource 5 -->
+                <div class="resource-card">
+                    <div class="resource-icon"><i class="fas fa-file-code"></i></div>
+                    <h3>Jupyter Notebooks</h3>
+                    <p>Load dynamic Python notebooks covering cross-validation splits and decision tree visualization.</p>
+                    <a href="https://github.com/Lumumba1992" target="_blank" class="resource-link">Load Notebooks <i class="fas fa-arrow-right"></i></a>
+                </div>
+
+                <!-- Resource 6 -->
+                <div class="resource-card">
+                    <div class="resource-icon"><i class="fas fa-award"></i></div>
+                    <h3>Certification Prep</h3>
+                    <p>Take interactive quizzes and mock exam templates to test your readiness for core programs.</p>
+                    <a href="https://psychological-emerald-0nv3p6zk8f.edgeone.app/" target="_blank" class="resource-link">Take Quiz <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== COMMUNITY FORUM ==================== -->
+    <section class="section" id="forum">
+        <div class="container">
+            <div class="section-header">
+                <h2>Community & Discussion Forum</h2>
+                <p>Connect with other learners, ask technical questions, and participate in data science challenges.</p>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center;">
+                <div>
+                    <h3 style="font-size: 28px; margin-bottom: 20px; color: var(--primary);">Join Our Analytics Community</h3>
+                    <p style="font-size: 16px; color: var(--text-muted); line-height: 1.8; margin-bottom: 24px;">Our dynamic community platform allows students to ask debugging questions, collaborate on projects, and read announcements from Dr. Lumumba and other mentors.</p>
+                    <ul style="list-style: none; display: flex; flex-direction: column; gap: 16px; margin-bottom: 32px;">
+                        <li style="display: flex; align-items: center; gap: 12px; font-size: 15px; color: var(--text-dark);"><i class="fas fa-check-circle" style="color: #22c55e;"></i> Peer-to-peer code reviews and debugging channels</li>
+                        <li style="display: flex; align-items: center; gap: 12px; font-size: 15px; color: var(--text-dark);"><i class="fas fa-check-circle" style="color: #22c55e;"></i> Direct channels with faculty and mentors</li>
+                        <li style="display: flex; align-items: center; gap: 12px; font-size: 15px; color: var(--text-dark);"><i class="fas fa-check-circle" style="color: #22c55e;"></i> Job postings, career tips, and hiring events</li>
+                    </ul>
+                    <a href="https://fantastic-black-szioj2eywn.edgeone.app/" target="_blank" class="btn btn-primary"><i class="fas fa-comments"></i> Enter Community Portal</a>
+                </div>
+                <div style="background: var(--bg-light); border-radius: var(--border-radius); border: 1px solid var(--border-color); padding: 40px; display: flex; flex-direction: column; gap: 24px;">
+                    <h4 style="font-size: 20px; color: var(--primary); margin-bottom: 8px;"><i class="fas fa-chart-line"></i> Active Forum Categories</h4>
+                    <div style="display: flex; align-items: center; gap: 16px; border-bottom: 1px solid var(--border-color); padding-bottom: 16px;">
+                        <div style="width: 48px; height: 48px; border-radius: 8px; background: rgba(91, 75, 255, 0.1); color: var(--secondary); display: flex; align-items: center; justify-content: center; font-size: 20px;"><i class="fab fa-python"></i></div>
+                        <div>
+                            <h5 style="font-size: 16px; margin-bottom: 4px;">Python & Libraries</h5>
+                            <p style="font-size: 13px; color: var(--text-muted);">Pandas dataframe manipulation and sklearn models.</p>
+                        </div>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 16px; border-bottom: 1px solid var(--border-color); padding-bottom: 16px;">
+                        <div style="width: 48px; height: 48px; border-radius: 8px; background: rgba(91, 75, 255, 0.1); color: var(--secondary); display: flex; align-items: center; justify-content: center; font-size: 20px;"><i class="fas fa-calculator"></i></div>
+                        <div>
+                            <h5 style="font-size: 16px; margin-bottom: 4px;">Biostatistics & R</h5>
+                            <p style="font-size: 13px; color: var(--text-muted);">Survival models, hazard ratios, and clinical trials.</p>
+                        </div>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 16px;">
+                        <div style="width: 48px; height: 48px; border-radius: 8px; background: rgba(91, 75, 255, 0.1); color: var(--secondary); display: flex; align-items: center; justify-content: center; font-size: 20px;"><i class="fas fa-briefcase"></i></div>
+                        <div>
+                            <h5 style="font-size: 16px; margin-bottom: 4px;">Careers & Job Board</h5>
+                            <p style="font-size: 13px; color: var(--text-muted);">Local and remote analytics job postings and alerts.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== DYNAMIC NEWS SECTION ==================== -->
+    <section class="section section-light" id="news">
+        <div class="container">
+            <div class="section-header">
+                <h2>News & Bulletins</h2>
+                <p>Follow our latest training updates, research articles, and upcoming events.</p>
+            </div>
+            <div class="news-grid" id="newsGrid">
+                <!-- Dynamically loaded -->
+            </div>
+            
+            <h3 style="margin: 60px 0 24px; font-size: 24px; text-align: center;">Upcoming Campus Events</h3>
+            <div class="events-grid" id="eventsGrid">
+                <!-- Dynamically loaded -->
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== FAQ SECTION ==================== -->
+    <section class="section" id="faq">
+        <div class="container">
+            <div class="section-header">
+                <h2>Frequently Asked Questions</h2>
+                <p>Got questions? We've got answers about our programs, materials, and support structure.</p>
+            </div>
+            <div class="faq-accordion">
+                <div class="faq-item">
+                    <div class="faq-header" onclick="toggleFaq(this)">
+                        <h3>What is the duration of the courses?</h3>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-body">
+                        <div class="faq-body-content">
+                            Our standard programs range from 6 to 12 weeks depending on the selected topic. Self-paced enrollment allows you to complete the materials as fast or slow as your schedule allows.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-header" onclick="toggleFaq(this)">
+                        <h3>Do I get a certificate upon completion?</h3>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-body">
+                        <div class="faq-body-content">
+                            Yes, all programs include a verified certification pathway. Self-study paths require you to pass all modular exams to order your certificate, while tutor-led paths include evaluation within the price.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-header" onclick="toggleFaq(this)">
+                        <h3>What are the payment methods and options?</h3>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-body">
+                        <div class="faq-body-content">
+                            We accept M-Pesa payments, standard credit card, and direct bank transfers. Cohort courses also support installment layouts.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-header" onclick="toggleFaq(this)">
+                        <h3>How does the mentorship program work?</h3>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-body">
+                        <div class="faq-body-content">
+                            Tutor-guided pathways connect you with a dedicated industry mentor who conducts weekly project evaluations, answers questions inside the discussion channels, and offers guidance.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-header" onclick="toggleFaq(this)">
+                        <h3>Is there career support available?</h3>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-body">
+                        <div class="faq-body-content">
+                            Yes. Guided cohort paths include portfolio creation reviews, resume optimization sessions, and direct guidance on tech job interviews.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== FINAL CTA SECTION ==================== -->
+    <section class="final-cta">
+        <div class="final-cta-glow"></div>
+        <div class="container" style="position: relative; z-index: 2;">
+            <h2>Ready to Build Your Data Career?</h2>
+            <p>Join over 500 learners mastering analytics, predictive modeling, and business intelligence.</p>
+            <div class="final-cta-buttons">
+                <a href="#courses" class="btn btn-accent">Start Learning</a>
+                <a href="mailto:lumumbavictor172@gmail.com" class="btn btn-outline">Contact Us</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== FOOTER ==================== -->
+    <footer class="footer">
+        <div class="container footer-grid">
+            <div class="footer-about">
+                <div class="footer-logo">
+                    <div class="logo-icon"><i class="fas fa-chart-line"></i></div>
+                    <h1 style="color:#FFF; font-size: 20px; font-family:'Outfit';">Beyond Data Analytics</h1>
+                </div>
+                <p>Empowering the next generation of data analysts and AI engineers through high-fidelity training, active mentorship, and corporate consulting.</p>
+                <div class="social-links">
+                    <a href="https://www.youtube.com/@lumumbavictor1992/featured" target="_blank" class="social-link"><i class="fab fa-youtube"></i></a>
+                    <a href="https://www.researchgate.net/profile/Victor-Lumumba" target="_blank" class="social-link"><i class="fab fa-researchgate"></i></a>
+                </div>
+            </div>
+            
+            <div class="footer-links-col">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="#home">Home</a></li>
+                    <li><a href="#about">About Us</a></li>
+                    <li><a href="#courses">Courses</a></li>
+                    <li><a href="#consultancy">Consultancy</a></li>
+                    <li><a href="#news">News & Events</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-links-col">
+                <h4>Popular Courses</h4>
+                <ul>
+                    <li><a href="javascript:void(0)" onclick="openEnrollmentModal('data-analysis-fundamentals', 'Data Analysis Fundamentals', 'KES 25,000', 'KES 5,000')">Data Analysis</a></li>
+                    <li><a href="javascript:void(0)" onclick="openEnrollmentModal('machine-learning-bootcamp', 'Machine Learning Bootcamp', 'KES 45,000', 'KES 5,000')">Machine Learning</a></li>
+                    <li><a href="javascript:void(0)" onclick="openEnrollmentModal('python', 'Python for Data Science', 'KES 30,000', 'KES 5,000')">Python Data Science</a></li>
+                    <li><a href="javascript:void(0)" onclick="openEnrollmentModal('r-programming', 'R Programming', 'KES 28,000', 'KES 5,000')">R Programming</a></li>
+                    <li><a href="javascript:void(0)" onclick="openEnrollmentModal('sql', 'SQL & Databases', 'KES 25,000', 'KES 5,000')">SQL & Databases</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-links-col">
+                <h4>Contact Us</h4>
+                <ul class="footer-contact-info">
+                    <li><i class="fas fa-envelope"></i> <a href="mailto:lumumbavictor172@gmail.com" style="color: inherit;">lumumbavictor172@gmail.com</a></li>
+                    <li><i class="fas fa-phone"></i> +254 700 000 000</li>
+                    <li><i class="fas fa-map-marker-alt"></i> Nairobi, Kenya</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="container footer-bottom">
+            <p>&copy; 2026 Beyond Data Analytics. All rights reserved. | Founded & Developed by Dr. Victor W. Lumumba</p>
+            <p><a href="#home" style="color: inherit;">Back to Top <i class="fas fa-arrow-up"></i></a></p>
+        </div>
+    </footer>
+
+    <!-- ==================== MODALS ==================== -->
+    
+    <!-- Enrollment Option Selection Modal -->
+    <div id="enrollmentModal" class="modal-overlay">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h3 id="modalCourseTitle">Choose Enrollment Pathway</h3>
+                <button class="modal-close-btn" onclick="closeEnrollmentModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="pathway-cards">
+                    <!-- Option 1: Tutor-Guided -->
+                    <div class="pathway-card">
+                        <h4><i class="fas fa-chalkboard-teacher"></i> Guided Learning with Tutor</h4>
+                        <p>Receive access to a dedicated industry mentor, live webinars, code reviews, evaluations, and progress tracking.</p>
+                        <div class="pathway-footer">
+                            <div class="pathway-price">
+                                <span>Tuition Fee</span>
+                                <strong id="modalTutorFee">KES 25,000</strong>
+                            </div>
+                            <a id="modalTutorLink" href="https://forms.gle/iULxMYXieuC4px8p8" target="_blank" class="btn btn-primary">Enroll with Tutor</a>
+                        </div>
+                    </div>
+                    
+                    <!-- Option 2: Self-Study -->
+                    <div class="pathway-card">
+                        <h4><i class="fas fa-book-reader"></i> Self-Study (Free Learning)</h4>
+                        <p>Enjoy free access to core learning materials, videos, and modules. Pay only for certification when you successfully complete exams.</p>
+                        <div class="pathway-footer">
+                            <div class="pathway-price">
+                                <span>Certification Fee</span>
+                                <strong id="modalCertFee">KES 5,000</strong>
+                            </div>
+                            <a id="modalSelfLink" href="/explore.html?program=data-analysis-fundamentals" class="btn btn-secondary">Study & Pay for Certificate</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Gallery Modal 1 -->
+    <div id="galleryModal1" class="gallery-modal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal('galleryModal1')">&times;</button>
+            <img src="/images/image1.jpg" alt="Cohort Presentations" class="modal-image" onerror="this.style.display='none'">
+            <div style="padding: 32px;">
+                <h3 style="font-size: 24px; margin-bottom: 12px; color: var(--primary);">Cohort Presentations</h3>
+                <p style="color: var(--text-muted); line-height: 1.8;">Our cohort students presenting their final capstone projects. Each student designs an end-to-end dataset pipeline, builds analytical dashboards, and defends their findings before a panel of guest data scientists.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Gallery Modal 2 -->
+    <div id="galleryModal2" class="gallery-modal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal('galleryModal2')">&times;</button>
+            <img src="/images/image2.jpg" alt="Python & SQL Workshop" class="modal-image" onerror="this.style.display='none'">
+            <div style="padding: 32px;">
+                <h3 style="font-size: 24px; margin-bottom: 12px; color: var(--primary);">Python & SQL Workshop</h3>
+                <p style="color: var(--text-muted); line-height: 1.8;">A deep-dive classroom session covering advanced relational operations, subqueries, and Python scripting for automated file cleaning. Students practice writing optimized code for enterprise scale databases.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Gallery Modal 3 -->
+    <div id="galleryModal3" class="gallery-modal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal('galleryModal3')">&times;</button>
+            <img src="/images/image3.jpg" alt="Machine Learning Lab" class="modal-image" onerror="this.style.display='none'">
+            <div style="padding: 32px;">
+                <h3 style="font-size: 24px; margin-bottom: 12px; color: var(--primary);">Machine Learning Lab</h3>
+                <p style="color: var(--text-muted); line-height: 1.8;">Tutors and students working together to construct, tune, and evaluate predictive models. Focus areas include validation splits, confusion matrix metrics, and Explainable AI (XAI) feature importance interpretation.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Gallery Modal 4 -->
+    <div id="galleryModal4" class="gallery-modal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal('galleryModal4')">&times;</button>
+            <img src="/images/image4.jpg" alt="Time Series Discussion" class="modal-image" onerror="this.style.display='none'">
+            <div style="padding: 32px;">
+                <h3 style="font-size: 24px; margin-bottom: 12px; color: var(--primary);">Time Series Discussion</h3>
+                <p style="color: var(--text-muted); line-height: 1.8;">Evaluating seasonal signals, forecast uncertainty bounds, and autoregressive parameter grids. Students dissect regional financial and sales forecasts using R & Python scripts.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Gallery Modal 5 -->
+    <div id="galleryModal5" class="gallery-modal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal('galleryModal5')">&times;</button>
+            <img src="/images/image5.jpg" alt="Mentorship Coffee Hour" class="modal-image" onerror="this.style.display='none'">
+            <div style="padding: 32px;">
+                <h3 style="font-size: 24px; margin-bottom: 12px; color: var(--primary);">Mentorship & Career Meetup</h3>
+                <p style="color: var(--text-muted); line-height: 1.8;">An informal meetup connecting current cohort learners with senior graduates working in top fintech, telecom, and healthcare companies. Session includes mock interviews and technical portfolio reviews.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Gallery Modal 6 -->
+    <div id="galleryModal6" class="gallery-modal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal('galleryModal6')">&times;</button>
+            <img src="/images/image6.jpg" alt="Graduation Day" class="modal-image" onerror="this.style.display='none'">
+            <div style="padding: 32px;">
+                <h3 style="font-size: 24px; margin-bottom: 12px; color: var(--primary);">Graduation Day</h3>
+                <p style="color: var(--text-muted); line-height: 1.8;">Celebrating the successful certification of our cohort graduates! These scholars have completed multiple structured projects and passed rigorous exams in biostatistics, databases, and ML.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dynamic News Modal -->
+    <div id="dynamicNewsModal" class="modal-overlay">
+        <div class="modal-container" style="max-width: 800px;">
+            <div class="modal-header">
+                <h3 id="newsModalTitle">News Detail</h3>
+                <button class="modal-close-btn" onclick="closeDynamicNewsModal()">&times;</button>
+            </div>
+            <div class="modal-body" style="max-height: 70vh; overflow-y: auto;">
+                <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 20px; display: flex; align-items: center; gap: 8px;">
+                    <i class="fas fa-calendar"></i> <span id="newsModalDate">Date</span> 
+                    <span style="color: var(--border-color);">|</span> 
+                    <span id="newsModalCategory" style="background: rgba(91, 75, 255, 0.1); color: var(--secondary); padding: 2px 8px; border-radius: 4px; font-weight: 600; font-size: 11px; text-transform: uppercase;">Category</span>
+                </p>
+                <div id="newsModalContent" style="line-height: 1.8; font-size: 16px; white-space: pre-wrap; color: var(--text-dark); margin-bottom: 24px;">Content...</div>
+                <div id="newsModalAttachment" style="border-top: 1px solid var(--border-color); padding-top: 20px; display: none;">
+                    <button id="newsModalAttachmentLinkBtn" class="btn btn-secondary" style="font-size: 14px;"><i class="fas fa-eye"></i> View Attached Materials</button>
+                </div>
+                <div id="newsModalEventRegistration" style="border-top: 1px solid var(--border-color); padding-top: 20px; display: none; margin-top: 20px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                        <h4 style="color: var(--primary); font-size: 16px; margin: 0;"><i class="fas fa-edit"></i> Apply / Register for this Event</h4>
+                        <a href="https://docs.google.com/forms/d/1HwT3PJjBolX-YpG0L57iDAAXNy2bY1xKf0gP8mndows/viewform" target="_blank" class="btn btn-secondary" style="padding: 6px 12px; font-size: 12px;"><i class="fas fa-external-link-alt"></i> Open Form in New Window</a>
+                    </div>
+                    <iframe src="https://docs.google.com/forms/d/1HwT3PJjBolX-YpG0L57iDAAXNy2bY1xKf0gP8mndows/viewform?embedded=true" width="100%" height="500" frameborder="0" marginheight="0" marginwidth="0" style="border: 1px solid var(--border-color); border-radius: 8px;">Loading…</iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Document Viewer Modal -->
+    <div id="docViewerModal" class="modal-overlay">
+        <div class="modal-container" style="max-width: 1000px; height: 85vh;">
+            <div class="modal-header">
+                <h3 id="docViewerTitle">Document Viewer</h3>
+                <button class="modal-close-btn" onclick="closeDocViewer()">&times;</button>
+            </div>
+            <div class="modal-body" style="flex: 1; padding: 0; overflow: hidden;">
+                <iframe id="docViewerFrame" src="" style="width: 100%; height: 100%; border: none;"></iframe>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== SCRIPTS ==================== -->
+    <script>
+        // Cinematic shrink-on-scroll navigation header effect
+        window.addEventListener('scroll', function() {
+            const navbar = document.querySelector('.navbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('navbar-scrolled');
+            } else {
+                navbar.classList.remove('navbar-scrolled');
+            }
+        });
+
+        // Mobile Nav Toggle
+        function toggleNav() {
+            document.getElementById('navMenu').classList.toggle('active');
+        }
+
+        // FAQ Accordion Toggle
+        function toggleFaq(element) {
+            const body = element.nextElementSibling;
+            const icon = element.querySelector('i');
+            body.classList.toggle('active');
+            icon.classList.toggle('fa-chevron-down');
+            icon.classList.toggle('fa-chevron-up');
+        }
+
+        // Enrollment Option Selection Modal
+        function openEnrollmentModal(slug, name, tutorFee, certFee) {
+            document.getElementById('modalCourseTitle').textContent = 'Enroll in ' + name;
+            document.getElementById('modalTutorFee').textContent = tutorFee;
+            document.getElementById('modalCertFee').textContent = certFee;
+            document.getElementById('modalTutorLink').href = 'https://forms.gle/iULxMYXieuC4px8p8';
+            document.getElementById('modalSelfLink').href = '/explore.html?program=' + slug;
+            document.getElementById('enrollmentModal').classList.add('active');
+        }
+
+        function closeEnrollmentModal() {
+            document.getElementById('enrollmentModal').classList.remove('active');
+        }
+
+        // Dynamic News Modal
+        function openDynamicNewsModal(title, category, date, content, filePath) {
+            document.getElementById('newsModalTitle').textContent = title;
+            document.getElementById('newsModalDate').textContent = date;
+            document.getElementById('newsModalCategory').textContent = category;
+            document.getElementById('newsModalContent').textContent = content;
+            
+            const attachmentDiv = document.getElementById('newsModalAttachment');
+            const attachmentBtn = document.getElementById('newsModalAttachmentLinkBtn');
+            if (filePath) {
+                attachmentBtn.onclick = () => viewDocument(filePath, 'Attached Material - ' + title);
+                attachmentDiv.style.display = 'block';
+            } else {
+                attachmentDiv.style.display = 'none';
+            }
+            
+            const eventRegDiv = document.getElementById('newsModalEventRegistration');
+            if (category && category.toLowerCase() === 'events') {
+                eventRegDiv.style.display = 'block';
+            } else {
+                eventRegDiv.style.display = 'none';
+            }
+            
+            document.getElementById('dynamicNewsModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeDynamicNewsModal() {
+            document.getElementById('dynamicNewsModal').classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        // Gallery Modal Controls
+        function openModal(modalId) {
+            document.getElementById(modalId).classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        // Document Viewer Modal
+        function viewDocument(url, title) {
+            if (url.toLowerCase().endsWith('.html') || !url.toLowerCase().endsWith('.pdf')) {
+                window.open(url, '_blank');
+                return;
+            }
+            const frame = document.getElementById('docViewerFrame');
+            const modal = document.getElementById('docViewerModal');
+            document.getElementById('docViewerTitle').textContent = title || 'Document Viewer';
+            let viewerUrl = url;
+            if (url.toLowerCase().endsWith('.pdf')) {
+                viewerUrl = url + '#toolbar=0';
+            }
+            frame.src = viewerUrl;
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeDocViewer() {
+            const frame = document.getElementById('docViewerFrame');
+            const modal = document.getElementById('docViewerModal');
+            frame.src = '';
+            modal.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        // Close modals when clicking outside
+        window.addEventListener('click', function(event) {
+            const modals = document.querySelectorAll('.modal-overlay, .gallery-modal');
+            modals.forEach(modal => {
+                if (event.target === modal) {
+                    modal.classList.remove('active');
+                    document.body.style.overflow = 'auto';
+                }
+            });
+        });
+
+        // Close modals with Escape key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                const modals = document.querySelectorAll('.modal-overlay, .gallery-modal');
+                modals.forEach(modal => {
+                    modal.classList.remove('active');
+                });
+                document.body.style.overflow = 'auto';
+            }
+        });
+
+        // Helper string escapes
+        function escapeHTML(str) {
+            if (!str) return '';
+            return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
+        }
+
+        function escapeString(str) {
+            if (!str) return '';
+            return str.replace(/\\/g, '\\\\').replace(/\'/g, '\\\'').replace(/\"/g, '\\\"').replace(/\n/g, '\\n').replace(/\r/g, '\\r');
+        }
+
+        // Dynamic News & Events Loader
+        async function loadDynamicNewsAndEvents() {
+            try {
+                const response = await fetch('/api/news/articles');
+                const data = await response.json();
+                const articles = data.articles || [];
+
+                const newsGrid = document.getElementById('newsGrid');
+                const eventsGrid = document.getElementById('eventsGrid');
+
+                // Filter events and standard news articles
+                const events = articles.filter(a => a.category === 'Events');
+                const news = articles.filter(a => a.category !== 'Events');
+
+                // Render News
+                if (newsGrid) {
+                    if (news.length > 0) {
+                        newsGrid.innerHTML = news.map((n, idx) => {
+                            const dateText = new Date(n.created_at).toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+                            const colors = ['purple', 'yellow', 'red'];
+                            const icons = ['fa-award', 'fa-handshake', 'fa-microphone', 'fa-bullhorn'];
+                            const colorClass = colors[idx % colors.length];
+                            const iconClass = icons[idx % icons.length];
+
+                            return '<div class="news-card">' +
+                                '<div class="news-image ' + colorClass + '">' +
+                                    '<i class="fas ' + iconClass + '"></i>' +
+                                '</div>' +
+                                '<div class="news-body">' +
+                                    '<p class="news-date"><i class="fas fa-calendar"></i> ' + dateText + '</p>' +
+                                    '<h3>' + escapeHTML(n.title) + '</h3>' +
+                                    '<p>' + escapeHTML(n.content.substring(0, 150)) + (n.content.length > 150 ? '...' : '') + '</p>' +
+                                    '<a href="javascript:void(0)" onclick="openDynamicNewsModal(\'' + escapeString(n.title) + '\', \'' + escapeString(n.category) + '\', \'' + dateText + '\', \'' + escapeString(n.content) + '\', \'' + (n.file_path || '') + '\')" class="news-link">Read More <i class="fas fa-arrow-right"></i></a>' +
+                                '</div>' +
+                            '</div>';
+                        }).join('');
+                    } else {
+                        newsGrid.innerHTML = '<p style="text-align: center; color: var(--text-muted); width: 100%; grid-column: 1/-1;">No news updates published yet.</p>';
+                    }
+                }
+
+                // Render Events
+                if (eventsGrid) {
+                    if (events.length > 0) {
+                        eventsGrid.innerHTML = events.map((e, idx) => {
+                            const dateObj = new Date(e.created_at);
+                            const day = dateObj.getDate();
+                            const monthYear = dateObj.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+
+                            return '<div class="event-card" onclick="openDynamicNewsModal(\'' + escapeString(e.title) + '\', \'' + escapeString(e.category) + '\', \'' + day + ' ' + monthYear + '\', \'' + escapeString(e.content) + '\', \'' + (e.file_path || '') + '\')" style="cursor:pointer;">' +
+                                '<div class="event-image">' +
+                                    '<img src="/images/image' + ((idx % 10) + 1) + '.jpg" alt="' + escapeHTML(e.title) + '" onerror="this.src=\'/images/image4.jpg\'">' +
+                                '</div>' +
+                                '<div class="event-body">' +
+                                    '<div class="event-date">' +
+                                        '<span><i class="far fa-calendar-alt"></i> ' + day + ' ' + monthYear + '</span>' +
+                                    '</div>' +
+                                    '<h3>' + escapeHTML(e.title) + '</h3>' +
+                                    '<p>' + escapeHTML(e.content.substring(0, 150)) + (e.content.length > 150 ? '...' : '') + '</p>' +
+                                '</div>' +
+                                '<div class="event-footer">' +
+                                    '<span class="event-location"><i class="fas fa-map-marker-alt"></i> Online / Campus</span>' +
+                                    '<button class="btn btn-primary" style="padding: 8px 16px; font-size: 13px;">View Details</button>' +
+                                '</div>' +
+                            '</div>';
+                        }).join('');
+                    } else {
+                        eventsGrid.innerHTML = '<p style="text-align: center; color: var(--text-muted); width: 100%; grid-column: 1/-1;">No upcoming events at this time.</p>';
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading news and events:', error);
+            }
+        }
+
+        // Initialize dynamic contents
+        document.addEventListener('DOMContentLoaded', loadDynamicNewsAndEvents);
+    </script>
+</body>
+</html>

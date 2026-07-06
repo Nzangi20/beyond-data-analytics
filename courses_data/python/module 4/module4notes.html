@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Module Four: Deep Learning & Artificial Neural Networks</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    
+    <!-- KaTeX for Math Rendering -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body);"></script>
+
+    <!-- Prism.js for Syntax Highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --secondary: #64748b;
+            --bg-body: #f8fafc;
+            --bg-card: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --code-bg: #1e293b;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --info: #3b82f6;
+            --error: #ef4444;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            line-height: 1.7;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Navigation */
+        .sidebar {
+            width: 300px;
+            background: var(--bg-card);
+            border-right: 1px solid var(--border);
+            position: fixed;
+            top: 0; left: 0;
+            height: 100vh;
+            overflow-y: auto;
+            padding: 2rem 1.5rem;
+            z-index: 100;
+        }
+        .sidebar-header { margin-bottom: 2rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border); }
+        .sidebar-header h2 { font-size: 1.1rem; font-weight: 700; color: var(--primary); margin-bottom: 0.25rem; }
+        .sidebar-header p { font-size: 0.85rem; color: var(--text-muted); }
+        .nav-links { list-style: none; }
+        .nav-links li { margin-bottom: 0.5rem; }
+        .nav-links a {
+            display: block; padding: 0.5rem 0.75rem; color: var(--text-muted);
+            text-decoration: none; font-size: 0.9rem; border-radius: 6px;
+            transition: all 0.2s; border-left: 3px solid transparent;
+        }
+        .nav-links a:hover, .nav-links a.active {
+            background-color: #eff6ff; color: var(--primary);
+            border-left-color: var(--primary); font-weight: 500;
+        }
+
+        /* Main Content */
+        .main-content { margin-left: 300px; flex: 1; padding: 3rem 4rem; max-width: 1100px; }
+
+        /* Typography */
+        h1 { font-size: 2.5rem; font-weight: 800; margin-bottom: 1rem; letter-spacing: -0.025em; }
+        h2 { font-size: 1.75rem; font-weight: 700; margin-top: 3rem; margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 2px solid var(--border); }
+        h3 { font-size: 1.25rem; font-weight: 600; margin-top: 2rem; margin-bottom: 0.75rem; color: var(--primary-dark); }
+        p { margin-bottom: 1.25rem; color: #334155; }
+        ul, ol { margin-bottom: 1.25rem; padding-left: 1.5rem; }
+        li { margin-bottom: 0.5rem; }
+
+        /* Callout Boxes */
+        .callout { padding: 1.25rem; border-radius: 8px; margin: 1.5rem 0; border-left: 4px solid; background-color: #f8fafc; }
+        .callout.info { border-color: var(--info); background-color: #eff6ff; }
+        .callout.warning { border-color: var(--warning); background-color: #fffbeb; }
+        .callout.success { border-color: var(--success); background-color: #ecfdf5; }
+        .callout.error { border-color: var(--error); background-color: #fef2f2; }
+        .callout-title { font-weight: 700; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem; }
+
+        /* Code Blocks */
+        .code-wrapper { position: relative; margin: 1.5rem 0; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
+        .code-header {
+            background-color: #0f172a; color: #94a3b8; padding: 0.5rem 1rem;
+            font-size: 0.8rem; font-family: 'JetBrains Mono', monospace;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .copy-btn {
+            background: transparent; border: 1px solid #334155; color: #94a3b8;
+            padding: 0.25rem 0.75rem; border-radius: 4px; cursor: pointer;
+            font-size: 0.75rem; transition: all 0.2s;
+        }
+        .copy-btn:hover { background: #334155; color: white; }
+        pre { margin: 0 !important; border-radius: 0 0 8px 8px !important; background: var(--code-bg) !important; }
+        code { font-family: 'JetBrains Mono', monospace !important; font-size: 0.9rem !important; }
+
+        /* Tables */
+        table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; background: var(--bg-card); border-radius: 8px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        th, td { padding: 0.75rem 1rem; text-align: left; border-bottom: 1px solid var(--border); }
+        th { background-color: #f1f5f9; font-weight: 600; color: var(--text-main); }
+        tr:last-child td { border-bottom: none; }
+
+        /* Math Blocks */
+        .math-block { background: #ffffff; padding: 1.5rem; border-radius: 8px; margin: 1.5rem 0; border: 1px solid var(--border); overflow-x: auto; text-align: center; }
+
+        /* Feature Grid */
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+        .feature-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        .feature-card h4 {
+            color: var(--primary);
+            margin-bottom: 0.75rem;
+        }
+
+        /* ========================================= */
+        /* CUSTOM CSS DIAGRAMS (No External URLs)    */
+        /* ========================================= */
+        
+        /* 1. AI/ML/DL Hierarchy Diagram */
+        .hierarchy-diagram {
+            display: flex;
+            justify-content: center;
+            margin: 2.5rem 0;
+        }
+        .hierarchy-circle {
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            font-weight: 600;
+            position: relative;
+        }
+        .hierarchy-circle.ai {
+            width: 360px; height: 360px;
+            background: rgba(37, 99, 235, 0.05);
+            border: 3px solid var(--primary);
+            color: var(--primary-dark);
+            font-size: 1.2rem;
+        }
+        .hierarchy-circle.ml {
+            width: 250px; height: 250px;
+            background: rgba(37, 99, 235, 0.1);
+            border: 3px solid var(--primary);
+            color: var(--primary-dark);
+            font-size: 1.05rem;
+        }
+        .hierarchy-circle.dl {
+            width: 140px; height: 140px;
+            background: var(--primary);
+            border: 3px solid var(--primary-dark);
+            color: white;
+            font-size: 0.95rem;
+        }
+
+        /* 2. Neural Network Architecture Diagram */
+        .nn-architecture {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1.5rem;
+            margin: 2.5rem 0;
+            padding: 2rem;
+            background: #f8fafc;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            overflow-x: auto;
+        }
+        .nn-layer {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        .nn-layer h4 {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin: 0;
+            letter-spacing: 0.05em;
+        }
+        .nn-nodes {
+            display: flex;
+            flex-direction: column;
+            gap: 0.6rem;
+        }
+        .node {
+            width: 22px;
+            height: 22px;
+            background: var(--primary);
+            border-radius: 50%;
+            box-shadow: 0 2px 4px rgba(37, 99, 235, 0.3);
+        }
+        .node.hidden {
+            background: #8b5cf6;
+            box-shadow: 0 2px 4px rgba(139, 92, 246, 0.3);
+        }
+        .node.output {
+            background: var(--success);
+            box-shadow: 0 2px 4px rgba(16, 185, 129, 0.3);
+        }
+        .nn-arrow {
+            font-size: 2rem;
+            color: var(--text-muted);
+            font-weight: bold;
+        }
+
+        @media (max-width: 1024px) {
+            .sidebar { transform: translateX(-100%); }
+            .main-content { margin-left: 0; padding: 2rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h2>Module Four</h2>
+            <p>Deep Learning & Neural Networks</p>
+            <p style="margin-top: 0.5rem; font-size: 0.75rem;">Facilitator: Dr. Victor Wandera Lumumba</p>
+        </div>
+        <ul class="nav-links">
+            <li><a href="#intro">Introduction to Deep Learning</a></li>
+            <li><a href="#ann">1. Artificial Neural Networks</a></li>
+            <li><a href="#how-learn">2. How Neural Networks Learn</a></li>
+            <li><a href="#architectures">3. Deep Learning Architectures</a></li>
+            <li><a href="#activation">4. Activation Functions</a></li>
+            <li><a href="#training">5. Training a Deep Learning Model</a></li>
+            <li><a href="#applications">6. Applications in Medicine</a></li>
+            <li><a href="#implementation">7. Implementation: Heart Disease</a></li>
+            <li><a href="#summary">8. Summary & Next Steps</a></li>
+        </ul>
+    </aside>
+
+    <main class="main-content">
+        <header id="intro">
+            <h1>Module Four: Deep Learning & Artificial Neural Networks</h1>
+            <p><strong>Building Data Excellence Since 2020</strong><br>
+            Beyond Data Analytics is a premier training organization founded by Dr. Victor Wandera Lumumba. We are committed to bridging the critical gap between academic knowledge and industry-ready data science skills.</p>
+            
+            <div class="callout info">
+                <div class="callout-title">💡 Our Training Philosophy</div>
+                <p>Our curriculum seamlessly integrates strong theoretical foundations with hands-on practical experience. We believe that true mastery comes from doing. Every concept taught is immediately applied through real-world projects, case studies, and industry scenarios.</p>
+            </div>
+        </header>
+
+        <section id="ann">
+            <h2>1. Introduction to Deep Learning & The AI Hierarchy</h2>
+            <p>Deep Learning is a subset of Machine Learning that focuses on the development of algorithms inspired by the structure and functioning of the human brain. It utilizes Artificial Neural Networks (ANNs) with multiple hidden layers to learn complex patterns from data. The term <em>deep</em> refers to the presence of many hidden layers between the input and output layers, allowing the model to learn increasingly sophisticated representations of information.</p>
+            
+            <!-- Custom CSS Hierarchy Diagram -->
+            <div class="hierarchy-diagram">
+                <div class="hierarchy-circle ai">
+                    <span>Artificial Intelligence (AI)</span>
+                    <div class="hierarchy-circle ml">
+                        <span>Machine Learning (ML)</span>
+                        <div class="hierarchy-circle dl">
+                            <span>Deep Learning (DL)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <p>Unlike traditional machine learning methods, which often require manual selection and engineering of features, deep learning models automatically discover relevant features directly from the data. This capability has made deep learning one of the most powerful tools for solving complex problems involving images, text, audio, and large-scale healthcare data.</p>
+        </section>
+
+        <section id="ann-arch">
+            <h2>2. Artificial Neural Networks (ANNs) Architecture</h2>
+            <p>Artificial Neural Networks are computational models designed to mimic the way biological neurons communicate in the human brain. They consist of interconnected processing units called neurons that work together to learn patterns and make predictions.</p>
+            
+            <p>A typical neural network consists of three major components: the input layer, one or more hidden layers, and the output layer.</p>
+
+            <!-- Custom CSS Neural Network Diagram -->
+            <div class="nn-architecture">
+                <div class="nn-layer">
+                    <h4>Input Layer</h4>
+                    <div class="nn-nodes">
+                        <span class="node"></span>
+                        <span class="node"></span>
+                        <span class="node"></span>
+                        <span class="node"></span>
+                    </div>
+                </div>
+                <div class="nn-arrow">→</div>
+                <div class="nn-layer">
+                    <h4>Hidden Layer 1</h4>
+                    <div class="nn-nodes">
+                        <span class="node hidden"></span>
+                        <span class="node hidden"></span>
+                        <span class="node hidden"></span>
+                        <span class="node hidden"></span>
+                        <span class="node hidden"></span>
+                    </div>
+                </div>
+                <div class="nn-arrow">→</div>
+                <div class="nn-layer">
+                    <h4>Hidden Layer 2</h4>
+                    <div class="nn-nodes">
+                        <span class="node hidden"></span>
+                        <span class="node hidden"></span>
+                        <span class="node hidden"></span>
+                        <span class="node hidden"></span>
+                    </div>
+                </div>
+                <div class="nn-arrow">→</div>
+                <div class="nn-layer">
+                    <h4>Output Layer</h4>
+                    <div class="nn-nodes">
+                        <span class="node output"></span>
+                    </div>
+                </div>
+            </div>
+
+            <p>For example, in a heart disease prediction model, the input layer may receive variables such as age, cholesterol level, blood pressure, chest pain type, and maximum heart rate. These variables pass through several hidden layers where the network learns complex relationships among them before producing a final prediction indicating whether a patient is likely to have heart disease.</p>
+        </section>
+
+        <section id="how-learn">
+            <h2>3. How Neural Networks Learn</h2>
+            <p>The learning process in neural networks begins by assigning random weights to connections between neurons. Each neuron computes a weighted sum of its inputs, adds a bias term, and passes the result through an activation function. The activation function introduces nonlinearity, enabling the network to model complex relationships that linear models cannot capture.</p>
+
+            <div class="callout info">
+                <div class="callout-title">🧠 The Backpropagation Process</div>
+                <p>Initially, the predictions made by the network are often inaccurate because the weights are randomly initialized. The network measures the prediction error using a <strong>loss function</strong> and then adjusts the weights through a process known as <strong>backpropagation</strong>. During backpropagation, gradients are calculated and propagated backward through the network to update the weights in a direction that minimizes the prediction error.</p>
+            </div>
+
+            <p>This process continues over many iterations, known as <strong>epochs</strong>, until the model learns the underlying patterns in the data and achieves satisfactory predictive performance.</p>
+        </section>
+
+        <section id="architectures">
+            <h2>4. Deep Learning Architectures</h2>
+            <p>Several deep learning architectures have been developed to address different types of problems:</p>
+
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <h4>Feedforward Neural Network (FNN)</h4>
+                    <p>The simplest architecture where information moves only in one direction from the input layer to the output layer. Forms the foundation of most neural network models.</p>
+                </div>
+                <div class="feature-card">
+                    <h4>Multi-Layer Perceptron (MLP)</h4>
+                    <p>A more advanced version containing multiple hidden layers. MLPs are particularly effective for tabular datasets such as those commonly encountered in healthcare and business analytics.</p>
+                </div>
+                <div class="feature-card">
+                    <h4>Convolutional Neural Networks (CNNs)</h4>
+                    <p>Specifically developed for image processing applications. CNNs automatically learn visual features such as edges, textures, and shapes, making them highly effective for medical image analysis.</p>
+                </div>
+                <div class="feature-card">
+                    <h4>Recurrent Neural Networks (RNNs)</h4>
+                    <p>Designed to handle sequential and time-dependent data. Because they maintain information from previous observations, they are useful for analyzing time-series data such as ECG signals.</p>
+                </div>
+                <div class="feature-card">
+                    <h4>Long Short-Term Memory (LSTM)</h4>
+                    <p>Enhanced versions of RNNs that address challenges associated with learning long-term dependencies. Particularly useful for complex temporal patterns in healthcare data.</p>
+                </div>
+                <div class="feature-card">
+                    <h4>Transformers</h4>
+                    <p>Revolutionized deep learning by introducing self-attention mechanisms. Transformers form the foundation of modern language models and are increasingly applied to clinical text processing.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="activation">
+            <h2>5. Activation Functions</h2>
+            <p>Activation functions determine whether a neuron should be activated and what information should be passed to subsequent layers. Without activation functions, neural networks would behave like simple linear regression models regardless of the number of layers.</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Activation Function</th>
+                        <th>Formula</th>
+                        <th>Range</th>
+                        <th>Use Case</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Sigmoid</strong></td>
+                        <td>$$\sigma(x) = \frac{1}{1 + e^{-x}}$$</td>
+                        <td>(0, 1)</td>
+                        <td>Binary classification output layer</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Tanh</strong></td>
+                        <td>$$\tanh(x) = \frac{e^x - e^{-x}}{e^x + e^{-x}}$$</td>
+                        <td>(-1, 1)</td>
+                        <td>Hidden layers, better convergence</td>
+                    </tr>
+                    <tr>
+                        <td><strong>ReLU</strong></td>
+                        <td>$$f(x) = \max(0, x)$$</td>
+                        <td>[0, ∞)</td>
+                        <td>Most common for hidden layers</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Softmax</strong></td>
+                        <td>$$\sigma(\mathbf{z})_i = \frac{e^{z_i}}{\sum_{j=1}^{K} e^{z_j}}$$</td>
+                        <td>(0, 1)</td>
+                        <td>Multi-class classification output</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="callout success">
+                <div class="callout-title">✓ Best Practice</div>
+                <p><strong>ReLU</strong> is currently the most widely used activation function because it is computationally efficient and helps alleviate the vanishing gradient problem. For binary classification problems like heart disease prediction, <strong>Sigmoid</strong> is used in the output layer to produce probabilities between 0 and 1.</p>
+            </div>
+        </section>
+
+        <section id="training">
+            <h2>6. Training a Deep Learning Model</h2>
+            <p>Developing a deep learning model begins with collecting and preparing data. Data preprocessing typically involves handling missing values, encoding categorical variables, scaling numerical features, and addressing class imbalances. Once preprocessing is complete, the dataset is divided into training and testing subsets.</p>
+
+            <h3>Training Process</h3>
+            <p>During training, the model performs <strong>forward propagation</strong> to generate predictions. The difference between predicted and actual values is measured using a loss function such as:</p>
+            <ul>
+                <li><strong>Binary Cross-Entropy:</strong> For binary classification</li>
+                <li><strong>Categorical Cross-Entropy:</strong> For multi-class classification</li>
+                <li><strong>Mean Squared Error:</strong> For regression tasks</li>
+            </ul>
+
+            <p><strong>Backpropagation</strong> is then used to calculate gradients and update network weights. Optimization algorithms guide the weight update process:</p>
+
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <h4>Gradient Descent</h4>
+                    <p>Updates weights using the entire dataset. Accurate but computationally expensive.</p>
+                </div>
+                <div class="feature-card">
+                    <h4>Stochastic Gradient Descent (SGD)</h4>
+                    <p>Updates weights using one sample at a time. Faster but more noisy.</p>
+                </div>
+                <div class="feature-card">
+                    <h4>Adam Optimizer</h4>
+                    <p>Combines adaptive learning rates with momentum. Most widely used and robust.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="applications">
+            <h2>7. Applications of Deep Learning in Medicine and Healthcare</h2>
+            <p>Deep learning has transformed healthcare by enabling accurate analysis of complex medical data:</p>
+
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <h4>🏥 Disease Diagnosis</h4>
+                    <p>Models can identify diseases such as cancer, diabetes, cardiovascular disorders, and neurological conditions at an early stage. Early diagnosis often leads to more effective treatment and improved patient outcomes.</p>
+                </div>
+
+                <div class="feature-card">
+                    <h4>🔬 Medical Imaging</h4>
+                    <p>CNN-based systems can automatically analyze radiological images, identify abnormalities, detect tumors, and assist radiologists in making diagnostic decisions. These systems often achieve performance comparable to experienced healthcare professionals.</p>
+                </div>
+
+                <div class="feature-card">
+                    <h4>❤️ Cardiovascular Medicine</h4>
+                    <p>Deep learning models are increasingly used to predict heart disease risk. By analyzing patient characteristics such as age, cholesterol levels, blood pressure, chest pain type, and electrocardiographic measurements, these models can identify individuals at high risk.</p>
+                </div>
+
+                <div class="feature-card">
+                    <h4>📊 Patient Monitoring</h4>
+                    <p>Data collected from wearable devices, smartwatches, and medical sensors can be analyzed in real time to detect abnormalities and provide early warnings of potential health complications.</p>
+                </div>
+
+                <div class="feature-card">
+                    <h4>💊 Drug Discovery</h4>
+                    <p>Deep learning algorithms can predict molecular interactions, identify promising drug candidates, estimate toxicity, and reduce the time and cost associated with traditional drug development processes.</p>
+                </div>
+
+                <div class="feature-card">
+                    <h4>🎯 Personalized Medicine</h4>
+                    <p>By integrating genetic information, medical history, laboratory results, and lifestyle factors, deep learning models can help design treatment plans tailored to individual patients.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="implementation">
+            <h2>8. Implementation: Heart Disease Prediction with ANN</h2>
+            <p>In this section, we implement a complete deep learning solution for predicting heart disease using the Heart.csv dataset. This practical example demonstrates the entire workflow from data loading to model evaluation.</p>
+
+            <h3>Step 1: Import Required Libraries</h3>
+            <div class="code-wrapper">
+                <div class="code-header"><span>Python</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+                <pre><code class="language-python"># Data Manipulation and Visualization Libraries
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+import warnings
+warnings.filterwarnings('ignore')
+
+# Deep Learning Libraries
+import tensorflow as tf
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense, Dropout, BatchNormalization, Input
+from tensorflow.keras.callbacks import EarlyStopping, ReduceLROnPlateau
+
+# Scikit-Learn for Preprocessing and Evaluation
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler, OneHotEncoder
+from sklearn.compose import ColumnTransformer
+from sklearn.impute import SimpleImputer
+from sklearn.pipeline import Pipeline
+from sklearn.metrics import classification_report, confusion_matrix, roc_auc_score, roc_curve
+from sklearn.utils import class_weight
+
+# Set random seeds for full reproducibility
+SEED = 42
+np.random.seed(SEED)
+tf.random.set_seed(SEED)</code></pre>
+            </div>
+
+            <h3>Step 2: Data Loading and Preprocessing</h3>
+            <div class="code-wrapper">
+                <div class="code-header"><span>Python</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+                <pre><code class="language-python"># Load data and explicitly define missing value placeholders
+print("Loading dataset...")
+df = pd.read_csv('Heart.csv', na_values=['?', 'NA', ''])
+
+# Drop redundant target variable to prevent data leakage
+if 'HD' in df.columns:
+    df = df.drop(columns=['HD'])
+
+# Map target variable to binary (0 = No Disease, 1 = Disease)
+df['AHD'] = df['AHD'].map({'No': 0, 'Yes': 1})
+
+# Define feature groups based on data types
+num_features = ['Age', 'RestBP', 'Chol', 'MaxHR', 'Oldpeak']
+cat_features = ['Sex', 'ChestPain', 'Fbs', 'RestECG', 'ExAng', 'Slope', 'Ca', 'Thal']
+
+# Create preprocessing pipelines
+# Numerical: Impute missing values with median (robust to outliers), then scale
+num_transformer = Pipeline(steps=[
+    ('imputer', SimpleImputer(strategy='median')),
+    ('scaler', StandardScaler())
+])
+
+# Categorical: Impute missing values with mode, then One-Hot Encode
+cat_transformer = Pipeline(steps=[
+    ('imputer', SimpleImputer(strategy='most_frequent')),
+    ('onehot', OneHotEncoder(handle_unknown='ignore', sparse_output=False))
+])
+
+# Combine preprocessors
+preprocessor = ColumnTransformer(transformers=[
+    ('num', num_transformer, num_features),
+    ('cat', cat_transformer, cat_features)
+])
+
+# Separate features (X) and target (y)
+X = df.drop(columns=['AHD'])
+y = df['AHD']
+
+# Stratified train-test split (80% train, 20% test)
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.20, random_state=SEED, stratify=y
+)
+
+# Fit and transform data
+X_train_processed = preprocessor.fit_transform(X_train)
+X_test_processed = preprocessor.transform(X_test)
+print(f"Training set shape after preprocessing: {X_train_processed.shape}")</code></pre>
+            </div>
+
+            <h3>Step 3: Handling Class Imbalance (Clinical Focus)</h3>
+            <div class="code-wrapper">
+                <div class="code-header"><span>Python</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+                <pre><code class="language-python"># In clinical settings, missing a disease case (False Negative) is highly costly.
+# We compute class weights to penalize the model more for missing the minority class.
+classes_weights = class_weight.compute_class_weight(
+    class_weight='balanced',
+    classes=np.unique(y_train),
+    y=y_train
+)
+class_weight_dict = dict(enumerate(classes_weights))
+print(f"Applying class weights to prioritize Recall: {class_weight_dict}")</code></pre>
+            </div>
+
+            <h3>Step 4: Building the Artificial Neural Network</h3>
+            <div class="code-wrapper">
+                <div class="code-header"><span>Python</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+                <pre><code class="language-python">input_dim = X_train_processed.shape[1]
+
+model = Sequential([
+    # Input layer
+    Input(shape=(input_dim,)),
+    
+    # First Hidden Layer
+    Dense(64, activation='relu'),
+    BatchNormalization(),  # Stabilizes and speeds up training
+    Dropout(0.3),          # Prevents overfitting by randomly turning off 30% of neurons
+    
+    # Second Hidden Layer
+    Dense(32, activation='relu'),
+    BatchNormalization(),
+    Dropout(0.2),
+    
+    # Third Hidden Layer
+    Dense(16, activation='relu'),
+    BatchNormalization(),
+    Dropout(0.2),
+    
+    # Output Layer (Sigmoid activation outputs a probability between 0 and 1)
+    Dense(1, activation='sigmoid')
+])
+
+# Compile the model
+model.compile(
+    optimizer=tf.keras.optimizers.Adam(learning_rate=0.001),
+    loss='binary_crossentropy',  # Standard loss function for binary classification
+    metrics=[
+        'accuracy',
+        tf.keras.metrics.AUC(name='auc'),
+        tf.keras.metrics.Precision(name='precision'),
+        tf.keras.metrics.Recall(name='recall')
+    ]
+)
+
+model.summary()</code></pre>
+            </div>
+
+            <h3>Step 5: Training the Model with Callbacks</h3>
+            <div class="code-wrapper">
+                <div class="code-header"><span>Python</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+                <pre><code class="language-python"># Callbacks to optimize training and prevent overfitting
+early_stopping = EarlyStopping(
+    monitor='val_loss',
+    patience=15,  # Stop if validation loss doesn't improve for 15 epochs
+    restore_best_weights=True  # Keep the best model weights
+)
+
+reduce_lr = ReduceLROnPlateau(
+    monitor='val_loss',
+    factor=0.5,  # Halve the learning rate when stuck
+    patience=5,  # Wait 5 epochs before reducing
+    min_lr=1e-5  # Minimum learning rate floor
+)
+
+print("\nStarting training...")
+history = model.fit(
+    X_train_processed, y_train,
+    validation_split=0.2,  # Use 20% of training data for validation
+    epochs=100,
+    batch_size=32,
+    class_weight=class_weight_dict,  # Apply class weights to handle imbalance
+    callbacks=[early_stopping, reduce_lr],
+    verbose=1
+)</code></pre>
+            </div>
+
+            <h3>Step 6: Model Evaluation</h3>
+            <div class="code-wrapper">
+                <div class="code-header"><span>Python</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+                <pre><code class="language-python">print("\nEvaluating on Hold-Out Test Set...")
+y_pred_probs = model.predict(X_test_processed).flatten()
+y_pred = (y_pred_probs > 0.5).astype(int)
+
+print("\n--- Classification Report ---")
+print(classification_report(y_test, y_pred))
+
+test_auc = roc_auc_score(y_test, y_pred_probs)
+print(f"Test ROC-AUC: {test_auc:.4f}")</code></pre>
+            </div>
+
+            <h3>Step 7: Visualizations</h3>
+            <div class="code-wrapper">
+                <div class="code-header"><span>Python</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+                <pre><code class="language-python"># Plot Training History
+fig, ax = plt.subplots(1, 2, figsize=(14, 5))
+
+# Loss
+ax[0].plot(history.history['loss'], label='Train Loss', linewidth=2)
+ax[0].plot(history.history['val_loss'], label='Validation Loss', linewidth=2)
+ax[0].set_title('Model Loss (Binary Crossentropy)', fontsize=14)
+ax[0].set_xlabel('Epoch')
+ax[0].set_ylabel('Loss')
+ax[0].legend()
+ax[0].grid(alpha=0.3)
+
+# Accuracy
+ax[1].plot(history.history['accuracy'], label='Train Accuracy', linewidth=2)
+ax[1].plot(history.history['val_accuracy'], label='Validation Accuracy', linewidth=2)
+ax[1].set_title('Model Accuracy', fontsize=14)
+ax[1].set_xlabel('Epoch')
+ax[1].set_ylabel('Accuracy')
+ax[1].legend()
+ax[1].grid(alpha=0.3)
+
+plt.tight_layout()
+plt.show()
+
+# Plot ROC Curve
+fpr, tpr, thresholds = roc_curve(y_test, y_pred_probs)
+plt.figure(figsize=(8, 6))
+plt.plot(fpr, tpr, color='blue', linewidth=2, label=f'ROC Curve (AUC = {test_auc:.4f})')
+plt.plot([0, 1], [0, 1], color='gray', linestyle='--', linewidth=2)
+plt.xlabel('False Positive Rate (1 - Specificity)', fontsize=12)
+plt.ylabel('True Positive Rate (Sensitivity)', fontsize=12)
+plt.title('Receiver Operating Characteristic (ROC) Curve', fontsize=14)
+plt.legend(loc='lower right')
+plt.grid(alpha=0.3)
+plt.show()
+
+# Plot Confusion Matrix
+cm = confusion_matrix(y_test, y_pred)
+plt.figure(figsize=(6, 5))
+sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', 
+            xticklabels=['No Disease', 'Disease'], 
+            yticklabels=['No Disease', 'Disease'])
+plt.xlabel('Predicted Label', fontsize=12)
+plt.ylabel('True Label', fontsize=12)
+plt.title('Confusion Matrix', fontsize=14)
+plt.show()</code></pre>
+            </div>
+        </section>
+
+        <section id="summary">
+            <h2>9. Summary & Key Takeaways</h2>
+            
+            <div class="callout success">
+                <div class="callout-title">✅ Module Four Competencies</div>
+                <ul>
+                    <li>Understood the fundamentals of deep learning and artificial neural networks</li>
+                    <li>Learned how neural networks learn through forward propagation and backpropagation</li>
+                    <li>Explored different deep learning architectures (FNN, MLP, CNN, RNN, LSTM, Transformers)</li>
+                    <li>Mastered activation functions and their applications</li>
+                    <li>Implemented a complete ANN for heart disease prediction with clinical considerations</li>
+                    <li>Applied advanced techniques: Batch Normalization, Dropout, Early Stopping, and Learning Rate Reduction</li>
+                    <li>Evaluated model performance using comprehensive metrics (Accuracy, Precision, Recall, F1-Score, ROC-AUC)</li>
+                </ul>
+            </div>
+
+            <h3>Advantages and Limitations of Deep Learning</h3>
+            
+            <div class="feature-grid">
+                <div class="feature-card" style="border-left: 4px solid var(--success);">
+                    <h4>✓ Advantages</h4>
+                    <ul style="margin-bottom: 0;">
+                        <li>High predictive accuracy</li>
+                        <li>Automatic feature learning</li>
+                        <li>Scalability to large datasets</li>
+                        <li>Handles complex, non-linear relationships</li>
+                        <li>Processes structured data, images, text, and time-series</li>
+                    </ul>
+                </div>
+                
+                <div class="feature-card" style="border-left: 4px solid var(--warning);">
+                    <h4>⚠️ Challenges</h4>
+                    <ul style="margin-bottom: 0;">
+                        <li>Requires large datasets</li>
+                        <li>Substantial computational power needed</li>
+                        <li>Specialized hardware (GPUs) often required</li>
+                        <li>"Black box" nature - limited interpretability</li>
+                        <li>Risk of overfitting without proper regularization</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h3>Clinical Implications</h3>
+            <p>The developed ANN model achieved exceptional performance in predicting heart disease, demonstrating strong discriminatory ability (ROC-AUC > 0.94) and high clinical sensitivity. By prioritizing recall through class weighting, the model ensures that fewer actual disease cases are missed, aligning perfectly with the clinical objective of early intervention.</p>
+
+            <h3>Next Steps</h3>
+            <p>→ <strong>Module Five:</strong> Explainable AI (XAI), Model Deployment, and Interactive Dashboarding with Streamlit.</p>
+        </section>
+
+        <footer style="margin-top: 4rem; padding-top: 2rem; border-top: 1px solid var(--border); text-align: center; color: var(--text-muted); font-size: 0.9rem;">
+            <p>© 2026 Beyond Data Analytics. Facilitator: Dr. Victor Wandera Lumumba.</p>
+            <p>Designed for interactive student learning.</p>
+        </footer>
+    </main>
+
+    <script>
+        // Copy to Clipboard Functionality
+        function copyCode(button) {
+            const codeBlock = button.parentElement.nextElementSibling.querySelector('code');
+            const text = codeBlock.innerText;
+            
+            navigator.clipboard.writeText(text).then(() => {
+                const originalText = button.innerText;
+                button.innerText = 'Copied!';
+                button.style.background = '#10b981';
+                button.style.color = 'white';
+                button.style.borderColor = '#10b981';
+                
+                setTimeout(() => {
+                    button.innerText = originalText;
+                    button.style.background = 'transparent';
+                    button.style.color = '#94a3b8';
+                    button.style.borderColor = '#334155';
+                }, 2000);
+            });
+        }
+
+        // ScrollSpy for Active Navigation Highlighting
+        const sections = document.querySelectorAll('section, header');
+        const navLinks = document.querySelectorAll('.nav-links a');
+
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                if (pageYOffset >= (sectionTop - 150)) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href').includes(current)) {
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

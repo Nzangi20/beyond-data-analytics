@@ -1,0 +1,2234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Learning Portal - Beyond Data Analytics</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/main.css">
+    <style>
+        .tab-content { display: none; }
+        .tab-content.active { display: block; animation: fadeIn 0.4s ease; }
+        .nav-section { margin-bottom: 1rem; }
+        
+        /* Message Center */
+        .messages-layout { display: grid; grid-template-columns: 300px 1fr; gap: 1.5rem; height: calc(100vh - 250px); min-height: 500px; }
+        .messages-list { border-right: 1px solid var(--border); overflow-y: auto; padding-right: 1rem; }
+        .message-item { padding: 1rem; border-bottom: 1px solid var(--border); cursor: pointer; transition: background 0.2s; border-radius: 8px; margin-bottom: 0.5rem; }
+        .message-item:hover, .message-item.active { background: rgba(49,130,206,0.05); }
+        .message-item.unread { font-weight: bold; border-left: 3px solid var(--accent); }
+        .message-view { display: flex; flex-direction: column; height: 100%; padding-left: 1rem; }
+        .message-body { flex-grow: 1; border: 1px solid var(--border); padding: 1rem; border-radius: 8px; background: var(--bg); margin-bottom: 1rem; overflow-y: auto; }
+
+        /* Program selector dropdown in sidebar */
+        .program-selector-container {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .program-selector-container label {
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.4);
+            font-weight: 700;
+            display: block;
+            margin-bottom: 0.35rem;
+            letter-spacing: 0.05em;
+        }
+        .program-select {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.08);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            font-size: 0.85rem;
+            font-weight: 600;
+            padding: 0.5rem;
+            border-radius: var(--radius-sm);
+            outline: none;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .program-select:focus {
+            border-color: var(--yellow);
+            box-shadow: 0 0 0 2px rgba(246, 224, 94, 0.2);
+        }
+        .program-select option {
+            background: var(--dark);
+            color: white;
+        }
+
+        /* Certificate cards styles */
+        .cert-card {
+            background: var(--white);
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            transition: transform 0.3s, box-shadow 0.3s;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            border-top: 4px solid var(--border);
+        }
+        .cert-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+        .cert-card.eligible { border-top-color: var(--accent); }
+        .cert-card.unlocked { border-top-color: var(--golden); }
+        .cert-status-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-bottom: 1rem;
+        }
+        .status-locked { background: #e2e8f0; color: #4a5568; }
+        .status-eligible { background: #feebc8; color: #c05621; }
+        .status-unlocked { background: #c6f6d5; color: #22543d; }
+
+        /* Payment modal methods grid */
+        .payment-methods-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+        .payment-method-card {
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            padding: 1rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .payment-method-card:hover { border-color: var(--primary-light); background: var(--bg); }
+        .payment-method-card.active { border-color: var(--primary); background: rgba(26, 54, 93, 0.05); }
+        .payment-method-card i { font-size: 1.8rem; }
+        .payment-form-fields { margin-top: 1rem; border-top: 1px solid var(--border); padding-top: 1rem; }
+
+        /* Module Detail View Styles (Inline) */
+        .module-tab-container { display: flex; border-bottom: 2px solid var(--border); margin-bottom: 1.5rem; gap: 0.5rem; overflow-x: auto; }
+        .module-tab-btn { padding: 0.8rem 1.2rem; border: none; background: transparent; cursor: pointer; font-weight: 600; font-size: 0.9rem; color: var(--text-light); border-bottom: 3px solid transparent; transition: var(--transition); white-space: nowrap; display: flex; align-items: center; gap: 0.5rem; }
+        .module-tab-btn:hover { color: var(--primary); }
+        .module-tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+        .module-pane { display: none; }
+        .module-pane.active { display: block; animation: fadeIn 0.3s ease; }
+        .material-item { display: flex; align-items: center; gap: 1rem; padding: 1rem; border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 1rem; transition: var(--transition); }
+        .material-item:hover { box-shadow: var(--shadow-sm); border-color: var(--accent-light); }
+        .material-icon { width: 40px; height: 40px; border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; font-size: 1.2rem; flex-shrink: 0; }
+        .material-info { flex: 1; }
+        .video-container { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%; background: #000; border-radius: var(--radius-lg); margin-bottom: 1.5rem; }
+        .video-container video { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
+
+        /* Upgrade Premium Banner */
+        .upgrade-banner {
+            background: linear-gradient(135deg, #2b6cb0 0%, #1a365d 100%);
+            color: white;
+            border-radius: var(--radius-lg);
+            padding: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow);
+        }
+        .upgrade-banner h2 { color: white; margin-bottom: 0.5rem; }
+        .upgrade-banner p { color: rgba(255,255,255,0.8); }
+
+        /* Breadcrumbs */
+        .breadcrumbs { display: flex; align-items: center; gap: 0.5rem; font-size: 0.9rem; color: var(--text-light); margin-bottom: 1rem; }
+        .breadcrumbs a { color: var(--accent); font-weight: 600; }
+    </style>
+</head>
+<body>
+    <button class="sidebar-toggle" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+    <div class="app-layout">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-auth-links" style="display: flex; justify-content: space-around; padding: 0.75rem 1rem; border-bottom: 1px solid rgba(255,255,255,0.08); font-size: 0.85rem; font-family: 'Outfit', sans-serif; background: rgba(0,0,0,0.15);">
+                <a href="/login.html" style="color: #63b3ed; font-weight: 600; text-decoration: none; display: flex; align-items: center; gap: 0.25rem; transition: opacity 0.2s;" onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'"><i class="fas fa-sign-in-alt"></i> Sign In</a>
+                <span style="color: rgba(255,255,255,0.2);">|</span>
+                <a href="https://forms.gle/iULxMYXieuC4px8p8" target="_blank" style="color: #48bb78; font-weight: 600; text-decoration: none; display: flex; align-items: center; gap: 0.25rem; transition: opacity 0.2s;" onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'"><i class="fas fa-user-plus"></i> Sign Up</a>
+            </div>
+            <div class="sidebar-header">
+                <div class="sidebar-logo"><i class="fas fa-chart-line"></i></div>
+                <div class="sidebar-brand"><h2>BDA Platform</h2><p>Learning Portal</p></div>
+            </div>
+
+            <!-- Active Program Selector -->
+            <div class="program-selector-container">
+                <label for="programSelector">Active Program</label>
+                <select class="program-select" id="programSelector" onchange="changeActiveProgram(this.value)">
+                    <option value="overview">General Overview</option>
+                </select>
+            </div>
+
+            <nav class="sidebar-nav">
+                <div class="nav-section">
+                    <div class="nav-section-title">Main</div>
+                    <a href="#" onclick="switchTab('dashboardTab', this)" class="nav-item active" id="side-dashboard"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+                    <a href="#" onclick="switchTab('programsTab', this)" class="nav-item" id="side-programs"><i class="fas fa-book-open"></i> Learning Programs</a>
+                    <a href="#" onclick="switchTab('instructorTab', this)" class="nav-item" id="side-instructor" style="display:none;"><i class="fas fa-chalkboard-teacher"></i> Assigned Instructor</a>
+                    <a href="#" onclick="switchTab('mentorTab', this)" class="nav-item" id="side-mentor" style="display:none;"><i class="fas fa-user-friends"></i> Assigned Mentor</a>
+                    <a href="#" onclick="switchTab('assignmentsTab', this)" class="nav-item" id="side-assignments" style="display:none;"><i class="fas fa-tasks"></i> Assignments</a>
+                    <a href="#" onclick="switchTab('sessionsTab', this)" class="nav-item" id="side-sessions" style="display:none;"><i class="fas fa-video"></i> Live Sessions</a>
+                    <a href="#" onclick="switchTab('messagesTab', this)" class="nav-item" id="side-messages" style="display:none;"><i class="fas fa-envelope"></i> Messages</a>
+                    <a href="#" onclick="switchTab('progressTab', this)" class="nav-item" id="side-progress" style="display:none;"><i class="fas fa-chart-line"></i> Progress</a>
+                    <a href="#" onclick="switchTab('examsTab', this)" class="nav-item" id="side-exams" style="display:none;"><i class="fas fa-clipboard-list"></i> Exams</a>
+                    <a href="#" onclick="switchTab('certificatesTab', this)" class="nav-item" id="side-certificates" style="display:none;"><i class="fas fa-certificate"></i> Certificates</a>
+                    <a href="#" onclick="switchTab('paymentsTab', this)" class="nav-item" id="side-payments"><i class="fas fa-credit-card"></i> Payments</a>
+                    <a href="#" onclick="switchTab('profileTab', this)" class="nav-item" id="side-profile"><i class="fas fa-user-cog"></i> Profile Settings</a>
+                </div>
+                <div class="nav-section">
+                    <div class="nav-section-title">Other</div>
+                    <a href="/" class="nav-item"><i class="fas fa-globe"></i> Website</a>
+                </div>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="user-info">
+                    <div class="user-avatar" id="userAvatar">ST</div>
+                    <div class="user-details"><h4 id="userName">Student</h4><p>Student</p></div>
+                </div>
+                <button class="btn btn-sm btn-outline" style="width:100%;margin-top:1rem;color:rgba(255,255,255,0.7);border-color:rgba(255,255,255,0.2);" onclick="API.logout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <!-- Tab: Dashboard -->
+            <div id="dashboardTab" class="tab-content active">
+                <div id="overviewDashboard">
+                    <div class="main-header" style="display:flex; justify-content:space-between; align-items:center;">
+                        <div>
+                            <h1>👋 Welcome back, <span class="greetName">Student</span>!</h1>
+                            <p>Track your learning progress and continue your journey</p>
+                        </div>
+                        <div style="position:relative; cursor:pointer;" onclick="openNotifications()">
+                            <i class="fas fa-bell" style="font-size:1.5rem; color:var(--primary);"></i>
+                            <span class="badge badge-danger" id="notifBadge" style="position:absolute; top:-8px; right:-10px; display:none; border-radius:50%; padding:0.2rem 0.4rem; font-size:0.65rem;">0</span>
+                        </div>
+                    </div>
+
+                    <!-- Stats -->
+                    <div class="stats-grid" id="studentStats">
+                        <div class="stat-card blue"><div class="stat-icon"><i class="fas fa-book"></i></div><div class="stat-value" id="statEnrolled">0</div><div class="stat-label">Enrolled Programs</div></div>
+                        <div class="stat-card green"><div class="stat-icon"><i class="fas fa-check-circle"></i></div><div class="stat-value" id="statCompleted">0</div><div class="stat-label">Modules Completed</div></div>
+                        <div class="stat-card golden"><div class="stat-icon"><i class="fas fa-certificate"></i></div><div class="stat-value" id="statCerts">0</div><div class="stat-label">Certificates Earned</div></div>
+                        <div class="stat-card purple"><div class="stat-icon"><i class="fas fa-star"></i></div><div class="stat-value" id="statAvgScore">-</div><div class="stat-label">Average Score</div></div>
+                    </div>
+
+                    <!-- Learning Paths Grid -->
+                    <h2 style="margin-bottom:1rem;color:var(--primary);"><i class="fas fa-graduation-cap" style="color:var(--accent);margin-right:0.5rem;"></i> My Learning Programs</h2>
+                    <div class="tutorials-grid" id="dashboardProgramsGrid">
+                        <div class="empty-state" style="grid-column:1/-1;"><div class="spinner"></div><p>Loading programs...</p></div>
+                    </div>
+
+                    <!-- Recent Exam Results -->
+                    <h2 style="margin:2rem 0 1rem;color:var(--primary);"><i class="fas fa-history" style="color:var(--accent);margin-right:0.5rem;"></i> Recent Exam Results</h2>
+                    <div class="card">
+                        <div class="table-wrapper">
+                            <table>
+                                <thead><tr><th>Exam</th><th>Program</th><th>Score</th><th>Result</th><th>Date</th></tr></thead>
+                                <tbody id="examResults"><tr><td colspan="5" class="empty-state"><div class="spinner" style="margin:0 auto;"></div></td></tr></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="programDashboard" style="display:none;">
+                    <div class="main-header">
+                        <div>
+                            <h1 id="progDashName">Program Dashboard</h1>
+                            <p id="progDashMode">Self-Learning Mode</p>
+                        </div>
+                    </div>
+                    <div class="card" style="margin-bottom:1.5rem;">
+                        <div class="card-body">
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+                                <h3>Your Learning Progress</h3>
+                                <span id="progDashProgressText" style="font-weight:700; color:var(--accent);">0%</span>
+                            </div>
+                            <div class="progress" style="height:15px; border-radius:10px; margin-bottom:1.5rem;">
+                                <div class="progress-bar" id="progDashProgressBar" style="width:0%;"></div>
+                            </div>
+                            <button class="btn btn-primary" onclick="switchTab('programsTab')"><i class="fas fa-play"></i> Resume Study Material</button>
+                        </div>
+                    </div>
+
+                    <!-- Instructor/Mentor details if premium -->
+                    <div id="progDashPremiumDetails" style="display:none; grid-template-columns:1fr 1fr; gap:1.5rem;">
+                        <div class="card">
+                            <div class="card-header"><h3><i class="fas fa-chalkboard-teacher" style="color:var(--accent);"></i> Assigned Instructor</h3></div>
+                            <div class="card-body" id="progDashInstructorCard">
+                                <h4>No Instructor Assigned</h4>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-header"><h3><i class="fas fa-user-friends" style="color:var(--golden);"></i> Assigned Mentor</h3></div>
+                            <div class="card-body" id="progDashMentorCard">
+                                <h4>No Mentor Assigned</h4>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Upgrade Premium CTA if self-learning -->
+                    <div id="progDashUpgradeCTA" class="upgrade-banner" style="display:none;">
+                        <div>
+                            <h2>Unlock Mentorship & Live Support!</h2>
+                            <p>Upgrade to Premium Enrolled Mode to unlock 1-on-1 sessions, assignments feedback, webinars, and live chat.</p>
+                        </div>
+                        <button class="btn btn-golden" onclick="switchTab('paymentsTab')"><i class="fas fa-arrow-circle-up"></i> Upgrade Now</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab: Programs Explorer / Detail View -->
+            <div id="programsTab" class="tab-content">
+                <div id="programsListView">
+                    <div class="main-header">
+                        <div>
+                            <h1>Learning Programs Catalog</h1>
+                            <p>Explore software learning paths and start learning today</p>
+                        </div>
+                    </div>
+                    <div class="tutorials-grid" id="explorerProgramsGrid"></div>
+                </div>
+
+                <div id="programDetailView" style="display:none;">
+                    <div class="breadcrumbs">
+                        <a href="#" onclick="onProgramChange('overview')">Programs</a> <i class="fas fa-chevron-right" style="font-size:0.7rem;"></i> <span id="breadcrumbProgName">Program Details</span>
+                    </div>
+                    <div class="main-header">
+                        <div>
+                            <h1 id="activeProgName">Program Details</h1>
+                            <p id="activeProgDesc">Description</p>
+                        </div>
+                    </div>
+
+                    <div style="display:grid; grid-template-columns: 2fr 1fr; gap:1.5rem; margin-top:1.5rem;">
+                        <!-- Modules List -->
+                        <div class="card">
+                            <div class="card-header"><h3>Modules</h3></div>
+                            <div class="card-body" id="modulesList"></div>
+                        </div>
+
+                        <!-- Active Program Info Card -->
+                        <div class="card">
+                            <div class="card-header"><h3>Progress Summary</h3></div>
+                            <div class="card-body" style="text-align:center;">
+                                <div class="progress" style="height:15px; margin-bottom:1rem; border-radius:10px;">
+                                    <div class="progress-bar" id="activeProgProgressBar" style="width: 0%"></div>
+                                </div>
+                                <h4 id="activeProgPercent">0% Completed</h4>
+                                <p style="margin-top:1rem; font-size:0.85rem;" id="activeProgInfoSubtext">Complete all 4 modules and pass module exams with at least 70% to qualify for certification.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Module Content View Inline -->
+                <div id="moduleContentView" style="display:none;">
+                    <div class="breadcrumbs">
+                        <a href="#" onclick="showProgramDetail()">Modules</a> <i class="fas fa-chevron-right" style="font-size:0.7rem;"></i> <span id="breadcrumbModuleName">Module Content</span>
+                    </div>
+                    <div class="main-header">
+                        <div>
+                            <h1 id="moduleContentTitle">Module Title</h1>
+                            <p id="moduleContentCourse">Course Name</p>
+                        </div>
+                    </div>
+
+                    <!-- Tabs Header -->
+                    <div class="module-tab-container">
+                        <button class="module-tab-btn active" onclick="switchModulePane('paneNotes', this)"><i class="fas fa-sticky-note"></i> Study Notes</button>
+                        <button class="module-tab-btn" onclick="switchModulePane('paneVideos', this)"><i class="fas fa-video"></i> Video Lectures</button>
+                        <button class="module-tab-btn" onclick="switchModulePane('paneExercises', this)"><i class="fas fa-code"></i> Exercises</button>
+                        <button class="module-tab-btn" onclick="switchModulePane('paneMaterials', this)"><i class="fas fa-file-pdf"></i> References</button>
+                        <button class="module-tab-btn" onclick="switchModulePane('paneExam', this)" style="color:var(--red);"><i class="fas fa-file-signature"></i> Module Exam</button>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-body">
+                            <!-- Pane Notes -->
+                            <div id="paneNotes" class="module-pane active">
+                                <div id="notesContainer"></div>
+                            </div>
+                            <!-- Pane Videos -->
+                            <div id="paneVideos" class="module-pane">
+                                <div id="videosContainer"></div>
+                            </div>
+                            <!-- Pane Exercises -->
+                            <div id="paneExercises" class="module-pane">
+                                <div id="exercisesContainer"></div>
+                            </div>
+                            <!-- Pane References -->
+                            <div id="paneMaterials" class="module-pane">
+                                <div id="materialsContainer"></div>
+                            </div>
+                            <!-- Pane Exam -->
+                            <div id="paneExam" class="module-pane" style="text-align:center; padding:2rem 0;">
+                                <i class="fas fa-file-signature" style="font-size:4rem; color:var(--red); margin-bottom:1rem;"></i>
+                                <h2 style="margin-bottom:0.5rem;" id="paneExamTitle">Module Quiz / Exam</h2>
+                                <p style="max-width:600px; margin:0 auto 1.5rem; color:var(--text-light);" id="paneExamDesc">
+                                    Please ensure you are ready. Entering the exam will enforce fullscreen mode and anti-cheating strikes.
+                                </p>
+                                <div style="display:inline-flex; gap:2rem; margin-bottom:2rem;">
+                                    <div><strong>Time Limit:</strong> <span id="paneExamTime">60</span> minutes</div>
+                                    <div><strong>Pass Threshold:</strong> 70%</div>
+                                </div>
+                                <div id="paneExamAction"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab: Assigned Instructor -->
+            <div id="instructorTab" class="tab-content">
+                <div class="main-header">
+                    <div>
+                        <h1>Assigned Instructor</h1>
+                        <p>Get professional assistance from your assigned programming instructor</p>
+                    </div>
+                </div>
+                <div class="card" style="max-width:600px;">
+                    <div class="card-body" style="text-align:center; padding:3rem 1.5rem;">
+                        <i class="fas fa-chalkboard-teacher" style="font-size:4rem; color:var(--accent); margin-bottom:1.5rem;"></i>
+                        <h2 id="instName">Instructor Name</h2>
+                        <p style="color:var(--text-muted); margin-bottom:1.5rem;" id="instEmail">instructor@beyonddataanalytics.com</p>
+                        <p style="max-width:450px; margin:0 auto 2rem; color:var(--text-light);">
+                            Your assigned instructor is available to review your course progress, grade assignments, and answer any direct inquiries.
+                        </p>
+                        <button class="btn btn-primary" onclick="messageInstructor()"><i class="fas fa-envelope"></i> Send Direct Message</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab: Assigned Mentor -->
+            <div id="mentorTab" class="tab-content">
+                <div class="main-header">
+                    <div>
+                        <h1>Assigned Mentor</h1>
+                        <p>Receive career guidance and professional review from your mentor</p>
+                    </div>
+                    <button class="btn btn-primary" onclick="openRequestSessionModal()"><i class="fas fa-calendar-plus"></i> Request Mentorship Session</button>
+                </div>
+                <div class="card" style="margin-bottom:2rem;">
+                    <div class="card-body" style="display:flex; align-items:center; gap:1.5rem;">
+                        <div class="user-avatar" style="width:60px; height:60px; font-size:1.5rem;" id="mentorAvatar">??</div>
+                        <div>
+                            <h3 id="mentorName">No Mentor Assigned</h3>
+                            <p style="color:var(--text-muted);" id="mentorEmail">Please contact your administrator to assign a mentor.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header"><h3>Scheduled Mentorship Sessions</h3></div>
+                    <div class="table-wrapper">
+                        <table>
+                            <thead><tr><th>Topic</th><th>Date & Time</th><th>Meeting Link</th><th>Status</th></tr></thead>
+                            <tbody id="sessionsTableBody">
+                                <tr><td colspan="4" style="text-align:center;color:var(--text-muted);">No mentorship sessions scheduled yet</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab: Assignments -->
+            <div id="assignmentsTab" class="tab-content">
+                <div class="main-header">
+                    <div>
+                        <h1>Program Assignments</h1>
+                        <p>Submit course assignments and check grading reports</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header"><h3>Assignments Listing</h3></div>
+                    <div class="card-body" id="assignmentsListContainer">
+                        <div class="empty-state">No assignments published for this program</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab: Live Sessions -->
+            <div id="sessionsTab" class="tab-content">
+                <div class="main-header">
+                    <div>
+                        <h1>Live Workshops & Webinars</h1>
+                        <p>Participate in scheduled cohort classes and live programming sessions</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header"><h3>Upcoming Sessions</h3></div>
+                    <div class="table-wrapper">
+                        <table>
+                            <thead><tr><th>Title</th><th>Speaker</th><th>Schedule Date</th><th>Meeting Link</th></tr></thead>
+                            <tbody id="workshopsTableBody">
+                                <tr><td colspan="4" style="text-align:center;color:var(--text-muted);">No sessions scheduled yet</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab: Messages -->
+            <div id="messagesTab" class="tab-content">
+                <div class="main-header">
+                    <div><h1>Message Center</h1><p>Communicate with support staff, mentors, and instructors</p></div>
+                    <button class="btn btn-primary" onclick="openComposeModal()"><i class="fas fa-paper-plane"></i> Compose Message</button>
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <div class="messages-layout">
+                            <div class="messages-list" id="inboxList">
+                                <div style="text-align:center;padding:2rem;"><div class="spinner"></div></div>
+                            </div>
+                            <div class="message-view" id="messageDetailView">
+                                <div style="margin:auto;text-align:center;color:var(--text-muted);">
+                                    <i class="fas fa-envelope-open" style="font-size:3rem;margin-bottom:1rem;"></i>
+                                    <h3>Select a message to read</h3>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab: Progress -->
+            <div id="progressTab" class="tab-content">
+                <div class="main-header">
+                    <div>
+                        <h1>Module Progress Log</h1>
+                        <p>Track unlocked modules, test attempt scores, and overall grades</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="table-wrapper">
+                        <table>
+                            <thead><tr><th>Module</th><th>Progress Status</th><th>Attempts Logged</th><th>Best Score</th><th>Passed At</th></tr></thead>
+                            <tbody id="progressLogsTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab: Exams -->
+            <div id="examsTab" class="tab-content">
+                <div class="main-header">
+                    <div>
+                        <h1>Examinations Panel</h1>
+                        <p>Attempt course exam blocks to unlock advanced learning paths</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-body" id="examsListContainer"></div>
+                </div>
+            </div>
+
+            <!-- Tab: Certificates -->
+            <div id="certificatesTab" class="tab-content">
+                <div class="main-header">
+                    <div>
+                        <h1>Program Certification</h1>
+                        <p>Download and print verified course credentials upon graduation</p>
+                    </div>
+                </div>
+                <div class="tutorials-grid" id="certsList"></div>
+            </div>
+
+            <!-- Tab: Payments -->
+            <div id="paymentsTab" class="tab-content">
+                <div class="main-header">
+                    <div>
+                        <h1>Payment History & Upgrades</h1>
+                        <p>Manage fee payments, upgradable learning tracks, and invoice logs</p>
+                    </div>
+                </div>
+
+                <div id="premiumUpgradeSection" class="upgrade-banner" style="display:none;">
+                    <div>
+                        <h2>Upgrade program to Premium Enrolled</h2>
+                        <p>Access full mentor assistance, grade assessments, assignments submission, and webinars for KES 5,000 upfront enrollment fee.</p>
+                    </div>
+                    <button class="btn btn-golden" onclick="openEnrollmentCheckout()"><i class="fas fa-arrow-up"></i> Upgrade (KES 5,000)</button>
+                </div>
+
+                <div class="card">
+                    <div class="card-header"><h3>Recent Payments</h3></div>
+                    <div class="table-wrapper">
+                        <table>
+                            <thead><tr><th>Reference</th><th>Target Type</th><th>Amount</th><th>Method</th><th>Status</th><th>Date</th></tr></thead>
+                            <tbody id="paymentsTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab: Profile Settings -->
+            <div id="profileTab" class="tab-content">
+                <div class="main-header">
+                    <div><h1>Profile & Settings</h1><p>Update credentials, security settings, and profile info</p></div>
+                </div>
+                <div class="card" style="max-width:550px;">
+                    <div class="card-header"><h3>Change Password</h3></div>
+                    <div class="card-body">
+                        <div id="passwordAlert" style="display:none;"></div>
+                        <form id="passwordForm" onsubmit="handleChangePassword(event)">
+                            <div class="form-group">
+                                <label class="form-label">Old Password</label>
+                                <input type="password" class="form-control" id="oldPassword" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">New Password</label>
+                                <input type="password" class="form-control" id="newPassword" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Confirm New Password</label>
+                                <input type="password" class="form-control" id="confirmPassword" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary" id="changePassBtn">Update Password</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Payment Checkout Modal -->
+    <div class="modal-overlay" id="checkoutModal">
+        <div class="modal" style="max-width:500px;">
+            <div class="modal-header">
+                <h3 id="checkoutModalTitle">Checkout</h3>
+                <button class="btn btn-icon btn-outline" onclick="closeCheckoutModal()"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <p id="checkoutModalDesc">Complete the fee payment to proceed.</p>
+                <div style="margin: 1rem 0; padding: 1rem; background: var(--bg-dark); border-radius: 8px; text-align:center;">
+                    <span style="font-size: 0.9rem; color: var(--text-light);">Required Fee</span>
+                    <h2 id="modalFeeText" style="color: var(--primary); margin: 0.25rem 0;">KES 2,000</h2>
+                    <span id="modalCourseName" style="font-weight: 600; font-size:1.1rem;">Course Name</span>
+                </div>
+
+                <h4>Select Payment Method</h4>
+                <div class="payment-methods-grid">
+                    <div class="payment-method-card active" onclick="selectPaymentMethod('M-Pesa')">
+                        <i class="fas fa-mobile-alt" style="color:#4CAF50;"></i>
+                        <span>M-Pesa</span>
+                    </div>
+                    <div class="payment-method-card" onclick="selectPaymentMethod('PayPal')">
+                        <i class="fab fa-paypal" style="color:#003087;"></i>
+                        <span>PayPal</span>
+                    </div>
+                    <div class="payment-method-card" onclick="selectPaymentMethod('Card')">
+                        <i class="fas fa-credit-card" style="color:#FF9800;"></i>
+                        <span>Card</span>
+                    </div>
+                    <div class="payment-method-card" onclick="selectPaymentMethod('Bank')">
+                        <i class="fas fa-university" style="color:#607D8B;"></i>
+                        <span>Bank Transfer</span>
+                    </div>
+                </div>
+
+                <div class="payment-form-fields" id="paymentFields"></div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" onclick="closeCheckoutModal()">Cancel</button>
+                <button class="btn btn-primary" id="btnPayNow" onclick="processPayment()">Complete Simulated Payment</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Certificate Modal / Viewer -->
+    <div class="modal-overlay" id="certModal">
+        <div class="modal" style="max-width:850px;">
+            <div class="modal-header">
+                <h3>Certificate Viewer</h3>
+                <button class="btn btn-icon btn-outline" onclick="closeCertModal()"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body" style="padding:0; overflow-x:auto;">
+                <div id="certTemplate" style="background:#fff; border: 20px solid #1a365d; padding: 3rem; text-align:center; position:relative; font-family:'Georgia', serif; min-width: 750px; color:#333;">
+                    <div style="border: 4px double #d69e2e; padding: 2.5rem; position:relative;">
+                        <div style="font-size:2rem; color:#1a365d; margin-bottom:1rem;"><i class="fas fa-chart-line"></i></div>
+                        <h4 style="color:#1a365d; text-transform:uppercase; letter-spacing:0.2em; font-family:'Inter', sans-serif; font-size: 0.9rem; font-weight:700; margin:0;">Beyond Data Analytics</h4>
+                        <p style="font-size:0.8rem; color:#718096; margin-top:0.25rem;">Learning Platform</p>
+                        
+                        <div style="width: 120px; height: 1px; background: #d69e2e; margin: 1.5rem auto;"></div>
+                        
+                        <h1 style="color:#2d3748; font-size: 2.2rem; font-family:'Georgia', serif; font-weight:normal; margin: 1rem 0;">Certificate of Completion</h1>
+                        <p style="font-style:italic; font-size:1rem; color:#718096;">This is proudly presented to</p>
+                        <h2 id="certStudentName" style="color:#1a365d; font-size: 2.6rem; margin:1rem 0; font-family:'Georgia', serif;">Student Name</h2>
+                        <p style="font-style:italic; font-size:1.05rem; color:#718096; max-width:500px; margin:0 auto;">for successfully completing all required learning modules, assignments, and examinations for</p>
+                        <h3 id="certCourseName" style="color:#2d3748; font-size: 1.8rem; margin:1.2rem 0; font-family:'Georgia', serif;">Python Programming</h3>
+                        
+                        <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-top:2.5rem; border-top:1px solid #e2e8f0; padding-top:1.5rem;">
+                            <div style="text-align:left; font-size:0.8rem; font-family:'Inter', sans-serif; color:#718096; line-height:1.6;">
+                                <div><strong>Date Issued:</strong> <span id="certIssuedDate">June 15, 2026</span></div>
+                                <div><strong>Credential ID:</strong> <span id="certNumber" style="font-family:monospace; color:#2d3748;">BDA-XXXXXX</span></div>
+                                <div style="margin-top:0.5rem; font-size:0.7rem; color:#a0aec0;">Verify: www.beyonddataanalytics.online/verify.html</div>
+                            </div>
+                            <div style="text-align:center;">
+                                <div style="font-family:'Georgia', serif; font-size:1.1rem; color:#1a365d; font-style:italic; border-bottom: 1px solid #718096; width:150px; margin:0 auto 0.25rem;">J. Kiprop</div>
+                                <div style="font-size:0.7rem; color:#718096; font-family:'Inter', sans-serif;">Director of Academics</div>
+                            </div>
+                            <div id="certQrContainer"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" onclick="printCert()"><i class="fas fa-print"></i> Print / PDF</button>
+                <button class="btn btn-primary" onclick="closeCertModal()">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notifications Modal -->
+    <div class="modal-overlay" id="notifModal">
+        <div class="modal" style="max-width:450px;">
+            <div class="modal-header">
+                <h3>My Notifications</h3>
+                <button class="btn btn-icon btn-outline" onclick="closeNotifModal()"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body" id="notifModalBody" style="max-height:350px; overflow-y:auto; padding:0;">
+                <div class="empty-state">No notifications.</div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline btn-sm" onclick="markAllNotifsRead()">Mark All Read</button>
+                <button class="btn btn-primary btn-sm" onclick="closeNotifModal()">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Request Mentorship Session Modal -->
+    <div class="modal-overlay" id="requestSessionModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>Request Mentorship Session</h3>
+                <button class="btn btn-icon btn-outline" onclick="closeRequestSessionModal()"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <div id="sessionAlert" style="display:none;"></div>
+                <form id="sessionForm">
+                    <div class="form-group">
+                        <label class="form-label">Topic / Area of Assistance *</label>
+                        <input type="text" class="form-control" id="sessionTopic" placeholder="e.g. Python recursion quiz help" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Proposed Date & Time *</label>
+                        <input type="datetime-local" class="form-control" id="sessionDate" required>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" onclick="closeRequestSessionModal()">Cancel</button>
+                <button class="btn btn-primary" onclick="submitSessionRequest()" id="submitSessionBtn"><i class="fas fa-paper-plane"></i> Request</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Compose Message Modal -->
+    <div class="modal-overlay" id="composeModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>New Message</h3>
+                <button class="btn btn-icon btn-outline" onclick="closeComposeModal()"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <div id="composeAlert" style="display:none;"></div>
+                <form id="composeForm">
+                    <div class="form-group">
+                        <label class="form-label">Recipient *</label>
+                        <select class="form-control" id="composeRecipient" required>
+                            <option value="">-- Select Contact --</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Subject *</label>
+                        <input type="text" class="form-control" id="composeSubject" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Message *</label>
+                        <textarea class="form-control" id="composeBody" rows="5" required></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" onclick="closeComposeModal()">Cancel</button>
+                <button class="btn btn-primary" onclick="sendMessage()" id="sendMessageBtn"><i class="fas fa-paper-plane"></i> Send</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mode Selection Modal -->
+    <div class="modal-overlay" id="modeSelectModal">
+        <div class="modal" style="max-width:500px;">
+            <div class="modal-header">
+                <h3>Choose Learning pathway</h3>
+                <button class="btn btn-icon btn-outline" onclick="closeModeSelectModal()"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <h3 id="modeSelectTitle" style="margin-bottom:1rem; color:var(--primary);">Enroll in Course</h3>
+                <p style="margin-bottom:1.5rem;">Select how you wish to study this program:</p>
+                <div style="display:flex; flex-direction:column; gap:1rem;">
+                    <!-- Option 1 -->
+                    <div style="border: 2px solid var(--border); border-radius:12px; padding:1.5rem; cursor:pointer; transition:var(--transition);" onclick="selectModeEnroll('self')" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border)'">
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.5rem;">
+                            <h4 style="color:var(--accent);"><i class="fas fa-graduation-cap"></i> Self-Learning Mode</h4>
+                            <span class="badge badge-success">Free Access</span>
+                        </div>
+                        <p style="font-size:0.85rem; line-height:1.4;">Study at your own pace. Free access to lessons, notes, videos, exams. Pay for certification later if you pass.</p>
+                    </div>
+                    <!-- Option 2 -->
+                    <div style="border: 2px solid var(--border); border-radius:12px; padding:1.5rem; cursor:pointer; transition:var(--transition);" onclick="selectModeEnroll('enrolled')" onmouseover="this.style.borderColor='var(--golden)'" onmouseout="this.style.borderColor='var(--border)'">
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.5rem;">
+                            <h4 style="color:var(--golden);"><i class="fas fa-star"></i> Premium Enrolled Mode</h4>
+                            <span class="badge badge-warning">KES 5,000</span>
+                        </div>
+                        <p style="font-size:0.85rem; line-height:1.4;">Cohort-based access. Includes assigned instructor & mentor, assignments feedback, webinars, and free certificate generation.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Assignment Submit Modal -->
+    <div class="modal-overlay" id="submitAssignmentModal">
+        <div class="modal" style="max-width:550px;">
+            <div class="modal-header">
+                <h3>Submit Assignment Solution</h3>
+                <button class="btn btn-icon btn-outline" onclick="closeSubmitAssignmentModal()"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <h4 id="submitAssignmentTitle" style="margin-bottom:1rem;">Assignment Title</h4>
+                <form id="assignmentSubmitForm" onsubmit="handleAssignmentSubmit(event)">
+                    <input type="hidden" id="submitAssignmentId">
+                    <div class="form-group">
+                        <label class="form-label">Submission Note / Explanation</label>
+                        <textarea class="form-control" id="submitAssignmentText" rows="4" placeholder="Briefly describe your solution..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Upload Solution File (optional, max 10MB)</label>
+                        <input type="file" class="form-control" id="submitAssignmentFile">
+                    </div>
+                    <button type="submit" class="btn btn-primary" id="btnSubmitSolution">Upload and Submit Solution</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/api.js"></script>
+    <script>
+        if (!API.requireAuth(['student'])) throw new Error('Not authorized');
+        const user = API.getUser();
+        if (user) {
+            const firstName = (user.fullName || user.username).split(' ')[0];
+            document.querySelectorAll('.greetName').forEach(el => el.textContent = firstName);
+            document.getElementById('userName').textContent = user.fullName || user.username;
+            document.getElementById('userAvatar').textContent = getInitials(user.fullName || user.username);
+        }
+
+        let availablePrograms = [];
+        let enrolledTuts = [];
+        let activeProgram = null; // null represents Overview
+        let notifications = [];
+        let messages = [];
+        let contacts = [];
+        let selectedCheckoutTarget = null; // { type: 'enrollment'|'certificate', program: tutorial }
+        let selectedMethod = 'M-Pesa';
+
+        async function init() {
+            try {
+                // Fetch programs
+                const data = await API.get('/student/available-programs');
+                availablePrograms = data.programs;
+
+                // Load dashboard stats
+                await loadDashboard();
+
+                // Populate program selector dropdown
+                populateProgramSelector();
+
+                // Handle URL route details
+                const params = new URLSearchParams(window.location.search);
+                const progSlug = params.get('program');
+                if (progSlug) {
+                    const matched = availablePrograms.find(p => p.slug === progSlug);
+                    if (matched) {
+                        if (matched.enrolled) {
+                            changeActiveProgram(matched.id);
+                        } else {
+                            switchTab('programsTab');
+                            openModeSelect(matched.id);
+                        }
+                    }
+                }
+                const tab = params.get('tab');
+                if (tab) {
+                    switchTab(tab);
+                }
+            } catch (err) {
+                console.error(err);
+                showToast('Failed to initialize portal', 'error');
+            }
+        }
+
+        function populateProgramSelector() {
+            const select = document.getElementById('programSelector');
+            // Clear but keep General Overview
+            select.innerHTML = '<option value="overview">General Overview</option>';
+            availablePrograms.forEach(p => {
+                if (p.enrolled) {
+                    select.innerHTML += `<option value="${p.id}">${escapeHtml(p.name)} (${p.learningMode === 'enrolled' ? 'Premium' : 'Self-Learning'})</option>`;
+                }
+            });
+        }
+
+        function changeActiveProgram(val) {
+            const select = document.getElementById('programSelector');
+            select.value = val;
+
+            if (val === 'overview') {
+                activeProgram = null;
+                document.getElementById('overviewDashboard').style.display = 'block';
+                document.getElementById('programDashboard').style.display = 'none';
+            } else {
+                activeProgram = availablePrograms.find(p => p.id == val);
+                document.getElementById('overviewDashboard').style.display = 'none';
+                document.getElementById('programDashboard').style.display = 'block';
+
+                // Update Program Dashboard details
+                document.getElementById('progDashName').textContent = activeProgram.name;
+                document.getElementById('progDashMode').textContent = activeProgram.learningMode === 'enrolled' ? '⭐ Premium Enrolled Mode' : '📚 Self-Learning Mode';
+                
+                // Set progress
+                const matchedEnroll = enrolledTuts.find(t => t.id == val);
+                if (matchedEnroll) {
+                    const percent = matchedEnroll.completionPercentage || 0;
+                    document.getElementById('progDashProgressText').textContent = percent + '%';
+                    document.getElementById('progDashProgressBar').style.width = percent + '%';
+                }
+
+                // Show/hide sub details
+                if (activeProgram.learningMode === 'enrolled') {
+                    document.getElementById('progDashPremiumDetails').style.display = 'grid';
+                    document.getElementById('progDashUpgradeCTA').style.display = 'none';
+
+                    // Populate instructor and mentor details
+                    const matched = enrolledTuts.find(t => t.id == val);
+                    const instDiv = document.getElementById('progDashInstructorCard');
+                    if (matched && matched.instructors && matched.instructors.length > 0) {
+                        instDiv.innerHTML = matched.instructors.map(i => `<h4>${escapeHtml(i.full_name)}</h4><p>${escapeHtml(i.email)}</p>`).join('');
+                    } else {
+                        instDiv.innerHTML = '<h4>No instructor assigned</h4>';
+                    }
+
+                    const mentorDiv = document.getElementById('progDashMentorCard');
+                    if (matched && matched.mentor) {
+                        mentorDiv.innerHTML = `<h4>${escapeHtml(matched.mentor.full_name)}</h4><p>${escapeHtml(matched.mentor.email)}</p>`;
+                    } else {
+                        mentorDiv.innerHTML = '<h4>No mentor assigned yet</h4>';
+                    }
+                } else {
+                    document.getElementById('progDashPremiumDetails').style.display = 'none';
+                    document.getElementById('progDashUpgradeCTA').style.display = 'flex';
+                }
+            }
+
+            renderSidebar();
+            
+            // Re-switch to dashboardTab when active program changes
+            switchTab('dashboardTab');
+        }
+
+        function renderSidebar() {
+            const instructor = document.getElementById('side-instructor');
+            const mentor = document.getElementById('side-mentor');
+            const assignments = document.getElementById('side-assignments');
+            const sessions = document.getElementById('side-sessions');
+            const messages = document.getElementById('side-messages');
+            const progress = document.getElementById('side-progress');
+            const exams = document.getElementById('side-exams');
+            const certificates = document.getElementById('side-certificates');
+
+            if (!activeProgram) {
+                // Overview Mode
+                [instructor, mentor, assignments, sessions, messages, progress, exams, certificates].forEach(el => el.style.display = 'none');
+            } else {
+                // Specific Program Selected
+                progress.style.display = 'flex';
+                exams.style.display = 'flex';
+                certificates.style.display = 'flex';
+
+                if (activeProgram.learningMode === 'enrolled') {
+                    [instructor, mentor, assignments, sessions, messages].forEach(el => el.style.display = 'flex');
+                } else {
+                    [instructor, mentor, assignments, sessions, messages].forEach(el => el.style.display = 'none');
+                }
+            }
+        }
+
+        function switchTab(tabId, el) {
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.sidebar-nav a').forEach(a => a.classList.remove('active'));
+            
+            document.getElementById(tabId).classList.add('active');
+            if (el) {
+                el.classList.add('active');
+            } else {
+                // Find and highlight matching side navigation button
+                const sideBtnMap = {
+                    'dashboardTab': 'side-dashboard',
+                    'programsTab': 'side-programs',
+                    'instructorTab': 'side-instructor',
+                    'mentorTab': 'side-mentor',
+                    'assignmentsTab': 'side-assignments',
+                    'sessionsTab': 'side-sessions',
+                    'messagesTab': 'side-messages',
+                    'progressTab': 'side-progress',
+                    'examsTab': 'side-exams',
+                    'certificatesTab': 'side-certificates',
+                    'paymentsTab': 'side-payments',
+                    'profileTab': 'side-profile'
+                };
+                const btnId = sideBtnMap[tabId];
+                if (btnId) {
+                    const navBtn = document.getElementById(btnId);
+                    if (navBtn) navBtn.classList.add('active');
+                }
+            }
+
+            // Load data dynamically based on tab
+            if (tabId === 'dashboardTab') loadDashboard();
+            if (tabId === 'programsTab') renderProgramsCatalog();
+            if (tabId === 'instructorTab') renderInstructorDetails();
+            if (tabId === 'mentorTab') loadMentorship();
+            if (tabId === 'assignmentsTab') loadAssignments();
+            if (tabId === 'sessionsTab') loadWorkshops();
+            if (tabId === 'messagesTab') { loadMessages(); loadContacts(); }
+            if (tabId === 'progressTab') renderProgressLogs();
+            if (tabId === 'examsTab') renderExamsList();
+            if (tabId === 'certificatesTab') renderCertificatesTab();
+            if (tabId === 'paymentsTab') renderPaymentsTab();
+        }
+
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('open');
+        }
+
+        // ==================== DASHBOARD LOAD ====================
+        async function loadDashboard() {
+            try {
+                const data = await API.get('/student/dashboard');
+                enrolledTuts = data.tutorials;
+                
+                // Update stats
+                document.getElementById('statEnrolled').textContent = enrolledTuts.length;
+                const totalCompleted = enrolledTuts.reduce((sum, t) => sum + t.completedModules, 0);
+                document.getElementById('statCompleted').textContent = totalCompleted;
+                document.getElementById('statCerts').textContent = data.certificates.length;
+                if (data.recentExams.length > 0) {
+                    const avg = data.recentExams.reduce((s, e) => s + e.percentage, 0) / data.recentExams.length;
+                    document.getElementById('statAvgScore').textContent = Math.round(avg) + '%';
+                }
+
+                // Populate dashboard learning programs grid
+                renderDashboardPrograms();
+
+                // Recent exams
+                const tbody = document.getElementById('examResults');
+                if (data.recentExams.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="5" class="empty-state"><i class="fas fa-clipboard"></i><h3>No exam results yet</h3></td></tr>';
+                } else {
+                    tbody.innerHTML = data.recentExams.map(e => `
+                        <tr>
+                            <td style="font-weight:600;">${escapeHtml(e.exam_title)}</td>
+                            <td>${escapeHtml(e.tutorial_name)}</td>
+                            <td><strong style="color:${e.percentage>=70?'var(--green)':'var(--red)'};">${e.percentage}%</strong></td>
+                            <td><span class="badge badge-${e.percentage>=70?'success':'danger'}">${e.percentage>=70?'PASSED':'FAILED'}</span></td>
+                            <td style="color:var(--text-muted);font-size:0.85rem;">${formatDateTime(e.finished_at)}</td>
+                        </tr>
+                    `).join('');
+                }
+            } catch (err) {
+                console.error(err);
+                showToast('Failed to load student dashboard', 'error');
+            }
+            await loadNotifications();
+        }
+
+        function renderDashboardPrograms() {
+            const grid = document.getElementById('dashboardProgramsGrid');
+            if (enrolledTuts.length === 0) {
+                grid.innerHTML = `
+                    <div class="empty-state" style="grid-column:1/-1;">
+                        <i class="fas fa-book"></i>
+                        <h3>Not enrolled in any programs</h3>
+                        <p>Go to the <strong>Learning Programs</strong> catalog tab to enroll and start learning.</p>
+                    </div>`;
+                return;
+            }
+
+            const colors = { 'python': 'python', 'r-programming': 'r', 'sql': 'sql', 'power-bi': 'powerbi' };
+            grid.innerHTML = enrolledTuts.map(t => `
+                <div class="tutorial-card" onclick="enterProgramFromDashboard('${t.slug}')">
+                    <div class="tutorial-card-header ${colors[t.slug] || 'python'}">
+                        <div class="tutorial-icon"><i class="${t.icon || 'fas fa-code'}"></i></div>
+                        <h3>${escapeHtml(t.name)}</h3>
+                        <p style="opacity:0.8;font-size:0.85rem;margin-top:0.25rem;">${t.completedModules}/${t.totalModules} modules completed</p>
+                    </div>
+                    <div class="tutorial-card-body">
+                        <div class="progress" style="margin-bottom:1rem;height:8px;">
+                            <div class="progress-bar ${t.completionPercentage===100?'green':''}" style="width:${t.completionPercentage}%"></div>
+                        </div>
+                        <p style="font-size:0.85rem;color:var(--text-light);">${escapeHtml(t.description || '')}</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function enterProgramFromDashboard(slug) {
+            const matched = availablePrograms.find(p => p.slug === slug);
+            if (matched) {
+                changeActiveProgram(matched.id);
+            }
+        }
+
+        // ==================== PROGRAMS CATALOG / EXPLORER ====================
+        function renderProgramsCatalog() {
+            if (activeProgram) {
+                // Show module details list for active program
+                document.getElementById('programsListView').style.display = 'none';
+                document.getElementById('programDetailView').style.display = 'block';
+                document.getElementById('moduleContentView').style.display = 'none';
+                loadActiveProgramModules();
+            } else {
+                // Show general explorer catalog
+                document.getElementById('programsListView').style.display = 'block';
+                document.getElementById('programDetailView').style.display = 'none';
+                document.getElementById('moduleContentView').style.display = 'none';
+
+                const grid = document.getElementById('explorerProgramsGrid');
+                const colors = { 'python': 'python', 'r-programming': 'r', 'sql': 'sql', 'power-bi': 'powerbi' };
+                grid.innerHTML = availablePrograms.map(p => {
+                    let actionBtn = '';
+                    let statusLabel = '';
+
+                    if (p.enrolled) {
+                        statusLabel = `<span class="badge badge-success" style="margin-top:0.5rem;"><i class="fas fa-check"></i> ${p.learningMode === 'enrolled' ? 'Premium Enrolled' : 'Self-Learning'}</span>`;
+                        actionBtn = `<button class="btn btn-primary btn-sm" onclick="changeActiveProgram(${p.id})"><i class="fas fa-sign-in-alt"></i> Enter Program</button>`;
+                    } else {
+                        statusLabel = `<span class="badge badge-dark" style="margin-top:0.5rem;">Not Started</span>`;
+                        actionBtn = `<button class="btn btn-outline btn-sm" onclick="openModeSelect(${p.id})"><i class="fas fa-plus"></i> Choose Mode & Enroll</button>`;
+                    }
+
+                    return `
+                        <div class="tutorial-card">
+                            <div class="tutorial-card-header ${colors[p.slug] || 'python'}">
+                                <div class="tutorial-icon"><i class="${p.icon || 'fas fa-code'}"></i></div>
+                                <h3>${escapeHtml(p.name)}</h3>
+                                ${statusLabel}
+                            </div>
+                            <div class="tutorial-card-body" style="display:flex; flex-direction:column; justify-content:space-between; height:180px;">
+                                <p style="font-size:0.85rem;color:var(--text-light); overflow-y:auto; flex-grow:1; margin-bottom:1rem;">${escapeHtml(p.description || '')}</p>
+                                <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid var(--border); padding-top:1rem;">
+                                    <strong>KES 5,000</strong>
+                                    ${actionBtn}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            }
+        }
+
+        let selectedEnrollTargetId = null;
+        function openModeSelect(id) {
+            selectedEnrollTargetId = id;
+            const target = availablePrograms.find(p => p.id === id);
+            document.getElementById('modeSelectTitle').textContent = `Enroll in ${target.name}`;
+            document.getElementById('modeSelectModal').classList.add('active');
+        }
+        function closeModeSelectModal() {
+            document.getElementById('modeSelectModal').classList.remove('active');
+        }
+
+        async function selectModeEnroll(mode) {
+            closeModeSelectModal();
+            const target = availablePrograms.find(p => p.id === selectedEnrollTargetId);
+            
+            if (mode === 'self') {
+                try {
+                    const res = await API.post('/student/enroll-self', { tutorialId: target.id });
+                    showToast(res.message, 'success');
+                    // Refresh available programs
+                    const data = await API.get('/student/available-programs');
+                    availablePrograms = data.programs;
+                    populateProgramSelector();
+                    changeActiveProgram(target.id);
+                } catch (err) {
+                    showToast(err.error || 'Failed to enroll', 'error');
+                }
+            } else {
+                // Premium upgrade checkout
+                openCheckoutModal('enrollment', target);
+            }
+        }
+
+        async function loadActiveProgramModules() {
+            document.getElementById('activeProgName').textContent = activeProgram.name;
+            document.getElementById('activeProgDesc').textContent = activeProgram.description;
+            document.getElementById('breadcrumbProgName').textContent = activeProgram.name;
+
+            try {
+                const data = await API.get(`/student/tutorials/${activeProgram.slug}`);
+                const { modules } = data;
+
+                // Calculate progress
+                const completed = modules.filter(m => m.status === 'completed').length;
+                const total = modules.length;
+                const percent = total > 0 ? Math.round((completed / total) * 100) : 0;
+                
+                const pBar = document.getElementById('activeProgProgressBar');
+                pBar.style.width = percent + '%';
+                pBar.className = percent === 100 ? 'progress-bar green' : 'progress-bar';
+                document.getElementById('activeProgPercent').textContent = percent + '% Completed';
+
+                // Render modules list
+                const list = document.getElementById('modulesList');
+                if (modules.length === 0) {
+                    list.innerHTML = '<div class="empty-state">No modules available yet.</div>';
+                    return;
+                }
+
+                list.innerHTML = modules.map(m => {
+                    const status = m.status || 'locked';
+                    const isLocked = status === 'locked';
+                    const statusText = status.replace('_', ' ').toUpperCase();
+                    
+                    const icons = { locked: 'fa-lock', unlocked: 'fa-lock-open', in_progress: 'fa-book-reader', completed: 'fa-check-circle', failed: 'fa-times-circle' };
+                    const badgeClasses = { locked: 'dark', unlocked: 'primary', in_progress: 'warning', completed: 'success', failed: 'danger' };
+                    
+                    let actionBtn = '';
+                    if (!isLocked) {
+                        actionBtn = `<button class="btn btn-sm btn-primary" onclick="enterModule(${m.id})">
+                            <i class="fas fa-arrow-right"></i> ${status === 'completed' ? 'Review Content' : 'Enter Module'}
+                        </button>`;
+                    }
+
+                    return `
+                        <div style="display:flex;align-items:center;gap:1.5rem;padding:1.5rem 0;border-bottom:1px solid var(--border);opacity:${isLocked ? 0.6 : 1};">
+                            <div style="width:48px;height:48px;border-radius:50%;background:var(--bg-dark);display:flex;align-items:center;justify-content:center;font-size:1.2rem;color:var(--text-light);flex-shrink:0;">
+                                <i class="fas ${icons[status] || 'fa-lock'}"></i>
+                            </div>
+                            <div style="flex:1;">
+                                <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.25rem;">
+                                    <h4 style="margin:0;">Module ${m.module_number}: ${escapeHtml(m.title)}</h4>
+                                    <span class="badge badge-${badgeClasses[status]}">${statusText}</span>
+                                </div>
+                                <p style="font-size:0.85rem;margin-bottom:0.25rem;color:var(--text-light);">${escapeHtml(m.description || '')}</p>
+                                ${m.score !== null ? `<div style="font-size:0.85rem;"><strong>Best Score:</strong> <span style="color:${m.score >= 70 ? 'var(--green)' : 'var(--red)'}; font-weight:700;">${m.score}%</span></div>` : ''}
+                            </div>
+                            <div>
+                                ${actionBtn}
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            } catch (err) {
+                showToast('Failed to load modules list', 'error');
+            }
+        }
+
+        function showProgramDetail() {
+            document.getElementById('programsListView').style.display = 'none';
+            document.getElementById('programDetailView').style.display = 'block';
+            document.getElementById('moduleContentView').style.display = 'none';
+            loadActiveProgramModules();
+        }
+
+        // ==================== MODULE DETAILS VIEWER ====================
+        let currentModuleId = null;
+        let moduleContentData = null;
+
+        async function enterModule(id) {
+            currentModuleId = id;
+            document.getElementById('programsListView').style.display = 'none';
+            document.getElementById('programDetailView').style.display = 'none';
+            document.getElementById('moduleContentView').style.display = 'block';
+
+            // Reset tabs
+            switchModulePane('paneNotes');
+
+            try {
+                const data = await API.get(`/student/modules/${id}/content`);
+                moduleContentData = data;
+
+                document.getElementById('moduleContentTitle').textContent = `Module ${data.module.module_number}: ${data.module.title}`;
+                document.getElementById('moduleContentCourse').textContent = data.module.tutorial_name;
+                document.getElementById('breadcrumbModuleName').textContent = `Module ${data.module.module_number}`;
+
+                // Notes
+                const notesDiv = document.getElementById('notesContainer');
+                if (data.content.notes.length === 0) {
+                    notesDiv.innerHTML = '<div class="empty-state">No study notes uploaded yet</div>';
+                } else {
+                    notesDiv.innerHTML = data.content.notes.map(n => `
+                        <div style="margin-bottom:2rem; border-bottom:1px solid var(--border); padding-bottom:1.5rem;">
+                            <h3>${escapeHtml(n.title)}</h3>
+                            <div style="margin-top:1rem; white-space:pre-line; color:var(--text);">${escapeHtml(n.content_text || '')}</div>
+                            ${n.file_path ? `<button onclick="viewDocument('${n.file_path}', '${escapeHtml(n.title)}')" class="btn btn-sm btn-outline" style="margin-top:1rem;"><i class="fas fa-eye"></i> View Notes PDF</button>` : ''}
+                        </div>
+                    `).join('');
+                }
+
+                // Videos
+                const videosDiv = document.getElementById('videosContainer');
+                if (data.content.videos.length === 0) {
+                    videosDiv.innerHTML = '<div class="empty-state">No video lectures uploaded yet</div>';
+                } else {
+                    videosDiv.innerHTML = data.content.videos.map(v => `
+                        <div style="margin-bottom:2.5rem; max-width:800px; margin-left:auto; margin-right:auto;">
+                            <h3>${escapeHtml(v.title)}</h3>
+                            <div class="video-container" style="margin-top:1rem;">
+                                <video controls controlsList="nodownload">
+                                    <source src="${v.file_path}" type="video/mp4">
+                                    Your browser does not support the video tag.
+                                </video>
+                            </div>
+                        </div>
+                    `).join('');
+                }
+
+                // Exercises
+                const exercisesDiv = document.getElementById('exercisesContainer');
+                if (data.content.exercises.length === 0) {
+                    exercisesDiv.innerHTML = '<div class="empty-state">No practical exercises uploaded yet</div>';
+                } else {
+                    exercisesDiv.innerHTML = data.content.exercises.map(e => `
+                        <div style="margin-bottom:2rem; border-bottom:1px solid var(--border); padding-bottom:1.5rem;">
+                            <h3>${escapeHtml(e.title)}</h3>
+                            <div style="margin-top:1rem; white-space:pre-line; background:var(--bg-dark); padding:1rem; border-radius:var(--radius); font-family:monospace;">${escapeHtml(e.content_text || '')}</div>
+                            ${e.file_path ? `<button onclick="viewDocument('${e.file_path}', '${escapeHtml(e.title)}')" class="btn btn-sm btn-primary" style="margin-top:1rem;"><i class="fas fa-eye"></i> View Exercise Starter File</button>` : ''}
+                        </div>
+                    `).join('');
+                }
+
+                // Reference materials
+                const materialsDiv = document.getElementById('materialsContainer');
+                if (data.content.materials.length === 0) {
+                    materialsDiv.innerHTML = '<div class="empty-state">No reference materials uploaded yet</div>';
+                } else {
+                    materialsDiv.innerHTML = data.content.materials.map(m => `
+                        <div class="material-item">
+                            <div class="material-icon" style="background:rgba(214,158,46,0.1); color:var(--golden);"><i class="fas fa-file-pdf"></i></div>
+                            <div class="material-info">
+                                <h4 style="margin:0;">${escapeHtml(m.title)}</h4>
+                                <span style="font-size:0.8rem; color:var(--text-muted);">${escapeHtml(m.file_name || 'PDF Document')}</span>
+                            </div>
+                            <button onclick="viewDocument('${m.file_path}', '${escapeHtml(m.title)}')" class="btn btn-sm btn-outline"><i class="fas fa-eye"></i> View Document</button>
+                        </div>
+                    `).join('');
+                }
+
+                // Exam Config
+                const examAction = document.getElementById('paneExamAction');
+                if (data.exam) {
+                    document.getElementById('paneExamTitle').textContent = data.exam.title;
+                    document.getElementById('paneExamTime').textContent = data.exam.time_limit;
+                    
+                    if (data.progress.status === 'completed') {
+                        examAction.innerHTML = `
+                            <div class="alert alert-success" style="display:inline-flex; align-items:center; gap:0.5rem; margin-bottom:1.5rem;">
+                                <i class="fas fa-check-circle"></i> Passed with ${data.progress.score}% score!
+                            </div><br/>
+                            <button class="btn btn-outline" onclick="startModuleExam(${data.exam.id})"><i class="fas fa-redo"></i> Retake Exam</button>
+                        `;
+                    } else if (data.progress.status === 'failed') {
+                        examAction.innerHTML = `
+                            <div class="alert alert-danger" style="display:inline-flex; align-items:center; gap:0.5rem; margin-bottom:1.5rem;">
+                                <i class="fas fa-times-circle"></i> Previous attempt failed (${data.progress.score}% score). You need at least 70% to pass.
+                            </div><br/>
+                            <button class="btn btn-lg btn-danger" onclick="startModuleExam(${data.exam.id})"><i class="fas fa-redo"></i> Try Again</button>
+                        `;
+                    } else {
+                        examAction.innerHTML = `
+                            <button class="btn btn-lg btn-danger" onclick="startModuleExam(${data.exam.id})"><i class="fas fa-play"></i> Start Exam Now</button>
+                        `;
+                    }
+                } else {
+                    document.getElementById('paneExamTitle').textContent = 'Exam Not Published';
+                    examAction.innerHTML = '<button class="btn btn-outline" disabled>Exam Unavailable</button>';
+                }
+
+            } catch (err) {
+                showToast('Failed to load module content', 'error');
+            }
+        }
+
+        function switchModulePane(paneId, btn) {
+            document.querySelectorAll('.module-pane').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.module-tab-btn').forEach(b => b.classList.remove('active'));
+            
+            document.getElementById(paneId).classList.add('active');
+            if (btn) {
+                btn.classList.add('active');
+            } else {
+                // Find matching button based on pane ID
+                const paneBtnMap = {
+                    'paneNotes': 0, 'paneVideos': 1, 'paneExercises': 2, 'paneMaterials': 3, 'paneExam': 4
+                };
+                const index = paneBtnMap[paneId];
+                const header = document.querySelector('.module-tab-container');
+                if (header && header.children[index]) {
+                    header.children[index].classList.add('active');
+                }
+            }
+        }
+
+        function startModuleExam(examId) {
+            if (confirm('Are you ready to start the exam? Close all other tabs/windows. Exiting fullscreen or shifting window focus will trigger cheat strikes.')) {
+                window.location.href = `/student/exam.html?id=${examId}`;
+            }
+        }
+
+        // ==================== ASSIGNED INSTRUCTOR ====================
+        function renderInstructorDetails() {
+            if (!activeProgram) return;
+            const matched = enrolledTuts.find(t => t.id === activeProgram.id);
+            if (matched && matched.instructors && matched.instructors.length > 0) {
+                const instructor = matched.instructors[0];
+                document.getElementById('instName').textContent = escapeHtml(instructor.full_name);
+                document.getElementById('instEmail').textContent = escapeHtml(instructor.email);
+            } else {
+                document.getElementById('instName').textContent = 'No Instructor Assigned';
+                document.getElementById('instEmail').textContent = 'Support Center';
+            }
+        }
+
+        function messageInstructor() {
+            // Find contact
+            const matched = enrolledTuts.find(t => t.id === activeProgram.id);
+            let instructorId = '';
+            if (matched && matched.instructors && matched.instructors.length > 0) {
+                // Since contacts list gets loaded in messagesTab, we compose a message:
+                switchTab('messagesTab');
+                // Open compose modal
+                openComposeModal();
+                // Wait for contacts to populate
+                setTimeout(() => {
+                    const instName = matched.instructors[0].full_name;
+                    const opt = Array.from(document.getElementById('composeRecipient').options).find(o => o.text.includes(instName));
+                    if (opt) {
+                        document.getElementById('composeRecipient').value = opt.value;
+                    }
+                }, 500);
+            } else {
+                switchTab('messagesTab');
+                openComposeModal();
+            }
+        }
+
+        // ==================== MENTORSHIP ====================
+        async function loadMentorship() {
+            try {
+                const res = await API.get('/student/mentorship/sessions');
+                
+                if (res.mentor) {
+                    document.getElementById('mentorName').textContent = escapeHtml(res.mentor.full_name);
+                    document.getElementById('mentorEmail').textContent = escapeHtml(res.mentor.email || 'No email provided');
+                    document.getElementById('mentorAvatar').textContent = getInitials(res.mentor.full_name);
+                } else {
+                    document.getElementById('mentorName').textContent = 'No Mentor Assigned';
+                    document.getElementById('mentorEmail').textContent = 'Please contact your administrator to assign a mentor.';
+                    document.getElementById('mentorAvatar').textContent = '??';
+                }
+
+                const tbody = document.getElementById('sessionsTableBody');
+                if (res.sessions.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:var(--text-muted);">No mentorship sessions scheduled yet</td></tr>';
+                    return;
+                }
+                tbody.innerHTML = res.sessions.map(s => `
+                    <tr>
+                        <td><strong>${escapeHtml(s.topic)}</strong></td>
+                        <td>${formatDateTime(s.schedule_date)}</td>
+                        <td>${s.meeting_link ? `<a href="${s.meeting_link}" target="_blank" class="text-link"><i class="fas fa-video"></i> Join Link</a>` : '<span style="color:var(--text-muted);">No Link</span>'}</td>
+                        <td><span class="badge badge-${s.status==='completed'?'success':s.status==='cancelled'?'danger':'warning'}">${s.status}</span></td>
+                    </tr>
+                `).join('');
+            } catch (err) {
+                showToast('Failed to load mentorship info', 'error');
+            }
+        }
+
+        function openRequestSessionModal() {
+            document.getElementById('sessionAlert').style.display = 'none';
+            document.getElementById('sessionForm').reset();
+            document.getElementById('requestSessionModal').classList.add('active');
+        }
+        function closeRequestSessionModal() {
+            document.getElementById('requestSessionModal').classList.remove('active');
+        }
+
+        async function submitSessionRequest() {
+            const topic = document.getElementById('sessionTopic').value;
+            const scheduleDate = document.getElementById('sessionDate').value;
+            if(!topic || !scheduleDate) return alert('Topic and Date are required');
+
+            const btn = document.getElementById('submitSessionBtn');
+            btn.disabled = true;
+
+            try {
+                await API.post('/student/mentorship/sessions/request', { topic, scheduleDate });
+                showToast('Mentorship session requested successfully', 'success');
+                closeRequestSessionModal();
+                loadMentorship();
+            } catch(e) {
+                showToast(e.error || 'Failed to request session', 'error');
+            } finally {
+                btn.disabled = false;
+            }
+        }
+
+        // ==================== ASSIGNMENTS ====================
+        async function loadAssignments() {
+            if (!activeProgram) return;
+            const container = document.getElementById('assignmentsListContainer');
+            try {
+                const res = await API.get(`/student/assignments/${activeProgram.id}`);
+                const list = res.assignments;
+
+                if (list.length === 0) {
+                    container.innerHTML = '<div class="empty-state">No assignments published for this program</div>';
+                    return;
+                }
+
+                container.innerHTML = list.map(a => {
+                    let statusLabel = '';
+                    let actionBtn = '';
+                    let gradingDetails = '';
+
+                    if (a.submitted_at) {
+                        if (a.grade !== null) {
+                            statusLabel = '<span class="badge badge-success"><i class="fas fa-check-double"></i> Graded</span>';
+                            gradingDetails = `
+                                <div style="margin-top:0.75rem; padding:0.75rem; background:#ebf8ff; border-radius:6px; font-size:0.85rem; border-left:3px solid var(--accent);">
+                                    <strong>Grade:</strong> ${a.grade} / 100 <br>
+                                    <strong>Feedback:</strong> ${escapeHtml(a.feedback || 'No written feedback provided.')}
+                                </div>
+                            `;
+                            actionBtn = `<button class="btn btn-sm btn-outline" onclick="openSubmitAssignment(${a.id}, '${escapeHtml(a.title)}')"><i class="fas fa-redo"></i> Resubmit Solution</button>`;
+                        } else {
+                            statusLabel = '<span class="badge badge-warning"><i class="fas fa-spinner"></i> Submitted (Pending Grade)</span>';
+                            actionBtn = `<button class="btn btn-sm btn-outline" onclick="openSubmitAssignment(${a.id}, '${escapeHtml(a.title)}')"><i class="fas fa-edit"></i> Edit Submission</button>`;
+                        }
+                    } else {
+                        statusLabel = '<span class="badge badge-danger">Not Submitted</span>';
+                        actionBtn = `<button class="btn btn-sm btn-primary" onclick="openSubmitAssignment(${a.id}, '${escapeHtml(a.title)}')"><i class="fas fa-paper-plane"></i> Submit Solution</button>`;
+                    }
+
+                    return `
+                        <div style="border:1px solid var(--border); border-radius:10px; padding:1.25rem; margin-bottom:1rem; background:var(--white);">
+                            <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:0.5rem;">
+                                <h4>${escapeHtml(a.title)}</h4>
+                                ${statusLabel}
+                            </div>
+                            <p style="font-size:0.85rem; color:var(--text-light); margin-bottom:0.75rem; white-space:pre-line;">${escapeHtml(a.description || '')}</p>
+                            
+                            <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid var(--border); padding-top:0.75rem; font-size:0.8rem;">
+                                <div style="color:var(--text-light); display: flex; align-items: center; gap: 1rem;">
+                                    ${a.file_path ? `<button onclick="viewDocument('${a.file_path}', '${escapeHtml(a.title)}')" class="btn btn-sm btn-outline" style="padding:0.2rem 0.5rem; display:inline-flex; align-items:center; gap:0.3rem; font-size:0.75rem;"><i class="fas fa-eye"></i> View template</button>` : ''}
+                                    <span><strong>Due Date:</strong> ${a.due_date ? formatDate(a.due_date) : 'No due date'}</span>
+                                </div>
+                                ${actionBtn}
+                            </div>
+                            ${gradingDetails}
+                        </div>
+                    `;
+                }).join('');
+            } catch (err) {
+                container.innerHTML = `<div class="alert alert-danger">${err.error || 'Failed to load assignments'}</div>`;
+            }
+        }
+
+        function openSubmitAssignment(id, title) {
+            document.getElementById('submitAssignmentId').value = id;
+            document.getElementById('submitAssignmentTitle').textContent = title;
+            document.getElementById('assignmentSubmitForm').reset();
+            document.getElementById('submitAssignmentModal').classList.add('active');
+        }
+        function closeSubmitAssignmentModal() {
+            document.getElementById('submitAssignmentModal').classList.remove('active');
+        }
+
+        async function handleAssignmentSubmit(e) {
+            e.preventDefault();
+            const id = document.getElementById('submitAssignmentId').value;
+            const text = document.getElementById('submitAssignmentText').value;
+            const fileInput = document.getElementById('submitAssignmentFile');
+
+            const formData = new FormData();
+            formData.append('assignmentId', id);
+            formData.append('submissionText', text);
+            if (fileInput.files.length > 0) {
+                formData.append('file', fileInput.files[0]);
+            }
+
+            const btn = document.getElementById('btnSubmitSolution');
+            btn.disabled = true;
+            btn.textContent = 'Submitting...';
+
+            try {
+                // Call API with multipart
+                const response = await fetch('/api/student/assignments/submit', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('bda_token') || localStorage.getItem('token')}`
+                    },
+                    body: formData
+                });
+                const res = await response.json();
+
+                if (!response.ok) throw res;
+
+                showToast('Assignment submitted successfully', 'success');
+                closeSubmitAssignmentModal();
+                loadAssignments();
+            } catch (err) {
+                showToast(err.error || 'Failed to submit assignment', 'error');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Upload and Submit Solution';
+            }
+        }
+
+        // ==================== LIVE SESSIONS ====================
+        async function loadWorkshops() {
+            try {
+                const res = await API.get('/student/workshops');
+                const tbody = document.getElementById('workshopsTableBody');
+                // Filter workshops for active program if selected
+                const filtered = activeProgram ? res.workshops.filter(w => w.tutorial_id == activeProgram.id) : res.workshops;
+
+                if (filtered.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:var(--text-muted);">No sessions scheduled yet</td></tr>';
+                    return;
+                }
+                tbody.innerHTML = filtered.map(w => `
+                    <tr>
+                        <td><strong>${escapeHtml(w.title)}</strong></td>
+                        <td>${escapeHtml(w.instructor_name || 'Instructor')}</td>
+                        <td>${formatDateTime(w.schedule_date)}</td>
+                        <td><a href="${w.meeting_link}" target="_blank" class="text-link"><i class="fas fa-video"></i> Join Session</a></td>
+                    </tr>
+                `).join('');
+            } catch (err) {
+                showToast('Failed to load live sessions', 'error');
+            }
+        }
+
+        // ==================== MESSAGES ====================
+        async function loadMessages() {
+            try {
+                const res = await API.get('/messages/inbox');
+                messages = res.messages;
+                const container = document.getElementById('inboxList');
+                if (messages.length === 0) {
+                    container.innerHTML = '<div style="text-align:center;padding:2rem;color:var(--text-muted);">No messages found</div>';
+                    return;
+                }
+                container.innerHTML = messages.map(m => `
+                    <div class="message-item ${m.is_read?'':'unread'}" id="msg-${m.id}" onclick="viewMessageDetail(${m.id})">
+                        <div style="font-size:0.8rem;color:var(--text-muted);display:flex;justify-content:space-between;">
+                            <span>From: ${escapeHtml(m.sender_name)}</span>
+                            <span>${formatDate(m.created_at)}</span>
+                        </div>
+                        <h4 style="margin:0.25rem 0;">${escapeHtml(m.subject)}</h4>
+                        <div style="font-size:0.85rem;color:var(--text-muted);text-overflow:ellipsis;overflow:hidden;white-space:nowrap;">${escapeHtml(m.message_text)}</div>
+                    </div>
+                `).join('');
+            } catch(e) { showToast('Failed to load messages', 'error'); }
+        }
+
+        async function loadContacts() {
+            try {
+                const res = await API.get('/messages/contacts');
+                contacts = res.contacts;
+                const select = document.getElementById('composeRecipient');
+                select.innerHTML = '<option value="">-- Select Contact --</option>' + 
+                    res.contacts.map(c => `<option value="${c.id}">${escapeHtml(c.full_name)} (${c.role_name})</option>`).join('');
+            } catch(e) {}
+        }
+
+        async function viewMessageDetail(id) {
+            const m = messages.find(x => x.id === id);
+            if(!m) return;
+
+            document.querySelectorAll('.message-item').forEach(el => el.classList.remove('active'));
+            const item = document.getElementById(`msg-${id}`);
+            if (item) {
+                item.classList.remove('unread');
+                item.classList.add('active');
+            }
+
+            const container = document.getElementById('messageDetailView');
+            container.innerHTML = `
+                <div style="border-bottom:1px solid var(--border);padding-bottom:1rem;margin-bottom:1rem;">
+                    <h2>${escapeHtml(m.subject)}</h2>
+                    <div style="display:flex;justify-content:space-between;color:var(--text-muted);font-size:0.9rem;">
+                        <span>From: <strong>${escapeHtml(m.sender_name)}</strong> (${m.sender_role})</span>
+                        <span>Date: ${formatDateTime(m.created_at)}</span>
+                    </div>
+                </div>
+                <div class="message-body">
+                    ${escapeHtml(m.message_text).replace(/\n/g, '<br>')}
+                </div>
+                <button class="btn btn-primary" onclick="openReplyModal(${m.sender_id}, '${escapeHtml(m.subject)}')"><i class="fas fa-reply"></i> Reply</button>
+            `;
+
+            if (m.is_read === 0) {
+                try {
+                    await API.post(`/messages/read/${m.id}`);
+                } catch(e){}
+            }
+        }
+
+        function openComposeModal() {
+            document.getElementById('composeAlert').style.display = 'none';
+            document.getElementById('composeForm').reset();
+            document.getElementById('composeModal').classList.add('active');
+        }
+        function closeComposeModal() { document.getElementById('composeModal').classList.remove('active'); }
+
+        function openReplyModal(senderId, subject) {
+            openComposeModal();
+            document.getElementById('composeRecipient').value = senderId;
+            document.getElementById('composeSubject').value = `Re: ${subject.startsWith('Re:') ? '' : 'Re: '}${subject}`;
+        }
+
+        async function sendMessage() {
+            const recipientId = document.getElementById('composeRecipient').value;
+            const subject = document.getElementById('composeSubject').value;
+            const body = document.getElementById('composeBody').value;
+
+            if(!recipientId || !body) return alert('Recipient and Message body are required');
+
+            const btn = document.getElementById('sendMessageBtn');
+            btn.disabled = true;
+
+            try {
+                await API.post('/messages/send', { receiverId: parseInt(recipientId), subject, messageText: body });
+                showToast('Message sent successfully', 'success');
+                closeComposeModal();
+                loadMessages();
+            } catch(e) {
+                showToast('Failed to send message', 'error');
+            } finally {
+                btn.disabled = false;
+            }
+        }
+
+        // ==================== PROGRESS LOGS ====================
+        async function renderProgressLogs() {
+            if (!activeProgram) return;
+            const tbody = document.getElementById('progressLogsTableBody');
+            tbody.innerHTML = '<tr><td colspan="5" class="empty-state"><div class="spinner" style="margin:0 auto;"></div></td></tr>';
+
+            try {
+                const data = await API.get(`/student/tutorials/${activeProgram.slug}`);
+                const { modules } = data;
+
+                if (modules.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="5" class="empty-state">No progress data logged</td></tr>';
+                    return;
+                }
+
+                tbody.innerHTML = modules.map(m => {
+                    const status = m.status || 'locked';
+                    const badgeClasses = { locked: 'dark', unlocked: 'primary', in_progress: 'warning', completed: 'success', failed: 'danger' };
+                    return `
+                        <tr>
+                            <td style="font-weight:600;">Module ${m.module_number}: ${escapeHtml(m.title)}</td>
+                            <td><span class="badge badge-${badgeClasses[status]}">${status.replace('_',' ').toUpperCase()}</span></td>
+                            <td>${m.attempts || 0}</td>
+                            <td><strong style="color:${m.score>=70?'var(--green)':'var(--red)'};">${m.score !== null ? m.score + '%' : '-'}</strong></td>
+                            <td style="color:var(--text-muted);font-size:0.85rem;">${m.completed_at ? formatDateTime(m.completed_at) : 'Not completed'}</td>
+                        </tr>
+                    `;
+                }).join('');
+            } catch (err) {
+                tbody.innerHTML = '<tr><td colspan="5" class="empty-state">Failed to load progress</td></tr>';
+            }
+        }
+
+        // ==================== EXAMS PANEL ====================
+        async function renderExamsList() {
+            if (!activeProgram) return;
+            const container = document.getElementById('examsListContainer');
+            container.innerHTML = '<div class="empty-state"><div class="spinner" style="margin:0 auto;"></div></div>';
+
+            try {
+                const data = await API.get(`/student/tutorials/${activeProgram.slug}`);
+                const { modules } = data;
+
+                const exams = modules.filter(m => m.hasExam);
+
+                if (exams.length === 0) {
+                    container.innerHTML = '<div class="empty-state">No exams published for this program</div>';
+                    return;
+                }
+
+                container.innerHTML = exams.map(m => {
+                    const status = m.status || 'locked';
+                    const isLocked = status === 'locked';
+                    
+                    let actionBtn = '';
+                    if (isLocked) {
+                        actionBtn = '<button class="btn btn-outline btn-sm" disabled><i class="fas fa-lock"></i> Locked</button>';
+                    } else if (status === 'completed') {
+                        actionBtn = `
+                            <div style="display:flex; align-items:center; gap:1rem;">
+                                <span class="badge badge-success"><i class="fas fa-check-circle"></i> Passed (${m.score}%)</span>
+                                <button class="btn btn-sm btn-outline" onclick="startModuleExam(${m.examId})"><i class="fas fa-redo"></i> Retake</button>
+                            </div>
+                        `;
+                    } else {
+                        actionBtn = `<button class="btn btn-sm btn-danger" onclick="startModuleExam(${m.examId})"><i class="fas fa-play"></i> Start Exam</button>`;
+                    }
+
+                    return `
+                        <div style="display:flex; justify-content:space-between; align-items:center; padding:1.25rem 0; border-bottom:1px solid var(--border); opacity:${isLocked ? 0.6 : 1};">
+                            <div>
+                                <h4 style="margin-bottom:0.25rem;">Exam for Module ${m.module_number}: ${escapeHtml(m.title)}</h4>
+                                <span style="font-size:0.8rem; color:var(--text-muted);">Threshold: 70% to pass and unlock next module</span>
+                            </div>
+                            <div>
+                                ${actionBtn}
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            } catch (err) {
+                container.innerHTML = '<div class="alert alert-danger">Failed to load exams</div>';
+            }
+        }
+
+        // ==================== CERTIFICATES ====================
+        async function renderCertificatesTab() {
+            const container = document.getElementById('certsList');
+            container.innerHTML = '<div class="empty-state"><div class="spinner" style="margin:0 auto;"></div></div>';
+
+            try {
+                const res = await API.get('/certificates/my');
+                let list = res.enrollments;
+
+                if (activeProgram) {
+                    list = list.filter(e => e.tutorial_id == activeProgram.id);
+                }
+
+                if (list.length === 0) {
+                    container.innerHTML = '<div class="empty-state">No certifications statuses found</div>';
+                    return;
+                }
+
+                container.innerHTML = list.map(e => {
+                    let cardClass = '';
+                    let badgeClass = '';
+                    let statusText = '';
+                    let actionBtn = '';
+                    let subtitle = '';
+
+                    const requiredModules = e.total_modules || 4;
+                    if (e.cert_number) {
+                        cardClass = 'unlocked';
+                        badgeClass = 'status-unlocked';
+                        statusText = '<i class="fas fa-check-circle"></i> Unlocked';
+                        subtitle = `Issued on ${formatDate(e.issued_at)}`;
+                        actionBtn = `<button class="btn btn-primary" style="width:100%;" onclick="viewCertificate('${e.cert_number}')"><i class="fas fa-certificate"></i> View Certificate</button>`;
+                    } else if (e.completed_modules >= requiredModules) {
+                        cardClass = 'eligible';
+                        badgeClass = 'status-eligible';
+                        statusText = '<i class="fas fa-exclamation-circle"></i> Eligible (Locked)';
+                        subtitle = 'All modules completed successfully!';
+                        
+                        if (e.learning_mode === 'enrolled') {
+                            actionBtn = `<button class="btn btn-outline" style="width:100%;" disabled><i class="fas fa-spinner fa-spin"></i> Processing Auto-Generation</button>`;
+                        } else {
+                            actionBtn = `<button class="btn btn-golden" style="width:100%;" onclick="openCertCheckout(${e.tutorial_id})"><i class="fas fa-lock-open"></i> Unlock Certificate (KES ${e.certificate_fee || 2000})</button>`;
+                        }
+                    } else {
+                        cardClass = '';
+                        badgeClass = 'status-locked';
+                        statusText = '<i class="fas fa-lock"></i> Locked';
+                        subtitle = `${e.completed_modules}/${requiredModules} modules completed`;
+                        actionBtn = `<button class="btn btn-outline" style="width:100%;" disabled><i class="fas fa-lock"></i> In Progress</button>`;
+                    }
+
+                    return `
+                        <div class="cert-card ${cardClass}" style="max-width:350px;">
+                            <div class="card-body" style="text-align:center; padding:2rem; flex:1;">
+                                <div class="cert-status-badge ${badgeClass}">${statusText}</div>
+                                <h3 style="margin-bottom:0.25rem;">${escapeHtml(e.tutorial_name)} Certificate</h3>
+                                <p style="font-size:0.85rem; color:var(--text-light); margin-bottom:1.5rem;">${subtitle}</p>
+                            </div>
+                            <div style="padding:1rem; border-top:1px solid var(--border); background:var(--bg);">
+                                ${actionBtn}
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+
+            } catch (err) {
+                container.innerHTML = '<div class="alert alert-danger">Failed to load certificates</div>';
+            }
+        }
+
+        function openCertCheckout(tutorialId) {
+            const matched = availablePrograms.find(p => p.id === tutorialId);
+            openCheckoutModal('certificate', matched);
+        }
+
+        async function viewCertificate(certNumber) {
+            document.getElementById('certStudentName').textContent = '';
+            document.getElementById('certCourseName').textContent = '';
+            document.getElementById('certIssuedDate').textContent = '';
+            document.getElementById('certNumber').textContent = '';
+
+            const qrContainer = document.getElementById('certQrContainer');
+            qrContainer.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+
+            try {
+                // Fetch certificate details from API
+                const res = await API.get('/certificates/my');
+                const cert = res.enrollments.find(e => e.cert_number === certNumber);
+                
+                if (!cert) return;
+                document.getElementById('certStudentName').textContent = cert.full_name;
+                document.getElementById('certCourseName').textContent = cert.tutorial_name;
+                document.getElementById('certIssuedDate').textContent = formatDate(cert.issued_at);
+                document.getElementById('certNumber').textContent = cert.cert_number;
+
+                // Load QR
+                const qrRes = await API.get(`/certificates/qr/${certNumber}`);
+                qrContainer.innerHTML = `<img src="${qrRes.qrCode}" style="width:90px; height:90px;" alt="Verification QR Code">`;
+
+                document.getElementById('certModal').classList.add('active');
+            } catch (e) {
+                showToast('Failed to display certificate details', 'error');
+            }
+        }
+
+        function closeCertModal() { document.getElementById('certModal').classList.remove('active'); }
+
+        function printCert() {
+            const printContent = document.getElementById('certTemplate').outerHTML;
+            const win = window.open('', '_blank');
+            win.document.write(`
+                <html>
+                <head>
+                    <title>Certificate - Beyond Data Analytics</title>
+                    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+                    <style>
+                        body { margin: 0; padding: 40px; font-family: 'Georgia', serif; background:#fff; display:flex; justify-content:center; align-items:center; height:90vh; }
+                        @media print {
+                            body { padding: 0; }
+                            @page { size: landscape; margin: 0; }
+                        }
+                    </style>
+                </head>
+                <body>
+                    ${printContent}
+                </body>
+                </html>
+            `);
+            win.document.close();
+            win.focus();
+            setTimeout(() => {
+                win.print();
+                win.close();
+            }, 600);
+        }
+
+        // ==================== PAYMENTS TAB ====================
+        async function renderPaymentsTab() {
+            const upgradeBanner = document.getElementById('premiumUpgradeSection');
+            if (activeProgram && activeProgram.learningMode === 'self') {
+                upgradeBanner.style.display = 'flex';
+            } else {
+                upgradeBanner.style.display = 'none';
+            }
+
+            const tbody = document.getElementById('paymentsTableBody');
+            tbody.innerHTML = '<tr><td colspan="6" class="empty-state"><div class="spinner" style="margin:0 auto;"></div></td></tr>';
+
+            try {
+                const res = await API.get('/payments/my');
+                const list = res.payments;
+
+                if (list.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--text-muted);">No payment records found</td></tr>';
+                    return;
+                }
+
+                tbody.innerHTML = list.map(p => `
+                    <tr>
+                        <td style="font-family:monospace;font-weight:600;">${p.transaction_reference}</td>
+                        <td><span class="badge badge-primary">${p.target_type.toUpperCase()}</span></td>
+                        <td><strong>KES ${p.amount.toLocaleString()}</strong></td>
+                        <td>${p.payment_method}</td>
+                        <td><span class="badge badge-${p.status==='completed'?'success':p.status==='refunded'?'danger':'warning'}">${p.status.toUpperCase()}</span></td>
+                        <td style="color:var(--text-muted);font-size:0.85rem;">${formatDateTime(p.created_at)}</td>
+                    </tr>
+                `).join('');
+
+            } catch (err) {
+                tbody.innerHTML = '<tr><td colspan="6" class="empty-state">Failed to load payment history</td></tr>';
+            }
+        }
+
+        function openEnrollmentCheckout() {
+            if (!activeProgram) return;
+            openCheckoutModal('enrollment', activeProgram);
+        }
+
+        // ==================== CHECKOUT SIMULATION ====================
+        function openCheckoutModal(type, program) {
+            selectedCheckoutTarget = { type, program };
+
+            document.getElementById('checkoutModalTitle').textContent = type === 'enrollment' ? 'Program Enrollment Upgrade' : 'Unlock Professional Certificate';
+            document.getElementById('checkoutModalDesc').textContent = type === 'enrollment' 
+                ? 'Upgrade to Premium Enrolled Mode to unlock assignments, live check-ins, and direct support.'
+                : 'Unlock generation and verified certificate downloads for completing all course criteria.';
+            
+            const fee = type === 'enrollment' ? (program.enrollment_fee || 5000) : (program.certificate_fee || 2000);
+            document.getElementById('modalFeeText').textContent = 'KES ' + fee.toLocaleString();
+            document.getElementById('modalCourseName').textContent = program.name;
+
+            selectPaymentMethod('M-Pesa');
+            document.getElementById('checkoutModal').classList.add('active');
+        }
+
+        function closeCheckoutModal() {
+            document.getElementById('checkoutModal').classList.remove('active');
+        }
+
+        function selectPaymentMethod(method) {
+            selectedMethod = method;
+            const cards = document.querySelectorAll('.payment-method-card');
+            cards.forEach(c => {
+                c.classList.remove('active');
+                if (c.textContent.trim().includes(method)) c.classList.add('active');
+            });
+
+            const fieldsDiv = document.getElementById('paymentFields');
+            if (method === 'M-Pesa') {
+                fieldsDiv.innerHTML = `
+                    <div class="form-group">
+                        <label for="mpesaPhone">M-Pesa Mobile Number</label>
+                        <input type="text" class="form-control" id="mpesaPhone" placeholder="e.g. 0712345678" value="0700000000">
+                        <small style="color:var(--text-muted);">Simulated push validation PIN prompt will display on phone</small>
+                    </div>
+                `;
+            } else if (method === 'PayPal') {
+                fieldsDiv.innerHTML = `
+                    <div class="form-group">
+                        <label for="paypalEmail">PayPal Account Email</label>
+                        <input type="email" class="form-control" id="paypalEmail" placeholder="account@paypal.com" value="${user.email || ''}">
+                    </div>
+                `;
+            } else if (method === 'Card') {
+                fieldsDiv.innerHTML = `
+                    <div class="form-group">
+                        <label for="cardNumber">Debit/Credit Card Number</label>
+                        <input type="text" class="form-control" id="cardNumber" placeholder="4111 1111 1111 1111" value="4111 1111 1111 1111">
+                    </div>
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
+                        <div class="form-group">
+                            <label>Expiration Date</label>
+                            <input type="text" class="form-control" placeholder="MM/YY" value="12/28">
+                        </div>
+                        <div class="form-group">
+                            <label>CVV Secure PIN</label>
+                            <input type="password" class="form-control" placeholder="123" value="123">
+                        </div>
+                    </div>
+                `;
+            } else if (method === 'Bank') {
+                fieldsDiv.innerHTML = `
+                    <div style="padding:1rem; background:rgba(0,0,0,0.02); border-radius:6px; font-size:0.9rem; line-height:1.5;">
+                        <strong>Transfer Slip instructions:</strong><br>
+                        Bank: Co-operative Bank of Kenya<br>
+                        Account Name: Beyond Data Analytics Limited<br>
+                        Account: 011092837482900
+                        <div class="form-group" style="margin-top:1rem;">
+                            <label>Slip Reference code</label>
+                            <input type="text" class="form-control" id="bankRef" placeholder="e.g. FT26015XSD" value="FT${Date.now().toString().substring(5)}">
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        async function processPayment() {
+            const btn = document.getElementById('btnPayNow');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Finalizing simulation checkout...';
+
+            const fee = selectedCheckoutTarget.type === 'enrollment' ? (selectedCheckoutTarget.program.enrollment_fee || 5000) : (selectedCheckoutTarget.program.certificate_fee || 2000);
+
+            try {
+                const payload = {
+                    targetType: selectedCheckoutTarget.type,
+                    targetId: selectedCheckoutTarget.program.id,
+                    amount: fee,
+                    paymentMethod: selectedMethod
+                };
+
+                const res = await API.post('/payments/checkout', payload);
+                if (res.success) {
+                    showToast('Payment completed successfully!', 'success');
+                    closeCheckoutModal();
+
+                    // Refresh catalog & sidebar enrollment
+                    const data = await API.get('/student/available-programs');
+                    availablePrograms = data.programs;
+                    populateProgramSelector();
+                    
+                    // Keep active program selected
+                    changeActiveProgram(selectedCheckoutTarget.program.id);
+                } else {
+                    showToast('Simulated gateway declined request', 'error');
+                    btn.disabled = false;
+                    btn.textContent = 'Complete Simulated Payment';
+                }
+            } catch (err) {
+                showToast(err.error || 'Simulated checkout failed', 'error');
+                btn.disabled = false;
+                btn.textContent = 'Complete Simulated Payment';
+            }
+        }
+
+        // ==================== CHANGE PASSWORD ====================
+        async function handleChangePassword(e) {
+            e.preventDefault();
+            const alertBox = document.getElementById('passwordAlert');
+            const oldPass = document.getElementById('oldPassword').value;
+            const newPass = document.getElementById('newPassword').value;
+            const confirmPass = document.getElementById('confirmPassword').value;
+
+            if (newPass !== confirmPass) {
+                alertBox.style.display = 'block';
+                alertBox.className = 'alert alert-danger';
+                alertBox.innerHTML = 'New passwords do not match';
+                return;
+            }
+
+            const btn = document.getElementById('changePassBtn');
+            btn.disabled = true;
+
+            try {
+                await API.post('/auth/change-password', { oldPassword: oldPass, newPassword: newPass });
+                showToast('Password updated successfully', 'success');
+                document.getElementById('passwordForm').reset();
+                alertBox.style.display = 'none';
+            } catch(e) {
+                alertBox.style.display = 'block';
+                alertBox.className = 'alert alert-danger';
+                alertBox.innerHTML = e.error || 'Failed to update password';
+            } finally {
+                btn.disabled = false;
+            }
+        }
+
+        // ==================== NOTIFICATIONS ====================
+        async function loadNotifications() {
+            try {
+                const res = await API.get('/notifications');
+                notifications = res.notifications;
+
+                const unread = notifications.filter(n => !n.is_read).length;
+                const badge = document.getElementById('notifBadge');
+                if (unread > 0) {
+                    badge.style.display = 'inline-block';
+                    badge.textContent = unread;
+                } else {
+                    badge.style.display = 'none';
+                }
+            } catch (e) {}
+        }
+
+        function openNotifications() {
+            const body = document.getElementById('notifModalBody');
+            if (notifications.length === 0) {
+                body.innerHTML = '<div class="empty-state">No notifications yet.</div>';
+            } else {
+                body.innerHTML = notifications.map(n => `
+                    <div style="padding: 1rem; border-bottom: 1px solid var(--border); background: ${n.is_read ? 'transparent' : 'rgba(26,54,93,0.03)'};">
+                        <div style="font-weight:600; font-size:0.9rem; display:flex; justify-content:space-between; align-items:center;">
+                            <span>${escapeHtml(n.title)}</span>
+                            ${!n.is_read ? '<span style="width:8px; height:8px; background:var(--red); border-radius:50%;"></span>' : ''}
+                        </div>
+                        <p style="font-size:0.8rem; color:var(--text-light); margin-top:0.25rem;">${escapeHtml(n.message)}</p>
+                        <span style="font-size:0.7rem; color:var(--text-muted); display:block; margin-top:0.25rem;">${formatDateTime(n.created_at)}</span>
+                    </div>
+                `).join('');
+            }
+            document.getElementById('notifModal').classList.add('active');
+        }
+
+        function closeNotifModal() { document.getElementById('notifModal').classList.remove('active'); }
+
+        async function markAllNotifsRead() {
+            try {
+                await API.post('/notifications/read-all');
+                showToast('Notifications marked as read', 'success');
+                await loadNotifications();
+                openNotifications();
+            } catch (e) {
+                showToast('Failed to mark read', 'error');
+            }
+        }
+
+        function viewDocument(url, title) {
+            if (url.toLowerCase().endsWith('.html') || !url.toLowerCase().endsWith('.pdf')) {
+                window.open(url, '_blank');
+                return;
+            }
+            const frame = document.getElementById('docViewerFrame');
+            const modal = document.getElementById('docViewerModal');
+            document.getElementById('docViewerTitle').textContent = title || 'Document Viewer';
+            let viewerUrl = url;
+            if (url.toLowerCase().endsWith('.pdf')) {
+                viewerUrl = url + '#toolbar=0';
+            }
+            frame.src = viewerUrl;
+            modal.classList.add('active');
+        }
+
+        function closeDocViewer() {
+            const frame = document.getElementById('docViewerFrame');
+            const modal = document.getElementById('docViewerModal');
+            frame.src = '';
+            modal.classList.remove('active');
+        }
+
+        init();
+    </script>
+
+    <!-- Document Viewer Modal -->
+    <div class="modal-overlay" id="docViewerModal" style="z-index: 9999;">
+        <div class="modal" style="max-width: 90%; width: 1000px; height: 85vh; display: flex; flex-direction: column;">
+            <div class="modal-header">
+                <h3 id="docViewerTitle">Document Viewer</h3>
+                <button class="btn btn-icon btn-outline" onclick="closeDocViewer()"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body" style="flex: 1; padding: 0; overflow: hidden; position: relative;">
+                <iframe id="docViewerFrame" src="" style="width: 100%; height: 100%; border: none;" allow="autoplay"></iframe>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

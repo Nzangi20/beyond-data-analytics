@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Content Manager - Beyond Data Analytics</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/main.css">
+</head>
+<body>
+    <button class="sidebar-toggle" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+    <div class="app-layout">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-auth-links" style="display: flex; justify-content: space-around; padding: 0.75rem 1rem; border-bottom: 1px solid rgba(255,255,255,0.08); font-size: 0.85rem; font-family: 'Outfit', sans-serif; background: rgba(0,0,0,0.15);">
+                <a href="/login.html" style="color: #63b3ed; font-weight: 600; text-decoration: none; display: flex; align-items: center; gap: 0.25rem; transition: opacity 0.2s;" onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'"><i class="fas fa-sign-in-alt"></i> Sign In</a>
+                <span style="color: rgba(255,255,255,0.2);">|</span>
+                <a href="https://forms.gle/iULxMYXieuC4px8p8" target="_blank" style="color: #48bb78; font-weight: 600; text-decoration: none; display: flex; align-items: center; gap: 0.25rem; transition: opacity 0.2s;" onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'"><i class="fas fa-user-plus"></i> Sign Up</a>
+            </div>
+            <div class="sidebar-header"><div class="sidebar-logo"><i class="fas fa-chart-line"></i></div><div class="sidebar-brand"><h2>BDA Platform</h2><p>Administration</p></div></div>
+            <nav class="sidebar-nav">
+                <div class="nav-section"><div class="nav-section-title">Main</div><a href="/admin/dashboard.html" class="nav-item"><i class="fas fa-tachometer-alt"></i> Dashboard</a><a href="/admin/users.html" class="nav-item"><i class="fas fa-users-cog"></i> User Management</a></div>
+                <div class="nav-section"><div class="nav-section-title">LMS</div><a href="/admin/content.html" class="nav-item active"><i class="fas fa-book-open"></i> Content Manager</a><a href="/admin/exams.html" class="nav-item"><i class="fas fa-file-alt"></i> Exam Manager</a></div>
+                <div class="nav-section"><div class="nav-section-title">Reports</div><a href="/admin/reports.html" class="nav-item"><i class="fas fa-chart-bar"></i> Reports</a></div>
+                <div class="nav-section"><div class="nav-section-title">Other</div><a href="/" class="nav-item"><i class="fas fa-globe"></i> Public Website</a></div>
+            </nav>
+            <div class="sidebar-footer"><div class="user-info"><div class="user-avatar" id="userAvatar">AD</div><div class="user-details"><h4 id="userName">Admin</h4><p>Admin</p></div></div><button class="btn btn-sm btn-outline" style="width:100%;margin-top:1rem;color:rgba(255,255,255,0.7);border-color:rgba(255,255,255,0.2);" onclick="API.logout()"><i class="fas fa-sign-out-alt"></i> Logout</button></div>
+        </aside>
+
+        <main class="main-content">
+            <div class="main-header"><div><h1><i class="fas fa-book-open" style="color:var(--accent);margin-right:0.5rem;"></i> Content Manager</h1><p>Upload and manage learning materials for each module</p></div></div>
+
+            <!-- Tutorial Selection -->
+            <div class="card" style="margin-bottom:1.5rem;">
+                <div class="card-body" style="display:flex;gap:1rem;flex-wrap:wrap;align-items:center;">
+                    <div style="display:flex;gap:0.5rem;align-items:center;">
+                        <select class="form-control" id="tutorialSelect" style="max-width:250px;" onchange="loadModules()">
+                            <option value="">Select Tutorial</option>
+                        </select>
+                        <button class="btn btn-sm btn-outline" id="addModuleBtn" onclick="openAddModuleModal()" style="display:none;" title="Add New Module"><i class="fas fa-folder-plus"></i> + Module</button>
+                    </div>
+                    <div style="display:flex;gap:0.5rem;align-items:center;">
+                        <select class="form-control" id="moduleSelect" style="max-width:300px;" onchange="loadLessons()">
+                            <option value="">Select Module</option>
+                        </select>
+                        <button class="btn btn-sm btn-outline" id="editModuleBtn" onclick="openEditModuleModal()" style="display:none;color:var(--accent);border-color:var(--accent);" title="Edit Selected Module"><i class="fas fa-edit"></i></button>
+                        <button class="btn btn-sm btn-outline" id="deleteModuleBtn" onclick="deleteModule()" style="display:none;color:var(--red);border-color:var(--red);" title="Delete Selected Module"><i class="fas fa-trash-alt"></i></button>
+                    </div>
+                    <button class="btn btn-primary btn-sm" onclick="openAddLesson()" id="addBtn" style="display:none;"><i class="fas fa-plus"></i> Add Material</button>
+                </div>
+            </div>
+
+            <!-- Lessons List -->
+            <div class="card">
+                <div class="card-body" id="lessonsList">
+                    <div class="empty-state"><i class="fas fa-folder-open"></i><h3>Select a tutorial and module to manage content</h3></div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Add Lesson Modal -->
+    <div class="modal-overlay" id="lessonModal">
+        <div class="modal">
+            <div class="modal-header"><h3 id="lessonModalTitle"><i class="fas fa-plus-circle" style="color:var(--accent);margin-right:0.5rem;"></i> Add Learning Material</h3><button class="btn btn-icon btn-outline" onclick="closeLessonModal()"><i class="fas fa-times"></i></button></div>
+            <div class="modal-body">
+                <form id="lessonForm">
+                    <input type="hidden" id="editLessonId">
+                    <div class="form-group"><label class="form-label">Title *</label><input type="text" class="form-control" id="lessonTitle" required></div>
+                    <div class="form-group">
+                        <label class="form-label">Content Type *</label>
+                        <select class="form-control" id="lessonType" onchange="toggleContentField()">
+                            <option value="notes">Notes</option>
+                            <option value="video">Video</option>
+                            <option value="exercise">Practical Exercise</option>
+                            <option value="material">Learning Material (PDF/Doc)</option>
+                        </select>
+                    </div>
+                    <div class="form-group" id="textGroup"><label class="form-label">Content Text</label><textarea class="form-control" id="lessonText" rows="6" placeholder="Enter notes or exercise instructions..."></textarea></div>
+                    <div class="form-group" id="fileGroup"><label class="form-label">Upload File</label><input type="file" class="form-control" id="lessonFile" accept=".pdf,.doc,.docx,.pptx,.mp4,.webm,.mov,.zip,.py,.r,.sql"></div>
+                </form>
+            </div>
+            <div class="modal-footer"><button class="btn btn-outline" onclick="closeLessonModal()">Cancel</button><button class="btn btn-primary" onclick="saveLesson()" id="saveLessonBtn"><i class="fas fa-save"></i> Save</button></div>
+        </div>
+    </div>
+
+    <!-- Add/Edit Module Modal -->
+    <div class="modal-overlay" id="moduleModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 id="moduleModalTitle"><i class="fas fa-folder-plus" style="color:var(--accent);margin-right:0.5rem;"></i> Add Module</h3>
+                <button class="btn btn-icon btn-outline" onclick="closeModuleModal()"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <form id="moduleForm">
+                    <input type="hidden" id="editModuleId">
+                    <div class="form-group">
+                        <label class="form-label">Module Number *</label>
+                        <input type="number" class="form-control" id="moduleNumber" required min="1">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Module Title *</label>
+                        <input type="text" class="form-control" id="moduleTitle" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Description</label>
+                        <textarea class="form-control" id="moduleDescription" rows="3" placeholder="Brief description of module content..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Pass Mark (%) *</label>
+                        <input type="number" class="form-control" id="modulePassMark" required min="1" max="100" value="70">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" onclick="closeModuleModal()">Cancel</button>
+                <button class="btn btn-primary" onclick="saveModule()" id="saveModuleBtn"><i class="fas fa-save"></i> Save Module</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/api.js"></script>
+    <script>
+        if (!API.requireAuth(['admin'])) throw new Error('Not authorized');
+        const user = API.getUser();
+        if (user) { document.getElementById('userName').textContent = user.fullName||user.username; document.getElementById('userAvatar').textContent = getInitials(user.fullName||user.username); }
+
+        async function init() {
+            try {
+                const data = await API.get('/admin/tutorials');
+                const sel = document.getElementById('tutorialSelect');
+                data.tutorials.forEach(t => { const opt = document.createElement('option'); opt.value = t.id; opt.textContent = t.name; sel.appendChild(opt); });
+            } catch (err) { showToast('Failed to load tutorials', 'error'); }
+        }
+
+        let currentModules = [];
+
+        async function loadModules() {
+            const tutId = document.getElementById('tutorialSelect').value;
+            const sel = document.getElementById('moduleSelect');
+            sel.innerHTML = '<option value="">Select Module</option>';
+            document.getElementById('addBtn').style.display = 'none';
+            document.getElementById('addModuleBtn').style.display = tutId ? '' : 'none';
+            document.getElementById('editModuleBtn').style.display = 'none';
+            document.getElementById('deleteModuleBtn').style.display = 'none';
+            document.getElementById('lessonsList').innerHTML = '<div class="empty-state"><i class="fas fa-folder-open"></i><h3>Select a module</h3></div>';
+            if (!tutId) return;
+            try {
+                const data = await API.get(`/admin/tutorials/${tutId}/modules`);
+                currentModules = data.modules || [];
+                currentModules.forEach(m => { const opt = document.createElement('option'); opt.value = m.id; opt.textContent = `Module ${m.module_number}: ${m.title}`; sel.appendChild(opt); });
+            } catch (err) { showToast('Failed to load modules', 'error'); }
+        }
+
+        let currentLessons = [];
+
+        async function loadLessons() {
+            const modId = document.getElementById('moduleSelect').value;
+            const container = document.getElementById('lessonsList');
+            document.getElementById('addBtn').style.display = modId ? '' : 'none';
+            document.getElementById('editModuleBtn').style.display = modId ? '' : 'none';
+            document.getElementById('deleteModuleBtn').style.display = modId ? '' : 'none';
+            if (!modId) { container.innerHTML = '<div class="empty-state"><i class="fas fa-folder-open"></i><h3>Select a module</h3></div>'; return; }
+            try {
+                const data = await API.get(`/admin/modules/${modId}/lessons`);
+                currentLessons = data.lessons || [];
+                if (currentLessons.length === 0) {
+                    container.innerHTML = '<div class="empty-state"><i class="fas fa-inbox"></i><h3>No materials yet</h3><p>Click "Add Material" to upload content</p></div>';
+                    return;
+                }
+                const typeIcons = { notes: 'fa-sticky-note', video: 'fa-video', exercise: 'fa-code', material: 'fa-file-pdf' };
+                const typeColors = { notes: 'var(--accent)', video: 'var(--red)', exercise: 'var(--green)', material: 'var(--golden)' };
+                container.innerHTML = currentLessons.map(l => `
+                    <div style="display:flex;align-items:center;gap:1rem;padding:1rem;border-bottom:1px solid var(--border);transition:var(--transition);" onmouseover="this.style.background='var(--bg)'" onmouseout="this.style.background=''">
+                        <div style="width:44px;height:44px;border-radius:var(--radius);background:rgba(49,130,206,0.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                            <i class="fas ${typeIcons[l.content_type]||'fa-file'}" style="color:${typeColors[l.content_type]||'var(--accent)'};font-size:1.1rem;"></i>
+                        </div>
+                        <div style="flex:1;">
+                            <div style="font-weight:600;font-size:0.95rem;">${escapeHtml(l.title)}</div>
+                            <div style="font-size:0.8rem;color:var(--text-muted);">
+                                <span class="badge badge-${l.content_type==='notes'?'primary':l.content_type==='video'?'danger':l.content_type==='exercise'?'success':'warning'}" style="margin-right:0.5rem;">${l.content_type}</span>
+                                ${l.file_name ? '<i class="fas fa-paperclip"></i> '+escapeHtml(l.file_name) : ''}
+                            </div>
+                        </div>
+                        <div style="display:flex;gap:0.3rem;">
+                            ${l.file_path ? `<button onclick="viewDocument('${l.file_path}', '${escapeHtml(l.title)}')" class="btn btn-icon btn-sm btn-outline" title="View"><i class="fas fa-eye"></i></button>` : ''}
+                            <button class="btn btn-icon btn-sm btn-outline" onclick="openEditLesson(${l.id})" style="color:var(--accent);" title="Edit"><i class="fas fa-edit"></i></button>
+                            <button class="btn btn-icon btn-sm btn-outline" onclick="deleteLesson(${l.id})" style="color:var(--red);" title="Delete"><i class="fas fa-trash-alt"></i></button>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (err) { showToast('Failed to load lessons', 'error'); }
+        }
+
+        function toggleContentField() {
+            const type = document.getElementById('lessonType').value;
+            document.getElementById('textGroup').style.display = (type === 'notes' || type === 'exercise') ? '' : 'none';
+            document.getElementById('fileGroup').style.display = (type === 'video' || type === 'material' || type === 'exercise') ? '' : 'none';
+        }
+
+        function openAddLesson() { 
+            document.getElementById('lessonForm').reset(); 
+            document.getElementById('editLessonId').value = ''; 
+            document.getElementById('lessonModalTitle').innerHTML = '<i class="fas fa-plus-circle" style="color:var(--accent);margin-right:0.5rem;"></i> Add Learning Material';
+            toggleContentField(); 
+            document.getElementById('lessonModal').classList.add('active'); 
+        }
+
+        function openEditLesson(id) {
+            const lesson = currentLessons.find(l => l.id == id);
+            if (!lesson) return;
+            
+            document.getElementById('lessonForm').reset();
+            document.getElementById('editLessonId').value = lesson.id;
+            document.getElementById('lessonTitle').value = lesson.title;
+            document.getElementById('lessonType').value = lesson.content_type;
+            document.getElementById('lessonText').value = lesson.content_text || '';
+            document.getElementById('lessonModalTitle').innerHTML = '<i class="fas fa-edit" style="color:var(--accent);margin-right:0.5rem;"></i> Edit Learning Material';
+            toggleContentField();
+            document.getElementById('lessonModal').classList.add('active');
+        }
+
+        function closeLessonModal() { document.getElementById('lessonModal').classList.remove('active'); }
+
+        async function saveLesson() {
+            const btn = document.getElementById('saveLessonBtn');
+            const modId = document.getElementById('moduleSelect').value;
+            const editId = document.getElementById('editLessonId').value;
+            if (!modId) return;
+            btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+            try {
+                const fd = new FormData();
+                fd.append('moduleId', modId);
+                fd.append('title', document.getElementById('lessonTitle').value);
+                fd.append('contentType', document.getElementById('lessonType').value);
+                fd.append('contentText', document.getElementById('lessonText').value);
+                const file = document.getElementById('lessonFile').files[0];
+                if (file) fd.append('file', file);
+                
+                if (editId) {
+                    // Update existing
+                    await fetch(`/api/admin/lessons/${editId}`, {
+                        method: 'PUT',
+                        headers: { 'Authorization': `Bearer ${API.getToken()}` },
+                        body: fd
+                    }).then(r => r.json().then(d => { if (!r.ok) throw d; return d; }));
+                    showToast('Material updated successfully', 'success');
+                } else {
+                    // Create new
+                    await API.upload('/admin/lessons', fd);
+                    showToast('Material added successfully', 'success');
+                }
+                
+                closeLessonModal();
+                loadLessons();
+            } catch (err) { showToast(err.error || 'Failed to save', 'error'); }
+            btn.disabled = false; btn.innerHTML = '<i class="fas fa-save"></i> Save';
+        }
+
+        async function deleteLesson(id) {
+            if (!confirm('Delete this material?')) return;
+            try { await API.delete(`/admin/lessons/${id}`); showToast('Deleted', 'success'); loadLessons(); }
+            catch (err) { showToast('Failed to delete', 'error'); }
+        }
+
+        // ==================== MODULE CRUD ====================
+        function openAddModuleModal() {
+            const tutId = document.getElementById('tutorialSelect').value;
+            if (!tutId) return;
+            
+            document.getElementById('moduleForm').reset();
+            document.getElementById('editModuleId').value = '';
+            
+            let nextNum = 1;
+            if (currentModules.length > 0) {
+                const nums = currentModules.map(m => m.module_number);
+                nextNum = Math.max(...nums) + 1;
+            }
+            document.getElementById('moduleNumber').value = nextNum;
+            document.getElementById('moduleNumber').disabled = false;
+            
+            document.getElementById('moduleModalTitle').innerHTML = '<i class="fas fa-folder-plus" style="color:var(--accent);margin-right:0.5rem;"></i> Add Module';
+            document.getElementById('moduleModal').classList.add('active');
+        }
+
+        function openEditModuleModal() {
+            const modId = document.getElementById('moduleSelect').value;
+            if (!modId) return;
+            
+            const mod = currentModules.find(m => m.id == modId);
+            if (!mod) return;
+            
+            document.getElementById('editModuleId').value = mod.id;
+            document.getElementById('moduleNumber').value = mod.module_number;
+            document.getElementById('moduleNumber').disabled = true;
+            document.getElementById('moduleTitle').value = mod.title;
+            document.getElementById('moduleDescription').value = mod.description || '';
+            document.getElementById('modulePassMark').value = mod.pass_mark || 70;
+            
+            document.getElementById('moduleModalTitle').innerHTML = '<i class="fas fa-edit" style="color:var(--accent);margin-right:0.5rem;"></i> Edit Module';
+            document.getElementById('moduleModal').classList.add('active');
+        }
+
+        function closeModuleModal() {
+            document.getElementById('moduleModal').classList.remove('active');
+        }
+
+        async function saveModule() {
+            const tutId = document.getElementById('tutorialSelect').value;
+            const editId = document.getElementById('editModuleId').value;
+            if (!tutId) return;
+            
+            const title = document.getElementById('moduleTitle').value;
+            const moduleNumber = parseInt(document.getElementById('moduleNumber').value);
+            const description = document.getElementById('moduleDescription').value;
+            const passMark = parseInt(document.getElementById('modulePassMark').value);
+            
+            if (!title || isNaN(moduleNumber)) {
+                showToast('Please fill all required fields', 'error');
+                return;
+            }
+            
+            const saveBtn = document.getElementById('saveModuleBtn');
+            saveBtn.disabled = true;
+            saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+            
+            try {
+                if (editId) {
+                    await API.put(`/admin/modules/${editId}`, {
+                        title,
+                        description,
+                        passMark,
+                        moduleNumber,
+                        tutorialId: parseInt(tutId)
+                    });
+                    showToast('Module updated successfully', 'success');
+                } else {
+                    await API.post('/admin/modules', {
+                        tutorialId: parseInt(tutId),
+                        moduleNumber,
+                        title,
+                        description,
+                        passMark
+                    });
+                    showToast('Module created successfully', 'success');
+                }
+                closeModuleModal();
+                
+                const previousSelectedId = editId || '';
+                await loadModules();
+                if (previousSelectedId) {
+                    document.getElementById('moduleSelect').value = previousSelectedId;
+                    await loadLessons();
+                }
+            } catch (err) {
+                showToast(err.error || 'Failed to save module', 'error');
+            } finally {
+                saveBtn.disabled = false;
+                saveBtn.innerHTML = '<i class="fas fa-save"></i> Save Module';
+            }
+        }
+
+        async function deleteModule() {
+            const modId = document.getElementById('moduleSelect').value;
+            if (!modId) return;
+            
+            if (!confirm('Are you sure you want to delete this module? All associated lessons, materials, exams, and student progress will be permanently deleted!')) {
+                return;
+            }
+            
+            try {
+                await API.delete(`/admin/modules/${modId}`);
+                showToast('Module deleted successfully', 'success');
+                await loadModules();
+            } catch (err) {
+                showToast(err.error || 'Failed to delete module', 'error');
+            }
+        }
+
+        init();
+
+        function viewDocument(url, title) {
+            if (url.toLowerCase().endsWith('.html') || !url.toLowerCase().endsWith('.pdf')) {
+                window.open(url, '_blank');
+                return;
+            }
+            const frame = document.getElementById('docViewerFrame');
+            const modal = document.getElementById('docViewerModal');
+            document.getElementById('docViewerTitle').textContent = title || 'Document Viewer';
+            let viewerUrl = url;
+            if (url.toLowerCase().endsWith('.pdf')) {
+                viewerUrl = url + '#toolbar=0';
+            }
+            frame.src = viewerUrl;
+            modal.classList.add('active');
+        }
+
+        function closeDocViewer() {
+            const frame = document.getElementById('docViewerFrame');
+            const modal = document.getElementById('docViewerModal');
+            frame.src = '';
+            modal.classList.remove('active');
+        }
+    </script>
+
+    <!-- Document Viewer Modal -->
+    <div class="modal-overlay" id="docViewerModal" style="z-index: 9999;">
+        <div class="modal" style="max-width: 90%; width: 1000px; height: 85vh; display: flex; flex-direction: column;">
+            <div class="modal-header">
+                <h3 id="docViewerTitle">Document Viewer</h3>
+                <button class="btn btn-icon btn-outline" onclick="closeDocViewer()"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body" style="flex: 1; padding: 0; overflow: hidden; position: relative;">
+                <iframe id="docViewerFrame" src="" style="width: 100%; height: 100%; border: none;" allow="autoplay"></iframe>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

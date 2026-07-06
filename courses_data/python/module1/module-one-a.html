@@ -1,0 +1,1353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Module One: Python Fundamentals for Data Science</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    
+    <!-- KaTeX for Math Rendering -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body);"></script>
+
+    <!-- Prism.js for Syntax Highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --secondary: #64748b;
+            --bg-body: #f8fafc;
+            --bg-card: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --code-bg: #1e293b;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --info: #3b82f6;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            line-height: 1.7;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Navigation (Fixed Desktop Layout) */
+        .sidebar {
+            width: 280px;
+            background: var(--bg-card);
+            border-right: 1px solid var(--border);
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            overflow-y: auto;
+            padding: 2rem 1.5rem;
+            z-index: 100;
+        }
+
+        .sidebar-header {
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .sidebar-header h2 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.25rem;
+        }
+
+        .sidebar-header p {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .nav-links {
+            list-style: none;
+        }
+
+        .nav-links li {
+            margin-bottom: 0.5rem;
+        }
+
+        .nav-links a {
+            display: block;
+            padding: 0.5rem 0.75rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.9rem;
+            border-radius: 6px;
+            transition: all 0.2s;
+            border-left: 3px solid transparent;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            background-color: #eff6ff;
+            color: var(--primary);
+            border-left-color: var(--primary);
+            font-weight: 500;
+        }
+
+        .nav-links .sub-link {
+            padding-left: 1.5rem;
+            font-size: 0.85rem;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 280px;
+            flex: 1;
+            padding: 3rem 4rem;
+            max-width: 1100px;
+        }
+
+        /* Typography */
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            color: var(--text-main);
+            letter-spacing: -0.025em;
+        }
+
+        h2 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-top: 3rem;
+            margin-bottom: 1rem;
+            color: var(--text-main);
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--border);
+        }
+
+        h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-top: 2rem;
+            margin-bottom: 0.75rem;
+            color: var(--primary-dark);
+        }
+
+        p {
+            margin-bottom: 1.25rem;
+            color: #334155;
+        }
+
+        ul, ol {
+            margin-bottom: 1.25rem;
+            padding-left: 1.5rem;
+        }
+
+        li {
+            margin-bottom: 0.5rem;
+        }
+
+        /* Callout Boxes */
+        .callout {
+            padding: 1.25rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+            border-left: 4px solid;
+            background-color: #f8fafc;
+        }
+
+        .callout.info {
+            border-color: var(--info);
+            background-color: #eff6ff;
+        }
+
+        .callout.warning {
+            border-color: var(--warning);
+            background-color: #fffbeb;
+        }
+
+        .callout.success {
+            border-color: var(--success);
+            background-color: #ecfdf5;
+        }
+
+        .callout-title {
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Code Blocks */
+        .code-wrapper {
+            position: relative;
+            margin: 1.5rem 0;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .code-header {
+            background-color: #0f172a;
+            color: #94a3b8;
+            padding: 0.5rem 1rem;
+            font-size: 0.8rem;
+            font-family: 'JetBrains Mono', monospace;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .copy-btn {
+            background: transparent;
+            border: 1px solid #334155;
+            color: #94a3b8;
+            padding: 0.25rem 0.75rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.75rem;
+            transition: all 0.2s;
+        }
+
+        .copy-btn:hover {
+            background: #334155;
+            color: white;
+        }
+
+        pre {
+            margin: 0 !important;
+            border-radius: 0 0 8px 8px !important;
+        }
+
+        code {
+            font-family: 'JetBrains Mono', monospace !important;
+            font-size: 0.9rem !important;
+        }
+
+        /* Tables */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            background: var(--bg-card);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        th, td {
+            padding: 0.75rem 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        th {
+            background-color: #f1f5f9;
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Output Block Styling */
+        .output-block {
+            background-color: #f1f5f9;
+            border: 1px solid var(--border);
+            border-left: 4px solid var(--secondary);
+            padding: 1rem;
+            margin-top: -1rem;
+            margin-bottom: 1.5rem;
+            border-radius: 0 0 8px 8px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: #475569;
+        }
+        .output-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        /* ========================================= */
+        /* SUMMARY SECTION STYLES (NEW & BEAUTIFUL)  */
+        /* ========================================= */
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .summary-card {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            border: 1px solid var(--border);
+            transition: transform 0.2s, box-shadow 0.2s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .summary-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+        }
+
+        .summary-card.week1::before { background: var(--success); }
+        .summary-card.week2::before { background: var(--info); }
+        .summary-card.week3::before { background: #8b5cf6; }
+
+        .summary-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.08);
+        }
+
+        .summary-card .card-header {
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.5rem;
+        }
+
+        .summary-card.week1 .card-header { color: var(--success); }
+        .summary-card.week2 .card-header { color: var(--info); }
+        .summary-card.week3 .card-header { color: #8b5cf6; }
+
+        .summary-card h3 {
+            font-size: 1.15rem;
+            margin-top: 0;
+            margin-bottom: 1rem;
+            color: var(--text-main);
+        }
+
+        .summary-card ul {
+            padding-left: 1.2rem;
+            margin: 0;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            line-height: 1.7;
+        }
+
+        .competencies-section {
+            margin-top: 3rem;
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            padding: 2rem;
+            border-radius: 12px;
+            border: 1px solid #bae6fd;
+        }
+
+        .competencies-section h3 {
+            margin-top: 0;
+            color: #0369a1;
+            font-size: 1.3rem;
+        }
+
+        .competency-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .competency-item {
+            background: white;
+            padding: 1rem 1.25rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            color: var(--text-main);
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+            border-left: 4px solid var(--info);
+            line-height: 1.5;
+        }
+
+        .next-steps-section {
+            margin-top: 3rem;
+        }
+
+        .next-steps-section h3 {
+            color: var(--text-main);
+            font-size: 1.3rem;
+        }
+
+        .next-steps-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .step-card {
+            background: var(--bg-card);
+            border: 2px dashed var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.2s;
+        }
+
+        .step-card:hover {
+            border-color: var(--primary);
+            background: #eff6ff;
+            transform: scale(1.02);
+        }
+
+        .step-label {
+            display: inline-block;
+            background: var(--primary);
+            color: white;
+            font-size: 0.8rem;
+            font-weight: 700;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            margin-bottom: 0.75rem;
+        }
+
+        .step-card p {
+            margin: 0;
+            font-size: 0.95rem;
+            color: var(--text-main);
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h2>Module One</h2>
+            <p>Python for Data Science</p>
+            <p style="margin-top: 0.5rem; font-size: 0.75rem;">Facilitator: Dr. Victor Wandera Lumumba</p>
+        </div>
+        <ul class="nav-links">
+            <li><a href="#intro">Introduction & Philosophy</a></li>
+            <li><a href="#syntax">1. Python Syntax & Formatting</a></li>
+            <li><a href="#variables" class="sub-link">1.1 Variables & Data Types</a></li>
+            <li><a href="#structures" class="sub-link">1.2 Core Data Structures</a></li>
+            <li><a href="#control-flow" class="sub-link">1.3 Conditionals & Loops</a></li>
+            <li><a href="#functions" class="sub-link">1.4 Functions</a></li>
+            <li><a href="#comprehensions" class="sub-link">1.5 List Comprehensions</a></li>
+            <li><a href="#error-handling" class="sub-link">1.6 Error Handling</a></li>
+            <li><a href="#data-import">2.1 Data Importation</a></li>
+            <li><a href="#data-explore" class="sub-link">2.2 Initial Exploration</a></li>
+            <li><a href="#descriptive" class="sub-link">2.3 Descriptive Statistics</a></li>
+            <li><a href="#missing" class="sub-link">2.4 Handling Missing Values</a></li>
+            <li><a href="#duplicates" class="sub-link">2.5 Handling Duplicates</a></li>
+            <li><a href="#outliers" class="sub-link">2.6 Handling Outliers</a></li>
+            <li><a href="#strings" class="sub-link">2.7 String Manipulation</a></li>
+            <li><a href="#datetime" class="sub-link">2.8 Date/Time Manipulation</a></li>
+            <li><a href="#transformation" class="sub-link">2.9 Data Transformation</a></li>
+            <li><a href="#filtering" class="sub-link">2.10 Filtering & Selection</a></li>
+            <li><a href="#sorting" class="sub-link">2.11 Data Sorting</a></li>
+            <li><a href="#eda">3. EDA, Visualization & Stats</a></li>
+            <li><a href="#hypothesis" class="sub-link">3.4 Hypothesis Testing</a></li>
+            <li><a href="#regression" class="sub-link">3.5 Linear Regression</a></li>
+            <li><a href="#summary">Summary & Next Steps</a></li>
+        </ul>
+    </aside>
+
+    <main class="main-content">
+        <header id="intro">
+            <h1>Module One: Python Fundamentals for Data Science</h1>
+            <p><strong>Building Data Excellence Since 2020</strong><br>
+            Beyond Data Analytics is a premier training organization founded by Dr. Victor Wandera Lumumba, a seasoned Statistician, Data Analyst, and Machine Learning Expert. We are committed to bridging the critical gap between academic knowledge and industry-ready data science skills.</p>
+            
+            <div class="callout info">
+                <div class="callout-title">💡 Our Training Philosophy</div>
+                <p>Our curriculum seamlessly integrates strong theoretical foundations with hands-on practical experience. We believe that true mastery comes from doing—not just learning. Every concept taught is immediately applied through real-world projects, case studies, and industry scenarios.</p>
+            </div>
+        </header>
+
+        <section id="syntax">
+            <h2>1. Python Syntax and Formatting Rules</h2>
+            <p>Python is renowned for its readability, which is enforced by its strict syntactic rules.</p>
+            <ul>
+                <li><strong>Indentation is Mandatory:</strong> Unlike languages that use curly braces, Python uses whitespace (indentation) to define code blocks. Incorrect indentation results in immediate syntax errors.</li>
+                <li><strong>Comments:</strong> Single-line comments use <code>#</code>. Multi-line comments or docstrings use triple quotes <code>"""</code>. Docstrings document modules, functions, and classes.</li>
+                <li><strong>PEP 8 Standards:</strong> The official style guide. It recommends 4 spaces per indentation level, limiting line lengths to 79 characters, <code>snake_case</code> for variables/functions, and <code>CamelCase</code> for classes.</li>
+            </ul>
+        </section>
+
+        <section id="variables">
+            <h2>1.1 Variables and Core Data Types</h2>
+            <p>Python is dynamically typed, meaning you do not need to explicitly declare the data type. The interpreter infers it based on the assigned value.</p>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>Data Type</th>
+                        <th>Description</th>
+                        <th>Data Application</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>str</code> (String)</td>
+                        <td>Text enclosed in quotes. Immutable.</td>
+                        <td>Categorical labels, text cleaning, alphanumeric codes.</td>
+                    </tr>
+                    <tr>
+                        <td><code>int</code> (Integer)</td>
+                        <td>Whole numbers (positive or negative).</td>
+                        <td>Discrete counts, unique IDs, age.</td>
+                    </tr>
+                    <tr>
+                        <td><code>float</code> (Float)</td>
+                        <td>Numbers with a decimal component.</td>
+                        <td>Continuous measurements, financial figures, statistical calculations.</td>
+                    </tr>
+                    <tr>
+                        <td><code>bool</code> (Boolean)</td>
+                        <td>Truth values: <code>True</code> or <code>False</code>.</td>
+                        <td>Conditional logic, data filtering, binary states.</td>
+                    </tr>
+                    <tr>
+                        <td><code>NoneType</code></td>
+                        <td>Represents the absence of a value (<code>None</code>).</td>
+                        <td>Initializing variables or representing missing data before cleaning.</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="code-wrapper">
+                <div class="code-header">
+                    <span>Python</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><code class="language-python"># Different data types in Python
+student_name = "John Doe"       # String (str)
+student_age = 28                # Integer (int)
+student_gpa = 3.75              # Float (float)
+is_enrolled = True              # Boolean (bool)
+courses = ["Python", "Stats"]   # List (mutable)
+student_info = {"name": "John", "age": 28} # Dictionary
+
+# Type checking
+print(f"Type of age: {type(student_age)}")
+print(f"Type of gpa: {type(student_gpa)}")</code></pre>
+            </div>
+            <div class="output-block">
+                <div class="output-label">Output</div>
+                Type of age: &lt;class 'int'&gt;<br>
+                Type of gpa: &lt;class 'float'&gt;
+            </div>
+        </section>
+
+        <section id="structures">
+            <h2>1.2 Core Data Structures</h2>
+            <p>Choosing the right structure directly impacts memory usage, processing speed, and data safety.</p>
+            
+            <div class="callout success">
+                <div class="callout-title">🎯 Strategic Selection Framework</div>
+                <ul>
+                    <li><strong>Lists:</strong> Choose when order is important and the collection will change (mutable).</li>
+                    <li><strong>Tuples:</strong> Choose when order is important but the data must remain fixed and protected (immutable).</li>
+                    <li><strong>Dictionaries:</strong> Choose when fast key-based lookup or structured mapping is required.</li>
+                    <li><strong>Sets:</strong> Choose when uniqueness is mandatory or when performing logical group comparisons.</li>
+                </ul>
+            </div>
+
+            <div class="code-wrapper">
+                <div class="code-header">
+                    <span>Python</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><code class="language-python"># 1. Lists - Ordered, mutable
+sample_list = [1, 2, 3, 4, 5]
+sample_list.append(6)      # Add element
+sample_list[0] = 10        # Modify element
+
+# 2. Tuples - Ordered, immutable
+sample_tuple = (1, 2, 3, 4, 5)
+# sample_tuple[0] = 10     # This would raise a TypeError!
+
+# 3. Dictionaries - Key-value pairs
+sample_dict = {"name": "Alice", "age": 30}
+sample_dict["occupation"] = "Data Scientist" # Add new key
+
+# 4. Sets - Unordered, unique elements
+sample_set = {1, 2, 3, 3, 4, 4, 5} # Duplicates automatically removed
+print(f"Set: {sample_set}")</code></pre>
+            </div>
+            <div class="output-block">
+                <div class="output-label">Output</div>
+                Set: {1, 2, 3, 4, 5}
+            </div>
+        </section>
+
+        <section id="control-flow">
+            <h2>1.3 Conditionals and Loops</h2>
+            <p>Control flow dictates the order in which statements are executed, allowing scripts to make decisions and automate repetitive tasks.</p>
+
+            <h3>If-Elif-Else Statements</h3>
+            <div class="code-wrapper">
+                <div class="code-header">
+                    <span>Python</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><code class="language-python">test_score = 85
+
+if test_score >= 90:
+    grade = "A"
+elif test_score >= 80:
+    grade = "B"  # This condition is met
+elif test_score >= 70:
+    grade = "C"
+else:
+    grade = "F"
+
+print(f"Score: {test_score}, Grade: {grade}")</code></pre>
+            </div>
+
+            <h3>For and While Loops</h3>
+            <div class="code-wrapper">
+                <div class="code-header">
+                    <span>Python</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><code class="language-python"># For loop: iterating through a list
+fruits = ["apple", "banana", "cherry"]
+for fruit in fruits:
+    print(f" - {fruit}")
+
+# For loop with range()
+print("\nIterations:")
+for i in range(3):
+    print(f" Iteration {i}")
+
+# While loop
+print("\nWhile loop:")
+counter = 0
+while counter < 3:
+    print(f" Counter: {counter}")
+    counter += 1  # Crucial: prevents infinite loop</code></pre>
+            </div>
+        </section>
+
+        <section id="functions">
+            <h2>1.4 Functions and Modularity</h2>
+            <p>Functions are reusable, modular blocks of code designed to perform a single, related action. They improve program structure and reduce repetition.</p>
+
+            <div class="code-wrapper">
+                <div class="code-header">
+                    <span>Python</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><code class="language-python">def calculate_statistics(numbers, calculate_mean=True):
+    """
+    Calculate basic statistics for a list of numbers.
+    
+    Parameters:
+    numbers (list): List of numerical values
+    calculate_mean (bool): Whether to calculate mean
+    
+    Returns:
+    dict: Dictionary with statistics
+    """
+    stats = {
+        "count": len(numbers),
+        "sum": sum(numbers),
+        "min": min(numbers),
+        "max": max(numbers)
+    }
+    
+    if calculate_mean:
+        stats["mean"] = sum(numbers) / len(numbers)
+        
+    return stats
+
+test_numbers = [10, 20, 30, 40, 50]
+print(f"Statistics: {calculate_statistics(test_numbers)}")</code></pre>
+            </div>
+            <div class="output-block">
+                <div class="output-label">Output</div>
+                Statistics: {'count': 5, 'sum': 150, 'min': 10, 'max': 50, 'mean': 30.0}
+            </div>
+        </section>
+
+        <section id="comprehensions">
+            <h2>1.5 List Comprehensions</h2>
+            <p>List comprehensions provide a concise, highly readable, and "Pythonic" syntactic feature to create new lists from existing iterables, condensing loops and filters into a single line.</p>
+
+            <div class="code-wrapper">
+                <div class="code-header">
+                    <span>Python</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><code class="language-python"># Traditional approach
+squares_traditional = []
+for x in range(10):
+    squares_traditional.append(x ** 2)
+
+# List comprehension (More Pythonic & Faster)
+squares_comprehension = [x ** 2 for x in range(10)]
+
+# List comprehension with condition (Filtering)
+even_squares = [x ** 2 for x in range(10) if x % 2 == 0]
+
+print(f"Comprehension: {squares_comprehension}")
+print(f"Even squares only: {even_squares}")</code></pre>
+            </div>
+            <div class="output-block">
+                <div class="output-label">Output</div>
+                Comprehension: [0, 1, 4, 9, 16, 25, 36, 49, 64, 81]<br>
+                Even squares only: [0, 4, 16, 36, 64]
+            </div>
+        </section>
+
+        <section id="error-handling">
+            <h2>1.6 Error Handling and Debugging</h2>
+            <p>Robust data pipelines must anticipate and handle unexpected inputs without crashing. Python uses <code>try</code> and <code>except</code> blocks to handle exceptions gracefully.</p>
+
+            <div class="code-wrapper">
+                <div class="code-header">
+                    <span>Python</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><code class="language-python">def safe_divide(a, b):
+    """Safely divide two numbers with error handling."""
+    try:
+        result = a / b
+        return result
+    except ZeroDivisionError:
+        return "Error: Cannot divide by zero!"
+    except TypeError:
+        return "Error: Please provide numerical values!"
+    except Exception as e:
+        return f"Unexpected error: {str(e)}"
+
+print(f"10 / 2 = {safe_divide(10, 2)}")
+print(f"10 / 0 = {safe_divide(10, 0)}")</code></pre>
+            </div>
+            <div class="output-block">
+                <div class="output-label">Output</div>
+                10 / 2 = 5.0<br>
+                10 / 0 = Error: Cannot divide by zero!
+            </div>
+        </section>
+
+        <section id="data-import">
+            <h2>2.1 Data Importation</h2>
+            <p>Loading data safely involves handling cases where files may not exist, preventing the entire script from crashing.</p>
+
+            <div class="code-wrapper">
+                <div class="code-header">
+                    <span>Python</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><code class="language-python">import pandas as pd
+import numpy as np
+
+file_path = 'GSSsubset.csv'
+
+try:
+    df = pd.read_csv(file_path)
+    print(f"✓ Successfully loaded dataset: {file_path}")
+    print(f"Dataset Shape: {df.shape[0]} rows × {df.shape[1]} columns")
+except FileNotFoundError:
+    print(f"✗ Error: File '{file_path}' not found.")
+    print("Creating sample dataset for demonstration...")
+    # Fallback: Create synthetic data
+    data = {
+        'id': range(1, 101),
+        'sex': np.random.choice(['MALE', 'FEMALE'], 100),
+        'income': np.random.uniform(20000, 100000, 100)
+    }
+    df = pd.DataFrame(data)</code></pre>
+            </div>
+        </section>
+
+        <section id="data-explore">
+            <h2>2.2 Initial Data Exploration</h2>
+            <p>Before modeling, inspect the data to understand its structure, data types, and memory usage.</p>
+
+            <div class="code-wrapper">
+                <div class="code-header">
+                    <span>Python</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><code class="language-python"># Display first 5 rows
+print("First 5 rows:")
+display(df.head())
+
+# Dataset information
+print("\n" + "="*40)
+print("DATASET INFORMATION:")
+print("="*40)
+print(f"Column Names: {list(df.columns)}")
+print(f"\nData Types:\n{df.dtypes}")
+print(f"\nDataset Shape: {df.shape}")
+print(f"\nMemory Usage:\n{df.memory_usage(deep=True)}")</code></pre>
+            </div>
+        </section>
+
+        <section id="descriptive">
+            <h2>2.3 Descriptive Statistics</h2>
+            <p>Summarize the central tendency, dispersion, and shape of the dataset's distribution.</p>
+
+            <div class="code-wrapper">
+                <div class="code-header">
+                    <span>Python</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><code class="language-python"># Numerical Variables Summary
+print("Numerical Variables Summary:")
+display(df.describe())
+
+# Categorical Variables Summary
+print("\nCategorical Variables Summary:")
+display(df.describe(include=['object']))</code></pre>
+            </div>
+        </section>
+
+        <section id="missing">
+            <h2>2.4 Data Cleaning: Handling Missing Values</h2>
+            <p>Missing data can bias results and crash algorithms. Strategies include deletion, imputation (mean/median/mode), or creating missingness indicators.</p>
+
+            <div class="callout warning">
+                <div class="callout-title">⚠️ Prevent Data Leakage</div>
+                <p>When imputing values (like calculating the median), the calculation must be derived <strong>only from the training data</strong>. Calculating it on the entire dataset before splitting leaks test information into training.</p>
+            </div>
+
+            <div class="code-wrapper">
+                <div class="code-header">
+                    <span>Python</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><code class="language-python"># Check for missing values
+missing_values = df.isnull().sum()
+print(f"Total Missing Values: {missing_values.sum()}")
+
+# Strategy: Fill numerical columns with median (robust to outliers)
+numerical_cols = df.select_dtypes(include=[np.number]).columns
+df_filled = df.copy()
+
+for col in numerical_cols:
+    if df[col].isnull().sum() > 0:
+        median_val = df[col].median()
+        df_filled[col] = df_filled[col].fillna(median_val)
+        print(f"Filled '{col}' with median: {median_val:.2f}")
+
+# Strategy: Fill categorical columns with mode
+categorical_cols = df.select_dtypes(include=['object']).columns
+for col in categorical_cols:
+    if df[col].isnull().sum() > 0:
+        mode_val = df[col].mode()[0]
+        df_filled[col] = df_filled[col].fillna(mode_val)</code></pre>
+            </div>
+        </section>
+
+        <section id="duplicates">
+            <h2>2.5 Data Cleaning: Handling Duplicates</h2>
+            <p>Duplicates artificially inflate sample sizes, skew statistics, and violate the independence assumption of machine learning models.</p>
+
+            <div class="code-wrapper">
+                <div class="code-header">
+                    <span>Python</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><code class="language-python"># Check for duplicate rows
+duplicates = df.duplicated().sum()
+print(f"Number of duplicate rows: {duplicates}")
+
+# Remove duplicates (keeps the first occurrence by default)
+df_no_duplicates = df.drop_duplicates()
+print(f"Shape after removing duplicates: {df_no_duplicates.shape}")
+
+# Check for duplicate IDs (Critical for survey data)
+if 'id' in df.columns:
+    duplicate_ids = df[df.duplicated(subset=['id'], keep=False)]
+    print(f"Number of duplicate IDs: {len(duplicate_ids)}")</code></pre>
+            </div>
+        </section>
+
+        <section id="outliers">
+            <h2>2.6 Data Cleaning: Handling Outliers</h2>
+            <p>Outliers can severely distort statistical analyses. They can be detected using the Interquartile Range (IQR) method or Z-score method.</p>
+
+            <div class="code-wrapper">
+                <div class="code-header">
+                    <span>Python</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><code class="language-python">def detect_outliers_iqr(df, column):
+    """Detect outliers using IQR (Interquartile Range) method."""
+    Q1 = df[column].quantile(0.25)
+    Q3 = df[column].quantile(0.75)
+    IQR = Q3 - Q1
+    
+    lower_bound = Q1 - 1.5 * IQR
+    upper_bound = Q3 + 1.5 * IQR
+    
+    outliers = df[(df[column] < lower_bound) | (df[column] > upper_bound)]
+    return outliers, lower_bound, upper_bound
+
+# Detect outliers in 'income'
+outliers, lower, upper = detect_outliers_iqr(df, 'income')
+print(f"Income IQR Range: [{lower:.2f}, {upper:.2f}]")
+print(f"Number of outliers: {len(outliers)}")</code></pre>
+            </div>
+        </section>
+
+        <section id="strings">
+            <h2>2.7 Data Cleaning: String Manipulation</h2>
+            <p>Text data is inherently messy. Standardization (casing, stripping whitespace) is crucial for accurate grouping and joining.</p>
+
+            <div class="code-wrapper">
+                <div class="code-header">
+                    <span>Python</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><code class="language-python"># Standardize text case and strip whitespace
+if 'sex' in df.columns:
+    df['sex'] = df['sex'].str.upper().str.strip()
+    print(f"Unique values in 'sex': {df['sex'].unique()}")
+
+# Replace specific values using a mapping dictionary
+df_clean = df.copy()
+if 'sex' in df_clean.columns:
+    df_clean['sex'] = df_clean['sex'].replace({'M': 'MALE', 'F': 'FEMALE'})
+
+# Remove special characters using Regex
+if 'degree' in df_clean.columns:
+    df_clean['degree'] = df_clean['degree'].str.replace(r'[^\w\s]', '', regex=True)</code></pre>
+            </div>
+        </section>
+
+        <section id="datetime">
+            <h2>2.8 Date/Time Manipulation</h2>
+            <p>Temporal data must be converted from strings to native datetime objects to enable sorting, filtering, and duration calculations.</p>
+
+            <div class="code-wrapper">
+                <div class="code-header">
+                    <span>Python</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><code class="language-python"># Create a sample date column
+df['survey_date'] = pd.date_range(start='2020-01-01', periods=len(df), freq='D')
+
+# Extract date components (Feature Engineering)
+df['year'] = df['survey_date'].dt.year
+df['month'] = df['survey_date'].dt.month
+df['day_of_week'] = df['survey_date'].dt.day_name()
+
+print(f"Date range: {df['survey_date'].min()} to {df['survey_date'].max()}")
+print(f"Years in dataset: {df['year'].unique()}")</code></pre>
+            </div>
+        </section>
+
+        <section id="transformation">
+            <h2>2.9 Data Transformation</h2>
+            <p>Transforming data optimizes it for statistical analysis. This includes feature engineering, binning, log transformations for skewness, and scaling.</p>
+
+            <div class="code-wrapper">
+                <div class="code-header">
+                    <span>Python</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><code class="language-python"># Feature Engineering: Calculate BMI
+if 'height' in df.columns and 'weight' in df.columns:
+    df['height_m'] = df['height'] * 0.0254       # inches to meters
+    df['weight_kg'] = df['weight'] * 0.453592    # lbs to kg
+    df['BMI'] = df['weight_kg'] / (df['height_m'] ** 2)
+
+# Binning numerical variables
+if 'age' in df.columns:
+    df['age_group'] = pd.cut(df['age'], 
+                             bins=[0, 25, 35, 50, 65, 100], 
+                             labels=['18-25', '26-35', '36-50', '51-65', '65+'])
+
+# Log transformation for skewed data (e.g., income)
+if 'income' in df.columns:
+    df['income_log'] = np.log1p(df['income'])  # log1p handles 0 safely</code></pre>
+            </div>
+        </section>
+
+        <section id="filtering">
+            <h2>2.10 Data Filtering and Selection</h2>
+            <p>Extracting specific subsets of data based on defined criteria to isolate relevant populations or reduce computational noise.</p>
+
+            <div class="code-wrapper">
+                <div class="code-header">
+                    <span>Python</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><code class="language-python"># Filter rows based on single condition
+df_young = df[df['age'] < 30]
+print(f"Respondents under 30: {len(df_young)}")
+
+# Multiple conditions using & (AND) and | (OR)
+df_female_young = df[(df['age'] < 35) & (df['sex'] == 'FEMALE')]
+print(f"Female respondents under 35: {len(df_female_young)}")
+
+# Select specific columns (Projection)
+df_subset = df[['id', 'sex', 'age', 'income']]
+print(f"Subset shape: {df_subset.shape}")</code></pre>
+            </div>
+        </section>
+
+        <section id="sorting">
+            <h2>2.11 Data Sorting</h2>
+            <p>Arranging records in a meaningful order based on one or more variables, useful for auditing, reporting, and identifying extremes.</p>
+
+            <div class="code-wrapper">
+                <div class="code-header">
+                    <span>Python</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><code class="language-python"># Sort by single column (Descending)
+df_sorted_income = df.sort_values('income', ascending=False)
+print("Top 5 highest incomes:")
+print(df_sorted_income[['id', 'income']].head())
+
+# Sort by multiple columns (Hierarchical)
+# First by 'sex' (Ascending), then by 'age' (Descending)
+df_sorted_multi = df.sort_values(['sex', 'age'], ascending=[True, False])</code></pre>
+            </div>
+        </section>
+
+        <section id="eda">
+            <h2>3. EDA, Visualization & Statistical Analysis</h2>
+            <p>Exploratory Data Analysis (EDA) is the critical investigative phase used to summarize main characteristics, detect anomalies, and uncover hidden patterns before formal modeling.</p>
+            
+            <h3>Univariate Analysis</h3>
+            <div class="code-wrapper">
+                <div class="code-header">
+                    <span>Python</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><code class="language-python">import matplotlib.pyplot as plt
+import seaborn as sns
+
+sns.set_style("whitegrid")
+
+# Numerical Variables
+numerical_vars = ['age', 'income', 'height', 'weight']
+for var in numerical_vars:
+    if var in df.columns:
+        print(f"\n{var.upper()}:")
+        print(f"  Mean: {df[var].mean():.2f}, Median: {df[var].median():.2f}")
+        print(f"  Skewness: {df[var].skew():.2f}")
+
+# Categorical Variables
+categorical_vars = ['sex', 'degree', 'marital']
+for var in categorical_vars:
+    if var in df.columns:
+        print(f"\n{var.upper()} Counts:\n{df[var].value_counts()}")</code></pre>
+            </div>
+
+            <h3>Data Visualization Dashboard</h3>
+            <div class="code-wrapper">
+                <div class="code-header">
+                    <span>Python</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><code class="language-python">fig = plt.figure(figsize=(15, 10))
+
+# 1. Histogram - Distribution of Age
+plt.subplot(2, 2, 1)
+sns.histplot(df['age'], bins=20, kde=True, color='blue')
+plt.title('Distribution of Age')
+
+# 2. Box Plot - Income by Gender
+plt.subplot(2, 2, 2)
+sns.boxplot(x='sex', y='income', data=df, palette='Set2')
+plt.title('Income Distribution by Gender')
+
+# 3. Correlation Heatmap
+plt.subplot(2, 2, 3)
+numerical_df = df.select_dtypes(include=[np.number])
+corr_matrix = numerical_df.corr()
+sns.heatmap(corr_matrix, annot=True, cmap='coolwarm', center=0, fmt='.2f')
+plt.title('Correlation Matrix')
+
+# 4. Count Plot - Gender Distribution
+plt.subplot(2, 2, 4)
+sns.countplot(x='sex', data=df, palette='pastel')
+plt.title('Gender Distribution')
+
+plt.tight_layout()
+plt.show()</code></pre>
+            </div>
+        </section>
+
+        <section id="hypothesis">
+            <h2>3.4 Hypothesis Testing</h2>
+            <p>Hypothesis testing provides a formal, mathematical framework to determine if observed patterns are genuine signals or merely random sampling noise.</p>
+
+            <h3>Test 1: Independent Samples t-test</h3>
+            <p><strong>H₀:</strong> There is no difference in income between males and females ($\mu_1 = \mu_2$)<br>
+            <strong>H₁:</strong> There is a difference in income between males and females ($\mu_1 \neq \mu_2$)</p>
+
+            <div class="code-wrapper">
+                <div class="code-header">
+                    <span>Python</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><code class="language-python">from scipy.stats import ttest_ind
+
+male_income = df[df['sex'] == 'MALE']['income'].dropna()
+female_income = df[df['sex'] == 'FEMALE']['income'].dropna()
+
+# Perform Welch's t-test (does not assume equal variance)
+t_stat, p_value = ttest_ind(male_income, female_income, equal_var=False)
+
+print(f"t-statistic: {t_stat:.4f}")
+print(f"p-value: {p_value:.4f}")
+
+alpha = 0.05
+if p_value < alpha:
+    print("✓ Result: REJECT null hypothesis. Significant difference exists.")
+else:
+    print("✗ Result: FAIL TO REJECT null hypothesis.")</code></pre>
+            </div>
+
+            <h3>Test 2: Chi-Square Test of Independence</h3>
+            <p><strong>H₀:</strong> Education level and marital status are independent.<br>
+            <strong>H₁:</strong> Education level and marital status are related.</p>
+
+            <div class="code-wrapper">
+                <div class="code-header">
+                    <span>Python</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><code class="language-python">from scipy.stats import chi2_contingency
+
+# Create contingency table
+contingency_table = pd.crosstab(df['degree'], df['marital'])
+
+# Perform chi-square test
+chi2, p_value, dof, expected = chi2_contingency(contingency_table)
+
+print(f"Chi-square statistic: {chi2:.4f}")
+print(f"p-value: {p_value:.4f}")
+
+if p_value < 0.05:
+    print("✓ Result: REJECT null hypothesis. Variables are related.")</code></pre>
+            </div>
+
+            <h3>Test 3: One-Way ANOVA</h3>
+            <p><strong>H₀:</strong> All education levels have the same mean income.<br>
+            <strong>H₁:</strong> At least one education level has a different mean income.</p>
+
+            <div class="code-wrapper">
+                <div class="code-header">
+                    <span>Python</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><code class="language-python">from scipy.stats import f_oneway
+import statsmodels.api as sm
+from statsmodels.formula.api import ols
+
+# SciPy approach
+groups = [group['income'].dropna() for name, group in df.groupby('degree')]
+f_stat, p_value = f_oneway(*groups)
+print(f"F-statistic: {f_stat:.4f}, p-value: {p_value:.4f}")
+
+# Statsmodels approach (provides ANOVA table)
+model = ols('income ~ C(degree)', data=df).fit()
+anova_table = sm.stats.anova_lm(model, typ=2)
+print(anova_table)</code></pre>
+            </div>
+        </section>
+
+        <section id="regression">
+            <h2>3.5 Simple & Multiple Linear Regression</h2>
+            <p>Regression models the relationship between a dependent (target) variable and one or more independent (predictor) variables.</p>
+            <p>The general form: $$ \hat{Y_i} = \beta_0 + \beta_1X_i + \epsilon_i $$</p>
+
+            <div class="code-wrapper">
+                <div class="code-header">
+                    <span>Python</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><code class="language-python">from sklearn.linear_model import LinearRegression
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import r2_score, mean_squared_error, mean_absolute_error
+
+# Prepare data
+X = df[['age', 'hrswrk']]  # Independent variables
+y = df['income']           # Dependent variable
+
+# Remove missing values
+mask = ~(X.isna().any(axis=1) | y.isna())
+X = X[mask]
+y = y[mask]
+
+# Split data
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Create and train the model
+model = LinearRegression()
+model.fit(X_train, y_train)
+
+# Make predictions
+y_pred = model.predict(X_test)
+
+# Model evaluation
+print(f"Intercept (β₀): {model.intercept_:.2f}")
+for i, col in enumerate(X.columns):
+    print(f"Coefficient for {col} (β{i+1}): {model.coef_[i]:.4f}")
+
+print(f"\nR² Score: {r2_score(y_test, y_pred):.4f}")
+print(f"RMSE: {np.sqrt(mean_squared_error(y_test, y_pred)):.2f}")
+print(f"MAE: {mean_absolute_error(y_test, y_pred):.2f}")</code></pre>
+            </div>
+        </section>
+
+        <!-- ========================================= -->
+        <!-- SUMMARY SECTION (BEAUTIFULLY DESIGNED)    -->
+        <!-- ========================================= -->
+        <section id="summary">
+            <h2>Summary and Key Takeaways</h2>
+            <p>Here is a comprehensive overview of the skills and concepts mastered in this module.</p>
+            
+            <div class="summary-grid">
+                <div class="summary-card week1">
+                    <div class="card-header">✅ Week 1</div>
+                    <h3>Basic Python Syntax & Data Types</h3>
+                    <ul>
+                        <li>Variables and data types (str, int, float, bool, list, dict, set, tuple)</li>
+                        <li>Control structures (if-elif-else, for loops, while loops)</li>
+                        <li>Functions with parameters and return values</li>
+                        <li>List comprehensions for efficient data manipulation</li>
+                        <li>Error handling with try-except blocks</li>
+                    </ul>
+                </div>
+                
+                <div class="summary-card week2">
+                    <div class="card-header">✅ Week 2</div>
+                    <h3>Data Importation & Cleaning</h3>
+                    <ul>
+                        <li>Reading CSV files with pandas & initial data exploration</li>
+                        <li>Handling missing values (dropna, fillna, imputation)</li>
+                        <li>Removing duplicates and outlier detection (IQR, Z-score)</li>
+                        <li>String manipulation, Date/time handling, and Data transformation</li>
+                        <li>Data filtering, selection, and sorting</li>
+                    </ul>
+                </div>
+                
+                <div class="summary-card week3">
+                    <div class="card-header">✅ Week 3</div>
+                    <h3>EDA, Visualization & Statistical Analysis</h3>
+                    <ul>
+                        <li>Univariate and Bivariate analysis (correlations, groupby)</li>
+                        <li>Data visualization (histograms, box plots, scatter plots, heatmaps)</li>
+                        <li>Hypothesis testing: Independent t-test, Chi-square, One-way ANOVA</li>
+                        <li>Simple and multiple linear regression with model evaluation (R², RMSE, MAE)</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="competencies-section">
+                <h3>🚀 Key Competencies Developed</h3>
+                <div class="competency-grid">
+                    <div class="competency-item">Writing clean, readable Python code following PEP 8 best practices.</div>
+                    <div class="competency-item">Proficient use of <code>pandas</code> and <code>numpy</code> for data manipulation.</div>
+                    <div class="competency-item">Statistical thinking, hypothesis testing, and data visualization for exploratory analysis.</div>
+                    <div class="competency-item">Building, evaluating, and interpreting baseline predictive models.</div>
+                    <div class="competency-item">Executing an end-to-end data analysis workflow.</div>
+                </div>
+            </div>
+
+            <div class="next-steps-section">
+                <h3>🔮 Next Steps</h3>
+                <div class="next-steps-grid">
+                    <div class="step-card">
+                        <span class="step-label">Module Two</span>
+                        <p>Supervised Machine Learning (Classification & Regression Algorithms)</p>
+                    </div>
+                    <div class="step-card">
+                        <span class="step-label">Module Three</span>
+                        <p>Unsupervised Machine Learning (Clustering & Dimensionality Reduction)</p>
+                    </div>
+                    <div class="step-card">
+                        <span class="step-label">Module Four</span>
+                        <p>ML Deployment, Explainable AI (SHAP/LIME), and Interactive Dashboarding</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <footer style="margin-top: 4rem; padding-top: 2rem; border-top: 1px solid var(--border); text-align: center; color: var(--text-muted); font-size: 0.9rem;">
+            <p>© 2026 Beyond Data Analytics. Facilitator: Dr. Victor Wandera Lumumba.</p>
+            <p>Designed for interactive student learning.</p>
+        </footer>
+    </main>
+
+    <script>
+        // Copy to Clipboard Functionality
+        function copyCode(button) {
+            const codeBlock = button.parentElement.nextElementSibling.querySelector('code');
+            const text = codeBlock.innerText;
+            
+            navigator.clipboard.writeText(text).then(() => {
+                const originalText = button.innerText;
+                button.innerText = 'Copied!';
+                button.style.background = '#10b981';
+                button.style.color = 'white';
+                button.style.borderColor = '#10b981';
+                
+                setTimeout(() => {
+                    button.innerText = originalText;
+                    button.style.background = 'transparent';
+                    button.style.color = '#94a3b8';
+                    button.style.borderColor = '#334155';
+                }, 2000);
+            });
+        }
+
+        // ScrollSpy for Active Navigation Highlighting
+        const sections = document.querySelectorAll('section, header');
+        const navLinks = document.querySelectorAll('.nav-links a');
+
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                if (pageYOffset >= (sectionTop - 150)) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href').includes(current)) {
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

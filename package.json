@@ -1,0 +1,9 @@
+{
+  "name": "beyond-data-analytics-root",
+  "version": "1.0.0",
+  "description": "Beyond Data Analytics - Learning Platform Root",
+  "scripts": {
+    "start": "npm --prefix server start",
+    "dev": "npm --prefix server run dev"
+  }
+}

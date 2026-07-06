@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Module One Assessment | R Programming & Data Manipulation</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --success: #10b981;
+            --success-bg: #dcfce7;
+            --error: #ef4444;
+            --error-bg: #fee2e2;
+            --warning: #f59e0b;
+            --bg-body: #f8fafc;
+            --bg-card: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            line-height: 1.6;
+            padding-bottom: 100px;
+        }
+
+        .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+
+        /* Header */
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
+            color: white;
+            padding: 40px 20px;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px -5px rgba(37, 99, 235, 0.3);
+        }
+
+        header h1 { font-size: 2.2rem; font-weight: 800; margin-bottom: 10px; }
+        header p { font-size: 1.1rem; opacity: 0.9; max-width: 600px; margin: 0 auto; }
+        .badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-top: 15px;
+            backdrop-filter: blur(4px);
+        }
+
+        /* About Section */
+        .about-section {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            border: 1px solid var(--border);
+            text-align: center;
+        }
+        .about-section h2 {
+            color: var(--primary);
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        .about-section .tagline {
+            font-style: italic;
+            color: var(--primary-dark);
+            font-size: 1.1rem;
+            font-weight: 500;
+            margin-bottom: 15px;
+        }
+        .about-section p {
+            color: var(--text-main);
+            max-width: 750px;
+            margin: 0 auto;
+            line-height: 1.7;
+            font-size: 0.95rem;
+        }
+
+        /* Question Cards */
+        .question-card {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            border: 1px solid var(--border);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .question-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px -4px rgba(0,0,0,0.08);
+        }
+
+        .q-number {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 8px;
+        }
+
+        .q-text {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: var(--text-main);
+        }
+
+        .options-container { display: flex; flex-direction: column; gap: 12px; }
+
+        .option-label {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            padding: 14px 18px;
+            background: #f8fafc;
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 0.95rem;
+        }
+
+        .option-label:hover {
+            background: #eff6ff;
+            border-color: var(--primary);
+        }
+
+        .option-label input[type="radio"] {
+            margin-right: 12px;
+            accent-color: var(--primary);
+            transform: scale(1.2);
+        }
+
+        .option-label.selected {
+            background: #eff6ff;
+            border-color: var(--primary);
+            font-weight: 500;
+        }
+
+        /* Submit Button */
+        .submit-container {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid var(--border);
+            padding: 20px;
+            text-align: center;
+            z-index: 50;
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            border: none;
+            padding: 16px 48px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            border-radius: 12px;
+            cursor: pointer;
+            box-shadow: 0 4px 14px rgba(37, 99, 235, 0.4);
+            transition: all 0.2s;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(37, 99, 235, 0.5);
+        }
+
+        .submit-btn:disabled {
+            background: #94a3b8;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* Modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 23, 42, 0.7);
+            backdrop-filter: blur(8px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        .modal-content {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            max-width: 450px;
+            width: 90%;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0.8) translateY(20px); opacity: 0; }
+            100% { transform: scale(1) translateY(0); opacity: 1; }
+        }
+
+        .modal-icon { font-size: 4rem; margin-bottom: 15px; display: block; }
+        .modal-title { font-size: 1.8rem; font-weight: 800; margin-bottom: 10px; }
+        
+        .score-display {
+            font-size: 3rem;
+            font-weight: 800;
+            margin: 20px 0;
+            line-height: 1;
+        }
+        
+        .pass-theme .score-display { color: var(--success); }
+        .fail-theme .score-display { color: var(--warning); }
+
+        .modal-message {
+            font-size: 1.05rem;
+            color: var(--text-muted);
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        .modal-btn {
+            border: none;
+            padding: 14px 32px;
+            font-size: 1rem;
+            font-weight: 700;
+            border-radius: 10px;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.2s;
+        }
+
+        .pass-btn {
+            background: var(--success);
+            color: white;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        }
+        .pass-btn:hover { background: #059669; }
+
+        .fail-btn {
+            background: var(--warning);
+            color: white;
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+        }
+        .fail-btn:hover { background: #d97706; }
+
+        /* Confetti */
+        .confetti {
+            position: absolute;
+            width: 10px; height: 10px;
+            background: var(--success);
+            opacity: 0;
+        }
+        .pass-theme .confetti { animation: confettiFall 3s ease-in-out forwards; }
+        @keyframes confettiFall {
+            0% { transform: translateY(-20px) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(400px) rotate(720deg); opacity: 0; }
+        }
+
+        @media (max-width: 640px) {
+            header h1 { font-size: 1.6rem; }
+            .question-card { padding: 18px; }
+            .q-text { font-size: 1rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>Module One Assessment</h1>
+            <p>Introduction to R Programming & Data Manipulation</p>
+            <div class="badge"> Pass Mark: 70% (14/20) &nbsp;|&nbsp; 20 Random Questions from Pool of 40</div>
+        </header>
+
+        <!-- About Section -->
+        <div class="about-section">
+            <h2>Beyond Data Analytics</h2>
+            <div class="tagline">"Transforming Data Into Insights"</div>
+            <p>Beyond Data Analytics is a premier data science training institute dedicated to empowering the next generation of data professionals in Kenya and beyond. We provide industry-ready, comprehensive training in statistical computing, machine learning, and data visualization, bridging the gap between theoretical knowledge and practical, real-world application.</p>
+        </div>
+        
+        <form id="quiz-form">
+            <div id="quiz-container"></div>
+        </form>
+    </div>
+
+    <div class="submit-container">
+        <button type="button" class="submit-btn" id="submit-btn" onclick="submitQuiz()">Submit Assessment</button>
+    </div>
+
+    <!-- Results Modal -->
+    <div id="results-modal" class="modal-overlay">
+        <div class="modal-content" id="modal-card">
+            <div class="confetti-container" id="confetti-container"></div>
+            <span class="modal-icon" id="modal-icon">🏆</span>
+            <h2 class="modal-title" id="modal-title">Congratulations!</h2>
+            <div class="score-display" id="score-display">0%</div>
+            <p class="modal-message" id="modal-message"></p>
+            <button class="modal-btn pass-btn" id="modal-btn" onclick="location.reload()">Retake Assessment</button>
+        </div>
+    </div>
+
+    <script>
+        // ==========================================
+        // POOL OF 40 QUESTIONS (R MODULE ONE)
+        // ==========================================
+        const questionPool = [
+            // --- R & RStudio Basics ---
+            { q: "What is the primary purpose of the 'Environment' pane in the RStudio IDE?", options: ["To write and execute scripts", "To view active variables, data frames, and execution history", "To display graphical plots", "To manage installed packages"], correct: 1 },
+            { q: "Which operator is considered the standard assignment operator in the R programming community?", options: ["=", "<-", "->", ":="], correct: 1 },
+            { q: "In R, what function is used to display the internal structure of an object, such as a data frame?", options: ["summary()", "str()", "head()", "dim()"], correct: 1 },
+            { q: "Which of the following correctly describes the indexing system used in R vectors?", options: ["0-based indexing", "1-based indexing", "2-based indexing", "Indexing starts at -1"], correct: 1 },
+            { q: "What is the result of executing the code c(1, \"2\", TRUE) in R?", options: ["An error due to mixed types", "A numeric vector", "A character vector containing '1', '2', and 'TRUE'", "A logical vector"], correct: 2 },
+
+            // --- R Syntax & Operations ---
+            { q: "Which symbol is used for exponentiation in R?", options: ["** only", "^ only", "^ or **", "exp()"], correct: 2 },
+            { q: "What is the output of the expression 10 %% 3 in R?", options: ["3", "3.33", "1", "10"], correct: 2 },
+            { q: "How does R handle missing values when calculating the mean of a numeric vector by default?", options: ["It ignores them automatically", "It returns NA", "It throws an error", "It replaces them with 0"], correct: 1 },
+            { q: "Which function is used to combine multiple vectors into a single vector in R?", options: ["combine()", "c()", "vcat()", "merge()"], correct: 1 },
+            { q: "What is the output of round(3.14159, digits = 2)?", options: ["3.1", "3.14", "3.15", "3.00"], correct: 1 },
+
+            // --- Data Structures ---
+            { q: "Which R data structure is a generic recursive object that can contain elements of different types and even other lists?", options: ["Vector", "Matrix", "Data Frame", "List"], correct: 3 },
+            { q: "What function is used to create a two-dimensional, homogeneous data structure in R?", options: ["array()", "matrix()", "data.frame()", "list()"], correct: 1 },
+            { q: "In a matrix named 'mat', how do you extract the entire second row?", options: ["mat[, 2]", "mat[2, ]", "mat[2]", "mat[row=2]"], correct: 1 },
+            { q: "Which of the following is true regarding Data Frames in R?", options: ["All elements must be of the same type", "Columns can be of different types but must have the same length", "They are strictly one-dimensional", "They cannot contain missing values"], correct: 1 },
+            { q: "What is the result of my_list[[1]] if my_list is a standard R list?", options: ["It returns a sub-list containing the first element", "It returns the actual content of the first element", "It throws an error", "It returns the name of the first element"], correct: 1 },
+            { q: "Which function converts a standard data frame column into a categorical variable (factor) in R?", options: ["as.category()", "as.factor()", "factorize()", "as.character()"], correct: 1 },
+            { q: "What does the dim() function return when applied to a data frame with 100 rows and 5 columns?", options: ["100 5", "5 100", "c(100, 5)", "100, 5"], correct: 0 },
+            { q: "Which operator is used for true matrix multiplication (dot product) in R?", options: ["*", "%*%", "%x%", "dot()"], correct: 1 },
+
+            // --- Data Import & Cleaning ---
+            { q: "Which R package is part of the tidyverse and is highly optimized for reading rectangular data (like CSVs) quickly?", options: ["readxl", "readr", "data.table", "base"], correct: 1 },
+            { q: "When using read_excel() from the readxl package, what is a significant advantage over older methods like RODBC?", options: ["It is faster for text files", "It does not require external dependencies like Java or ODBC drivers", "It automatically cleans missing values", "It supports JSON formats"], correct: 1 },
+            { q: "What is the most appropriate way to check for missing values in a specific column named 'Revenue'?", options: ["is.null(data$Revenue)", "is.na(data$Revenue)", "is.na(data)", "missing(data$Revenue)"], correct: 1 },
+            { q: "If you want to convert a character vector of dates in the format '2023-12-31' to actual Date objects in base R, which function should you use?", options: ["as.POSIXct()", "as.Date()", "strptime()", "format.Date()"], correct: 1 },
+            { q: "What is the primary purpose of the na.omit() function?", options: ["To replace NA values with the mean", "To remove all rows containing at least one NA value", "To count the number of NA values", "To convert NA to NULL"], correct: 1 },
+
+            // --- dplyr & Data Manipulation ---
+            { q: "In the dplyr package, which function is used to select specific columns from a data frame?", options: ["filter()", "select()", "mutate()", "arrange()"], correct: 1 },
+            { q: "What is the primary function of the pipe operator (%>% or |>) in R?", options: ["It assigns a variable", "It passes the left-hand output as the first argument to the right-hand function", "It merges two data frames", "It filters rows based on a condition"], correct: 1 },
+            { q: "Which dplyr verb is used to create new columns or modify existing ones based on transformations?", options: ["transmute()", "mutate()", "summarise()", "arrange()"], correct: 1 },
+            { q: "How do you calculate the mean of a column 'Sales' grouped by 'Region' using dplyr?", options: ["data %>% filter(Region) %>% mean(Sales)", "data %>% group_by(Region) %>% summarise(mean_sales = mean(Sales, na.rm = TRUE))", "data %>% arrange(Region) %>% mutate(mean_sales = mean(Sales))", "data %>% summarise(mean(Sales)) %>% group_by(Region)"], correct: 1 },
+            { q: "What is the purpose of the .groups = 'drop' argument in the summarise() function?", options: ["It drops rows with NA values", "It removes one layer of grouping after summarization", "It drops the original data frame", "It prevents the output from being printed"], correct: 1 },
+            { q: "Which function is used to sort the rows of a data frame in descending order based on a column 'Age'?", options: ["sort(desc(Age))", "arrange(desc(Age))", "order(-Age)", "filter(desc(Age))"], correct: 1 },
+            { q: "In dplyr, what does the filter() function do?", options: ["It subsets columns", "It subsets rows based on logical conditions", "It aggregates data", "It sorts data"], correct: 1 },
+
+            // --- Data Visualization ---
+            { q: "In ggplot2, what does the aes() function define?", options: ["The statistical transformation to apply", "How variables in the data are mapped to visual properties (aesthetics)", "The geometric objects to draw", "The theme of the plot"], correct: 1 },
+            { q: "Which ggplot2 geometry function is used to create a scatter plot?", options: ["geom_line()", "geom_point()", "geom_bar()", "geom_scatter()"], correct: 1 },
+            { q: "What is the correct way to add a title and axis labels to a ggplot2 plot?", options: ["Using the title() function", "Using the labs() function", "Using the theme() function", "Using the plot_title() function"], correct: 1 },
+            { q: "In base R, which function is primarily used to visualize the distribution of a single continuous variable?", options: ["plot()", "hist()", "boxplot()", "barplot()"], correct: 1 },
+            { q: "What is the purpose of facet_wrap() in ggplot2?", options: ["To wrap text in the legend", "To create small multiples (subplots) based on a categorical variable", "To combine multiple plots into one grid", "To wrap the plot in a specific theme"], correct: 1 },
+
+            // --- Control Flow & Functions ---
+            { q: "What is the correct syntax to define a custom function in R that takes one argument x and returns its square?", options: ["def square_it(x): return x^2", "square_it <- function(x) { return(x^2) }", "function square_it(x) { return x**2 }", "square_it = lambda x: x^2"], correct: 1 },
+            { q: "In an if...else statement in R, what happens if the condition evaluates to NA?", options: ["It evaluates to FALSE", "It evaluates to TRUE", "It throws an error", "It skips the block"], correct: 2 },
+            { q: "Which loop structure in R is generally slower and discouraged when a vectorized alternative exists?", options: ["while loop", "for loop", "repeat loop", "apply family"], correct: 1 },
+            { q: "What does the return() function do inside an R function?", options: ["It prints the value to the console", "It exits the function and passes a value back to the caller", "It assigns a value to a global variable", "It saves the function to the workspace"], correct: 1 },
+            { q: "How do you correctly write a for loop in R to print numbers 1 through 5?", options: ["for (i = 1; i <= 5; i++) { print(i) }", "for (i in 1:5) { print(i) }", "foreach (i in 1:5) { print(i) }", "loop (i from 1 to 5) { print(i) }"], correct: 1 }
+        ];
+
+        // ==========================================
+        // UTILITY FUNCTIONS
+        // ==========================================
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        function getRandomQuestions(pool, count) {
+            const shuffledPool = shuffleArray([...pool]);
+            return shuffledPool.slice(0, count).map(item => {
+                const optionsWithIndex = item.options.map((opt, idx) => ({ text: opt, isCorrect: idx === item.correct }));
+                const shuffledOptions = shuffleArray(optionsWithIndex);
+                return {
+                    question: item.q,
+                    options: shuffledOptions
+                };
+            });
+        }
+
+        // ==========================================
+        // RENDER QUIZ
+        // ==========================================
+        let currentQuestions = [];
+
+        function renderQuiz() {
+            currentQuestions = getRandomQuestions(questionPool, 20);
+            const container = document.getElementById('quiz-container');
+            container.innerHTML = '';
+
+            currentQuestions.forEach((q, qIndex) => {
+                const card = document.createElement('div');
+                card.className = 'question-card';
+                
+                let optionsHtml = '';
+                q.options.forEach((opt, oIndex) => {
+                    optionsHtml += `
+                        <label class="option-label" onclick="selectOption(this)">
+                            <input type="radio" name="q${qIndex}" value="${opt.isCorrect ? 'correct' : 'incorrect'}">
+                            <span>${opt.text}</span>
+                        </label>
+                    `;
+                });
+
+                card.innerHTML = `
+                    <div class="q-number">Question ${qIndex + 1} of 20</div>
+                    <div class="q-text">${q.question}</div>
+                    <div class="options-container">
+                        ${optionsHtml}
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function selectOption(label) {
+            const container = label.parentElement;
+            container.querySelectorAll('.option-label').forEach(l => l.classList.remove('selected'));
+            label.classList.add('selected');
+            label.querySelector('input[type="radio"]').checked = true;
+        }
+
+        // ==========================================
+        // SUBMISSION & SCORING
+        // ==========================================
+        function submitQuiz() {
+            const form = document.getElementById('quiz-form');
+            const formData = new FormData(form);
+            let score = 0;
+            let answered = 0;
+
+            for (let i = 0; i < 20; i++) {
+                const answer = formData.get(`q${i}`);
+                if (answer) {
+                    answered++;
+                    if (answer === 'correct') {
+                        score++;
+                    }
+                }
+            }
+
+            if (answered < 20) {
+                if (!confirm(`You have only answered ${answered} out of 20 questions. Are you sure you want to submit?`)) {
+                    return;
+                }
+            }
+
+            const percentage = Math.round((score / 20) * 100);
+            const passed = percentage >= 70;
+
+            showResults(score, percentage, passed);
+        }
+
+        function showResults(score, percentage, passed) {
+            const modal = document.getElementById('results-modal');
+            const modalCard = document.getElementById('modal-card');
+            const icon = document.getElementById('modal-icon');
+            const title = document.getElementById('modal-title');
+            const scoreDisplay = document.getElementById('score-display');
+            const message = document.getElementById('modal-message');
+            const btn = document.getElementById('modal-btn');
+            const confettiContainer = document.getElementById('confetti-container');
+
+            modalCard.className = 'modal-content ' + (passed ? 'pass-theme' : 'fail-theme');
+            confettiContainer.innerHTML = '';
+
+            if (passed) {
+                icon.innerText = '🎉';
+                title.innerText = 'Congratulations!';
+                title.style.color = 'var(--success)';
+                scoreDisplay.innerText = `${percentage}%`;
+                message.innerHTML = `Outstanding work! You scored <strong>${score}/20</strong>.<br>You have successfully passed the Module One Assessment and mastered the foundations of R Programming!`;
+                btn.className = 'modal-btn pass-btn';
+                btn.innerText = 'Proceed to Next Module';
+                btn.onclick = () => alert("Redirecting to Module Two..."); 
+                
+                const colors = ['#10b981', '#3b82f6', '#f59e0b', '#ef4444', '#8b5cf6'];
+                for (let i = 0; i < 50; i++) {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    confetti.style.left = Math.random() * 100 + '%';
+                    confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                    confetti.style.animationDelay = Math.random() * 2 + 's';
+                    confetti.style.width = (Math.random() * 8 + 5) + 'px';
+                    confetti.style.height = (Math.random() * 8 + 5) + 'px';
+                    confettiContainer.appendChild(confetti);
+                }
+            } else {
+                icon.innerText = '📚';
+                title.innerText = 'Keep Practicing!';
+                title.style.color = 'var(--warning)';
+                scoreDisplay.innerText = `${percentage}%`;
+                message.innerHTML = `You scored <strong>${score}/20</strong>.<br>The pass mark is 70% (14/20). Review the R Programming materials and try again. You've got this!`;
+                btn.className = 'modal-btn fail-btn';
+                btn.innerText = 'Retake Assessment';
+                btn.onclick = () => location.reload();
+            }
+
+            modal.style.display = 'flex';
+            document.getElementById('submit-btn').disabled = true;
+        }
+
+        // Initialize on load
+        document.addEventListener('DOMContentLoaded', renderQuiz);
+    </script>
+
+<script>
+    (function() {
+        const originalShowResults = window.showResults;
+        window.showResults = function(score, percentage, passed) {
+            if (typeof originalShowResults === 'function') {
+                originalShowResults(score, percentage, passed);
+            }
+
+            const btn = document.getElementById('modal-btn');
+            if (btn) {
+                btn.onclick = function() {
+                    if (window.opener) {
+                        try {
+                            if (typeof window.opener.loadContent === 'function') {
+                                window.opener.loadContent();
+                            } else if (typeof window.opener.loadDashboard === 'function') {
+                                window.opener.loadDashboard();
+                            } else {
+                                window.opener.location.reload();
+                            }
+                        } catch (e) {}
+                    }
+                    if (passed) {
+                        window.close();
+                    } else {
+                        location.reload();
+                    }
+                };
+            }
+
+            const token = localStorage.getItem('bda_token') || localStorage.getItem('token');
+            if (token) {
+                fetch('/api/exams/external-submit', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + token
+                    },
+                    body: JSON.stringify({
+                        tutorialSlug: 'r-programming',
+                        moduleNumber: 1,
+                        score: score,
+                        percentage: percentage,
+                        passed: passed
+                    })
+                })
+                .then(res => res.json())
+                .then(data => {
+                    console.log('Exam progress submitted successfully:', data);
+                    if (window.opener) {
+                        try {
+                            if (typeof window.opener.loadContent === 'function') {
+                                window.opener.loadContent();
+                            } else if (typeof window.opener.loadDashboard === 'function') {
+                                window.opener.loadDashboard();
+                            } else {
+                                window.opener.location.reload();
+                            }
+                        } catch (e) {}
+                    }
+                })
+                .catch(err => {
+                    console.error('Failed to submit exam progress:', err);
+                });
+            }
+        };
+    })();
+</script>
+</body>
+</html>

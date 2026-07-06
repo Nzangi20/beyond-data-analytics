@@ -1,0 +1,1223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Module 4: Machine Learning | Beyond Data Analytics</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Highlight.js for Code Syntax Highlighting -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark.min.css">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary-color: #0d6efd;
+            --secondary-color: #6c757d;
+            --rstudio-bg: #282c34;
+            --accent-color: #0dcaf0;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+            padding-top: 70px;
+        }
+
+        /* Navbar Styling */
+        .navbar {
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            background: linear-gradient(90deg, #0d6efd 0%, #0a58ca 100%);
+        }
+        .navbar-brand { font-weight: 700; letter-spacing: 1px; }
+        .nav-link { font-weight: 500; transition: all 0.3s; }
+        .nav-link:hover { color: #ffc107 !important; transform: translateY(-2px); }
+
+        /* Hero Section */
+        .hero-section {
+            background: url('https://images.unsplash.com/photo-1677442136019-21780ecad995?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80') no-repeat center center/cover;
+            height: 450px;
+            position: relative;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+        .hero-overlay {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.75);
+        }
+        .hero-content { position: relative; z-index: 2; }
+
+        /* Content Cards */
+        .card {
+            border: none;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            transition: transform 0.3s;
+            margin-bottom: 20px;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        .card-header {
+            background-color: #fff;
+            border-bottom: 2px solid #0d6efd;
+            font-weight: 700;
+            color: #0d6efd;
+        }
+
+        /* Code Blocks */
+        pre {
+            border-radius: 8px;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+        }
+        code { font-family: 'Consolas', 'Monaco', monospace; }
+
+        /* MathJax Customization */
+        .math-block {
+            overflow-x: auto;
+            padding: 15px;
+            background: #fff;
+            border-left: 4px solid #0d6efd;
+            margin: 15px 0;
+            text-align: center;
+            font-size: 1.1em;
+        }
+
+        /* Footer */
+        footer {
+            background-color: #212529;
+            color: white;
+            padding: 40px 0;
+            margin-top: 50px;
+        }
+        
+        .section-title {
+            position: relative;
+            padding-bottom: 15px;
+            margin-bottom: 30px;
+            font-weight: 700;
+        }
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 4px;
+            background-color: #0d6efd;
+        }
+
+        .sub-section-title {
+            border-left: 4px solid #0dcaf0;
+            padding-left: 15px;
+            margin-top: 30px;
+            margin-bottom: 20px;
+            color: #0a58ca;
+        }
+        
+        .history-card {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-left: 5px solid #ffc107;
+        }
+        
+        .learning-type-card {
+            border-top: 5px solid;
+            transition: all 0.3s;
+        }
+        .learning-type-card:hover {
+            transform: translateY(-8px);
+        }
+        .supervised { border-color: #0d6efd; }
+        .unsupervised { border-color: #198754; }
+        .semi { border-color: #ffc107; }
+        .reinforcement { border-color: #dc3545; }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="#"><i class="fas fa-robot me-2"></i>Beyond Data Analytics</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link active" href="#home">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#intro">Introduction</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#supervised">Supervised</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#unsupervised">Unsupervised</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#semi">Semi-Supervised</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#reinforcement">Reinforcement</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header id="home" class="hero-section">
+        <div class="hero-overlay"></div>
+        <div class="hero-content container">
+            <h1 class="display-3 fw-bold">Module 4: Machine Learning</h1>
+            <p class="lead fs-4">Supervised, Unsupervised, Semi-Supervised & Reinforcement Learning in R</p>
+            <p class="fs-5"><i class="fas fa-user me-2"></i> Trainer: <strong>Lumumba W. Victor</strong></p>
+            <h3 class="text-info fw-light fst-italic">Beyond Data Analytics</h3>
+            <p class="fs-5 text-light">Transforming Data Into Insights</p>
+            <a href="#intro" class="btn btn-primary btn-lg mt-3 px-5 rounded-pill">Start Module</a>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <div class="container my-5">
+
+        <!-- Introduction -->
+        <section id="intro" class="mb-5">
+            <h2 class="section-title">What is Machine Learning?</h2>
+            <p class="lead">Machine Learning (ML) is a subset of Artificial Intelligence that enables systems to learn and improve from experience without being explicitly programmed. It focuses on developing algorithms that can access data and use it to learn for themselves.</p>
+            
+            <div class="row g-4 mb-4">
+                <div class="col-md-6">
+                    <div class="card history-card h-100">
+                        <div class="card-body">
+                            <h5><i class="fas fa-history text-warning me-2"></i>Historical Context</h5>
+                            <p>The term <strong>"Machine Learning"</strong> was coined by <strong>Arthur Samuel</strong> in 1959 while developing a checkers-playing program at IBM. He defined it as: <em>"The field of study that gives computers the ability to learn without being explicitly programmed."</em></p>
+                            <p>In 1997, <strong>Tom Mitchell</strong> provided the modern, widely-used definition: <em>"A computer program is said to learn from experience E with respect to some class of tasks T and performance measure P, if its performance at tasks in T, as measured by P, improves with experience E."</em></p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5><i class="fas fa-sitemap text-primary me-2"></i>The Four Paradigms</h5>
+                            <p>Machine Learning is broadly categorized into four paradigms based on how the algorithm learns:</p>
+                            <ul class="list-unstyled">
+                                <li class="mb-2"><span class="badge bg-primary">1</span> <strong>Supervised Learning</strong> - Learning with labeled data</li>
+                                <li class="mb-2"><span class="badge bg-success">2</span> <strong>Unsupervised Learning</strong> - Finding hidden patterns</li>
+                                <li class="mb-2"><span class="badge bg-warning text-dark">3</span> <strong>Semi-Supervised Learning</strong> - Small labeled + large unlabeled</li>
+                                <li><span class="badge bg-danger">4</span> <strong>Reinforcement Learning</strong> - Learning through trial and reward</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- The 4 Types Visual -->
+            <div class="row g-4">
+                <div class="col-md-3">
+                    <div class="card learning-type-card supervised text-center h-100">
+                        <div class="card-body">
+                            <i class="fas fa-user-check fa-3x text-primary mb-3"></i>
+                            <h5>Supervised</h5>
+                            <small class="text-muted">Labeled data → Predict outcomes</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card learning-type-card unsupervised text-center h-100">
+                        <div class="card-body">
+                            <i class="fas fa-project-diagram fa-3x text-success mb-3"></i>
+                            <h5>Unsupervised</h5>
+                            <small class="text-muted">Unlabeled data → Find structure</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card learning-type-card semi text-center h-100">
+                        <div class="card-body">
+                            <i class="fas fa-layer-group fa-3x text-warning mb-3"></i>
+                            <h5>Semi-Supervised</h5>
+                            <small class="text-muted">Mix of labeled & unlabeled</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card learning-type-card reinforcement text-center h-100">
+                        <div class="card-body">
+                            <i class="fas fa-trophy fa-3x text-danger mb-3"></i>
+                            <h5>Reinforcement</h5>
+                            <small class="text-muted">Reward-based learning</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-5">
+
+        <!-- SUPERVISED LEARNING -->
+        <section id="supervised" class="mb-5">
+            <h2 class="section-title">1. Supervised Learning</h2>
+            <p class="lead">Supervised learning algorithms learn a mapping function from input variables ($X$) to an output variable ($Y$) using <strong>labeled training data</strong>. The model is "supervised" because it is trained on known examples of inputs and their correct outputs.</p>
+
+            <div class="alert alert-info">
+                <strong><i class="fas fa-info-circle me-2"></i>Two Main Types:</strong>
+                <ul class="mb-0 mt-2">
+                    <li><strong>Regression:</strong> Predicting a <em>continuous</em> numerical value (e.g., house price, temperature).</li>
+                    <li><strong>Classification:</strong> Predicting a <em>discrete</em> category/label (e.g., spam/not spam, species of flower).</li>
+                </ul>
+            </div>
+
+            <h3 class="sub-section-title">Core Algorithms</h3>
+
+            <!-- Tabs for Supervised Algorithms -->
+            <ul class="nav nav-tabs" id="supervisedTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="dt-tab" data-bs-toggle="tab" data-bs-target="#dt-pane" type="button">Decision Trees</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="rf-tab" data-bs-toggle="tab" data-bs-target="#rf-pane" type="button">Random Forest</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="svm-tab" data-bs-toggle="tab" data-bs-target="#svm-pane" type="button">SVM</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="knn-tab" data-bs-toggle="tab" data-bs-target="#knn-pane" type="button">KNN</button>
+                </li>
+            </ul>
+
+            <div class="tab-content border border-top-0 p-4 rounded-bottom bg-white" id="supervisedTabsContent">
+                
+                <!-- Decision Trees -->
+                <div class="tab-pane fade show active" id="dt-pane" role="tabpanel">
+                    <h4>Decision Trees (Classification & Regression)</h4>
+                    <p><strong>Concept:</strong> A tree-like model of decisions. Each internal node represents a "test" on an attribute, each branch represents the outcome, and each leaf node represents a class label (classification) or a continuous value (regression).</p>
+                    <p><strong>History:</strong> The modern decision tree was developed in the 1960s by J. Ross Quinlan, who introduced the <strong>ID3</strong> (Iterative Dichotomiser 3) algorithm in 1986, later improved to <strong>C4.5</strong> and <strong>C5.0</strong>.</p>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6>Assumptions & Characteristics</h6>
+                            <ul>
+                                <li>Non-parametric (no assumption about data distribution).</li>
+                                <li>Handles both numerical and categorical data.</li>
+                                <li>Prone to <strong>overfitting</strong> if not pruned.</li>
+                                <li>Uses splitting criteria: <strong>Gini Impurity</strong>, <strong>Entropy/Information Gain</strong>, or <strong>Variance Reduction</strong> (for regression).</li>
+                            </ul>
+                            <h6>Applications</h6>
+                            <ul>
+                                <li>Medical diagnosis (symptom-based decision paths).</li>
+                                <li>Credit scoring in banking.</li>
+                                <li>Customer segmentation rules.</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>R Implementation (Classification with <code>iris</code>)</h6>
+                            <pre><code class="language-r"># install.packages("rpart")
+# install.packages("rpart.plot")
+library(rpart)
+library(rpart.plot)
+
+data(iris)
+
+# Build classification tree
+set.seed(42)
+train_idx <- sample(1:nrow(iris), 0.7 * nrow(iris))
+train_data <- iris[train_idx, ]
+test_data  <- iris[-train_idx, ]
+
+dt_model <- rpart(Species ~ ., data = train_data, 
+                  method = "class",
+                  control = rpart.control(cp = 0.01))
+
+# Visualize the tree
+rplot(dt_model, main = "Decision Tree - Iris Classification")
+
+# Predictions
+predictions <- predict(dt_model, test_data, type = "class")
+table(Predicted = predictions, Actual = test_data$Species)</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Random Forest -->
+                <div class="tab-pane fade" id="rf-pane" role="tabpanel">
+                    <h4>Random Forest</h4>
+                    <p><strong>Concept:</strong> An ensemble method that builds <strong>many decision trees</strong> (using random subsets of data and features) and aggregates their predictions. For classification, it uses majority voting; for regression, it averages the outputs.</p>
+                    <p><strong>History:</strong> Introduced by <strong>Leo Breiman</strong> in 2001. It addresses the overfitting problem of single decision trees while maintaining high accuracy.</p>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6>Assumptions & Characteristics</h6>
+                            <ul>
+                                <li>Handles high-dimensional data well.</li>
+                                <li>Robust to outliers and noise.</li>
+                                <li>Provides <strong>feature importance</strong> rankings.</li>
+                                <li>Less interpretable than single trees.</li>
+                                <li>Key hyperparameter: <code>ntree</code> (number of trees), <code>mtry</code> (features per split).</li>
+                            </ul>
+                            <h6>Applications</h6>
+                            <ul>
+                                <li>Gene expression analysis in bioinformatics.</li>
+                                <li>Fraud detection in finance.</li>
+                                <li>Image classification.</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>R Implementation (Classification with <code>iris</code>)</h6>
+                            <pre><code class="language-r"># install.packages("randomForest")
+library(randomForest)
+
+data(iris)
+set.seed(42)
+
+# Train Random Forest
+rf_model <- randomForest(Species ~ ., data = iris, 
+                         ntree = 500, 
+                         importance = TRUE)
+
+# View results
+print(rf_model)
+
+# Feature importance
+importance(rf_model)
+varImpPlot(rf_model)
+
+# Out-of-Bag (OOB) Error Rate
+# (Internal cross-validation estimate of error)
+plot(rf_model, main = "OOB Error Rate vs Number of Trees")</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SVM -->
+                <div class="tab-pane fade" id="svm-pane" role="tabpanel">
+                    <h4>Support Vector Machines (SVM)</h4>
+                    <p><strong>Concept:</strong> SVM finds the optimal <strong>hyperplane</strong> that best separates classes in a high-dimensional space. It maximizes the <strong>margin</strong> (distance) between the hyperplane and the nearest data points (support vectors).</p>
+                    <p><strong>History:</strong> Developed by <strong>Vladimir Vapnik</strong> and colleagues at AT&T Bell Labs in 1992-1995, based on statistical learning theory.</p>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6>Assumptions & Characteristics</h6>
+                            <ul>
+                                <li>Effective in high-dimensional spaces.</li>
+                                <li>Uses the <strong>kernel trick</strong> to handle non-linear boundaries (RBF, Polynomial, Linear kernels).</li>
+                                <li>Memory efficient (uses subset of training points).</li>
+                                <li>Sensitive to feature scaling — <strong>must standardize data</strong>.</li>
+                                <li>Can be used for both classification (SVC) and regression (SVR).</li>
+                            </ul>
+                            <h6>Applications</h6>
+                            <ul>
+                                <li>Handwriting recognition.</li>
+                                <li>Face detection.</li>
+                                <li>Text categorization.</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>R Implementation (Classification with <code>iris</code>)</h6>
+                            <pre><code class="language-r"># install.packages("e1071")
+library(e1071)
+
+data(iris)
+set.seed(42)
+
+# Train SVM with Radial Basis Function kernel
+svm_model <- svm(Species ~ ., data = iris, 
+                 kernel = "radial", 
+                 cost = 1, 
+                 gamma = 0.1)
+
+# Summary of the model
+summary(svm_model)
+
+# Predictions
+predictions <- predict(svm_model, iris)
+table(Predicted = predictions, Actual = iris$Species)
+
+# Tune hyperparameters
+tuned <- tune(svm, Species ~ ., data = iris,
+              ranges = list(cost = c(0.1, 1, 10, 100),
+                            gamma = c(0.01, 0.1, 1)))
+print(tuned)</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- KNN -->
+                <div class="tab-pane fade" id="knn-pane" role="tabpanel">
+                    <h4>K-Nearest Neighbors (KNN)</h4>
+                    <p><strong>Concept:</strong> A non-parametric, lazy learning algorithm. To classify a new point, it finds the <strong>K closest training examples</strong> in feature space and assigns the most common class (classification) or the average value (regression).</p>
+                    <p><strong>History:</strong> First described by <strong>Fix and Hodges</strong> in 1951 as a "discriminatory analysis" technique for pattern recognition.</p>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6>Assumptions & Characteristics</h6>
+                            <ul>
+                                <li>No training phase — computation happens at prediction time.</li>
+                                <li>Highly sensitive to the choice of <strong>K</strong> and <strong>distance metric</strong> (Euclidean, Manhattan).</li>
+                                <li><strong>Must scale features</strong> — otherwise, variables with larger ranges dominate.</li>
+                                <li>Computationally expensive for large datasets.</li>
+                                <li>Curse of dimensionality — performance drops in high dimensions.</li>
+                            </ul>
+                            <h6>Applications</h6>
+                            <ul>
+                                <li>Recommendation systems.</li>
+                                <li>Anomaly detection.</li>
+                                <li>Missing value imputation.</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>R Implementation (Classification with <code>iris</code>)</h6>
+                            <pre><code class="language-r"># install.packages("class")
+library(class)
+
+data(iris)
+set.seed(42)
+
+# Split data
+train_idx <- sample(1:nrow(iris), 0.7 * nrow(iris))
+train_X <- iris[train_idx, -5]  # Features only
+train_y <- iris[train_idx, 5]   # Labels
+test_X  <- iris[-train_idx, -5]
+test_y  <- iris[-train_idx, 5]
+
+# IMPORTANT: Scale features
+train_X_scaled <- scale(train_X)
+test_X_scaled  <- scale(test_X, 
+                        center = attr(train_X_scaled, "scaled:center"),
+                        scale  = attr(train_X_scaled, "scaled:scale"))
+
+# Run KNN with K = 5
+knn_pred <- knn(train = train_X_scaled, 
+                test  = test_X_scaled, 
+                cl    = train_y, 
+                k     = 5)
+
+# Evaluate
+table(Predicted = knn_pred, Actual = test_y)
+mean(knn_pred == test_y)  # Accuracy</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Supervised Regression -->
+            <h3 class="sub-section-title">Supervised Regression in R</h3>
+            <div class="card">
+                <div class="card-body">
+                    <p>We will predict car fuel efficiency (<code>mpg</code>) using the built-in <code>mtcars</code> dataset with Random Forest Regression and evaluate using standard metrics.</p>
+                    <pre><code class="language-r"># install.packages("randomForest")
+# install.packages("Metrics")
+library(randomForest)
+library(Metrics)
+
+data(mtcars)
+set.seed(42)
+
+# Split data (70% train, 30% test)
+train_idx <- sample(1:nrow(mtcars), 0.7 * nrow(mtcars))
+train_data <- mtcars[train_idx, ]
+test_data  <- mtcars[-train_idx, ]
+
+# Train Random Forest Regression model
+rf_reg <- randomForest(mpg ~ ., data = train_data, ntree = 500)
+
+# Make predictions on test set
+predictions <- predict(rf_reg, test_data)
+
+# Evaluation Metrics
+cat("RMSE:", rmse(test_data$mpg, predictions), "\n")
+cat("MAE :", mae(test_data$mpg, predictions), "\n")
+cat("R²  :", 1 - sum((test_data$mpg - predictions)^2) / 
+                  sum((test_data$mpg - mean(test_data$mpg))^2), "\n")
+
+# Visualize: Actual vs Predicted
+plot(test_data$mpg, predictions, 
+     xlab = "Actual MPG", ylab = "Predicted MPG",
+     main = "Random Forest Regression: Actual vs Predicted")
+abline(0, 1, col = "red", lwd = 2) # Perfect prediction line</code></pre>
+
+                    <div class="alert alert-success mt-3">
+                        <strong><i class="fas fa-chart-line me-2"></i>Key Regression Metrics Explained:</strong>
+                        <ul class="mb-0 mt-2">
+                            <li><strong>RMSE (Root Mean Squared Error):</strong> Average magnitude of errors. Penalizes large errors more.</li>
+                            <li><strong>MAE (Mean Absolute Error):</strong> Average absolute difference. More robust to outliers.</li>
+                            <li><strong>R² (Coefficient of Determination):</strong> Proportion of variance explained. Closer to 1 is better.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-5">
+
+        <!-- UNSUPERVISED LEARNING -->
+        <section id="unsupervised" class="mb-5">
+            <h2 class="section-title">2. Unsupervised Learning</h2>
+            <p class="lead">Unsupervised learning deals with <strong>unlabeled data</strong>. The algorithm explores the data to find hidden structures, patterns, or groupings without any prior knowledge of what the output should be.</p>
+
+            <h3 class="sub-section-title">Clustering Algorithms</h3>
+
+            <!-- Tabs for Unsupervised -->
+            <ul class="nav nav-tabs" id="unsupervisedTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="kmeans-tab" data-bs-toggle="tab" data-bs-target="#kmeans-pane" type="button">K-Means</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="hier-tab" data-bs-toggle="tab" data-bs-target="#hier-pane" type="button">Hierarchical</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="pca-tab" data-bs-toggle="tab" data-bs-target="#pca-pane" type="button">PCA</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="dbscan-tab" data-bs-toggle="tab" data-bs-target="#dbscan-pane" type="button">DBSCAN</button>
+                </li>
+            </ul>
+
+            <div class="tab-content border border-top-0 p-4 rounded-bottom bg-white" id="unsupervisedTabsContent">
+                
+                <!-- K-Means -->
+                <div class="tab-pane fade show active" id="kmeans-pane" role="tabpanel">
+                    <h4>K-Means Clustering</h4>
+                    <p><strong>Concept:</strong> Partitions data into <strong>K distinct clusters</strong> based on distance to the nearest cluster mean (centroid). Each data point belongs to the cluster with the nearest mean.</p>
+                    <p><strong>History:</strong> The term "K-Means" was first used by <strong>James MacQueen</strong> in 1967, though the idea dates back to Hugo Steinhaus in 1957.</p>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6>Algorithm Steps</h6>
+                            <ol>
+                                <li>Randomly initialize K centroids.</li>
+                                <li>Assign each data point to the nearest centroid.</li>
+                                <li>Recalculate centroids as the mean of assigned points.</li>
+                                <li>Repeat steps 2-3 until centroids stop moving (convergence).</li>
+                            </ol>
+                            <h6>Assumptions & Characteristics</h6>
+                            <ul>
+                                <li>Assumes clusters are <strong>spherical and equally sized</strong>.</li>
+                                <li>Sensitive to <strong>outliers</strong> and initial centroid placement.</li>
+                                <li><strong>Must choose K</strong> — use the <strong>Elbow Method</strong> or <strong>Silhouette Score</strong>.</li>
+                                <li>Requires feature scaling.</li>
+                            </ul>
+                            <h6>Applications</h6>
+                            <ul>
+                                <li>Customer segmentation in marketing.</li>
+                                <li>Document clustering.</li>
+                                <li>Anomaly detection.</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>R Implementation (Using <code>USArrests</code>)</h6>
+                            <pre><code class="language-r">data(USArrests)
+
+# IMPORTANT: Scale the data
+scaled_data <- scale(USArrests)
+
+# 1. Find optimal K using Elbow Method
+wcss <- numeric(10)
+for (i in 1:10) {
+  km <- kmeans(scaled_data, centers = i, nstart = 25)
+  wcss[i] <- km$tot.withinss
+}
+plot(1:10, wcss, type = "b", pch = 19,
+     xlab = "Number of Clusters (K)",
+     ylab = "Within-Cluster Sum of Squares",
+     main = "Elbow Method for Optimal K")
+
+# 2. Run K-Means with K = 4
+set.seed(42)
+km_model <- kmeans(scaled_data, centers = 4, nstart = 25)
+
+# View cluster assignments and centers
+print(km_model)
+
+# Visualize clusters (using first 2 PCA dimensions)
+library(factoextra)
+fviz_cluster(km_model, data = scaled_data,
+             main = "K-Means Clustering of US Arrests")</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Hierarchical -->
+                <div class="tab-pane fade" id="hier-pane" role="tabpanel">
+                    <h4>Hierarchical Clustering</h4>
+                    <p><strong>Concept:</strong> Builds a hierarchy of clusters either through an <strong>agglomerative</strong> (bottom-up) or <strong>divisive</strong> (top-down) approach. The result is visualized as a <strong>dendrogram</strong>.</p>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6>Agglomerative Approach (Most Common)</h6>
+                            <ol>
+                                <li>Start with each point as its own cluster.</li>
+                                <li>Find the two closest clusters and merge them.</li>
+                                <li>Repeat until all points are in one cluster.</li>
+                            </ol>
+                            <h6>Linkage Methods</h6>
+                            <ul>
+                                <li><strong>Single:</strong> Minimum distance between points.</li>
+                                <li><strong>Complete:</strong> Maximum distance between points.</li>
+                                <li><strong>Average (UPGMA):</strong> Average distance between all pairs.</li>
+                                <li><strong>Ward's:</strong> Minimizes variance within merged clusters.</li>
+                            </ul>
+                            <h6>Applications</h6>
+                            <ul>
+                                <li>Phylogenetic trees in biology.</li>
+                                <li>Social network analysis.</li>
+                                <li>Market segmentation.</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>R Implementation (Using <code>USArrests</code>)</h6>
+                            <pre><code class="language-r">data(USArrests)
+scaled_data <- scale(USArrests)
+
+# Compute distance matrix (Euclidean)
+dist_matrix <- dist(scaled_data, method = "euclidean")
+
+# Build hierarchical model using Ward's method
+hc_model <- hclust(dist_matrix, method = "ward.D2")
+
+# Plot dendrogram
+plot(hc_model, 
+     main = "Hierarchical Clustering of US Arrests",
+     xlab = "US States", 
+     ylab = "Height (Distance)",
+     cex = 0.6, 
+     hang = -1)
+
+# Cut tree to get 4 clusters
+rect.hclust(hc_model, k = 4, border = 2:5)
+
+# Get cluster assignments
+clusters <- cutree(hc_model, k = 4)
+table(clusters)</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PCA -->
+                <div class="tab-pane fade" id="pca-pane" role="tabpanel">
+                    <h4>Principal Component Analysis (PCA)</h4>
+                    <p><strong>Concept:</strong> A <strong>dimensionality reduction</strong> technique that transforms correlated variables into a smaller set of uncorrelated variables called <strong>principal components</strong>, while retaining as much variance as possible.</p>
+                    <p><strong>History:</strong> Introduced by <strong>Harold Hotelling</strong> in the 1930s.</p>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6>Why Use PCA?</h6>
+                            <ul>
+                                <li>Reduce noise and redundancy in data.</li>
+                                <li>Visualize high-dimensional data in 2D/3D.</li>
+                                <li>Speed up machine learning algorithms.</li>
+                                <li>Handle multicollinearity.</li>
+                            </ul>
+                            <h6>Assumptions</h6>
+                            <ul>
+                                <li>Linear relationships between variables.</li>
+                                <li>Features should be scaled (mean = 0, variance = 1).</li>
+                                <li>Large variance = important information.</li>
+                            </ul>
+                            <h6>Applications</h6>
+                            <ul>
+                                <li>Image compression.</li>
+                                <li>Genomics (gene expression analysis).</li>
+                                <li>Finance (yield curve analysis).</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>R Implementation (Using <code>USArrests</code>)</h6>
+                            <pre><code class="language-r">data(USArrests)
+scaled_data <- scale(USArrests)
+
+# Perform PCA
+pca_result <- prcomp(scaled_data, center = TRUE, scale. = TRUE)
+
+# View summary (proportion of variance explained)
+summary(pca_result)
+
+# Scree plot
+plot(pca_result, main = "Scree Plot")
+
+# Biplot (visualize data in PC1 vs PC2 space)
+biplot(pca_result, scale = 0, cex = 0.7,
+       main = "PCA Biplot of US Arrests")
+
+# Extract principal component scores
+pc_scores <- pca_result$x
+head(pc_scores)
+
+# Visualize with factoextra
+library(factoextra)
+fviz_pca_ind(pca_result, 
+             geom.ind = "point",
+             col.ind = "cos2", 
+             gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
+             title = "PCA - Individuals colored by Quality")</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- DBSCAN -->
+                <div class="tab-pane fade" id="dbscan-pane" role="tabpanel">
+                    <h4>DBSCAN (Density-Based Spatial Clustering)</h4>
+                    <p><strong>Concept:</strong> Groups together points that are closely packed (high-density regions) and marks points in low-density regions as <strong>outliers/noise</strong>.</p>
+                    <p><strong>History:</strong> Proposed by <strong>Ester, Kriegel, Sander, and Xu</strong> in 1996.</p>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6>Key Parameters</h6>
+                            <ul>
+                                <li><strong>eps (ε):</strong> Maximum distance between two points to be considered neighbors.</li>
+                                <li><strong>minPts:</strong> Minimum number of points required to form a dense region (cluster).</li>
+                            </ul>
+                            <h6>Advantages over K-Means</h6>
+                            <ul>
+                                <li>Does <strong>not require specifying K</strong>.</li>
+                                <li>Can find <strong>clusters of arbitrary shape</strong> (not just spherical).</li>
+                                <li>Identifies <strong>outliers/noise</strong> automatically.</li>
+                            </ul>
+                            <h6>Applications</h6>
+                            <ul>
+                                <li>Spatial data analysis (crime hotspots).</li>
+                                <li>Image segmentation.</li>
+                                <li>Anomaly detection in networks.</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>R Implementation (Using <code>iris</code>)</h6>
+                            <pre><code class="language-r"># install.packages("dbscan")
+library(dbscan)
+
+data(iris)
+# Use only numeric features
+iris_numeric <- iris[, -5]
+scaled_iris <- scale(iris_numeric)
+
+# Run DBSCAN
+# eps = 0.8, minPts = 5 (tune based on k-NN distance plot)
+dbscan_model <- dbscan(scaled_iris, eps = 0.8, minPts = 5)
+
+# View results
+print(dbscan_model)
+
+# Cluster assignments (-1 indicates noise/outliers)
+table(dbscan_model$cluster)
+
+# Visualize (using first 2 features for 2D plot)
+plot(scaled_iris[, 1:2], 
+     col = dbscan_model$cluster + 1,
+     pch = 19, 
+     main = "DBSCAN Clustering of Iris Data",
+     xlab = names(iris)[1], ylab = names(iris)[2])
+legend("topleft", 
+       legend = unique(dbscan_model$cluster),
+       col = 1:(length(unique(dbscan_model$cluster))),
+       pch = 19)</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-5">
+
+        <!-- SEMI-SUPERVISED LEARNING -->
+        <section id="semi" class="mb-5">
+            <h2 class="section-title">3. Semi-Supervised Learning</h2>
+            <p class="lead">Semi-supervised learning sits between supervised and unsupervised learning. It uses a <strong>small amount of labeled data</strong> combined with a <strong>large amount of unlabeled data</strong> to improve learning accuracy.</p>
+
+            <div class="row g-4">
+                <div class="col-md-6">
+                    <div class="card history-card h-100">
+                        <div class="card-body">
+                            <h5><i class="fas fa-history text-warning me-2"></i>Historical Context</h5>
+                            <p>The concept emerged in the late 1990s and early 2000s, driven by the realization that in many real-world scenarios (e.g., web page classification, medical imaging), obtaining labels is expensive or time-consuming, but unlabeled data is abundant.</p>
+                            <p>Pioneering work by <strong>Blum & Mitchell</strong> (1998) on <strong>Co-Training</strong> and <strong>Zhu & Ghahramani</strong> (2002) on <strong>Label Propagation</strong> laid the foundation.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5><i class="fas fa-lightbulb text-info me-2"></i>When to Use</h5>
+                            <ul>
+                                <li>Labeled data is scarce or expensive to obtain.</li>
+                                <li>Large amounts of unlabeled data are available.</li>
+                                <li>The data has an underlying structure that can be exploited.</li>
+                            </ul>
+                            <h6>Common Applications</h6>
+                            <ul>
+                                <li>Speech analysis (audio is abundant, transcriptions are costly).</li>
+                                <li>Protein sequence classification.</li>
+                                <li>Web content classification.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <h3 class="sub-section-title">Key Techniques</h3>
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h5>1. Self-Training</h5>
+                            <ol>
+                                <li>Train a model on the small labeled dataset.</li>
+                                <li>Use it to predict labels for unlabeled data.</li>
+                                <li>Add the most confident predictions to the labeled set.</li>
+                                <li>Retrain and repeat.</li>
+                            </ol>
+                        </div>
+                        <div class="col-md-6">
+                            <h5>2. Label Propagation / Spreading</h5>
+                            <p>Constructs a graph where nodes are data points and edges represent similarity. Labels from labeled nodes "propagate" through the graph to unlabeled nodes based on their connectivity.</p>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-md-6">
+                            <h5>3. Co-Training</h5>
+                            <p>Uses two classifiers trained on different "views" (feature subsets) of the data. Each classifier labels unlabeled data for the other to learn from.</p>
+                        </div>
+                        <div class="col-md-6">
+                            <h5>4. Generative Models</h5>
+                            <p>Assume data comes from a mixture of distributions. Uses Expectation-Maximization (EM) to estimate parameters using both labeled and unlabeled data.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <h3 class="sub-section-title">R Implementation (Self-Training Example)</h3>
+            <div class="card">
+                <div class="card-body">
+                    <pre><code class="language-r"># install.packages("SSLR")
+# install.packages("randomForest")
+library(SSLR)
+library(randomForest)
+
+data(iris)
+set.seed(42)
+
+# Simulate semi-supervised scenario:
+# Only 10% of data is labeled, 90% is unlabeled (NA)
+labeled_idx <- sample(1:nrow(iris), 15)
+iris_labels <- iris$Species
+iris_labels[-labeled_idx] <- NA  # Mark as unlabeled
+
+# Prepare data (features + labels with NAs)
+X <- iris[, -5]
+y <- iris_labels
+
+# Build Self-Training model using Random Forest as base learner
+self_trainer <- SelfTraining(
+  base_learner = randomForest::randomForest,
+  threshold = 0.85,  # Confidence threshold
+  max_iter = 20
+)
+
+# Fit the semi-supervised model
+model <- self_trainer$fit(X, y)
+
+# Predict on all data
+predictions <- model$predict(X)
+
+# Evaluate on originally labeled data
+table(Predicted = predictions[labeled_idx], 
+      Actual = iris$Species[labeled_idx])
+
+cat("Accuracy on labeled data:", 
+    mean(predictions[labeled_idx] == iris$Species[labeled_idx]), "\n")</code></pre>
+                    <div class="alert alert-warning mt-3">
+                        <strong><i class="fas fa-exclamation-triangle me-2"></i>Caution:</strong> Semi-supervised learning can fail if the initial model's predictions are wrong — errors propagate and compound. Always validate with a holdout labeled set.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-5">
+
+        <!-- REINFORCEMENT LEARNING -->
+        <section id="reinforcement" class="mb-5">
+            <h2 class="section-title">4. Reinforcement Learning (RL)</h2>
+            <p class="lead">Reinforcement Learning is a type of machine learning where an <strong>agent</strong> learns to make decisions by performing <strong>actions</strong> in an <strong>environment</strong> to maximize cumulative <strong>rewards</strong> over time.</p>
+
+            <div class="row g-4">
+                <div class="col-md-6">
+                    <div class="card history-card h-100">
+                        <div class="card-body">
+                            <h5><i class="fas fa-history text-warning me-2"></i>Historical Context</h5>
+                            <p>The roots of RL lie in <strong>psychology</strong> — Edward Thorndike's "Law of Effect" (1911) and B.F. Skinner's operant conditioning (1930s).</p>
+                            <p><strong>Richard Bellman</strong> formalized the mathematics in the 1950s with <strong>Dynamic Programming</strong> and the <strong>Bellman Equation</strong>.</p>
+                            <p>Modern RL exploded with <strong>Mnih et al. (2013)</strong> — DeepMind's Deep Q-Network that learned to play Atari games at superhuman levels, and <strong>AlphaGo (2016)</strong> which defeated world champion Lee Sedol at Go.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5><i class="fas fa-gamepad text-danger me-2"></i>Core Concepts</h5>
+                            <ul>
+                                <li><strong>Agent:</strong> The learner/decision-maker.</li>
+                                <li><strong>Environment:</strong> What the agent interacts with.</li>
+                                <li><strong>State (S):</strong> Current situation of the agent.</li>
+                                <li><strong>Action (A):</strong> What the agent can do.</li>
+                                <li><strong>Reward (R):</strong> Feedback signal from the environment.</li>
+                                <li><strong>Policy (π):</strong> Strategy the agent uses to choose actions.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <h3 class="sub-section-title">The Bellman Equation</h3>
+            <div class="card">
+                <div class="card-body">
+                    <p>The Bellman Equation is the foundation of most RL algorithms. It defines the value of a state recursively:</p>
+                    <div class="math-block">$$ V(s) = \max_a \left[ R(s,a) + \gamma \sum_{s'} P(s'|s,a) V(s') \right] $$</div>
+                    <ul>
+                        <li><strong>$V(s)$:</strong> Value of being in state $s$.</li>
+                        <li><strong>$R(s,a)$:</strong> Immediate reward for action $a$ in state $s$.</li>
+                        <li><strong>$\gamma$ (gamma):</strong> Discount factor (0 to 1) — how much we care about future rewards.</li>
+                        <li><strong>$P(s'|s,a)$:</strong> Probability of transitioning to state $s'$.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h3 class="sub-section-title">Key RL Algorithms</h3>
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h5>1. Q-Learning (Model-Free)</h5>
+                            <p>Learns the value of each action in each state (Q-value) without knowing the environment's dynamics. Uses the update rule:</p>
+                            <div class="math-block">$$ Q(s,a) \leftarrow Q(s,a) + \alpha [r + \gamma \max_{a'} Q(s',a') - Q(s,a)] $$</div>
+                        </div>
+                        <div class="col-md-6">
+                            <h5>2. SARSA (On-Policy)</h5>
+                            <p>Similar to Q-Learning but updates based on the <em>actual</em> action taken (not the best possible). More conservative, safer for risky environments.</p>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-md-6">
+                            <h5>3. Policy Gradient Methods</h5>
+                            <p>Directly optimize the policy (strategy) rather than value functions. Examples: REINFORCE, PPO, A3C.</p>
+                        </div>
+                        <div class="col-md-6">
+                            <h5>4. Deep Q-Networks (DQN)</h5>
+                            <p>Combines Q-Learning with deep neural networks to handle high-dimensional state spaces (like pixels in video games).</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <h3 class="sub-section-title">Applications of Reinforcement Learning</h3>
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <div class="card text-center h-100">
+                        <div class="card-body">
+                            <i class="fas fa-chess fa-2x text-primary mb-2"></i>
+                            <h6>Game AI</h6>
+                            <small>AlphaGo, Dota 2, Chess engines</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card text-center h-100">
+                        <div class="card-body">
+                            <i class="fas fa-robot fa-2x text-success mb-2"></i>
+                            <h6>Robotics</h6>
+                            <small>Autonomous navigation, manipulation</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card text-center h-100">
+                        <div class="card-body">
+                            <i class="fas fa-chart-line fa-2x text-warning mb-2"></i>
+                            <h6>Finance</h6>
+                            <small>Algorithmic trading, portfolio optimization</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card text-center h-100">
+                        <div class="card-body">
+                            <i class="fas fa-car fa-2x text-danger mb-2"></i>
+                            <h6>Autonomous Vehicles</h6>
+                            <small>Self-driving cars, drones</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card text-center h-100">
+                        <div class="card-body">
+                            <i class="fas fa-heartbeat fa-2x text-info mb-2"></i>
+                            <h6>Healthcare</h6>
+                            <small>Treatment optimization, drug dosing</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card text-center h-100">
+                        <div class="card-body">
+                            <i class="fas fa-ad fa-2x text-secondary mb-2"></i>
+                            <h6>Recommendation Systems</h6>
+                            <small>YouTube, Netflix, ads</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <h3 class="sub-section-title">R Implementation (Markov Decision Process)</h3>
+            <div class="card">
+                <div class="card-body">
+                    <p>We'll model a simple <strong>Markov Decision Process (MDP)</strong> — the mathematical framework for RL — using the <code>markovchain</code> package. Imagine a weather model where states are "Sunny", "Rainy", "Cloudy" and we want to find the optimal policy.</p>
+                    <pre><code class="language-r"># install.packages("markovchain")
+library(markovchain)
+
+# Define states
+states <- c("Sunny", "Rainy", "Cloudy")
+
+# Define transition probability matrix
+# Each row = current state, each column = next state
+transition_matrix <- new("matrix", 
+    c(0.6, 0.2, 0.2,   # From Sunny: 60% Sunny, 20% Rainy, 20% Cloudy
+      0.3, 0.4, 0.3,   # From Rainy
+      0.4, 0.3, 0.3),  # From Cloudy
+    nrow = 3, ncol = 3, byrow = TRUE,
+    dimnames = list(states, states))
+
+# Create markovchain object
+weather_mc <- new("markovchain", 
+                  states = states,
+                  transitionMatrix = transition_matrix,
+                  name = "Weather")
+
+# Display the transition matrix
+print(weather_mc)
+
+# Predict weather 3 days from now, starting from Sunny
+initial_state <- c(1, 0, 0)  # 100% Sunny
+predict(weather_mc, initial_state, 3)
+
+# Steady-state probabilities (long-run distribution)
+steadyStates(weather_mc)
+
+# --------------------------------------------------------
+# For full RL (Q-Learning), use the 'ReinforcementLearning' package
+# --------------------------------------------------------
+# install.packages("ReinforcementLearning")
+library(ReinforcementLearning)
+
+# Define a simple gridworld environment
+# (Agent moves in a 3x3 grid to reach a goal)
+control <- list(
+  lr = 0.1,          # Learning rate (alpha)
+  gamma = 0.9,       # Discount factor
+  epsilon = 0.1      # Exploration rate
+)
+
+# Note: Full RL implementation requires defining:
+# 1. State space
+# 2. Action space
+# 3. Reward function
+# 4. Environment dynamics
+# This is typically done with custom environment functions.
+# See: https://cran.r-project.org/package=ReinforcementLearning</code></pre>
+                    <div class="alert alert-info mt-3">
+                        <strong><i class="fas fa-lightbulb me-2"></i>Note for Students:</strong> While R has RL capabilities, the industry standard for advanced RL (especially Deep RL) is <strong>Python</strong> with libraries like <strong>Stable-Baselines3</strong>, <strong>OpenAI Gym</strong>, and <strong>PyTorch</strong>. R is excellent for MDP modeling, Q-learning on small problems, and reinforcement learning in statistical contexts.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-5">
+
+        <!-- Summary Section -->
+        <section class="mb-5">
+            <h2 class="section-title">Module Summary: Choosing the Right ML Approach</h2>
+            <div class="card">
+                <div class="card-body">
+                    <table class="table table-striped table-hover">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Paradigm</th>
+                                <th>Data Type</th>
+                                <th>Goal</th>
+                                <th>Common Algorithms</th>
+                                <th>Use Case Example</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong class="text-primary">Supervised</strong></td>
+                                <td>Labeled (X, Y)</td>
+                                <td>Predict outcomes</td>
+                                <td>Linear/Logistic Regression, Trees, RF, SVM, KNN</td>
+                                <td>Spam detection, house pricing</td>
+                            </tr>
+                            <tr>
+                                <td><strong class="text-success">Unsupervised</strong></td>
+                                <td>Unlabeled (X only)</td>
+                                <td>Find hidden structure</td>
+                                <td>K-Means, Hierarchical, PCA, DBSCAN</td>
+                                <td>Customer segmentation, anomaly detection</td>
+                            </tr>
+                            <tr>
+                                <td><strong class="text-warning">Semi-Supervised</strong></td>
+                                <td>Small labeled + large unlabeled</td>
+                                <td>Improve prediction with limited labels</td>
+                                <td>Self-training, Label Propagation, Co-Training</td>
+                                <td>Medical image classification</td>
+                            </tr>
+                            <tr>
+                                <td><strong class="text-danger">Reinforcement</strong></td>
+                                <td>Environment interactions</td>
+                                <td>Learn optimal policy via rewards</td>
+                                <td>Q-Learning, SARSA, DQN, PPO</td>
+                                <td>Game AI, robotics, trading bots</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>Beyond Data Analytics</h5>
+                    <p class="fst-italic text-info">Transforming Data Into Insights</p>
+                    <p>Empowering the next generation of data professionals in Kenya and beyond.</p>
+                </div>
+                <div class="col-md-3">
+                    <h5>Resources</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="https://cran.r-project.org/manuals.html" class="text-white text-decoration-none">R Manuals</a></li>
+                        <li><a href="https://www.rdocumentation.org/" class="text-white text-decoration-none">R Documentation</a></li>
+                        <li><a href="https://topepo.github.io/caret/" class="text-white text-decoration-none">Caret Package</a></li>
+                        <li><a href="https://stackoverflow.com/questions/tagged/r" class="text-white text-decoration-none">Stack Overflow</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3">
+                    <h5>Contact Trainer</h5>
+                    <p><i class="fas fa-user me-2"></i> Lumumba W. Victor</p>
+                    <p><i class="fas fa-envelope me-2"></i> lumumbavictor172@gmail.com</p>
+                </div>
+            </div>
+            <div class="text-center mt-4 pt-3 border-top border-secondary">
+                <small>&copy; 2026 Beyond Data Analytics. All Rights Reserved.</small>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Highlight.js JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/languages/r.min.js"></script>
+    <script>hljs.highlightAll();</script>
+    <!-- MathJax for LaTeX Equations -->
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+</body>
+</html>

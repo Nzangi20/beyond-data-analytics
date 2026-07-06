@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Management - Beyond Data Analytics</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/main.css">
+</head>
+<body>
+    <button class="sidebar-toggle" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+    <div class="app-layout">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-auth-links" style="display: flex; justify-content: space-around; padding: 0.75rem 1rem; border-bottom: 1px solid rgba(255,255,255,0.08); font-size: 0.85rem; font-family: 'Outfit', sans-serif; background: rgba(0,0,0,0.15);">
+                <a href="/login.html" style="color: #63b3ed; font-weight: 600; text-decoration: none; display: flex; align-items: center; gap: 0.25rem; transition: opacity 0.2s;" onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'"><i class="fas fa-sign-in-alt"></i> Sign In</a>
+                <span style="color: rgba(255,255,255,0.2);">|</span>
+                <a href="https://forms.gle/iULxMYXieuC4px8p8" target="_blank" style="color: #48bb78; font-weight: 600; text-decoration: none; display: flex; align-items: center; gap: 0.25rem; transition: opacity 0.2s;" onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'"><i class="fas fa-user-plus"></i> Sign Up</a>
+            </div>
+            <div class="sidebar-header">
+                <div class="sidebar-logo"><i class="fas fa-chart-line"></i></div>
+                <div class="sidebar-brand"><h2>BDA Platform</h2><p>Administration</p></div>
+            </div>
+            <nav class="sidebar-nav">
+                <div class="nav-section">
+                    <div class="nav-section-title">Main</div>
+                    <a href="/admin/dashboard.html" class="nav-item"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+                    <a href="/admin/users.html" class="nav-item active"><i class="fas fa-users-cog"></i> User Management</a>
+                </div>
+                <div class="nav-section">
+                    <div class="nav-section-title">LMS</div>
+                    <a href="/admin/content.html" class="nav-item"><i class="fas fa-book-open"></i> Content Manager</a>
+                    <a href="/admin/exams.html" class="nav-item"><i class="fas fa-file-alt"></i> Exam Manager</a>
+                </div>
+                <div class="nav-section">
+                    <div class="nav-section-title">Reports</div>
+                    <a href="/admin/reports.html" class="nav-item"><i class="fas fa-chart-bar"></i> Reports</a>
+                </div>
+                <div class="nav-section">
+                    <div class="nav-section-title">Other</div>
+                    <a href="/" class="nav-item"><i class="fas fa-globe"></i> Public Website</a>
+                </div>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="user-info">
+                    <div class="user-avatar" id="userAvatar">AD</div>
+                    <div class="user-details"><h4 id="userName">Admin</h4><p>Admin</p></div>
+                </div>
+                <button class="btn btn-sm btn-outline" style="width:100%;margin-top:1rem;color:rgba(255,255,255,0.7);border-color:rgba(255,255,255,0.2);" onclick="API.logout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <div class="main-header">
+                <div><h1><i class="fas fa-users-cog" style="color:var(--accent);margin-right:0.5rem;"></i> User Management</h1><p>Create, edit, and manage platform users</p></div>
+                <button class="btn btn-primary" onclick="openCreateModal()"><i class="fas fa-user-plus"></i> Create User</button>
+            </div>
+
+            <!-- Search & Filter -->
+            <div class="card" style="margin-bottom:1.5rem;">
+                <div class="card-body" style="display:flex;gap:1rem;flex-wrap:wrap;align-items:center;">
+                    <input type="text" class="form-control" id="searchInput" placeholder="Search by name or username..." style="max-width:300px;" oninput="filterUsers()">
+                    <select class="form-control" id="roleFilter" style="max-width:180px;" onchange="filterUsers()">
+                        <option value="">All Roles</option>
+                        <option value="admin">Admin</option>
+                        <option value="student">Student</option>
+                        <option value="mentor">Mentor</option>
+                        <option value="instructor">Instructor</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Users Table -->
+            <div class="card">
+                <div class="table-wrapper">
+                    <table>
+                        <thead><tr>
+                            <th>User</th><th>Role</th><th>Status</th><th>First Login</th><th>Created</th><th>Actions</th>
+                        </tr></thead>
+                        <tbody id="usersTableBody">
+                            <tr><td colspan="6" style="text-align:center;padding:2rem;"><div class="spinner" style="margin:0 auto;"></div></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Assignments Section -->
+            <div class="card" style="margin-top: 2rem; margin-bottom: 2rem;">
+                <div class="card-header" style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--border-color); padding: 1rem 1.5rem;">
+                    <h3 style="margin:0;"><i class="fas fa-handshake" style="color:var(--accent);margin-right:0.5rem;"></i> Assignments Manager</h3>
+                    <div style="display:flex; gap:0.5rem;">
+                        <button class="btn btn-sm btn-outline" onclick="openInstructorAssignModal()"><i class="fas fa-chalkboard-teacher"></i> Assign Instructor</button>
+                        <button class="btn btn-sm btn-outline" onclick="openMentorAssignModal()"><i class="fas fa-user-friends"></i> Assign Mentor</button>
+                    </div>
+                </div>
+                <div class="card-body" style="padding: 0;">
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; padding: 1.5rem;">
+                        <div>
+                            <h4 style="margin-bottom:1rem;"><i class="fas fa-book-reader" style="color:var(--accent); margin-right:0.3rem;"></i> Course Instructors</h4>
+                            <div class="table-wrapper">
+                                <table>
+                                    <thead><tr><th>Course</th><th>Instructor</th><th>Action</th></tr></thead>
+                                    <tbody id="instructorAssignmentsTable">
+                                        <tr><td colspan="3" style="text-align:center;color:var(--text-muted);">Loading...</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div>
+                            <h4 style="margin-bottom:1rem;"><i class="fas fa-user-graduate" style="color:var(--accent); margin-right:0.3rem;"></i> Mentor Assignments</h4>
+                            <div class="table-wrapper">
+                                <table>
+                                    <thead><tr><th>Mentor</th><th>Student</th><th>Action</th></tr></thead>
+                                    <tbody id="mentorAssignmentsTable">
+                                        <tr><td colspan="3" style="text-align:center;color:var(--text-muted);">Loading...</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Create/Edit User Modal -->
+    <div class="modal-overlay" id="userModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 id="modalTitle"><i class="fas fa-user-plus" style="color:var(--accent);margin-right:0.5rem;"></i> Create User</h3>
+                <button class="btn btn-icon btn-outline" onclick="closeModal()"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <div id="modalAlert" style="display:none"></div>
+                <form id="userForm">
+                    <input type="hidden" id="editUserId">
+                    <div class="form-group">
+                        <label class="form-label">Full Name *</label>
+                        <input type="text" class="form-control" id="fullName" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Username *</label>
+                        <input type="text" class="form-control" id="usernameInput" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Email</label>
+                        <input type="email" class="form-control" id="emailInput">
+                    </div>
+                    <div class="form-group" id="passwordGroup">
+                        <label class="form-label">Temporary Password *</label>
+                        <input type="text" class="form-control" id="passwordInput" value="TempPass@2025">
+                        <p class="password-hint">User will be required to change this on first login</p>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Role *</label>
+                        <select class="form-control" id="roleInput">
+                            <option value="2">Student</option>
+                            <option value="3">Mentor</option>
+                            <option value="6">Instructor</option>
+                            <option value="1">Admin</option>
+                        </select>
+                    </div>
+                    <div class="form-group" id="enrollGroup" style="display:none;">
+                        <label class="form-label">Enroll in Tutorials</label>
+                        <div id="tutorialCheckboxes" style="display:grid;gap:0.5rem;"></div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" onclick="closeModal()">Cancel</button>
+                <button class="btn btn-primary" onclick="saveUser()" id="saveBtn"><i class="fas fa-save"></i> Save</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Assign Instructor Modal -->
+    <div class="modal-overlay" id="instructorAssignModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3><i class="fas fa-chalkboard-teacher" style="color:var(--accent);margin-right:0.5rem;"></i> Assign Instructor</h3>
+                <button class="btn btn-icon btn-outline" onclick="closeAssignModals()"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <div id="instructorAssignAlert" style="display:none"></div>
+                <div class="form-group">
+                    <label class="form-label">Select Instructor *</label>
+                    <select class="form-control" id="assignInstructorSelect">
+                        <option value="">-- Choose Instructor --</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Select Course/Tutorial *</label>
+                    <select class="form-control" id="assignTutorialSelect">
+                        <option value="">-- Choose Course --</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" onclick="closeAssignModals()">Cancel</button>
+                <button class="btn btn-primary" onclick="saveInstructorAssignment()"><i class="fas fa-plus"></i> Assign</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Assign Mentor Modal -->
+    <div class="modal-overlay" id="mentorAssignModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3><i class="fas fa-user-friends" style="color:var(--accent);margin-right:0.5rem;"></i> Assign Mentor</h3>
+                <button class="btn btn-icon btn-outline" onclick="closeAssignModals()"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <div id="mentorAssignAlert" style="display:none"></div>
+                <div class="form-group">
+                    <label class="form-label">Select Mentor *</label>
+                    <select class="form-control" id="assignMentorSelect">
+                        <option value="">-- Choose Mentor --</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Select Student *</label>
+                    <select class="form-control" id="assignStudentSelect">
+                        <option value="">-- Choose Student --</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" onclick="closeAssignModals()">Cancel</button>
+                <button class="btn btn-primary" onclick="saveMentorAssignment()"><i class="fas fa-plus"></i> Assign</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/api.js"></script>
+    <script>
+        if (!API.requireAuth(['admin'])) throw new Error('Not authorized');
+        const user = API.getUser();
+        if (user) { 
+            document.getElementById('userName').textContent = user.fullName||user.username; 
+            document.getElementById('userAvatar').textContent = getInitials(user.fullName||user.username); 
+        }
+
+        let allUsers = [];
+        let tutorials = [];
+        let assignData = {};
+
+        async function loadUsers() {
+            try {
+                const data = await API.get('/admin/users');
+                allUsers = data.users;
+                renderUsers(allUsers);
+            } catch (err) { showToast('Failed to load users', 'error'); }
+        }
+
+        async function loadTutorials() {
+            try {
+                const data = await API.get('/admin/tutorials');
+                tutorials = data.tutorials;
+            } catch (err) {}
+        }
+
+        async function loadAssignments() {
+            try {
+                const data = await API.get('/admin/assignments');
+                assignData = data;
+                
+                // Render tables
+                const iTable = document.getElementById('instructorAssignmentsTable');
+                if (data.instructorAssignments.length === 0) {
+                    iTable.innerHTML = '<tr><td colspan="3" style="text-align:center;color:var(--text-muted);">No assignments</td></tr>';
+                } else {
+                    iTable.innerHTML = data.instructorAssignments.map(ia => `
+                        <tr>
+                            <td><strong>${escapeHtml(ia.tutorial_name)}</strong></td>
+                            <td>${escapeHtml(ia.instructor_name)}</td>
+                            <td><button class="btn btn-icon btn-sm btn-outline text-danger" onclick="deleteInstructorAssignment(${ia.instructor_id}, ${ia.tutorial_id})"><i class="fas fa-unlink"></i></button></td>
+                        </tr>
+                    `).join('');
+                }
+
+                const mTable = document.getElementById('mentorAssignmentsTable');
+                if (data.mentorAssignments.length === 0) {
+                    mTable.innerHTML = '<tr><td colspan="3" style="text-align:center;color:var(--text-muted);">No assignments</td></tr>';
+                } else {
+                    mTable.innerHTML = data.mentorAssignments.map(ma => `
+                        <tr>
+                            <td><strong>${escapeHtml(ma.mentor_name)}</strong></td>
+                            <td>${escapeHtml(ma.student_name)}</td>
+                            <td><button class="btn btn-icon btn-sm btn-outline text-danger" onclick="deleteMentorAssignment(${ma.mentor_id}, ${ma.student_id})"><i class="fas fa-unlink"></i></button></td>
+                        </tr>
+                    `).join('');
+                }
+
+                // Populate selects
+                const insSelect = document.getElementById('assignInstructorSelect');
+                insSelect.innerHTML = '<option value="">-- Choose Instructor --</option>' + 
+                    data.instructors.map(i => `<option value="${i.id}">${escapeHtml(i.full_name)} (@${escapeHtml(i.username)})</option>`).join('');
+
+                const tutSelect = document.getElementById('assignTutorialSelect');
+                tutSelect.innerHTML = '<option value="">-- Choose Course --</option>' + 
+                    data.tutorials.map(t => `<option value="${t.id}">${escapeHtml(t.name)}</option>`).join('');
+
+                const mentorSelect = document.getElementById('assignMentorSelect');
+                mentorSelect.innerHTML = '<option value="">-- Choose Mentor --</option>' + 
+                    data.mentors.map(m => `<option value="${m.id}">${escapeHtml(m.full_name)} (@${escapeHtml(m.username)})</option>`).join('');
+
+                const studentSelect = document.getElementById('assignStudentSelect');
+                studentSelect.innerHTML = '<option value="">-- Choose Student --</option>' + 
+                    data.students.map(s => `<option value="${s.id}">${escapeHtml(s.full_name)} (@${escapeHtml(s.username)})</option>`).join('');
+
+            } catch (err) {
+                console.error(err);
+                showToast('Failed to load assignments data', 'error');
+            }
+        }
+
+        function renderUsers(users) {
+            const tbody = document.getElementById('usersTableBody');
+            if (users.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" class="empty-state"><i class="fas fa-users"></i><h3>No users found</h3></td></tr>';
+                return;
+            }
+            tbody.innerHTML = users.map(u => {
+                let badgeClass = 'primary';
+                if (u.role_name === 'admin') badgeClass = 'danger';
+                else if (u.role_name === 'mentor') badgeClass = 'purple';
+                else if (u.role_name === 'instructor') badgeClass = 'info';
+
+                return `
+                    <tr>
+                        <td>
+                            <div style="display:flex;align-items:center;gap:0.75rem;">
+                                <div class="user-avatar" style="width:36px;height:36px;font-size:0.75rem;">${getInitials(u.full_name)}</div>
+                                <div><div style="font-weight:600;">${escapeHtml(u.full_name)}</div><div style="font-size:0.8rem;color:var(--text-muted);">@${escapeHtml(u.username)}${u.email?' · '+escapeHtml(u.email):''}</div></div>
+                            </div>
+                        </td>
+                        <td><span class="badge badge-${badgeClass}">${u.role_name}</span></td>
+                        <td><span class="badge badge-${u.is_active?'success':'dark'}">${u.is_active?'Active':'Inactive'}</span></td>
+                        <td>${u.first_login?'<span class="badge badge-warning"><i class="fas fa-exclamation-triangle"></i> Pending</span>':'<span class="badge badge-success"><i class="fas fa-check"></i> Done</span>'}</td>
+                        <td style="font-size:0.85rem;color:var(--text-muted);">${formatDate(u.created_at)}</td>
+                        <td>
+                            <div style="display:flex;gap:0.3rem;">
+                                <button class="btn btn-icon btn-sm btn-outline" onclick="editUser(${u.id})" title="Edit"><i class="fas fa-edit"></i></button>
+                                <button class="btn btn-icon btn-sm btn-outline" onclick="resetPassword(${u.id}, '${escapeHtml(u.full_name)}')" title="Reset Password"><i class="fas fa-key"></i></button>
+                                ${u.role_name!=='admin'?`<button class="btn btn-icon btn-sm btn-outline" onclick="deleteUser(${u.id}, '${escapeHtml(u.full_name)}')" title="Deactivate" style="color:var(--red);"><i class="fas fa-trash-alt"></i></button>`:''}
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function filterUsers() {
+            const search = document.getElementById('searchInput').value.toLowerCase();
+            const role = document.getElementById('roleFilter').value;
+            const filtered = allUsers.filter(u => {
+                const matchSearch = !search || u.full_name.toLowerCase().includes(search) || u.username.toLowerCase().includes(search);
+                const matchRole = !role || u.role_name === role;
+                return matchSearch && matchRole;
+            });
+            renderUsers(filtered);
+        }
+
+        function openCreateModal() {
+            document.getElementById('modalTitle').innerHTML = '<i class="fas fa-user-plus" style="color:var(--accent);margin-right:0.5rem;"></i> Create User';
+            document.getElementById('editUserId').value = '';
+            document.getElementById('fullName').value = '';
+            document.getElementById('usernameInput').value = '';
+            document.getElementById('emailInput').value = '';
+            document.getElementById('passwordInput').value = 'TempPass@2025';
+            document.getElementById('roleInput').value = '2';
+            document.getElementById('passwordGroup').style.display = '';
+            document.getElementById('modalAlert').style.display = 'none';
+
+            // Show tutorial enrollment for students
+            document.getElementById('enrollGroup').style.display = '';
+            document.getElementById('tutorialCheckboxes').innerHTML = tutorials.map(t => `
+                <label style="display:flex;align-items:center;gap:0.5rem;cursor:pointer;">
+                    <input type="checkbox" value="${t.id}" name="tutorials"> ${t.name}
+                </label>
+            `).join('');
+
+            document.getElementById('userModal').classList.add('active');
+        }
+
+        function editUser(id) {
+            const u = allUsers.find(x => x.id === id);
+            if (!u) return;
+            document.getElementById('modalTitle').innerHTML = '<i class="fas fa-edit" style="color:var(--accent);margin-right:0.5rem;"></i> Edit User';
+            document.getElementById('editUserId').value = u.id;
+            document.getElementById('fullName').value = u.full_name;
+            document.getElementById('usernameInput').value = u.username;
+            document.getElementById('emailInput').value = u.email || '';
+            document.getElementById('roleInput').value = u.role_id;
+            document.getElementById('passwordGroup').style.display = 'none';
+            document.getElementById('enrollGroup').style.display = 'none';
+            document.getElementById('modalAlert').style.display = 'none';
+            document.getElementById('userModal').classList.add('active');
+        }
+
+        function closeModal() { document.getElementById('userModal').classList.remove('active'); }
+
+        async function saveUser() {
+            const btn = document.getElementById('saveBtn');
+            const alert = document.getElementById('modalAlert');
+            const editId = document.getElementById('editUserId').value;
+            btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+            alert.style.display = 'none';
+
+            try {
+                if (editId) {
+                    await API.put(`/admin/users/${editId}`, {
+                        fullName: document.getElementById('fullName').value,
+                        email: document.getElementById('emailInput').value,
+                        roleId: parseInt(document.getElementById('roleInput').value)
+                    });
+                    showToast('User updated successfully', 'success');
+                    const roleId = parseInt(document.getElementById('roleInput').value);
+                    const result = await API.post('/admin/users', {
+                        username: document.getElementById('usernameInput').value,
+                        fullName: document.getElementById('fullName').value,
+                        email: document.getElementById('emailInput').value,
+                        password: document.getElementById('passwordInput').value,
+                        roleId: roleId
+                    });
+
+                    // Enroll in selected tutorials only if role is Student (2)
+                    if (roleId === 2) {
+                        const selectedTuts = document.querySelectorAll('#tutorialCheckboxes input:checked');
+                        for (const cb of selectedTuts) {
+                            await API.post('/admin/enroll', { userId: result.userId, tutorialId: parseInt(cb.value) });
+                        }
+                    }
+                    showToast('User created successfully', 'success');
+                }
+                closeModal();
+                loadUsers();
+                loadAssignments();
+            } catch (err) {
+                alert.style.display = 'block';
+                alert.className = 'alert alert-danger';
+                alert.innerHTML = `<i class="fas fa-times-circle"></i> ${err.error || 'Failed to save user'}`;
+            }
+            btn.disabled = false; btn.innerHTML = '<i class="fas fa-save"></i> Save';
+        }
+
+        async function resetPassword(id, name) {
+            if (!confirm(`Reset password for ${name}? They will need to change it on next login.`)) return;
+            try {
+                const result = await API.post(`/admin/users/${id}/reset-password`, {});
+                showToast(`Password reset. Temporary: ${result.temporaryPassword}`, 'success', 8000);
+                loadUsers();
+            } catch (err) { showToast('Failed to reset password', 'error'); }
+        }
+
+        async function deleteUser(id, name) {
+            if (!confirm(`Deactivate ${name}? They will no longer be able to login.`)) return;
+            try {
+                await API.delete(`/admin/users/${id}`);
+                showToast('User deactivated', 'success');
+                loadUsers();
+                loadAssignments();
+            } catch (err) { showToast('Failed to deactivate user', 'error'); }
+        }
+
+        // Assignment Modal Actions
+        function openInstructorAssignModal() {
+            document.getElementById('instructorAssignAlert').style.display = 'none';
+            document.getElementById('instructorAssignModal').classList.add('active');
+        }
+        function openMentorAssignModal() {
+            document.getElementById('mentorAssignAlert').style.display = 'none';
+            document.getElementById('mentorAssignModal').classList.add('active');
+        }
+        function closeAssignModals() {
+            document.getElementById('instructorAssignModal').classList.remove('active');
+            document.getElementById('mentorAssignModal').classList.remove('active');
+        }
+
+        async function saveInstructorAssignment() {
+            const insId = document.getElementById('assignInstructorSelect').value;
+            const tutId = document.getElementById('assignTutorialSelect').value;
+            if(!insId || !tutId) return alert('Please select both instructor and course');
+
+            try {
+                await API.post('/admin/assign-instructor', { instructorId: parseInt(insId), tutorialId: parseInt(tutId) });
+                showToast('Instructor assigned successfully', 'success');
+                closeAssignModals();
+                loadAssignments();
+            } catch(e) {
+                const alertEl = document.getElementById('instructorAssignAlert');
+                alertEl.style.display = 'block';
+                alertEl.className = 'alert alert-danger';
+                alertEl.innerHTML = e.error || 'Failed to assign instructor';
+            }
+        }
+
+        async function deleteInstructorAssignment(insId, tutId) {
+            if(!confirm('Are you sure you want to remove this instructor assignment?')) return;
+            try {
+                await API.post('/admin/unassign-instructor', { instructorId: insId, tutorialId: tutId });
+                showToast('Assignment removed', 'success');
+                loadAssignments();
+            } catch(e) { showToast('Failed to remove assignment', 'error'); }
+        }
+
+        async function saveMentorAssignment() {
+            const mId = document.getElementById('assignMentorSelect').value;
+            const sId = document.getElementById('assignStudentSelect').value;
+            if(!mId || !sId) return alert('Please select both mentor and student');
+
+            try {
+                await API.post('/admin/assign-mentor', { mentorId: parseInt(mId), studentId: parseInt(sId) });
+                showToast('Mentor assigned successfully', 'success');
+                closeAssignModals();
+                loadAssignments();
+            } catch(e) {
+                const alertEl = document.getElementById('mentorAssignAlert');
+                alertEl.style.display = 'block';
+                alertEl.className = 'alert alert-danger';
+                alertEl.innerHTML = e.error || 'Failed to assign mentor';
+            }
+        }
+
+        async function deleteMentorAssignment(mId, sId) {
+            if(!confirm('Are you sure you want to remove this mentor assignment?')) return;
+            try {
+                await API.post('/admin/unassign-mentor', { mentorId: mId, studentId: sId });
+                showToast('Assignment removed', 'success');
+                loadAssignments();
+            } catch(e) { showToast('Failed to remove assignment', 'error'); }
+        }
+
+        // Sidebar Toggle
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('active');
+        }
+
+        // Toggle Enroll in Tutorials based on selected role (only Student role gets it)
+        document.getElementById('roleInput').addEventListener('change', (e) => {
+            const enrollGroup = document.getElementById('enrollGroup');
+            const editUserId = document.getElementById('editUserId').value;
+            if (!editUserId) {
+                enrollGroup.style.display = e.target.value === '2' ? '' : 'none';
+            }
+        });
+
+        loadUsers();
+        loadTutorials();
+        loadAssignments();
+    </script>
+</body>
+</html>

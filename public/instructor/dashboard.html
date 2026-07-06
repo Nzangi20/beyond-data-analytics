@@ -1,0 +1,1416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instructor Dashboard - Beyond Data Analytics</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/main.css">
+    <style>
+        .nav-section { margin-bottom: 1rem; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        .badge-info { background: #3182ce; color: #fff; }
+        .badge-purple { background: #805ad5; color: #fff; }
+        .messages-layout { display: grid; grid-template-columns: 300px 1fr; gap: 1.5rem; height: calc(100vh - 250px); min-height: 500px; }
+        .messages-list { border-right: 1px solid var(--border-color); overflow-y: auto; padding-right: 1rem; }
+        .message-item { padding: 1rem; border-bottom: 1px solid var(--border-color); cursor: pointer; transition: background 0.2s; border-radius: 4px; }
+        .message-item:hover, .message-item.active { background: rgba(0,0,0,0.03); }
+        .message-item.unread { font-weight: bold; border-left: 3px solid var(--accent); }
+        .message-view { display: flex; flex-direction: column; height: 100%; padding-left: 1rem; }
+        .message-body { flex-grow: 1; border: 1px solid var(--border-color); padding: 1rem; border-radius: 4px; background: #fafafa; margin-bottom: 1rem; overflow-y: auto; }
+        .modal { max-width: 650px; }
+        .question-card { border: 1px solid var(--border-color); border-radius: 6px; padding: 1rem; margin-bottom: 1rem; background: #fafafa; }
+    </style>
+</head>
+<body>
+    <button class="sidebar-toggle" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+    <div class="app-layout">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-auth-links" style="display: flex; justify-content: space-around; padding: 0.75rem 1rem; border-bottom: 1px solid rgba(255,255,255,0.08); font-size: 0.85rem; font-family: 'Outfit', sans-serif; background: rgba(0,0,0,0.15);">
+                <a href="/login.html" style="color: #63b3ed; font-weight: 600; text-decoration: none; display: flex; align-items: center; gap: 0.25rem; transition: opacity 0.2s;" onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'"><i class="fas fa-sign-in-alt"></i> Sign In</a>
+                <span style="color: rgba(255,255,255,0.2);">|</span>
+                <a href="https://forms.gle/iULxMYXieuC4px8p8" target="_blank" style="color: #48bb78; font-weight: 600; text-decoration: none; display: flex; align-items: center; gap: 0.25rem; transition: opacity 0.2s;" onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'"><i class="fas fa-user-plus"></i> Sign Up</a>
+            </div>
+            <div class="sidebar-header">
+                <div class="sidebar-logo"><i class="fas fa-chart-line"></i></div>
+                <div class="sidebar-brand"><h2>BDA Platform</h2><p>Instructor Portal</p></div>
+            </div>
+            <nav class="sidebar-nav">
+                <div class="nav-section">
+                    <div class="nav-section-title">Main</div>
+                    <a href="#" onclick="switchTab('coursesTab', this)" class="nav-item active"><i class="fas fa-book-open"></i> My Courses</a>
+                    <a href="#" onclick="switchTab('examsTab', this)" class="nav-item"><i class="fas fa-file-alt"></i> Exam Questions</a>
+                    <a href="#" onclick="switchTab('analyticsTab', this)" class="nav-item"><i class="fas fa-chart-bar"></i> Student Analytics</a>
+                    <a href="#" onclick="switchTab('assignmentsTab', this)" class="nav-item"><i class="fas fa-tasks"></i> Assignments Manager</a>
+                    <a href="#" onclick="switchTab('workshopsTab', this)" class="nav-item"><i class="fas fa-video"></i> Workshops / Webinars</a>
+                    <a href="#" onclick="switchTab('messagesTab', this)" class="nav-item"><i class="fas fa-envelope"></i> Messages</a>
+                    <a href="#" onclick="switchTab('profileTab', this)" class="nav-item"><i class="fas fa-user-cog"></i> Profile Settings</a>
+                </div>
+                <div class="nav-section">
+                    <div class="nav-section-title">Other</div>
+                    <a href="/" class="nav-item"><i class="fas fa-globe"></i> Public Website</a>
+                </div>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="user-info">
+                    <div class="user-avatar" id="userAvatar">IN</div>
+                    <div class="user-details"><h4 id="userName">Instructor</h4><p>Instructor</p></div>
+                </div>
+                <button class="btn btn-sm btn-outline" style="width:100%;margin-top:1rem;color:rgba(255,255,255,0.7);border-color:rgba(255,255,255,0.2);" onclick="API.logout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <!-- ==================== TABS CONTENT ==================== -->
+            
+            <!-- Tab: My Courses -->
+            <div id="coursesTab" class="tab-content active">
+                <div class="main-header">
+                    <div><h1>My Courses</h1><p>Upload learning materials, notes, and exercises to your assigned tutorials</p></div>
+                </div>
+                <div class="card">
+                    <div class="card-header"><h3>Assigned Courses</h3></div>
+                    <div class="table-wrapper">
+                        <table>
+                            <thead><tr><th>Course Name</th><th>Description</th><th>Action</th></tr></thead>
+                            <tbody id="coursesTableBody">
+                                <tr><td colspan="3" style="text-align:center;">Loading assigned courses...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab: Exam Questions -->
+            <div id="examsTab" class="tab-content">
+                <div class="main-header">
+                    <div><h1>Exam Questions Manager</h1><p>Design and edit quizzes/exams and question pools for modules</p></div>
+                    <button class="btn btn-primary" onclick="openCreateExamModal()"><i class="fas fa-plus"></i> Create Exam</button>
+                </div>
+                <div class="card">
+                    <div class="card-header"><h3>Course Exams</h3></div>
+                    <div class="table-wrapper">
+                        <table>
+                            <thead><tr><th>Exam Title</th><th>Course & Module</th><th>Time Limit</th><th>Total Marks</th><th>Status</th><th>Actions</th></tr></thead>
+                            <tbody id="examsTableBody">
+                                <tr><td colspan="6" style="text-align:center;">Loading exams...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab: Student Analytics -->
+            <div id="analyticsTab" class="tab-content">
+                <div class="main-header">
+                    <div><h1>Student Analytics</h1><p>Monitor student enrollment, module completion, and average scores</p></div>
+                </div>
+                <div class="card">
+                    <div class="card-header"><h3>Enrolled Students Progression</h3></div>
+                    <div class="table-wrapper">
+                        <table>
+                            <thead><tr><th>Student</th><th>Course Enrolled</th><th>Enrolled Date</th><th>Completed Modules</th><th>Avg Score</th></tr></thead>
+                            <tbody id="analyticsTableBody">
+                                <tr><td colspan="5" style="text-align:center;">Loading analytics...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab: Workshops -->
+            <div id="workshopsTab" class="tab-content">
+                <div class="main-header">
+                    <div><h1>Workshops & Webinars</h1><p>Schedule interactive learning check-ins and live coding webinars</p></div>
+                    <button class="btn btn-primary" onclick="openScheduleWorkshopModal()"><i class="fas fa-calendar-plus"></i> Schedule Workshop</button>
+                </div>
+                <div class="card">
+                    <div class="card-header"><h3>Scheduled Workshops</h3></div>
+                    <div class="table-wrapper">
+                        <table>
+                            <thead><tr><th>Title</th><th>Course</th><th>Date & Time</th><th>Link</th><th>Action</th></tr></thead>
+                            <tbody id="workshopsTableBody">
+                                <tr><td colspan="5" style="text-align:center;">No scheduled workshops found</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab: Assignments Manager -->
+            <div id="assignmentsTab" class="tab-content">
+                <div class="main-header" style="display:flex; justify-content:space-between; align-items:center;">
+                    <div><h1>Assignments Manager</h1><p>Manage programming exercises, templates, and student submissions</p></div>
+                    <button class="btn btn-primary" onclick="openCreateAssignmentModal()"><i class="fas fa-plus"></i> Create Assignment</button>
+                </div>
+                
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top:1rem;">
+                    <!-- Left side: Assignments list -->
+                    <div class="card">
+                        <div class="card-header"><h3>Published Assignments</h3></div>
+                        <div class="card-body" id="assignmentsListContainer" style="max-height:600px; overflow-y:auto; padding:1.5rem;">
+                            <div class="empty-state">No assignments published.</div>
+                        </div>
+                    </div>
+                    <!-- Right side: Submissions list -->
+                    <div class="card">
+                        <div class="card-header"><h3>Student Submissions</h3></div>
+                        <div class="card-body" id="submissionsListContainer" style="max-height:600px; overflow-y:auto; padding:1.5rem;">
+                            <div class="empty-state">No student submissions received.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab: Messages -->
+            <div id="messagesTab" class="tab-content">
+                <div class="main-header">
+                    <div><h1>Message Center</h1><p>Send and receive messages with your students and administrator</p></div>
+                    <button class="btn btn-primary" onclick="openComposeModal()"><i class="fas fa-paper-plane"></i> Compose Message</button>
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <div class="messages-layout">
+                            <div class="messages-list" id="inboxList">
+                                <div style="text-align:center;padding:2rem;"><div class="spinner"></div></div>
+                            </div>
+                            <div class="message-view" id="messageDetailView">
+                                <div style="margin:auto;text-align:center;color:var(--text-muted);">
+                                    <i class="fas fa-envelope-open" style="font-size:3rem;margin-bottom:1rem;"></i>
+                                    <h3>Select a message to read</h3>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab: Profile Settings -->
+            <div id="profileTab" class="tab-content">
+                <div class="main-header">
+                    <div><h1>Profile & Settings</h1><p>Keep your contact details up to date and change your password</p></div>
+                </div>
+                <div class="card" style="max-width:550px;">
+                    <div class="card-header"><h3>Change Password</h3></div>
+                    <div class="card-body">
+                        <div id="passwordAlert" style="display:none;"></div>
+                        <form id="passwordForm" onsubmit="handleChangePassword(event)">
+                            <div class="form-group">
+                                <label class="form-label">Old Password</label>
+                                <input type="password" class="form-control" id="oldPassword" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">New Password</label>
+                                <input type="password" class="form-control" id="newPassword" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Confirm New Password</label>
+                                <input type="password" class="form-control" id="confirmPassword" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary" id="changePassBtn">Update Password</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal: View Modules / Content Manager -->
+    <div class="modal-overlay" id="contentModal">
+        <div class="modal" style="max-width: 800px;">
+            <div class="modal-header">
+                <h3 id="contentModalTitle">Manage Course Materials</h3>
+                <button class="btn btn-icon btn-outline" onclick="closeContentModal()"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">Select Module</label>
+                    <select class="form-control" id="modalModuleSelect" onchange="loadLessonsForSelectedModule()">
+                        <option value="">-- Choose Module --</option>
+                    </select>
+                </div>
+                
+                <div id="lessonsSection" style="display:none; margin-top:1.5rem;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+                        <h4>Module Materials</h4>
+                        <button class="btn btn-sm btn-primary" onclick="openAddLessonModal()"><i class="fas fa-plus"></i> Add Material</button>
+                    </div>
+                    <div class="table-wrapper">
+                        <table>
+                            <thead><tr><th>Material Title</th><th>Type</th><th>File</th><th>Action</th></tr></thead>
+                            <tbody id="lessonsTableBody">
+                                <tr><td colspan="4" style="text-align:center;">No materials uploaded yet</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Add Lesson/Material -->
+    <div class="modal-overlay" id="addLessonModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>Add Lesson Material</h3>
+                <button class="btn btn-icon btn-outline" onclick="closeAddLessonModal()"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <div id="lessonAlert" style="display:none;"></div>
+                <form id="lessonForm">
+                    <div class="form-group">
+                        <label class="form-label">Title *</label>
+                        <input type="text" class="form-control" id="lessonTitle" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Content Type *</label>
+                        <select class="form-control" id="lessonType" onchange="toggleLessonFields()" required>
+                            <option value="notes">Lecture Notes (Text)</option>
+                            <option value="video">Lecture Video (Upload)</option>
+                            <option value="exercise">Practical Exercise (Upload)</option>
+                            <option value="material">Reference Material (File Upload)</option>
+                        </select>
+                    </div>
+                    <div class="form-group" id="lessonTextGroup">
+                        <label class="form-label">Lecture Notes Content</label>
+                        <textarea class="form-control" id="lessonText" rows="6" placeholder="Paste formatted text/markdown notes..."></textarea>
+                    </div>
+                    <div class="form-group" id="lessonFileGroup" style="display:none;">
+                        <label class="form-label">Upload File *</label>
+                        <input type="file" class="form-control" id="lessonFile">
+                        <small class="password-hint">Allowed files: PDFs, PPTs, Docx, or Videos (Max 50MB)</small>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" onclick="closeAddLessonModal()">Cancel</button>
+                <button class="btn btn-primary" onclick="saveLesson()" id="saveLessonBtn"><i class="fas fa-save"></i> Save</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Create/Edit Exam -->
+    <div class="modal-overlay" id="examModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 id="examModalTitle">Create Exam</h3>
+                <button class="btn btn-icon btn-outline" onclick="closeExamModal()"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <div id="examAlert" style="display:none;"></div>
+                <form id="examForm">
+                    <input type="hidden" id="editExamId">
+                    <div class="form-group">
+                        <label class="form-label">Select Module *</label>
+                        <select class="form-control" id="examModuleSelect" required>
+                            <option value="">-- Choose Module --</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Exam Title *</label>
+                        <input type="text" class="form-control" id="examTitle" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Description</label>
+                        <textarea class="form-control" id="examDescription" rows="2"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Time Limit (Minutes) *</label>
+                        <input type="number" class="form-control" id="examTimeLimit" value="60" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Total Marks *</label>
+                        <input type="number" class="form-control" id="examTotalMarks" value="100" required>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" onclick="closeExamModal()">Cancel</button>
+                <button class="btn btn-primary" onclick="saveExam()" id="saveExamBtn"><i class="fas fa-save"></i> Save</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Manage Questions Pool -->
+    <div class="modal-overlay" id="questionsPoolModal">
+        <div class="modal" style="max-width:850px;">
+            <div class="modal-header">
+                <h3>Manage Questions Pool</h3>
+                <button class="btn btn-icon btn-outline" onclick="closeQuestionsPoolModal()"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem;">
+                    <h4 id="questionsExamTitle">Exam Questions</h4>
+                    <button class="btn btn-primary btn-sm" onclick="openAddQuestionModal()"><i class="fas fa-plus"></i> Add Question</button>
+                </div>
+                <div id="questionsContainer" style="max-height:550px; overflow-y:auto; padding-right:0.5rem;">
+                    <div style="text-align:center;padding:2rem;color:var(--text-muted);">No questions added to this exam yet.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Add/Edit Question -->
+    <div class="modal-overlay" id="questionEditorModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 id="questionEditorTitle">Add Question</h3>
+                <button class="btn btn-icon btn-outline" onclick="closeQuestionEditorModal()"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <div id="questionAlert" style="display:none;"></div>
+                <form id="questionForm">
+                    <input type="hidden" id="editQuestionId">
+                    <div class="form-group">
+                        <label class="form-label">Question Text *</label>
+                        <textarea class="form-control" id="questionText" rows="3" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Question Type *</label>
+                        <select class="form-control" id="questionType" onchange="handleQuestionTypeChange()" required>
+                            <option value="mcq">Multiple Choice</option>
+                            <option value="true_false">True / False</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Marks *</label>
+                        <input type="number" class="form-control" id="questionMarks" value="5" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Explanation (Optional)</label>
+                        <textarea class="form-control" id="questionExplanation" rows="2" placeholder="Correct answer rationale..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Answer Options (Check the correct option) *</label>
+                        <div id="optionsContainer" style="display:flex; flex-direction:column; gap:0.5rem;"></div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" onclick="closeQuestionEditorModal()">Cancel</button>
+                <button class="btn btn-primary" onclick="saveQuestion()" id="saveQuestionBtn"><i class="fas fa-save"></i> Save</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Schedule Workshop -->
+    <div class="modal-overlay" id="workshopModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>Schedule Workshop</h3>
+                <button class="btn btn-icon btn-outline" onclick="closeWorkshopModal()"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <div id="workshopAlert" style="display:none;"></div>
+                <form id="workshopForm">
+                    <div class="form-group">
+                        <label class="form-label">Workshop Title *</label>
+                        <input type="text" class="form-control" id="workshopTitle" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Course *</label>
+                        <select class="form-control" id="workshopCourseSelect" required>
+                            <option value="">-- Choose Course --</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Description</label>
+                        <textarea class="form-control" id="workshopDescription" rows="2"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Schedule Date & Time *</label>
+                        <input type="datetime-local" class="form-control" id="workshopDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Meeting URL (Zoom/Teams/Meet) *</label>
+                        <input type="url" class="form-control" id="workshopLink" placeholder="https://zoom.us/j/..." required>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" onclick="closeWorkshopModal()">Cancel</button>
+                <button class="btn btn-primary" onclick="saveWorkshop()" id="saveWorkshopBtn"><i class="fas fa-calendar-check"></i> Schedule</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Compose Message -->
+    <div class="modal-overlay" id="composeModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>New Message</h3>
+                <button class="btn btn-icon btn-outline" onclick="closeComposeModal()"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <div id="composeAlert" style="display:none;"></div>
+                <form id="composeForm">
+                    <div class="form-group">
+                        <label class="form-label">Recipient *</label>
+                        <select class="form-control" id="composeRecipient" required>
+                            <option value="">-- Select Contact --</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Subject *</label>
+                        <input type="text" class="form-control" id="composeSubject" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Message *</label>
+                        <textarea class="form-control" id="composeBody" rows="5" required></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" onclick="closeComposeModal()">Cancel</button>
+                <button class="btn btn-primary" onclick="sendMessage()" id="sendMessageBtn"><i class="fas fa-paper-plane"></i> Send</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Create Assignment -->
+    <div class="modal-overlay" id="assignmentModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>Create Course Assignment</h3>
+                <button class="btn btn-icon btn-outline" onclick="closeCreateAssignmentModal()"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <form id="assignmentForm" onsubmit="saveAssignment(event)">
+                    <div class="form-group">
+                        <label class="form-label">Course / Program *</label>
+                        <select class="form-control" id="assignmentCourseSelect" required>
+                            <option value="">-- Choose Course --</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Assignment Title *</label>
+                        <input type="text" class="form-control" id="assignmentTitle" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Description / Instructions</label>
+                        <textarea class="form-control" id="assignmentDescription" rows="4" placeholder="Enter instructions, requirements, or starter code description..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Template File (optional)</label>
+                        <input type="file" class="form-control" id="assignmentTemplateFile">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Due Date (optional)</label>
+                        <input type="date" class="form-control" id="assignmentDueDate">
+                    </div>
+                    <button type="submit" class="btn btn-primary" id="btnSaveAssignment"><i class="fas fa-save"></i> Publish Assignment</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Grade Submission -->
+    <div class="modal-overlay" id="gradeModal">
+        <div class="modal" style="max-width:550px;">
+            <div class="modal-header">
+                <h3>Grade Homework Submission</h3>
+                <button class="btn btn-icon btn-outline" onclick="closeGradeModal()"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <div style="background:var(--bg); padding:1rem; border-radius:8px; margin-bottom:1.5rem; border:1px solid var(--border-color);">
+                    <strong>Student:</strong> <span id="gradeStudentName">Name</span><br>
+                    <strong>Assignment:</strong> <span id="gradeAssignmentTitle">Title</span><br>
+                    <strong>Submitted:</strong> <span id="gradeSubmissionDate">Date</span><br>
+                    <div style="margin-top:0.75rem; white-space:pre-line; max-height:150px; overflow-y:auto; padding:0.5rem; background:var(--white); border-radius:4px;" id="gradeSubmissionText">Text</div>
+                    <div id="gradeSubmissionFileLink" style="margin-top:0.5rem;"></div>
+                </div>
+                <form id="gradeForm" onsubmit="submitGrade(event)">
+                    <input type="hidden" id="gradeSubmissionId">
+                    <div class="form-group">
+                        <label class="form-label">Grade Score (0 - 100) *</label>
+                        <input type="number" class="form-control" id="gradeScore" min="0" max="100" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Feedback Comments</label>
+                        <textarea class="form-control" id="gradeFeedback" rows="3" placeholder="Provide grading feedback..."></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary" id="btnSubmitGrade">Submit Grade and Feedback</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/api.js"></script>
+    <script>
+        if (!API.requireAuth(['instructor'])) throw new Error('Not authorized');
+        const user = API.getUser();
+        if (user) {
+            document.getElementById('userName').textContent = user.fullName || user.username;
+            document.getElementById('userAvatar').textContent = getInitials(user.fullName || user.username);
+        }
+
+        let assignedCourses = [];
+        let allExams = [];
+        let currentTutorialModules = [];
+        let currentSelectedTutorialId = null;
+        let currentSelectedModuleId = null;
+        let currentSelectedExamId = null;
+        let messages = [];
+        let contacts = [];
+
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('active');
+        }
+
+        function switchTab(tabId, el) {
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.sidebar-nav a').forEach(a => a.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            if(el) el.classList.add('active');
+
+            if(tabId === 'coursesTab') loadCourses();
+            if(tabId === 'examsTab') loadExams();
+            if(tabId === 'analyticsTab') loadAnalytics();
+            if(tabId === 'assignmentsTab') loadAssignmentsDashboard();
+            if(tabId === 'workshopsTab') loadWorkshops();
+            if(tabId === 'messagesTab') { loadMessages(); loadContacts(); }
+        }
+
+        // ==================== MY COURSES ====================
+        async function loadCourses() {
+            try {
+                const res = await API.get('/instructor/courses');
+                assignedCourses = res.courses;
+                const tbody = document.getElementById('coursesTableBody');
+                if (res.courses.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;color:var(--text-muted);">No courses assigned. Please contact the administrator.</td></tr>';
+                    return;
+                }
+                tbody.innerHTML = res.courses.map(c => `
+                    <tr>
+                        <td><strong>${escapeHtml(c.name)}</strong></td>
+                        <td>${escapeHtml(c.description || '')}</td>
+                        <td>
+                            <button class="btn btn-sm btn-outline" onclick="openContentManager(${c.id}, '${escapeHtml(c.name)}')"><i class="fas fa-folder-open"></i> Manage Content</button>
+                        </td>
+                    </tr>
+                `).join('');
+            } catch (err) { showToast('Failed to load courses', 'error'); }
+        }
+
+        async function openContentManager(tutorialId, title) {
+            currentSelectedTutorialId = tutorialId;
+            document.getElementById('contentModalTitle').textContent = `Manage Materials: ${title}`;
+            try {
+                const res = await API.get(`/instructor/courses/${tutorialId}/modules`);
+                currentTutorialModules = res.modules;
+                const select = document.getElementById('modalModuleSelect');
+                select.innerHTML = '<option value="">-- Choose Module --</option>' + 
+                    res.modules.map(m => `<option value="${m.id}">Module ${m.module_number}: ${escapeHtml(m.title)}</option>`).join('');
+                document.getElementById('lessonsSection').style.display = 'none';
+                document.getElementById('contentModal').classList.add('active');
+            } catch(e) { showToast('Failed to load course modules', 'error'); }
+        }
+
+        function closeContentModal() { document.getElementById('contentModal').classList.remove('active'); }
+
+        async function loadLessonsForSelectedModule() {
+            const mId = document.getElementById('modalModuleSelect').value;
+            currentSelectedModuleId = mId;
+            if(!mId) {
+                document.getElementById('lessonsSection').style.display = 'none';
+                return;
+            }
+            try {
+                const res = await API.get(`/instructor/modules/${mId}/lessons`);
+                const tbody = document.getElementById('lessonsTableBody');
+                document.getElementById('lessonsSection').style.display = 'block';
+                if(res.lessons.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:var(--text-muted);">No materials uploaded yet</td></tr>';
+                    return;
+                }
+                tbody.innerHTML = res.lessons.map(l => `
+                    <tr>
+                        <td><strong>${escapeHtml(l.title)}</strong></td>
+                        <td><span class="badge badge-info">${l.content_type}</span></td>
+                        <td>${l.file_path ? `<button onclick="viewDocument('${l.file_path}', '${escapeHtml(l.title)}')" class="btn btn-sm btn-outline"><i class="fas fa-eye"></i> View</button>` : '<span style="color:var(--text-muted);">Text content</span>'}</td>
+                        <td>
+                            <button class="btn btn-sm btn-icon btn-outline text-danger" onclick="deleteLesson(${l.id})"><i class="fas fa-trash-alt"></i></button>
+                        </td>
+                    </tr>
+                `).join('');
+            } catch(e) { showToast('Failed to load module lessons', 'error'); }
+        }
+
+        function openAddLessonModal() {
+            document.getElementById('lessonAlert').style.display = 'none';
+            document.getElementById('lessonForm').reset();
+            toggleLessonFields();
+            document.getElementById('addLessonModal').classList.add('active');
+        }
+        function closeAddLessonModal() { document.getElementById('addLessonModal').classList.remove('active'); }
+
+        function toggleLessonFields() {
+            const type = document.getElementById('lessonType').value;
+            if(type === 'notes') {
+                document.getElementById('lessonTextGroup').style.display = '';
+                document.getElementById('lessonFileGroup').style.display = 'none';
+            } else {
+                document.getElementById('lessonTextGroup').style.display = 'none';
+                document.getElementById('lessonFileGroup').style.display = '';
+            }
+        }
+
+        async function saveLesson() {
+            const title = document.getElementById('lessonTitle').value;
+            const contentType = document.getElementById('lessonType').value;
+            const contentText = document.getElementById('lessonText').value;
+            const fileInput = document.getElementById('lessonFile');
+
+            if(!title) return alert('Title is required');
+
+            const fd = new FormData();
+            fd.append('moduleId', currentSelectedModuleId);
+            fd.append('title', title);
+            fd.append('contentType', contentType);
+            if(contentType === 'notes') fd.append('contentText', contentText);
+            else if(fileInput.files[0]) fd.append('file', fileInput.files[0]);
+
+            const btn = document.getElementById('saveLessonBtn');
+            btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+
+            try {
+                await fetch('/api/instructor/lessons', {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${API.getToken()}` },
+                    body: fd
+                });
+                showToast('Material uploaded successfully', 'success');
+                closeAddLessonModal();
+                loadLessonsForSelectedModule();
+            } catch(e) {
+                showToast('Failed to upload material', 'error');
+            } finally {
+                btn.disabled = false; btn.innerHTML = '<i class="fas fa-save"></i> Save';
+            }
+        }
+
+        async function deleteLesson(id) {
+            if(!confirm('Are you sure you want to delete this material?')) return;
+            try {
+                await API.delete(`/instructor/lessons/${id}`);
+                showToast('Material deleted successfully', 'success');
+                loadLessonsForSelectedModule();
+            } catch(e) { showToast('Failed to delete material', 'error'); }
+        }
+
+
+        // ==================== EXAMS ====================
+        async function loadExams() {
+            try {
+                const res = await API.get('/instructor/exams');
+                allExams = res.exams;
+                const tbody = document.getElementById('examsTableBody');
+                if (res.exams.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--text-muted);">No exams defined yet.</td></tr>';
+                    return;
+                }
+                tbody.innerHTML = res.exams.map(e => `
+                    <tr>
+                        <td><strong>${escapeHtml(e.title)}</strong></td>
+                        <td>${escapeHtml(e.tutorial_name)} · Module ${e.module_number}</td>
+                        <td>${e.time_limit} Mins</td>
+                        <td>${e.total_marks} Marks</td>
+                        <td><span class="badge badge-${e.is_active?'success':'dark'}">${e.is_active?'Active':'Inactive'}</span></td>
+                        <td>
+                            <div style="display:flex;gap:0.3rem;">
+                                <button class="btn btn-sm btn-outline" onclick="openQuestionsPool(${e.id}, '${escapeHtml(e.title)}')"><i class="fas fa-question-circle"></i> Questions</button>
+                                <button class="btn btn-sm btn-icon btn-outline" onclick="openEditExamModal(${e.id})"><i class="fas fa-edit"></i></button>
+                                <button class="btn btn-sm btn-icon btn-outline text-danger" onclick="deleteExam(${e.id})"><i class="fas fa-trash-alt"></i></button>
+                            </div>
+                        </td>
+                    </tr>
+                `).join('');
+            } catch (err) { showToast('Failed to load exams', 'error'); }
+        }
+
+        async function populateExamsModulesDropdown() {
+            // Fetch all modules of assigned courses
+            const select = document.getElementById('examModuleSelect');
+            select.innerHTML = '<option value="">-- Choose Module --</option>';
+            for (const c of assignedCourses) {
+                const res = await API.get(`/instructor/courses/${c.id}/modules`);
+                select.innerHTML += res.modules.map(m => `<option value="${m.id}">${escapeHtml(c.name)} · Module ${m.module_number}: ${escapeHtml(m.title)}</option>`).join('');
+            }
+        }
+
+        async function openCreateExamModal() {
+            document.getElementById('examAlert').style.display = 'none';
+            document.getElementById('examForm').reset();
+            document.getElementById('editExamId').value = '';
+            document.getElementById('examModalTitle').textContent = 'Create Exam';
+            await populateExamsModulesDropdown();
+            document.getElementById('examModal').classList.add('active');
+        }
+
+        async function openEditExamModal(id) {
+            const e = allExams.find(x => x.id === id);
+            if(!e) return;
+            document.getElementById('examAlert').style.display = 'none';
+            document.getElementById('examModalTitle').textContent = 'Edit Exam';
+            document.getElementById('editExamId').value = e.id;
+            await populateExamsModulesDropdown();
+            document.getElementById('examModuleSelect').value = e.module_id;
+            document.getElementById('examTitle').value = e.title;
+            document.getElementById('examDescription').value = e.description || '';
+            document.getElementById('examTimeLimit').value = e.time_limit;
+            document.getElementById('examTotalMarks').value = e.total_marks;
+            document.getElementById('examModal').classList.add('active');
+        }
+
+        function closeExamModal() { document.getElementById('examModal').classList.remove('active'); }
+
+        async function saveExam() {
+            const editId = document.getElementById('editExamId').value;
+            const moduleId = document.getElementById('examModuleSelect').value;
+            const title = document.getElementById('examTitle').value;
+            const description = document.getElementById('examDescription').value;
+            const timeLimit = parseInt(document.getElementById('examTimeLimit').value);
+            const totalMarks = parseInt(document.getElementById('examTotalMarks').value);
+
+            if(!moduleId || !title) return alert('Module and Title are required');
+
+            const payload = { moduleId, title, description, timeLimit, totalMarks };
+            const btn = document.getElementById('saveExamBtn');
+            btn.disabled = true;
+
+            try {
+                if(editId) {
+                    await API.put(`/instructor/exams/${editId}`, payload);
+                    showToast('Exam updated successfully', 'success');
+                } else {
+                    await API.post('/instructor/exams', payload);
+                    showToast('Exam created successfully', 'success');
+                }
+                closeExamModal();
+                loadExams();
+            } catch(e) {
+                showToast(e.error || 'Failed to save exam', 'error');
+            } finally {
+                btn.disabled = false;
+            }
+        }
+
+        async function deleteExam(id) {
+            if(!confirm('Are you sure you want to delete this exam?')) return;
+            try {
+                await API.delete(`/instructor/exams/${id}`);
+                showToast('Exam deleted', 'success');
+                loadExams();
+            } catch(e) { showToast('Failed to delete exam', 'error'); }
+        }
+
+
+        // ==================== QUESTION POOL ====================
+        async function openQuestionsPool(examId, title) {
+            currentSelectedExamId = examId;
+            document.getElementById('questionsExamTitle').textContent = `Questions Pool: ${title}`;
+            document.getElementById('questionsPoolModal').classList.add('active');
+            loadQuestions();
+        }
+
+        function closeQuestionsPoolModal() { document.getElementById('questionsPoolModal').classList.remove('active'); }
+
+        async function loadQuestions() {
+            try {
+                const res = await API.get(`/instructor/exams/${currentSelectedExamId}/questions`);
+                const container = document.getElementById('questionsContainer');
+                if(res.questions.length === 0) {
+                    container.innerHTML = '<div style="text-align:center;padding:2rem;color:var(--text-muted);">No questions added to this exam yet.</div>';
+                    return;
+                }
+                container.innerHTML = res.questions.map((q, idx) => `
+                    <div class="question-card">
+                        <div style="display:flex; justify-content:space-between; align-items:start; margin-bottom:0.5rem;">
+                            <strong>Q${idx+1}. ${escapeHtml(q.question_text)}</strong>
+                            <div style="display:flex; gap:0.25rem;">
+                                <button class="btn btn-sm btn-icon btn-outline" onclick="openEditQuestionModal(${q.id})"><i class="fas fa-edit"></i></button>
+                                <button class="btn btn-sm btn-icon btn-outline text-danger" onclick="deleteQuestion(${q.id})"><i class="fas fa-trash-alt"></i></button>
+                            </div>
+                        </div>
+                        <div style="font-size:0.85rem; color:var(--text-muted); margin-bottom:0.5rem;">Type: ${q.question_type.toUpperCase()} | Marks: ${q.marks}</div>
+                        <ul style="list-style:none; padding-left:0; margin-bottom:0;">
+                            ${q.answers.map(a => `
+                                <li style="padding:0.2rem 0; color:${a.is_correct?'var(--green)':'inherit'}; font-weight:${a.is_correct?'600':'normal'};">
+                                    <i class="fas ${a.is_correct?'fa-check-circle':'fa-circle'}"></i> ${escapeHtml(a.answer_text)}
+                                </li>
+                            `).join('')}
+                        </ul>
+                        ${q.explanation ? `<div style="font-size:0.85rem; background:rgba(0,0,0,0.02); padding:0.5rem; margin-top:0.5rem; border-left:3px solid var(--accent);">${escapeHtml(q.explanation)}</div>` : ''}
+                    </div>
+                `).join('');
+            } catch(e) { showToast('Failed to load questions', 'error'); }
+        }
+
+        let questionAnswersList = [];
+
+        function handleQuestionTypeChange() {
+            const type = document.getElementById('questionType').value;
+            const container = document.getElementById('optionsContainer');
+            if (type === 'true_false') {
+                container.innerHTML = `
+                    <label style="display:flex;align-items:center;gap:0.5rem;"><input type="radio" name="tfCorrect" value="true" checked> True</label>
+                    <label style="display:flex;align-items:center;gap:0.5rem;"><input type="radio" name="tfCorrect" value="false"> False</label>
+                `;
+            } else {
+                container.innerHTML = `
+                    <div style="display:flex;gap:0.5rem;align-items:center;"><input type="radio" name="mcqCorrect" value="0" checked><input type="text" class="form-control" placeholder="Option A" id="mcq0" required></div>
+                    <div style="display:flex;gap:0.5rem;align-items:center;"><input type="radio" name="mcqCorrect" value="1"><input type="text" class="form-control" placeholder="Option B" id="mcq1" required></div>
+                    <div style="display:flex;gap:0.5rem;align-items:center;"><input type="radio" name="mcqCorrect" value="2"><input type="text" class="form-control" placeholder="Option C" id="mcq2"></div>
+                    <div style="display:flex;gap:0.5rem;align-items:center;"><input type="radio" name="mcqCorrect" value="3"><input type="text" class="form-control" placeholder="Option D" id="mcq3"></div>
+                `;
+            }
+        }
+
+        function openAddQuestionModal() {
+            document.getElementById('questionAlert').style.display = 'none';
+            document.getElementById('questionForm').reset();
+            document.getElementById('editQuestionId').value = '';
+            document.getElementById('questionEditorTitle').textContent = 'Add Question';
+            handleQuestionTypeChange();
+            document.getElementById('questionEditorModal').classList.add('active');
+        }
+
+        async function openEditQuestionModal(qId) {
+            try {
+                // To fetch details, we search in the current loaded exam's questions list
+                const res = await API.get(`/instructor/exams/${currentSelectedExamId}/questions`);
+                const q = res.questions.find(x => x.id === qId);
+                if(!q) return;
+
+                document.getElementById('questionAlert').style.display = 'none';
+                document.getElementById('questionEditorTitle').textContent = 'Edit Question';
+                document.getElementById('editQuestionId').value = q.id;
+                document.getElementById('questionText').value = q.question_text;
+                document.getElementById('questionType').value = q.question_type;
+                document.getElementById('questionMarks').value = q.marks;
+                document.getElementById('questionExplanation').value = q.explanation || '';
+
+                handleQuestionTypeChange();
+                const container = document.getElementById('optionsContainer');
+                if (q.question_type === 'true_false') {
+                    const isTrueCorrect = q.answers.find(a => a.answer_text === 'True' && a.is_correct === 1);
+                    container.querySelector('input[value="true"]').checked = !!isTrueCorrect;
+                    container.querySelector('input[value="false"]').checked = !isTrueCorrect;
+                } else {
+                    q.answers.forEach((ans, i) => {
+                        const input = document.getElementById(`mcq${i}`);
+                        if(input) input.value = ans.answer_text;
+                        if(ans.is_correct === 1) {
+                            const radio = container.querySelector(`input[name="mcqCorrect"][value="${i}"]`);
+                            if(radio) radio.checked = true;
+                        }
+                    });
+                }
+
+                document.getElementById('questionEditorModal').classList.add('active');
+            } catch(e) { showToast('Failed to load question details', 'error'); }
+        }
+
+        function closeQuestionEditorModal() { document.getElementById('questionEditorModal').classList.remove('active'); }
+
+        async function saveQuestion() {
+            const editId = document.getElementById('editQuestionId').value;
+            const text = document.getElementById('questionText').value;
+            const type = document.getElementById('questionType').value;
+            const marks = parseInt(document.getElementById('questionMarks').value);
+            const explanation = document.getElementById('questionExplanation').value;
+
+            if(!text) return alert('Question text is required');
+
+            let answers = [];
+            if (type === 'true_false') {
+                const correct = document.querySelector('input[name="tfCorrect"]:checked').value;
+                answers = [
+                    { text: 'True', isCorrect: correct === 'true' },
+                    { text: 'False', isCorrect: correct === 'false' }
+                ];
+            } else {
+                const correctIdx = parseInt(document.querySelector('input[name="mcqCorrect"]:checked').value);
+                for (let i = 0; i < 4; i++) {
+                    const optVal = document.getElementById(`mcq${i}`).value.trim();
+                    if(optVal) {
+                        answers.push({ text: optVal, isCorrect: i === correctIdx });
+                    }
+                }
+                if (answers.length < 2) return alert('At least 2 options are required');
+            }
+
+            const payload = { examId: currentSelectedExamId, questionText: text, questionType: type, marks, explanation, answers };
+            const btn = document.getElementById('saveQuestionBtn');
+            btn.disabled = true;
+
+            try {
+                if(editId) {
+                    await API.put(`/instructor/questions/${editId}`, payload);
+                    showToast('Question updated', 'success');
+                } else {
+                    await API.post('/instructor/questions', payload);
+                    showToast('Question created', 'success');
+                }
+                closeQuestionEditorModal();
+                loadQuestions();
+            } catch(e) {
+                showToast('Failed to save question', 'error');
+            } finally {
+                btn.disabled = false;
+            }
+        }
+
+        async function deleteQuestion(qId) {
+            if(!confirm('Are you sure you want to delete this question?')) return;
+            try {
+                await API.delete(`/instructor/questions/${qId}`);
+                showToast('Question deleted', 'success');
+                loadQuestions();
+            } catch(e) { showToast('Failed to delete question', 'error'); }
+        }
+
+
+        // ==================== STUDENT ANALYTICS ====================
+        async function loadAnalytics() {
+            try {
+                const res = await API.get('/instructor/analytics');
+                const tbody = document.getElementById('analyticsTableBody');
+                if (res.students.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--text-muted);">No student enrollment activity yet.</td></tr>';
+                    return;
+                }
+                tbody.innerHTML = res.students.map(s => `
+                    <tr>
+                        <td>
+                            <div style="display:flex;align-items:center;gap:0.75rem;">
+                                <div class="user-avatar" style="width:30px;height:30px;font-size:0.75rem;">${getInitials(s.full_name)}</div>
+                                <div><strong>${escapeHtml(s.full_name)}</strong><div style="font-size:0.75rem;color:var(--text-muted);">@${escapeHtml(s.username)}</div></div>
+                            </div>
+                        </td>
+                        <td><strong>${escapeHtml(s.tutorial_name)}</strong></td>
+                        <td style="font-size:0.85rem;color:var(--text-muted);">${formatDate(s.enrolled_at)}</td>
+                        <td>${s.completed_modules} / ${s.total_modules} modules</td>
+                        <td><strong style="color:${s.avg_score>=70?'var(--green)':'var(--red)'}">${s.avg_score}%</strong></td>
+                    </tr>
+                `).join('');
+            } catch(e) { showToast('Failed to load student analytics', 'error'); }
+        }
+
+
+        // ==================== WORKSHOPS ====================
+        async function loadWorkshops() {
+            try {
+                const res = await API.get('/instructor/workshops');
+                const tbody = document.getElementById('workshopsTableBody');
+                if (res.workshops.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--text-muted);">No scheduled workshops.</td></tr>';
+                    return;
+                }
+                tbody.innerHTML = res.workshops.map(w => `
+                    <tr>
+                        <td><strong>${escapeHtml(w.title)}</strong></td>
+                        <td>${escapeHtml(w.tutorial_name)}</td>
+                        <td>${formatDateTime(w.schedule_date)}</td>
+                        <td><a href="${w.meeting_link}" target="_blank" class="text-link"><i class="fas fa-video"></i> Join Link</a></td>
+                        <td>
+                            <button class="btn btn-sm btn-icon btn-outline text-danger" onclick="cancelWorkshop(${w.id})"><i class="fas fa-calendar-times"></i></button>
+                        </td>
+                    </tr>
+                `).join('');
+            } catch(e) { showToast('Failed to load workshops', 'error'); }
+        }
+
+        function openScheduleWorkshopModal() {
+            document.getElementById('workshopAlert').style.display = 'none';
+            document.getElementById('workshopForm').reset();
+            const select = document.getElementById('workshopCourseSelect');
+            select.innerHTML = '<option value="">-- Choose Course --</option>' + 
+                assignedCourses.map(c => `<option value="${c.id}">${escapeHtml(c.name)}</option>`).join('');
+            document.getElementById('workshopModal').classList.add('active');
+        }
+        function closeWorkshopModal() { document.getElementById('workshopModal').classList.remove('active'); }
+
+        async function saveWorkshop() {
+            const title = document.getElementById('workshopTitle').value;
+            const tutorialId = document.getElementById('workshopCourseSelect').value;
+            const description = document.getElementById('workshopDescription').value;
+            const scheduleDate = document.getElementById('workshopDate').value;
+            const meetingLink = document.getElementById('workshopLink').value;
+
+            if(!title || !tutorialId || !scheduleDate || !meetingLink) return alert('Please fill in all required fields');
+
+            const payload = { title, tutorialId, description, scheduleDate, meetingLink };
+            const btn = document.getElementById('saveWorkshopBtn');
+            btn.disabled = true;
+
+            try {
+                await API.post('/instructor/workshops', payload);
+                showToast('Workshop scheduled successfully', 'success');
+                closeWorkshopModal();
+                loadWorkshops();
+            } catch(e) {
+                showToast('Failed to schedule workshop', 'error');
+            } finally {
+                btn.disabled = false;
+            }
+        }
+
+        async function cancelWorkshop(id) {
+            if(!confirm('Are you sure you want to cancel this workshop?')) return;
+            try {
+                await API.delete(`/instructor/workshops/${id}`);
+                showToast('Workshop cancelled', 'success');
+                loadWorkshops();
+            } catch(e) { showToast('Failed to cancel workshop', 'error'); }
+        }
+
+
+        // ==================== MESSAGES ====================
+        async function loadMessages() {
+            try {
+                const res = await API.get('/messages/inbox');
+                messages = res.messages;
+                const container = document.getElementById('inboxList');
+                if (messages.length === 0) {
+                    container.innerHTML = '<div style="text-align:center;padding:2rem;color:var(--text-muted);">No messages found</div>';
+                    return;
+                }
+                container.innerHTML = messages.map(m => `
+                    <div class="message-item ${m.is_read?'':'unread'}" id="msg-${m.id}" onclick="viewMessageDetail(${m.id})">
+                        <div style="font-size:0.8rem;color:var(--text-muted);display:flex;justify-content:space-between;">
+                            <span>From: ${escapeHtml(m.sender_name)}</span>
+                            <span>${formatDate(m.created_at)}</span>
+                        </div>
+                        <h4 style="margin:0.25rem 0;">${escapeHtml(m.subject)}</h4>
+                        <div style="font-size:0.85rem;color:var(--text-muted);text-overflow:ellipsis;overflow:hidden;white-space:nowrap;">${escapeHtml(m.message_text)}</div>
+                    </div>
+                `).join('');
+            } catch(e) { showToast('Failed to load messages', 'error'); }
+        }
+
+        async function loadContacts() {
+            try {
+                const res = await API.get('/messages/contacts');
+                contacts = res.contacts;
+                const select = document.getElementById('composeRecipient');
+                select.innerHTML = '<option value="">-- Select Contact --</option>' + 
+                    res.contacts.map(c => `<option value="${c.id}">${escapeHtml(c.full_name)} (${c.role_name})</option>`).join('');
+            } catch(e) {}
+        }
+
+        async function viewMessageDetail(id) {
+            const m = messages.find(x => x.id === id);
+            if(!m) return;
+
+            document.querySelectorAll('.message-item').forEach(el => el.classList.remove('active'));
+            document.getElementById(`msg-${id}`).classList.remove('unread');
+            document.getElementById(`msg-${id}`).classList.add('active');
+
+            const container = document.getElementById('messageDetailView');
+            container.innerHTML = `
+                <div style="border-bottom:1px solid var(--border-color);padding-bottom:1rem;margin-bottom:1rem;">
+                    <h2>${escapeHtml(m.subject)}</h2>
+                    <div style="display:flex;justify-content:space-between;color:var(--text-muted);font-size:0.9rem;">
+                        <span>From: <strong>${escapeHtml(m.sender_name)}</strong> (${m.sender_role})</span>
+                        <span>Date: ${formatDateTime(m.created_at)}</span>
+                    </div>
+                </div>
+                <div class="message-body">
+                    ${escapeHtml(m.message_text).replace(/\n/g, '<br>')}
+                </div>
+                <button class="btn btn-primary" onclick="openReplyModal(${m.sender_id}, '${escapeHtml(m.subject)}')"><i class="fas fa-reply"></i> Reply</button>
+            `;
+
+            if (m.is_read === 0) {
+                try {
+                    await API.post(`/messages/read/${m.id}`);
+                } catch(e){}
+            }
+        }
+
+        function openComposeModal() {
+            document.getElementById('composeAlert').style.display = 'none';
+            document.getElementById('composeForm').reset();
+            document.getElementById('composeModal').classList.add('active');
+        }
+        function closeComposeModal() { document.getElementById('composeModal').classList.remove('active'); }
+
+        function openReplyModal(senderId, subject) {
+            openComposeModal();
+            document.getElementById('composeRecipient').value = senderId;
+            document.getElementById('composeSubject').value = `Re: ${subject.startsWith('Re:') ? '' : 'Re: '}${subject}`;
+        }
+
+        async function sendMessage() {
+            const recipientId = document.getElementById('composeRecipient').value;
+            const subject = document.getElementById('composeSubject').value;
+            const body = document.getElementById('composeBody').value;
+
+            if(!recipientId || !body) return alert('Recipient and Message body are required');
+
+            const btn = document.getElementById('sendMessageBtn');
+            btn.disabled = true;
+
+            try {
+                await API.post('/messages/send', { receiverId: parseInt(recipientId), subject, messageText: body });
+                showToast('Message sent successfully', 'success');
+                closeComposeModal();
+                loadMessages();
+            } catch(e) {
+                showToast('Failed to send message', 'error');
+            } finally {
+                btn.disabled = false;
+            }
+        }
+
+        // ==================== PROFILE CHANGING PASSWORD ====================
+        async function handleChangePassword(e) {
+            e.preventDefault();
+            const alert = document.getElementById('passwordAlert');
+            const oldPass = document.getElementById('oldPassword').value;
+            const newPass = document.getElementById('newPassword').value;
+            const confirmPass = document.getElementById('confirmPassword').value;
+
+            if (newPass !== confirmPass) {
+                alert.style.display = 'block';
+                alert.className = 'alert alert-danger';
+                alert.innerHTML = 'New passwords do not match';
+                return;
+            }
+
+            const btn = document.getElementById('changePassBtn');
+            btn.disabled = true;
+
+            try {
+                await API.post('/auth/change-password', { oldPassword: oldPass, newPassword: newPass });
+                showToast('Password changed successfully', 'success');
+                document.getElementById('passwordForm').reset();
+                alert.style.display = 'none';
+            } catch(e) {
+                alert.style.display = 'block';
+                alert.className = 'alert alert-danger';
+                alert.innerHTML = e.error || 'Failed to change password';
+            } finally {
+                btn.disabled = false;
+            }
+        }
+
+        // ==================== ASSIGNMENTS MANAGER ====================
+        let instructorAssignments = [];
+        let studentSubmissions = [];
+
+        async function loadAssignmentsDashboard() {
+            await Promise.all([loadAssignmentsList(), loadSubmissionsList()]);
+        }
+
+        async function loadAssignmentsList() {
+            const container = document.getElementById('assignmentsListContainer');
+            try {
+                const res = await API.get('/instructor/assignments');
+                instructorAssignments = res.assignments;
+                if (instructorAssignments.length === 0) {
+                    container.innerHTML = '<div class="empty-state">No assignments published.</div>';
+                    return;
+                }
+                container.innerHTML = instructorAssignments.map(a => `
+                    <div style="border:1px solid var(--border-color); padding:1rem; border-radius:6px; margin-bottom:1rem; background:var(--white);">
+                        <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:0.25rem;">
+                            <h4 style="margin:0;">${escapeHtml(a.title)}</h4>
+                            <span class="badge badge-info">${escapeHtml(a.tutorial_name)}</span>
+                        </div>
+                        <p style="font-size:0.85rem; color:var(--text-light); margin-bottom:0.5rem; white-space:pre-line;">${escapeHtml(a.description || '')}</p>
+                        <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.8rem; border-top:1px solid var(--border-color); padding-top:0.5rem; color:var(--text-muted);">
+                            <span>Due: ${a.due_date ? formatDate(a.due_date) : 'No due date'}</span>
+                            ${a.file_path ? `<button onclick="viewDocument('${a.file_path}', '${escapeHtml(a.title)}')" class="btn btn-sm btn-outline" style="padding:0.25rem 0.5rem; display:inline-flex; align-items:center; gap:0.25rem;"><i class="fas fa-eye"></i> View Template</button>` : ''}
+                        </div>
+                    </div>
+                `).join('');
+            } catch (err) {
+                container.innerHTML = '<div class="alert alert-danger">Failed to load assignments</div>';
+            }
+        }
+
+        async function loadSubmissionsList() {
+            const container = document.getElementById('submissionsListContainer');
+            try {
+                const res = await API.get('/instructor/assignments/submissions');
+                studentSubmissions = res.submissions;
+                if (studentSubmissions.length === 0) {
+                    container.innerHTML = '<div class="empty-state">No student submissions received.</div>';
+                    return;
+                }
+                container.innerHTML = studentSubmissions.map(s => {
+                    let gradeBadge = '';
+                    let actionBtn = '';
+                    if (s.grade !== null) {
+                        gradeBadge = `<span class="badge badge-success">Graded: ${s.grade}/100</span>`;
+                        actionBtn = `<button class="btn btn-sm btn-outline" onclick="openGradeModal(${s.id})"><i class="fas fa-edit"></i> Edit Grade</button>`;
+                    } else {
+                        gradeBadge = `<span class="badge badge-warning">Pending Grade</span>`;
+                        actionBtn = `<button class="btn btn-sm btn-primary" onclick="openGradeModal(${s.id})"><i class="fas fa-check"></i> Grade</button>`;
+                    }
+
+                    return `
+                        <div style="border:1px solid var(--border-color); padding:1rem; border-radius:6px; margin-bottom:1rem; background:var(--white);">
+                            <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:0.25rem;">
+                                <h4 style="margin:0;">${escapeHtml(s.student_name)}</h4>
+                                ${gradeBadge}
+                            </div>
+                            <div style="font-size:0.85rem; margin-bottom:0.5rem;">
+                                <strong>Assignment:</strong> ${escapeHtml(s.assignment_title)} (${escapeHtml(s.tutorial_name)})
+                            </div>
+                            <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.8rem; border-top:1px solid var(--border-color); padding-top:0.5rem;">
+                                <span style="color:var(--text-muted);">Submitted: ${formatDate(s.submitted_at)}</span>
+                                ${actionBtn}
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            } catch (err) {
+                container.innerHTML = '<div class="alert alert-danger">Failed to load submissions</div>';
+            }
+        }
+
+        function openCreateAssignmentModal() {
+            document.getElementById('assignmentForm').reset();
+            const select = document.getElementById('assignmentCourseSelect');
+            select.innerHTML = '<option value="">-- Choose Course --</option>' + 
+                assignedCourses.map(c => `<option value="${c.id}">${escapeHtml(c.name)}</option>`).join('');
+            document.getElementById('assignmentModal').classList.add('active');
+        }
+        function closeCreateAssignmentModal() {
+            document.getElementById('assignmentModal').classList.remove('active');
+        }
+
+        async function saveAssignment(e) {
+            e.preventDefault();
+            const tutorialId = document.getElementById('assignmentCourseSelect').value;
+            const title = document.getElementById('assignmentTitle').value;
+            const description = document.getElementById('assignmentDescription').value;
+            const dueDate = document.getElementById('assignmentDueDate').value;
+            const fileInput = document.getElementById('assignmentTemplateFile');
+
+            if (!tutorialId || !title) return alert('Course and Title are required');
+
+            const fd = new FormData();
+            fd.append('tutorialId', tutorialId);
+            fd.append('title', title);
+            fd.append('description', description);
+            if (dueDate) fd.append('dueDate', dueDate);
+            if (fileInput.files[0]) fd.append('file', fileInput.files[0]);
+
+            const btn = document.getElementById('btnSaveAssignment');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Publishing...';
+
+            try {
+                const response = await fetch('/api/instructor/assignments', {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${API.getToken()}` },
+                    body: fd
+                });
+                const res = await response.json();
+                if (!response.ok) throw res;
+
+                showToast('Assignment published successfully', 'success');
+                closeCreateAssignmentModal();
+                loadAssignmentsDashboard();
+            } catch (err) {
+                showToast(err.error || 'Failed to publish assignment', 'error');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-save"></i> Publish Assignment';
+            }
+        }
+
+        function openGradeModal(id) {
+            const sub = studentSubmissions.find(s => s.id === id);
+            if (!sub) return;
+
+            document.getElementById('gradeSubmissionId').value = sub.id;
+            document.getElementById('gradeStudentName').textContent = sub.student_name;
+            document.getElementById('gradeAssignmentTitle').textContent = sub.assignment_title;
+            document.getElementById('gradeSubmissionDate').textContent = formatDateTime(sub.submitted_at);
+            document.getElementById('gradeSubmissionText').textContent = sub.submission_text || 'No text submitted';
+            
+            const fileLink = document.getElementById('gradeSubmissionFileLink');
+            if (sub.submission_file) {
+                fileLink.innerHTML = `<button onclick="viewDocument('${sub.submission_file}', 'Submission - ${escapeHtml(sub.student_name)}')" class="btn btn-sm btn-outline"><i class="fas fa-eye"></i> View Submission File</button>`;
+            } else {
+                fileLink.innerHTML = '<span style="color:var(--text-muted);font-size:0.85rem;">No attachment uploaded</span>';
+            }
+
+            document.getElementById('gradeScore').value = sub.grade !== null ? sub.grade : '';
+            document.getElementById('gradeFeedback').value = sub.feedback || '';
+
+            document.getElementById('gradeModal').classList.add('active');
+        }
+        function closeGradeModal() {
+            document.getElementById('gradeModal').classList.remove('active');
+        }
+
+        async function submitGrade(e) {
+            e.preventDefault();
+            const submissionId = document.getElementById('gradeSubmissionId').value;
+            const grade = parseInt(document.getElementById('gradeScore').value);
+            const feedback = document.getElementById('gradeFeedback').value;
+
+            const btn = document.getElementById('btnSubmitGrade');
+            btn.disabled = true;
+
+            try {
+                const res = await API.post('/instructor/assignments/grade', { submissionId, grade, feedback });
+                showToast('Submission graded successfully', 'success');
+                closeGradeModal();
+                loadSubmissionsList();
+            } catch (err) {
+                showToast(err.error || 'Failed to grade submission', 'error');
+            } finally {
+                btn.disabled = false;
+            }
+        }
+
+        // Initialize view
+        loadCourses();
+
+        function viewDocument(url, title) {
+            if (url.toLowerCase().endsWith('.html') || !url.toLowerCase().endsWith('.pdf')) {
+                window.open(url, '_blank');
+                return;
+            }
+            const frame = document.getElementById('docViewerFrame');
+            const modal = document.getElementById('docViewerModal');
+            document.getElementById('docViewerTitle').textContent = title || 'Document Viewer';
+            let viewerUrl = url;
+            if (url.toLowerCase().endsWith('.pdf')) {
+                viewerUrl = url + '#toolbar=0';
+            }
+            frame.src = viewerUrl;
+            modal.classList.add('active');
+        }
+
+        function closeDocViewer() {
+            const frame = document.getElementById('docViewerFrame');
+            const modal = document.getElementById('docViewerModal');
+            frame.src = '';
+            modal.classList.remove('active');
+        }
+    </script>
+
+    <!-- Document Viewer Modal -->
+    <div class="modal-overlay" id="docViewerModal" style="z-index: 9999;">
+        <div class="modal" style="max-width: 90%; width: 1000px; height: 85vh; display: flex; flex-direction: column;">
+            <div class="modal-header">
+                <h3 id="docViewerTitle">Document Viewer</h3>
+                <button class="btn btn-icon btn-outline" onclick="closeDocViewer()"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body" style="flex: 1; padding: 0; overflow: hidden; position: relative;">
+                <iframe id="docViewerFrame" src="" style="width: 100%; height: 100%; border: none;" allow="autoplay"></iframe>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

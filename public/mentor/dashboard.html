@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mentor Dashboard - Beyond Data Analytics</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/main.css">
+    <style>
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        .nav-section { margin-bottom: 1rem; }
+        .messages-layout { display: grid; grid-template-columns: 300px 1fr; gap: 1.5rem; height: calc(100vh - 250px); min-height: 500px; }
+        .messages-list { border-right: 1px solid var(--border-color); overflow-y: auto; padding-right: 1rem; }
+        .message-item { padding: 1rem; border-bottom: 1px solid var(--border-color); cursor: pointer; transition: background 0.2s; border-radius: 4px; }
+        .message-item:hover, .message-item.active { background: rgba(0,0,0,0.03); }
+        .message-item.unread { font-weight: bold; border-left: 3px solid var(--accent); }
+        .message-view { display: flex; flex-direction: column; height: 100%; padding-left: 1rem; }
+        .message-body { flex-grow: 1; border: 1px solid var(--border-color); padding: 1rem; border-radius: 4px; background: #fafafa; margin-bottom: 1rem; overflow-y: auto; }
+    </style>
+</head>
+<body>
+    <button class="sidebar-toggle" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+    <div class="app-layout">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-auth-links" style="display: flex; justify-content: space-around; padding: 0.75rem 1rem; border-bottom: 1px solid rgba(255,255,255,0.08); font-size: 0.85rem; font-family: 'Outfit', sans-serif; background: rgba(0,0,0,0.15);">
+                <a href="/login.html" style="color: #63b3ed; font-weight: 600; text-decoration: none; display: flex; align-items: center; gap: 0.25rem; transition: opacity 0.2s;" onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'"><i class="fas fa-sign-in-alt"></i> Sign In</a>
+                <span style="color: rgba(255,255,255,0.2);">|</span>
+                <a href="https://forms.gle/iULxMYXieuC4px8p8" target="_blank" style="color: #48bb78; font-weight: 600; text-decoration: none; display: flex; align-items: center; gap: 0.25rem; transition: opacity 0.2s;" onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'"><i class="fas fa-user-plus"></i> Sign Up</a>
+            </div>
+            <div class="sidebar-header">
+                <div class="sidebar-logo"><i class="fas fa-chart-line"></i></div>
+                <div class="sidebar-brand"><h2>BDA Platform</h2><p>Mentor Portal</p></div>
+            </div>
+            <nav class="sidebar-nav">
+                <div class="nav-section">
+                    <div class="nav-section-title">Main</div>
+                    <a href="#" onclick="switchTab('studentsTab', this)" class="nav-item active"><i class="fas fa-user-friends"></i> Assigned Students</a>
+                    <a href="#" onclick="switchTab('sessionsTab', this)" class="nav-item"><i class="fas fa-calendar-alt"></i> Mentorship Sessions</a>
+                    <a href="#" onclick="switchTab('messagesTab', this)" class="nav-item"><i class="fas fa-envelope"></i> Messages</a>
+                    <a href="#" onclick="switchTab('profileTab', this)" class="nav-item"><i class="fas fa-user-cog"></i> Profile Settings</a>
+                </div>
+                <div class="nav-section">
+                    <div class="nav-section-title">Other</div>
+                    <a href="/" class="nav-item"><i class="fas fa-globe"></i> Website</a>
+                </div>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="user-info">
+                    <div class="user-avatar" id="userAvatar">ME</div>
+                    <div class="user-details"><h4 id="userName">Mentor</h4><p>Mentor</p></div>
+                </div>
+                <button class="btn btn-sm btn-outline" style="width:100%;margin-top:1rem;color:rgba(255,255,255,0.7);border-color:rgba(255,255,255,0.2);" onclick="API.logout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <!-- Tab: Assigned Students -->
+            <div id="studentsTab" class="tab-content active">
+                <div class="main-header">
+                    <div>
+                        <h1>Assigned Students</h1>
+                        <p>Track your assigned students' tutorial progression and exam scores</p>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header"><h3>Student Cohort</h3></div>
+                    <div class="table-wrapper">
+                        <table>
+                            <thead><tr><th>Student</th><th>Enrolled Tutorials</th><th>Assigned Date</th><th>Actions</th></tr></thead>
+                            <tbody id="studentsTableBody">
+                                <tr><td colspan="4" class="empty-state"><div class="spinner" style="margin:0 auto;"></div></td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab: Mentorship Sessions -->
+            <div id="sessionsTab" class="tab-content">
+                <div class="main-header">
+                    <div>
+                        <h1>Mentorship Sessions</h1>
+                        <p>Schedule and coordinate call reviews with your assigned students</p>
+                    </div>
+                    <button class="btn btn-primary" onclick="openScheduleSessionModal()"><i class="fas fa-calendar-plus"></i> Schedule Session</button>
+                </div>
+
+                <div class="card">
+                    <div class="card-header"><h3>Scheduled Sessions</h3></div>
+                    <div class="table-wrapper">
+                        <table>
+                            <thead><tr><th>Student</th><th>Topic</th><th>Schedule Date</th><th>Meeting Link</th><th>Status</th><th>Action</th></tr></thead>
+                            <tbody id="sessionsTableBody">
+                                <tr><td colspan="6" style="text-align:center;color:var(--text-muted);">No sessions scheduled yet</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab: Messages -->
+            <div id="messagesTab" class="tab-content">
+                <div class="main-header">
+                    <div><h1>Message Center</h1><p>Send and receive messages with your students and administrator</p></div>
+                    <button class="btn btn-primary" onclick="openComposeModal()"><i class="fas fa-paper-plane"></i> Compose Message</button>
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <div class="messages-layout">
+                            <div class="messages-list" id="inboxList">
+                                <div style="text-align:center;padding:2rem;"><div class="spinner"></div></div>
+                            </div>
+                            <div class="message-view" id="messageDetailView">
+                                <div style="margin:auto;text-align:center;color:var(--text-muted);">
+                                    <i class="fas fa-envelope-open" style="font-size:3rem;margin-bottom:1rem;"></i>
+                                    <h3>Select a message to read</h3>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab: Profile Settings -->
+            <div id="profileTab" class="tab-content">
+                <div class="main-header">
+                    <div><h1>Profile & Settings</h1><p>Keep your contact details up to date and change your password</p></div>
+                </div>
+                <div class="card" style="max-width:550px;">
+                    <div class="card-header"><h3>Change Password</h3></div>
+                    <div class="card-body">
+                        <div id="passwordAlert" style="display:none;"></div>
+                        <form id="passwordForm" onsubmit="handleChangePassword(event)">
+                            <div class="form-group">
+                                <label class="form-label">Old Password</label>
+                                <input type="password" class="form-control" id="oldPassword" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">New Password</label>
+                                <input type="password" class="form-control" id="newPassword" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Confirm New Password</label>
+                                <input type="password" class="form-control" id="confirmPassword" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary" id="changePassBtn">Update Password</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Student Detail Modal -->
+            <div class="modal-overlay" id="detailModal">
+                <div class="modal" style="max-width:750px;">
+                    <div class="modal-header">
+                        <h3 id="modalTitle">Student Progress</h3>
+                        <button class="btn btn-icon btn-outline" onclick="closeModal()"><i class="fas fa-times"></i></button>
+                    </div>
+                    <div class="modal-body">
+                        <h4 style="margin-bottom:1rem; color:var(--primary);"><i class="fas fa-graduation-cap"></i> Course Progress</h4>
+                        <div class="table-wrapper" style="margin-bottom:2rem;">
+                            <table>
+                                <thead><tr><th>Module</th><th>Tutorial</th><th>Status</th><th>Score</th><th>Last Attempt</th></tr></thead>
+                                <tbody id="progressTableBody"></tbody>
+                            </table>
+                        </div>
+
+                        <h4 style="margin-bottom:1rem; color:var(--primary);"><i class="fas fa-history"></i> Detailed Exam Attempts</h4>
+                        <div class="table-wrapper">
+                            <table>
+                                <thead><tr><th>Exam</th><th>Score</th><th>Violations</th><th>Started</th><th>Finished</th></tr></thead>
+                                <tbody id="historyTableBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-primary" onclick="closeModal()">Close</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal: Schedule Session -->
+            <div class="modal-overlay" id="scheduleSessionModal">
+                <div class="modal">
+                    <div class="modal-header">
+                        <h3>Schedule Mentorship Session</h3>
+                        <button class="btn btn-icon btn-outline" onclick="closeScheduleSessionModal()"><i class="fas fa-times"></i></button>
+                    </div>
+                    <div class="modal-body">
+                        <div id="sessionAlert" style="display:none;"></div>
+                        <form id="sessionForm">
+                            <div class="form-group">
+                                <label class="form-label">Select Student *</label>
+                                <select class="form-control" id="sessionStudentSelect" required>
+                                    <option value="">-- Choose Student --</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Topic / Agenda *</label>
+                                <input type="text" class="form-control" id="sessionTopic" placeholder="e.g. Python functions review" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Date & Time *</label>
+                                <input type="datetime-local" class="form-control" id="sessionDate" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Meeting URL (Zoom/Teams/Meet)</label>
+                                <input type="url" class="form-control" id="sessionLink" placeholder="https://zoom.us/j/...">
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-outline" onclick="closeScheduleSessionModal()">Cancel</button>
+                        <button class="btn btn-primary" onclick="saveSession()" id="saveSessionBtn"><i class="fas fa-calendar-check"></i> Schedule</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal: Compose Message -->
+            <div class="modal-overlay" id="composeModal">
+                <div class="modal">
+                    <div class="modal-header">
+                        <h3>New Message</h3>
+                        <button class="btn btn-icon btn-outline" onclick="closeComposeModal()"><i class="fas fa-times"></i></button>
+                    </div>
+                    <div class="modal-body">
+                        <div id="composeAlert" style="display:none;"></div>
+                        <form id="composeForm">
+                            <div class="form-group">
+                                <label class="form-label">Recipient *</label>
+                                <select class="form-control" id="composeRecipient" required>
+                                    <option value="">-- Select Contact --</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Subject *</label>
+                                <input type="text" class="form-control" id="composeSubject" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Message *</label>
+                                <textarea class="form-control" id="composeBody" rows="5" required></textarea>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-outline" onclick="closeComposeModal()">Cancel</button>
+                        <button class="btn btn-primary" onclick="sendMessage()" id="sendMessageBtn"><i class="fas fa-paper-plane"></i> Send</button>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <script src="/js/api.js"></script>
+    <script>
+        if (!API.requireAuth(['mentor'])) throw new Error('Not authorized');
+        const user = API.getUser();
+        if (user) {
+            document.getElementById('userName').textContent = user.fullName || user.username;
+            document.getElementById('userAvatar').textContent = getInitials(user.fullName || user.username);
+        }
+
+        let students = [];
+        let messages = [];
+        let contacts = [];
+
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('active');
+        }
+
+        function switchTab(tabId, el) {
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.sidebar-nav a').forEach(a => a.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            if(el) el.classList.add('active');
+
+            if(tabId === 'studentsTab') loadStudents();
+            if(tabId === 'sessionsTab') loadSessions();
+            if(tabId === 'messagesTab') { loadMessages(); loadContacts(); }
+        }
+
+        // ==================== ASSIGNED STUDENTS ====================
+        async function loadStudents() {
+            try {
+                const res = await API.get('/mentor/dashboard');
+                students = res.students;
+                renderStudents();
+            } catch (err) {
+                showToast('Failed to load students', 'error');
+            }
+        }
+
+        function renderStudents() {
+            const tbody = document.getElementById('studentsTableBody');
+            if (students.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" class="empty-state"><i class="fas fa-user-friends"></i><h3>No students assigned</h3></td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = students.map(s => `
+                <tr>
+                    <td>
+                        <div style="display:flex; align-items:center; gap:0.75rem;">
+                            <div class="user-avatar" style="width:36px; height:36px; font-size:0.75rem;">${getInitials(s.full_name)}</div>
+                            <div>
+                                <div style="font-weight:600;">${escapeHtml(s.full_name)}</div>
+                                <div style="font-size:0.8rem; color:var(--text-muted);">@${escapeHtml(s.username)}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div style="display:flex; flex-direction:column; gap:0.3rem;">
+                            ${s.enrollments.map(e => `
+                                <div style="font-size:0.85rem;">
+                                    <strong>${escapeHtml(e.tutorial_name)}:</strong> 
+                                    <span style="color:var(--text-light);">${e.completed_modules}/${e.total_modules} modules</span>
+                                </div>
+                            `).join('')}
+                            ${s.enrollments.length === 0 ? '<span style="color:var(--text-muted); font-size:0.85rem;">Not enrolled yet</span>' : ''}
+                        </div>
+                    </td>
+                    <td style="font-size:0.85rem; color:var(--text-muted);">${formatDate(s.assigned_at)}</td>
+                    <td>
+                        <button class="btn btn-sm btn-primary" onclick="viewProgress(${s.id})"><i class="fas fa-eye"></i> View Detail</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        async function viewProgress(studentId) {
+            try {
+                const res = await API.get(`/mentor/students/${studentId}/progress`);
+                document.getElementById('modalTitle').textContent = `${res.student.full_name}'s Progress`;
+
+                // Progress Table
+                const progBody = document.getElementById('progressTableBody');
+                if (res.progress.length === 0) {
+                    progBody.innerHTML = '<tr><td colspan="5" style="text-align:center;">No progress logs found</td></tr>';
+                } else {
+                    progBody.innerHTML = res.progress.map(p => `
+                        <tr>
+                            <td>Module ${p.module_number}: ${escapeHtml(p.module_title)}</td>
+                            <td>${escapeHtml(p.tutorial_name)}</td>
+                            <td><span class="badge badge-${p.status==='completed'?'success':p.status==='failed'?'danger':p.status==='in_progress'?'warning':'dark'}">${p.status.replace('_',' ')}</span></td>
+                            <td><strong style="color:${p.score>=70?'var(--green)':'var(--red)'};">${p.score !== null ? p.score + '%' : '-'}</strong></td>
+                            <td style="font-size:0.8rem; color:var(--text-muted);">${formatDateTime(p.completed_at)}</td>
+                        </tr>
+                    `).join('');
+                }
+
+                // Attempts Table
+                const histBody = document.getElementById('historyTableBody');
+                if (res.examHistory.length === 0) {
+                    histBody.innerHTML = '<tr><td colspan="5" style="text-align:center;">No attempts found</td></tr>';
+                } else {
+                    histBody.innerHTML = res.examHistory.map(h => `
+                        <tr>
+                            <td>${escapeHtml(h.exam_title)}</td>
+                            <td><strong style="color:${h.percentage>=70?'var(--green)':'var(--red)'};">${h.percentage}%</strong></td>
+                            <td style="color:${h.violations_count>0?'var(--red)':'var(--text-muted)'}; font-weight:700;">${h.violations_count}</td>
+                            <td style="font-size:0.8rem; color:var(--text-muted);">${formatDateTime(h.started_at)}</td>
+                            <td style="font-size:0.8rem; color:var(--text-muted);">${formatDateTime(h.finished_at)}</td>
+                        </tr>
+                    `).join('');
+                }
+
+                document.getElementById('detailModal').classList.add('active');
+
+            } catch (err) {
+                showToast(err.error || 'Failed to load progress details', 'error');
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('detailModal').classList.remove('active');
+        }
+
+        // ==================== MENTORSHIP SESSIONS ====================
+        async function loadSessions() {
+            try {
+                const res = await API.get('/mentor/sessions');
+                const tbody = document.getElementById('sessionsTableBody');
+                if(res.sessions.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--text-muted);">No sessions scheduled yet</td></tr>';
+                    return;
+                }
+                tbody.innerHTML = res.sessions.map(s => `
+                    <tr>
+                        <td><strong>${escapeHtml(s.student_name)}</strong></td>
+                        <td>${escapeHtml(s.topic)}</td>
+                        <td>${formatDateTime(s.schedule_date)}</td>
+                        <td>${s.meeting_link ? `<a href="${s.meeting_link}" target="_blank" class="text-link"><i class="fas fa-video"></i> Join Link</a>` : '<span style="color:var(--text-muted);">No Link</span>'}</td>
+                        <td><span class="badge badge-${s.status==='completed'?'success':s.status==='cancelled'?'danger':'warning'}">${s.status}</span></td>
+                        <td>
+                            ${s.status === 'scheduled' ? `
+                                <div style="display:flex; gap:0.25rem;">
+                                    <button class="btn btn-sm btn-outline" style="color:var(--green);" onclick="updateSessionStatus(${s.id}, 'completed')"><i class="fas fa-check"></i> Complete</button>
+                                    <button class="btn btn-sm btn-outline" style="color:var(--red);" onclick="updateSessionStatus(${s.id}, 'cancelled')"><i class="fas fa-times"></i> Cancel</button>
+                                </div>
+                            ` : '-'}
+                        </td>
+                    </tr>
+                `).join('');
+            } catch(e) { showToast('Failed to load mentorship sessions', 'error'); }
+        }
+
+        function openScheduleSessionModal() {
+            document.getElementById('sessionAlert').style.display = 'none';
+            document.getElementById('sessionForm').reset();
+            const select = document.getElementById('sessionStudentSelect');
+            select.innerHTML = '<option value="">-- Choose Student --</option>' + 
+                students.map(s => `<option value="${s.id}">${escapeHtml(s.full_name)} (@${escapeHtml(s.username)})</option>`).join('');
+            document.getElementById('scheduleSessionModal').classList.add('active');
+        }
+        function closeScheduleSessionModal() { document.getElementById('scheduleSessionModal').classList.remove('active'); }
+
+        async function saveSession() {
+            const studentId = document.getElementById('sessionStudentSelect').value;
+            const topic = document.getElementById('sessionTopic').value;
+            const scheduleDate = document.getElementById('sessionDate').value;
+            const meetingLink = document.getElementById('sessionLink').value;
+
+            if(!studentId || !topic || !scheduleDate) return alert('Student, Topic, and Date are required');
+
+            const btn = document.getElementById('saveSessionBtn');
+            btn.disabled = true;
+
+            try {
+                await API.post('/mentor/sessions', { studentId: parseInt(studentId), topic, scheduleDate, meetingLink });
+                showToast('Session scheduled successfully', 'success');
+                closeScheduleSessionModal();
+                loadSessions();
+            } catch(e) {
+                showToast('Failed to schedule session', 'error');
+            } finally {
+                btn.disabled = false;
+            }
+        }
+
+        async function updateSessionStatus(id, status) {
+            if(!confirm(`Mark session as ${status}?`)) return;
+            try {
+                await API.put(`/mentor/sessions/${id}`, { status });
+                showToast(`Session updated to ${status}`, 'success');
+                loadSessions();
+            } catch(e) { showToast('Failed to update session status', 'error'); }
+        }
+
+        // ==================== MESSAGES ====================
+        async function loadMessages() {
+            try {
+                const res = await API.get('/messages/inbox');
+                messages = res.messages;
+                const container = document.getElementById('inboxList');
+                if (messages.length === 0) {
+                    container.innerHTML = '<div style="text-align:center;padding:2rem;color:var(--text-muted);">No messages found</div>';
+                    return;
+                }
+                container.innerHTML = messages.map(m => `
+                    <div class="message-item ${m.is_read?'':'unread'}" id="msg-${m.id}" onclick="viewMessageDetail(${m.id})">
+                        <div style="font-size:0.8rem;color:var(--text-muted);display:flex;justify-content:space-between;">
+                            <span>From: ${escapeHtml(m.sender_name)}</span>
+                            <span>${formatDate(m.created_at)}</span>
+                        </div>
+                        <h4 style="margin:0.25rem 0;">${escapeHtml(m.subject)}</h4>
+                        <div style="font-size:0.85rem;color:var(--text-muted);text-overflow:ellipsis;overflow:hidden;white-space:nowrap;">${escapeHtml(m.message_text)}</div>
+                    </div>
+                `).join('');
+            } catch(e) { showToast('Failed to load messages', 'error'); }
+        }
+
+        async function loadContacts() {
+            try {
+                const res = await API.get('/messages/contacts');
+                contacts = res.contacts;
+                const select = document.getElementById('composeRecipient');
+                select.innerHTML = '<option value="">-- Select Contact --</option>' + 
+                    res.contacts.map(c => `<option value="${c.id}">${escapeHtml(c.full_name)} (${c.role_name})</option>`).join('');
+            } catch(e) {}
+        }
+
+        async function viewMessageDetail(id) {
+            const m = messages.find(x => x.id === id);
+            if(!m) return;
+
+            document.querySelectorAll('.message-item').forEach(el => el.classList.remove('active'));
+            document.getElementById(`msg-${id}`).classList.remove('unread');
+            document.getElementById(`msg-${id}`).classList.add('active');
+
+            const container = document.getElementById('messageDetailView');
+            container.innerHTML = `
+                <div style="border-bottom:1px solid var(--border-color);padding-bottom:1rem;margin-bottom:1rem;">
+                    <h2>${escapeHtml(m.subject)}</h2>
+                    <div style="display:flex;justify-content:space-between;color:var(--text-muted);font-size:0.9rem;">
+                        <span>From: <strong>${escapeHtml(m.sender_name)}</strong> (${m.sender_role})</span>
+                        <span>Date: ${formatDateTime(m.created_at)}</span>
+                    </div>
+                </div>
+                <div class="message-body">
+                    ${escapeHtml(m.message_text).replace(/\n/g, '<br>')}
+                </div>
+                <button class="btn btn-primary" onclick="openReplyModal(${m.sender_id}, '${escapeHtml(m.subject)}')"><i class="fas fa-reply"></i> Reply</button>
+            `;
+
+            if (m.is_read === 0) {
+                try {
+                    await API.post(`/messages/read/${m.id}`);
+                } catch(e){}
+            }
+        }
+
+        function openComposeModal() {
+            document.getElementById('composeAlert').style.display = 'none';
+            document.getElementById('composeForm').reset();
+            document.getElementById('composeModal').classList.add('active');
+        }
+        function closeComposeModal() { document.getElementById('composeModal').classList.remove('active'); }
+
+        function openReplyModal(senderId, subject) {
+            openComposeModal();
+            document.getElementById('composeRecipient').value = senderId;
+            document.getElementById('composeSubject').value = `Re: ${subject.startsWith('Re:') ? '' : 'Re: '}${subject}`;
+        }
+
+        async function sendMessage() {
+            const recipientId = document.getElementById('composeRecipient').value;
+            const subject = document.getElementById('composeSubject').value;
+            const body = document.getElementById('composeBody').value;
+
+            if(!recipientId || !body) return alert('Recipient and Message body are required');
+
+            const btn = document.getElementById('sendMessageBtn');
+            btn.disabled = true;
+
+            try {
+                await API.post('/messages/send', { receiverId: parseInt(recipientId), subject, messageText: body });
+                showToast('Message sent successfully', 'success');
+                closeComposeModal();
+                loadMessages();
+            } catch(e) {
+                showToast('Failed to send message', 'error');
+            } finally {
+                btn.disabled = false;
+            }
+        }
+
+        // ==================== CHANGE PASSWORD ====================
+        async function handleChangePassword(e) {
+            e.preventDefault();
+            const alert = document.getElementById('passwordAlert');
+            const oldPass = document.getElementById('oldPassword').value;
+            const newPass = document.getElementById('newPassword').value;
+            const confirmPass = document.getElementById('confirmPassword').value;
+
+            if (newPass !== confirmPass) {
+                alert.style.display = 'block';
+                alert.className = 'alert alert-danger';
+                alert.innerHTML = 'New passwords do not match';
+                return;
+            }
+
+            const btn = document.getElementById('changePassBtn');
+            btn.disabled = true;
+
+            try {
+                await API.post('/auth/change-password', { oldPassword: oldPass, newPassword: newPass });
+                showToast('Password changed successfully', 'success');
+                document.getElementById('passwordForm').reset();
+                alert.style.display = 'none';
+            } catch(e) {
+                alert.style.display = 'block';
+                alert.className = 'alert alert-danger';
+                alert.innerHTML = e.error || 'Failed to change password';
+            } finally {
+                btn.disabled = false;
+            }
+        }
+
+        loadStudents();
+    </script>
+</body>
+</html>

@@ -1,0 +1,926 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Module One: Introduction to R & RStudio | Beyond Data Analytics</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Highlight.js for Code Syntax Highlighting (RStudio Theme) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark.min.css">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary-color: #0d6efd;
+            --secondary-color: #6c757d;
+            --rstudio-bg: #282c34;
+            --accent-color: #0dcaf0;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+            padding-top: 70px; /* Space for fixed navbar */
+        }
+
+        /* Navbar Styling */
+        .navbar {
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            background: linear-gradient(90deg, #0d6efd 0%, #0a58ca 100%);
+        }
+        .navbar-brand {
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+        .nav-link {
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        .nav-link:hover {
+            color: #ffc107 !important;
+            transform: translateY(-2px);
+        }
+
+        /* Hero Section */
+        .hero-section {
+            background: url('https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80') no-repeat center center/cover;
+            height: 450px;
+            position: relative;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+        .hero-overlay {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.75);
+        }
+        .hero-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Content Cards */
+        .card {
+            border: none;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            transition: transform 0.3s;
+            margin-bottom: 20px;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        .card-header {
+            background-color: #fff;
+            border-bottom: 2px solid #0d6efd;
+            font-weight: 700;
+            color: #0d6efd;
+        }
+
+        /* Code Blocks */
+        pre {
+            border-radius: 8px;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+        }
+        code {
+            font-family: 'Consolas', 'Monaco', monospace;
+        }
+
+        /* MathJax Customization */
+        .math-block {
+            overflow-x: auto;
+            padding: 15px;
+            background: #fff;
+            border-left: 4px solid #0d6efd;
+            margin: 15px 0;
+        }
+
+        /* Footer */
+        footer {
+            background-color: #212529;
+            color: white;
+            padding: 40px 0;
+            margin-top: 50px;
+        }
+        
+        .section-title {
+            position: relative;
+            padding-bottom: 15px;
+            margin-bottom: 30px;
+            font-weight: 700;
+        }
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 4px;
+            background-color: #0d6efd;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="#"><i class="fas fa-chart-line me-2"></i>Beyond Data Analytics</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link active" href="#home">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#installation">Installation</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#basics">R Basics</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#structures">Data Structures</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#linear-algebra">Linear Algebra</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#dataframes">Data Frames</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#data-import">Data Import</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#dplyr">dplyr</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#visualization">Visualization</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header id="home" class="hero-section">
+        <div class="hero-overlay"></div>
+        <div class="hero-content container">
+            <h1 class="display-3 fw-bold">Module One: Introduction to R Programming</h1>
+            <p class="lead fs-4">Foundations of Statistical Computing and Data Analysis</p>
+            <p class="fs-5"><i class="fas fa-user me-2"></i> Trainer: <strong>Lumumba W. Victor</strong></p>
+            <h3 class="text-info fw-light fst-italic">Beyond Data Analytics</h3>
+            <p class="fs-5 text-light">Transforming Data Into Insights</p>
+            <a href="#installation" class="btn btn-primary btn-lg mt-3 px-5 rounded-pill">Start Learning</a>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <div class="container my-5">
+
+        <!-- Introduction Section -->
+        <section id="intro" class="mb-5">
+            <div class="row">
+                <div class="col-lg-8">
+                    <h2 class="section-title">What is R?</h2>
+                    <p class="lead">R is a free, open-source programming language and software environment for statistical computing and graphics.</p>
+                    <p>Created by Ross Ihaka and Robert Gentleman at the University of Auckland in 1993, R has evolved into the gold standard for statistical analysis. Unlike general-purpose languages like Python, R was built <strong>by statisticians, for statisticians</strong>.</p>
+                    
+                    <div class="alert alert-info border-start border-4 border-info">
+                        <strong>Why Choose R?</strong>
+                        <ul class="mb-0 mt-2">
+                            <li><strong>Statistical Power:</strong> State-of-the-art packages for regression, time-series, and survival analysis.</li>
+                            <li><strong>Visualization:</strong> <code>ggplot2</code> allows for publication-quality graphics.</li>
+                            <li><strong>Reproducibility:</strong> R Markdown integrates code, output, and text into dynamic reports.</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="card h-100 bg-light">
+                        <div class="card-body">
+                            <h5 class="card-title"><i class="fas fa-lightbulb text-warning me-2"></i>Key Concepts</h5>
+                            <ul class="list-unstyled">
+                                <li class="mb-2"><i class="fas fa-check text-success me-2"></i> Open Source (CRAN)</li>
+                                <li class="mb-2"><i class="fas fa-check text-success me-2"></i> Vectorized Operations</li>
+                                <li class="mb-2"><i class="fas fa-check text-success me-2"></i> Extensive Package Ecosystem</li>
+                                <li class="mb-2"><i class="fas fa-check text-success me-2"></i> Strong Community Support</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-5">
+
+        <!-- Installation Section -->
+        <section id="installation" class="mb-5">
+            <h2 class="section-title">Installation Guide</h2>
+            <p>To start programming in R, you need two components: the <strong>R Engine</strong> (the brain) and <strong>RStudio</strong> (the interface).</p>
+            
+            <div class="row g-4">
+                <!-- Step 1: Install R -->
+                <div class="col-md-6">
+                    <div class="card h-100">
+                        <div class="card-header">Step 1: Install R (The Engine)</div>
+                        <div class="card-body">
+                            <p>R is the underlying computational engine. You must install this first.</p>
+                            <ol>
+                                <li>Visit the Comprehensive R Archive Network (CRAN): <br>
+                                    <a href="https://cran.r-project.org/" target="_blank" class="btn btn-sm btn-outline-primary mt-1">https://cran.r-project.org/</a>
+                                </li>
+                                <li>Select your operating system (Windows, MacOS, or Linux).</li>
+                                <li>Download the base installer and run it with default settings.</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 2: Install RStudio -->
+                <div class="col-md-6">
+                    <div class="card h-100">
+                        <div class="card-header">Step 2: Install RStudio (The IDE)</div>
+                        <div class="card-body">
+                            <p>RStudio is an Integrated Development Environment (IDE) that makes working with R easier.</p>
+                            <ol>
+                                <li>Visit Posit (formerly RStudio): <br>
+                                    <a href="https://posit.co/download/rstudio-desktop/" target="_blank" class="btn btn-sm btn-outline-primary mt-1">https://posit.co/download/</a>
+                                </li>
+                                <li>Download the free "RStudio Desktop" version.</li>
+                                <li>Install and launch. It will automatically detect your R installation.</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RStudio Interface Explanation -->
+            <div class="card mt-4">
+                <div class="card-header">Understanding the RStudio Interface</div>
+                <div class="card-body">
+                    <div class="row text-center">
+                        <div class="col-md-3 mb-3">
+                            <div class="p-3 border rounded bg-light">
+                                <i class="fas fa-file-code fa-2x text-primary mb-2"></i>
+                                <h6>Source Editor</h6>
+                                <small class="text-muted">Top-Left: Write and save scripts (.R)</small>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <div class="p-3 border rounded bg-light">
+                                <i class="fas fa-terminal fa-2x text-success mb-2"></i>
+                                <h6>Console</h6>
+                                <small class="text-muted">Bottom-Left: Execute code line-by-line</small>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <div class="p-3 border rounded bg-light">
+                                <i class="fas fa-database fa-2x text-warning mb-2"></i>
+                                <h6>Environment</h6>
+                                <small class="text-muted">Top-Right: View variables & history</small>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <div class="p-3 border rounded bg-light">
+                                <i class="fas fa-chart-bar fa-2x text-danger mb-2"></i>
+                                <h6>Files/Plots</h6>
+                                <small class="text-muted">Bottom-Right: View graphs & packages</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-5">
+
+        <!-- R Basics Section -->
+        <section id="basics" class="mb-5">
+            <h2 class="section-title">R Basics: Syntax & Operations</h2>
+            
+            <div class="row">
+                <div class="col-lg-6">
+                    <h4>1. Assignment Operator</h4>
+                    <p>In R, we assign values to variables using the arrow operator <code>&lt;-</code>. While <code>=</code> works, <code>&lt;-</code> is the community standard.</p>
+                    <pre><code class="language-r"># Recommended style
+x <- 10
+name <- "BDA"
+
+# Variable names are case-sensitive
+Age <- 25
+age <- 30  # This is a different variable!</code></pre>
+
+                    <h4 class="mt-4">2. Comments & Printing</h4>
+                    <pre><code class="language-r"># This is a comment (ignored by R)
+print("Hello, R!")
+
+# Implicit printing in Console
+x</code></pre>
+                </div>
+                
+                <div class="col-lg-6">
+                    <h4>3. Mathematical Operations</h4>
+                    <p>R acts as a powerful calculator. Note the specific symbols for modulus and exponentiation.</p>
+                    <table class="table table-striped table-bordered">
+                        <thead class="table-dark">
+                            <tr><th>Operation</th><th>Symbol</th><th>Example</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>Addition</td><td><code>+</code></td><td><code>5 + 3</code></td></tr>
+                            <tr><td>Subtraction</td><td><code>-</code></td><td><code>10 - 2</code></td></tr>
+                            <tr><td>Multiplication</td><td><code>*</code></td><td><code>4 * 2</code></td></tr>
+                            <tr><td>Division</td><td><code>/</code></td><td><code>16 / 2</code></td></tr>
+                            <tr><td>Exponentiation</td><td><code>^</code> or <code>**</code></td><td><code>2 ^ 3</code> (8)</td></tr>
+                            <tr><td>Modulus (Remainder)</td><td><code>%%</code></td><td><code>10 %% 3</code> (1)</td></tr>
+                            <tr><td>Integer Division</td><td><code>%/%</code></td><td><code>10 %/% 3</code> (3)</td></tr>
+                        </tbody>
+                    </table>
+                    
+                    <h5 class="mt-3">Built-in Math Functions</h5>
+                    <pre><code class="language-r">sqrt(25)      # Square Root: 5
+abs(-10)      # Absolute Value: 10
+log(10)       # Natural Log (ln)
+sin(pi/2)     # Trigonometry: 1
+round(3.14159, digits=2) # 3.14</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-5">
+
+        <!-- Data Structures Section -->
+        <section id="structures" class="mb-5">
+            <h2 class="section-title">Core Data Structures</h2>
+            <p class="lead">Understanding how R stores data is critical. Structures are defined by their dimension (1D, 2D, nD) and homogeneity (same type vs mixed types).</p>
+
+            <!-- Tabs for Data Structures -->
+            <ul class="nav nav-tabs" id="structureTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="vec-tab" data-bs-toggle="tab" data-bs-target="#vec" type="button">Vectors (1D)</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="mat-tab" data-bs-toggle="tab" data-bs-target="#mat" type="button">Matrices (2D)</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="arr-tab" data-bs-toggle="tab" data-bs-target="#arr" type="button">Arrays (nD)</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="list-tab" data-bs-toggle="tab" data-bs-target="#list" type="button">Lists (Mixed)</button>
+                </li>
+            </ul>
+
+            <div class="tab-content p-4 border border-top-0 rounded-bottom bg-white" id="structureTabsContent">
+                
+                <!-- Vectors Tab -->
+                <div class="tab-pane fade show active" id="vec" role="tabpanel">
+                    <h4>Vectors: The Foundation of R</h4>
+                    <p>A vector is a sequence of data elements of the <strong>same basic type</strong>. R is a vectorized language, meaning operations apply to entire vectors at once without loops.</p>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h5>Creation & Indexing</h5>
+                            <pre><code class="language-r"># Create a numeric vector
+ages <- c(25, 30, 35, 40)
+
+# Create a character vector
+names <- c("Alice", "Bob", "Charlie")
+
+# R uses 1-based indexing (not 0!)
+print(ages[1])   # Output: 25
+print(ages[2:4]) # Output: 30 35 40
+
+# Negative indexing excludes elements
+print(ages[-1])  # Output: 30 35 40</code></pre>
+                        </div>
+                        <div class="col-md-6">
+                            <h5>Vectorized Operations</h5>
+                            <pre><code class="language-r">v1 <- c(1, 2, 3)
+v2 <- c(4, 5, 6)
+
+# Element-wise addition
+v1 + v2  # Output: 5 7 9
+
+# Scalar multiplication
+v1 * 10  # Output: 10 20 30
+
+# Logical comparison
+v1 > 2   # Output: FALSE FALSE TRUE</code></pre>
+                            <div class="alert alert-warning">
+                                <strong>Note on Coercion:</strong> If you mix types (e.g., numbers and strings), R converts everything to the most flexible type (usually Character).
+                                <br><code>c(1, "Hello")</code> becomes <code>"1" "Hello"</code>.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Matrices Tab -->
+                <div class="tab-pane fade" id="mat" role="tabpanel">
+                    <h4>Matrices: Two-Dimensional Data</h4>
+                    <p>A matrix is a collection of data elements arranged in a two-dimensional rectangular layout. All elements must be of the <strong>same type</strong>.</p>
+                    
+                    <pre><code class="language-r"># Create a 3x3 matrix filled by row
+mat <- matrix(
+  data = 1:9, 
+  nrow = 3, 
+  ncol = 3,
+  byrow = TRUE
+)
+
+# Accessing Elements [row, col]
+mat[1, 2]   # Row 1, Col 2
+mat[2, ]    # Entire Row 2
+mat[, 3]    # Entire Column 3</code></pre>
+                </div>
+
+                <!-- Arrays Tab -->
+                <div class="tab-pane fade" id="arr" role="tabpanel">
+                    <h4>Arrays: Multi-Dimensional Data</h4>
+                    <p>An array is a multi-dimensional generalization of a matrix. It can have 3 or more dimensions.</p>
+                    <pre><code class="language-r"># Create a 3D array (2 rows, 3 cols, 2 matrices)
+arr <- array(1:12, dim=c(2, 3, 2))
+
+# Accessing elements
+arr[1, 2, 1] # Row 1, Col 2 of the 1st matrix</code></pre>
+                </div>
+
+                <!-- Lists Tab -->
+                <div class="tab-pane fade" id="list" role="tabpanel">
+                    <h4>Lists: Heterogeneous Collections</h4>
+                    <p>A list can contain elements of <strong>different types</strong> and even other lists. This is the most flexible structure in R.</p>
+                    <pre><code class="language-r">my_list <- list(
+  name = "John",
+  age = 30,
+  scores = c(85, 90, 92),
+  is_student = TRUE
+)
+
+# Accessing elements
+my_list$name       # Access by name
+my_list[[1]]       # Access by index (returns content)
+my_list[1]         # Returns a sub-list</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-5">
+
+        <!-- Linear Algebra Section -->
+        <section id="linear-algebra" class="mb-5">
+            <h2 class="section-title">Linear Algebra in R</h2>
+            <p>R is exceptionally powerful for linear algebra, which underpins machine learning and statistical modeling.</p>
+
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="card mb-4">
+                        <div class="card-header">Matrix Operations</div>
+                        <div class="card-body">
+                            <pre><code class="language-r">A <- matrix(c(1, 2, 3, 4), nrow=2, ncol=2)
+B <- matrix(c(5, 6, 7, 8), nrow=2, ncol=2)
+
+# Element-wise Multiplication (Hadamard)
+A * B
+
+# True Matrix Multiplication (Dot Product)
+A %*% B
+
+# Transpose
+t(A)</code></pre>
+                            <div class="math-block">
+                                $$ A \times B \neq A \cdot B $$
+                                <small>Use <code>%*%</code> for linear algebra multiplication, not <code>*</code>.</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-6">
+                    <div class="card mb-4">
+                        <div class="card-header">Determinant & Inverse</div>
+                        <div class="card-body">
+                            <p>Essential for solving systems of linear equations ($Ax=b$).</p>
+                            <pre><code class="language-r">M <- matrix(c(4, 3, 3, 2), nrow=2, ncol=2)
+
+# Calculate Determinant
+det(M)  
+# Output: -1 (Non-zero means invertible)
+
+# Calculate Inverse
+solve(M)
+
+# Verify: M * Inverse(M) = Identity Matrix
+M %*% solve(M)</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">Eigenvalues & Eigenvectors</div>
+                        <div class="card-body">
+                            <p>Crucial for Principal Component Analysis (PCA).</p>
+                            <pre><code class="language-r">C <- matrix(c(2, 1, 1, 2), nrow=2, ncol=2)
+eigen_result <- eigen(C)
+
+eigen_result$values  # Eigenvalues
+eigen_result$vectors # Eigenvectors</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-5">
+
+        <!-- Data Frames Section -->
+        <section id="dataframes" class="mb-5">
+            <h2 class="section-title">Data Frames: The Workhorse of Data Science</h2>
+            <p>A Data Frame is a list of vectors of equal length. It is the R equivalent of an Excel sheet or SQL table. Columns can have different types (numeric, character, factor).</p>
+
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5>Creating and Manipulating Data Frames</h5>
+                            <pre><code class="language-r"># Create a Data Frame
+df <- data.frame(
+  Name = c("Alice", "Bob", "Charlie"),
+  Age = c(25, 30, 35),
+  Salary = c(50000, 60000, 70000)
+)
+
+# View structure
+str(df)
+
+# Accessing Columns
+df$Age
+df[["Age"]]
+
+# Filtering: Rows where Age > 25
+subset_df <- df[df$Age > 25, ]
+
+# Adding a new column
+df$Bonus <- df$Salary * 0.10</code></pre>
+                            
+                            <h5 class="mt-4">Handling Missing Data (NA)</h5>
+                            <pre><code class="language-r"># Introduce missing value
+df$Salary[2] <- NA
+
+# Check for missing values
+is.na(df$Salary)
+
+# Fill missing values with Mean
+mean_val <- mean(df$Salary, na.rm = TRUE)
+df$Salary[is.na(df$Salary)] <- mean_val</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="alert alert-success mt-4">
+                <strong>Pro Tip:</strong> In professional settings, use the <code>dplyr</code> package for cleaner syntax:
+                <code>df %>% filter(Age > 25) %>% select(Name, Salary)</code>
+            </div>
+        </section>
+
+        <hr class="my-5">
+
+        <!-- NEW SECTION: Data Importation and Cleaning -->
+        <section id="data-import" class="mb-5">
+            <h2 class="section-title">Data Importation and Cleaning</h2>
+            <p class="lead">Before analysis, data must be efficiently imported into R and cleaned to ensure accuracy, consistency, and reliability.</p>
+            
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="card mb-4">
+                        <div class="card-header">Importing Data into R</div>
+                        <div class="card-body">
+                            <p>R provides multiple robust ways to bring external data into your environment.</p>
+                            <pre><code class="language-r"># Base R: Reading standard CSV files
+data_csv <- read.csv("data/sales_report.csv")
+
+# The 'readr' package (part of tidyverse): Much faster and cleaner
+library(readr)
+data_csv <- read_csv("data/sales_report.csv")
+
+# The 'readxl' package: Reading Excel files without Java dependencies
+library(readxl)
+data_excel <- read_excel("data/sales_report.xlsx", sheet = "Q1")
+
+# Viewing the first few rows
+head(data_csv)
+View(data_csv) # Opens an interactive spreadsheet viewer in RStudio</code></pre>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="card mb-4">
+                        <div class="card-header">Initial Data Inspection</div>
+                        <div class="card-body">
+                            <p>Always inspect your data immediately after importing to understand its structure and identify obvious issues.</p>
+                            <pre><code class="language-r"># Check the structure (variable types, missing values)
+str(data_csv)
+
+# Statistical summary of all variables
+summary(data_csv)
+
+# Check dimensions (number of rows, number of columns)
+dim(data_csv)
+
+# Check and standardize column names
+colnames(data_csv)
+colnames(data_csv) <- tolower(colnames(data_csv)) # Make all lowercase</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">Data Cleaning Techniques</div>
+                <div class="card-body">
+                    <p>Real-world data is messy. Cleaning involves handling missing values, correcting data types, and standardizing formats.</p>
+                    <pre><code class="language-r"># 1. Handling Missing Values (NA)
+# Count total missing values in the dataset
+sum(is.na(data_csv))
+
+# Remove rows with ANY missing value
+clean_data <- na.omit(data_csv)
+
+# Or replace NAs with a specific value (e.g., mean for numeric columns)
+data_csv$Revenue[is.na(data_csv$Revenue)] <- mean(data_csv$Revenue, na.rm = TRUE)
+
+# 2. Changing Data Types
+# Convert character to Date format
+data_csv$Date <- as.Date(data_csv$Date, format = "%Y-%m-%d")
+
+# Convert numeric/categorical text to Factor
+data_csv$Region <- as.factor(data_csv$Region)
+
+# 3. Removing Duplicates
+clean_data <- unique(data_csv)</code></pre>
+                    <div class="alert alert-info mt-3">
+                        <strong>Best Practice:</strong> Never overwrite your original raw data file. Always assign cleaned data to a new object (e.g., <code>clean_data</code>) to maintain a reproducible data pipeline.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-5">
+
+        <!-- NEW SECTION: Data Manipulation using dplyr -->
+        <section id="dplyr" class="mb-5">
+            <h2 class="section-title">Data Manipulation using <code>dplyr</code></h2>
+            <p class="lead"><code>dplyr</code> is the cornerstone of the <code>tidyverse</code>. It provides a consistent, intuitive "grammar" of data manipulation with highly readable verbs.</p>
+            
+            <div class="alert alert-warning">
+                <strong>The Pipe Operator (<code>%>%</code> or <code>|></code>):</strong> 
+                The pipe takes the output of one function and passes it as the first argument to the next. 
+                <br>Example: <code>x %>% f(y)</code> is the same as <code>f(x, y)</code>. It allows you to chain operations sequentially, making code read like a step-by-step recipe.
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-header">The Core <code>dplyr</code> Verbs</div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h5>1. <code>select()</code>: Pick variables by name</h5>
+                            <pre><code class="language-r"># Select specific columns to keep
+library(dplyr)
+selected_data <- data_csv %>%
+  select(Transaction_ID, Date, Revenue, Region)</code></pre>
+                        </div>
+                        <div class="col-md-6">
+                            <h5>2. <code>filter()</code>: Pick rows by condition</h5>
+                            <pre><code class="language-r"># Filter for high-value transactions in the North region
+filtered_data <- data_csv %>%
+  filter(Revenue > 1000, Region == "North")</code></pre>
+                        </div>
+                    </div>
+                    <div class="row mt-4">
+                        <div class="col-md-6">
+                            <h5>3. <code>mutate()</code>: Add or modify columns</h5>
+                            <pre><code class="language-r"># Create a new column for Profit (assuming 20% margin)
+mutated_data <- data_csv %>%
+  mutate(Profit = Revenue * 0.20,
+         Revenue_Category = ifelse(Revenue > 5000, "High", "Low"))</code></pre>
+                        </div>
+                        <div class="col-md-6">
+                            <h5>4. <code>arrange()</code>: Reorder rows</h5>
+                            <pre><code class="language-r"># Sort data by Revenue in descending order
+arranged_data <- data_csv %>%
+  arrange(desc(Revenue))</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">Aggregation: <code>group_by()</code> and <code>summarise()</code></div>
+                <div class="card-body">
+                    <p>This is where <code>dplyr</code> truly shines. We can split the data into groups, apply a summary function, and combine the results back together.</p>
+                    <pre><code class="language-r"># Calculate total revenue and average transaction value per Region
+summary_stats <- data_csv %>%
+  group_by(Region) %>%
+  summarise(
+    Total_Revenue = sum(Revenue, na.rm = TRUE),
+    Avg_Transaction = mean(Revenue, na.rm = TRUE),
+    Num_Transactions = n(),
+    .groups = 'drop' # Drops grouping structure after summarising
+  ) %>%
+  arrange(desc(Total_Revenue)) # Sort the final summary table
+
+print(summary_stats)</code></pre>
+                    <div class="alert alert-success mt-3">
+                        <strong>Pro Tip:</strong> You can chain all these verbs together for a complete, readable data transformation pipeline:
+                        <br><code>data %>% filter(!is.na(Revenue)) %>% group_by(Region) %>% summarise(Avg = mean(Revenue))</code>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-5">
+
+        <!-- NEW SECTION: Data Visualization -->
+        <section id="visualization" class="mb-5">
+            <h2 class="section-title">Data Visualization in R</h2>
+            <p class="lead">Visualization is crucial for exploratory data analysis and communicating insights. R offers both fast base graphics and the incredibly powerful <code>ggplot2</code> package.</p>
+
+            <ul class="nav nav-tabs mb-4" id="vizTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="base-tab" data-bs-toggle="tab" data-bs-target="#base-viz" type="button">Base R Graphics</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="ggplot-tab" data-bs-toggle="tab" data-bs-target="#ggplot-viz" type="button">ggplot2 (Grammar of Graphics)</button>
+                </li>
+            </ul>
+
+            <div class="tab-content" id="vizTabsContent">
+                <!-- Base R Tab -->
+                <div class="tab-pane fade show active" id="base-viz" role="tabpanel">
+                    <div class="card">
+                        <div class="card-header">Quick Exploratory Plots with Base R</div>
+                        <div class="card-body">
+                            <p>Base R graphics are fast, require no additional packages, and are perfect for quick checks during your initial analysis phase.</p>
+                            <pre><code class="language-r"># 1. Scatter Plot
+plot(data_csv$Revenue, data_csv$Profit, 
+     main = "Revenue vs. Profit",
+     xlab = "Revenue ($)", ylab = "Profit ($)",
+     col = "blue", pch = 16) # pch changes point shape
+
+# 2. Histogram (Distribution of a continuous variable)
+hist(data_csv$Revenue, 
+     breaks = 20, 
+     col = "lightblue",
+     main = "Distribution of Revenue",
+     xlab = "Revenue")
+
+# 3. Boxplot (Comparing distributions across categorical groups)
+boxplot(Revenue ~ Region, data = data_csv,
+        col = "lightgreen",
+        main = "Revenue by Region",
+        ylab = "Revenue ($)")
+
+# 4. Barplot (Categorical counts)
+barplot(table(data_csv$Region),
+        col = "salmon",
+        main = "Transaction Count by Region")</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ggplot2 Tab -->
+                <div class="tab-pane fade" id="ggplot-viz" role="tabpanel">
+                    <div class="card">
+                        <div class="card-header">Publication-Quality Graphics with <code>ggplot2</code></div>
+                        <div class="card-body">
+                            <p><code>ggplot2</code> builds plots layer by layer using the "Grammar of Graphics". It is the industry standard for data visualization in R.</p>
+                            
+                            <h5 class="mt-3">The Anatomy of a ggplot</h5>
+                            <pre><code class="language-r">library(ggplot2)
+
+# Basic structure: ggplot(data, aes(x, y)) + geom_...()
+# aes() defines how variables are mapped to visual properties (aesthetics)</code></pre>
+
+                            <h5 class="mt-4">Common Geometries (Geoms)</h5>
+                            <pre><code class="language-r"># 1. Scatter Plot
+ggplot(data_csv, aes(x = Revenue, y = Profit)) +
+  geom_point(color = "darkblue", alpha = 0.6) + # alpha adds transparency
+  labs(title = "Revenue vs. Profit", x = "Total Revenue", y = "Net Profit") +
+  theme_minimal()
+
+# 2. Boxplot with Fill Aesthetic
+ggplot(data_csv, aes(x = Region, y = Revenue, fill = Region)) +
+  geom_boxplot() +
+  labs(title = "Revenue Distribution by Region") +
+  theme_light() +
+  theme(legend.position = "none") # Hides the legend
+
+# 3. Bar Chart (Summarizing categorical data)
+ggplot(data_csv, aes(x = Region)) +
+  geom_bar(fill = "coral") +
+  labs(title = "Number of Transactions per Region", x = "Region", y = "Count")
+
+# 4. Line Plot (Time Series)
+ggplot(daily_sales, aes(x = Date, y = Revenue)) +
+  geom_line(color = "darkgreen", size = 1) +
+  geom_point(size = 2) +
+  theme_classic()</code></pre>
+
+                            <h5 class="mt-4">Advanced Customization: Faceting and Themes</h5>
+                            <pre><code class="language-r"># Faceting: Creating small multiples (subplots) based on a categorical variable
+ggplot(data_csv, aes(x = Revenue, y = Profit)) +
+  geom_point() +
+  facet_wrap(~ Region) + # Creates a separate plot panel for each Region
+  theme_bw() +           # Apply a clean Black & White theme
+  labs(caption = "Source: Internal Sales Database 2026")</code></pre>
+                            
+                            <div class="alert alert-info mt-3">
+                                <strong>Remember:</strong> Every layer in <code>ggplot2</code> is added with a <code>+</code> sign. Ensure the <code>+</code> is at the <em>end</em> of the line, not the beginning of the next line!
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-5">
+
+        <!-- Control Flow & Functions -->
+        <section id="control-flow" class="mb-5">
+            <h2 class="section-title">Control Flow & Functions</h2>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <h4>Conditional Statements</h4>
+                    <pre><code class="language-r">score <- 85
+
+if (score >= 90) {
+  print("Grade: A")
+} else if (score >= 80) {
+  print("Grade: B")
+} else {
+  print("Grade: C")
+}</code></pre>
+                </div>
+                <div class="col-md-6">
+                    <h4>Loops (Use Sparingly!)</h4>
+                    <p>R is vectorized, so loops are often slower than vector operations. Use them only when necessary.</p>
+                    <pre><code class="language-r"># For Loop
+for (i in 1:5) {
+  print(i)
+}
+
+# While Loop
+count <- 1
+while (count <= 5) {
+  print(count)
+  count <- count + 1
+}</code></pre>
+                </div>
+            </div>
+
+            <div class="card mt-4">
+                <div class="card-header">Writing Functions</div>
+                <div class="card-body">
+                    <pre><code class="language-r">calculate_area <- function(radius) {
+  area <- pi * radius^2
+  return(area)
+}
+
+# Call the function
+result <- calculate_area(5)
+print(result) # 78.53982</code></pre>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>Beyond Data Analytics</h5>
+                    <p class="fst-italic text-info">Transforming Data Into Insights</p>
+                    <p>Empowering the next generation of data professionals in Kenya and beyond.</p>
+                </div>
+                <div class="col-md-3">
+                    <h5>Resources</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="https://cran.r-project.org/manuals.html" class="text-white text-decoration-none">R Manuals</a></li>
+                        <li><a href="https://www.rdocumentation.org/" class="text-white text-decoration-none">R Documentation</a></li>
+                        <li><a href="https://stackoverflow.com/questions/tagged/r" class="text-white text-decoration-none">Stack Overflow</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3">
+                    <h5>Contact Trainer</h5>
+                    <p><i class="fas fa-user me-2"></i> Lumumba W. Victor</p>
+                    <p><i class="fas fa-envelope me-2"></i> lumumbavictor172@gmail.com</p>
+                </div>
+            </div>
+            <div class="text-center mt-4 pt-3 border-top border-secondary">
+                <small>&copy; 2026 Beyond Data Analytics. All Rights Reserved.</small>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Highlight.js JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/languages/r.min.js"></script>
+    <script>hljs.highlightAll();</script>
+    <!-- MathJax for LaTeX Equations -->
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+</body>
+</html>

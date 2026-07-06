@@ -1,0 +1,974 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Module 1: Foundations of Statistical Inference | Beyond Data Analytics</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Highlight.js for Code Syntax Highlighting -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark.min.css">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary-color: #0d6efd;
+            --secondary-color: #6c757d;
+            --accent-color: #0dcaf0;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+            padding-top: 70px; /* Space for fixed navbar */
+        }
+
+        /* Navbar Styling */
+        .navbar {
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            background: linear-gradient(90deg, #0d6efd 0%, #0a58ca 100%);
+        }
+        .navbar-brand {
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+        .nav-link {
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        .nav-link:hover {
+            color: #ffc107 !important;
+            transform: translateY(-2px);
+        }
+
+        /* Hero Section */
+        .hero-section {
+            background: url('https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80') no-repeat center center/cover;
+            height: 450px;
+            position: relative;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+        .hero-overlay {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.75);
+        }
+        .hero-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Content Cards */
+        .card {
+            border: none;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            transition: transform 0.3s;
+            margin-bottom: 20px;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        .card-header {
+            background-color: #fff;
+            border-bottom: 2px solid #0d6efd;
+            font-weight: 700;
+            color: #0d6efd;
+        }
+
+        /* Code Blocks */
+        pre {
+            border-radius: 8px;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+        }
+        code {
+            font-family: 'Consolas', 'Monaco', monospace;
+        }
+
+        /* Section Titles */
+        .section-title {
+            position: relative;
+            padding-bottom: 15px;
+            margin-bottom: 30px;
+            font-weight: 700;
+        }
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 4px;
+            background-color: #0d6efd;
+        }
+
+        /* Tables */
+        .table-custom {
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .table-custom thead {
+            background: linear-gradient(90deg, #0d6efd 0%, #0a58ca 100%);
+            color: white;
+        }
+
+        /* Footer */
+        footer {
+            background-color: #212529;
+            color: white;
+            padding: 40px 0;
+            margin-top: 50px;
+        }
+        
+        /* Exercise Area */
+        .exercise-area {
+            background: #f8f9fa;
+            border: 1px dashed #0d6efd;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 10px;
+        }
+
+        /* Beyond Data Section */
+        .beyond-data-section {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 30px 35px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            border-left: 6px solid #28a745;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            position: relative;
+            overflow: hidden;
+        }
+        .beyond-data-section::before {
+            content: "📊";
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 5em;
+            opacity: 0.1;
+        }
+        .beyond-data-section h2 {
+            color: #1e3c72;
+            font-size: 1.6em;
+            margin-bottom: 15px;
+        }
+        .beyond-data-section .highlight {
+            color: #28a745;
+            font-weight: bold;
+        }
+
+        /* Math Blocks (Pure HTML/CSS Equations) */
+        .math-block {
+            background: #f8f9fa;
+            border-left: 4px solid #6f42c1;
+            padding: 15px 25px;
+            margin: 20px 0;
+            border-radius: 0 8px 8px 0;
+            font-family: 'Cambria Math', 'Times New Roman', serif;
+            font-size: 1.25rem;
+            color: #212529;
+            overflow-x: auto;
+            line-height: 1.8;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        .math-block .var { font-style: italic; }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="#"><i class="fas fa-chart-line me-2"></i>Beyond Data Analytics</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="#intro">1.1 Intro</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#pop-sample">1.2 Pop & Sample</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#data-types">1.3 Data Types</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#descriptive">1.4 Descriptive</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#probability">1.5 Probability</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#random-var">1.6 Random Var</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#distributions">1.7 Distributions</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#sampling">1.8 Sampling</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#clt">1.9 CLT</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#std-error">1.10 Std Error</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#software">1.11 Software</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#practical">1.12 Practical</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="#exercises">Exercises</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header id="home" class="hero-section">
+        <div class="hero-overlay"></div>
+        <div class="hero-content container">
+            <h1 class="display-3 fw-bold">Module 1: Foundations of Statistical Inference</h1>
+            <p class="lead fs-4">Master the mathematics of uncertainty and data-driven decision making</p>
+            <h3 class="text-info fw-light fst-italic">Beyond Data Analytics</h3>
+            <p class="fs-5 text-light">Transforming Raw Data into Insights</p>
+            <a href="#objectives" class="btn btn-primary btn-lg mt-3 px-5 rounded-pill">Start Learning</a>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <div class="container my-5">
+
+        <!-- Beyond Data Analytics Section -->
+        <section class="beyond-data-section mb-5">
+            <h2>🌐 Beyond Data Analytics</h2>
+            <p>At <span class="highlight">Beyond Data Analytics</span>, we believe that data is more than just numbers and tables—it is the strategic foundation of modern decision-making. Our curriculum is meticulously designed to bridge the gap between theoretical knowledge and real-world application, empowering professionals to extract actionable insights, drive business value, and innovate across industries.</p>
+            <p>By mastering the foundations of statistical inference, you transition from simply describing data to making <span class="highlight">rigorous, probability-backed conclusions about entire populations</span>. This module equips you with the mathematical intuition and computational skills to quantify uncertainty, design robust sampling strategies, and lay the groundwork for advanced predictive modeling.</p>
+        </section>
+
+        <!-- Learning Objectives -->
+        <section id="objectives" class="mb-5">
+            <h2 class="section-title">Learning Objectives</h2>
+            <div class="card bg-light">
+                <div class="card-body">
+                    <p class="lead mb-3">By the end of this comprehensive module, participants will be able to:</p>
+                    <ul class="list-unstyled mb-0">
+                        <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> Understand the core principles of statistical inference and the philosophical shift from descriptive to inductive reasoning.</li>
+                        <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> Differentiate clearly between populations and samples, and compute/interpret parameters versus statistics.</li>
+                        <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> Classify data types according to Stevens' measurement scales (NOIR) and select appropriate statistical methods.</li>
+                        <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> Apply advanced probability concepts, including Bayes' Theorem, to real-world diagnostic and predictive scenarios.</li>
+                        <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> Model real-world phenomena using discrete (Binomial, Poisson) and continuous (Normal) probability distributions.</li>
+                        <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> Articulate the profound implications of the Central Limit Theorem (CLT) and calculate the Standard Error.</li>
+                        <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> Simulate statistical phenomena using R, Python, and SPSS to build intuition for abstract theoretical concepts.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-5">
+
+        <!-- 1.1 Introduction to Statistical Inference -->
+        <section id="intro" class="mb-5">
+            <h2 class="section-title">1.1 Introduction to Statistical Inference</h2>
+            <p class="lead">Statistical inference is the process of using data analysis to deduce properties of an underlying distribution of probability. It is the bridge between <em>descriptive statistics</em> and <em>predictive analytics</em>.</p>
+            <div class="card">
+                <div class="card-body">
+                    <p>In the real world, we rarely have access to the complete truth (the entire population). We must rely on partial observations (samples). Statistical inference provides the mathematical framework to quantify the <strong>uncertainty</strong> associated with these partial observations, allowing us to make decisions with a calculated risk of being wrong.</p>
+                    
+                    <h5 class="mt-4">Deductive vs. Inductive Reasoning</h5>
+                    <table class="table table-custom">
+                        <thead>
+                            <tr><th>Feature</th><th>Deductive Reasoning</th><th>Inductive Reasoning (Inference)</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Direction</strong></td>
+                                <td>General Theory → Specific Conclusion</td>
+                                <td>Specific Data → General Theory</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Certainty</strong></td>
+                                <td>100% Certain (if premises are true)</td>
+                                <td>Probabilistic (Subject to error)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Example</strong></td>
+                                <td>All men are mortal. Socrates is a man. → Socrates is mortal.</td>
+                                <td>We sampled 1000 patients; 85% responded to the drug. → The drug works for the general population (with 95% confidence).</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h5 class="mt-4">The Two Pillars of Inference</h5>
+                    <ol>
+                        <li><strong>Estimation:</strong> Using sample data to estimate unknown population parameters. This can be <em>Point Estimation</em> (a single value, like <i>x̄</i> = 45.2) or <em>Interval Estimation</em> (a range of values, like a 95% Confidence Interval: [42.1, 48.3]).</li>
+                        <li><strong>Hypothesis Testing:</strong> Formulating a claim about a population parameter (Null Hypothesis, <i>H<sub>0</sub></i>) and using sample data to determine if there is enough evidence to reject that claim in favor of an alternative (<i>H<sub>A</sub></i>).</li>
+                    </ol>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-5">
+
+        <!-- 1.2 Population and Sample -->
+        <section id="pop-sample" class="mb-5">
+            <h2 class="section-title">1.2 Population and Sample</h2>
+            <p class="lead">The distinction between a population and a sample is the most fundamental concept in statistics. Confusing the two leads to catastrophic errors in analysis and interpretation.</p>
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="card border-primary mb-3">
+                                <div class="card-header bg-primary text-white"><i class="fas fa-globe me-2"></i>Population</div>
+                                <div class="card-body">
+                                    <p>The <strong>entire collection</strong> of individuals, items, or data points about which we want to draw conclusions.</p>
+                                    <ul>
+                                        <li>Denoted by <i>N</i> (finite) or ∞ (infinite).</li>
+                                        <li>Characteristics are called <strong>Parameters</strong>.</li>
+                                        <li>Parameters are fixed but usually <em>unknown</em>.</li>
+                                        <li><strong>Symbols:</strong> Mean <i>μ</i>, Variance <i>σ</i><sup>2</sup>, Proportion <i>π</i>.</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card border-success mb-3">
+                                <div class="card-header bg-success text-white"><i class="fas fa-box-open me-2"></i>Sample</div>
+                                <div class="card-body">
+                                    <p>A <strong>subset</strong> of the population, selected for actual observation or analysis.</p>
+                                    <ul>
+                                        <li>Denoted by <i>n</i>.</li>
+                                        <li>Characteristics are called <strong>Statistics</strong>.</li>
+                                        <li>Statistics are known (calculated from data) but <em>variable</em> (change from sample to sample).</li>
+                                        <li><strong>Symbols:</strong> Mean <i>x̄</i>, Variance <i>s</i><sup>2</sup>, Proportion <i>p̂</i>.</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h5 class="mt-4">Parameters vs. Statistics: A Summary</h5>
+                    <table class="table table-custom">
+                        <thead>
+                            <tr><th>Concept</th><th>Population (Parameter)</th><th>Sample (Statistic)</th><th>Notation</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>Average / Mean</td><td>Population Mean</td><td>Sample Mean</td><td><i>μ</i> vs <i>x̄</i></td></tr>
+                            <tr><td>Variance</td><td>Population Variance</td><td>Sample Variance</td><td><i>σ</i><sup>2</sup> vs <i>s</i><sup>2</sup></td></tr>
+                            <tr><td>Standard Deviation</td><td>Population Std Dev</td><td>Sample Std Dev</td><td><i>σ</i> vs <i>s</i></td></tr>
+                            <tr><td>Proportion</td><td>Population Proportion</td><td>Sample Proportion</td><td><i>π</i> vs <i>p̂</i></td></tr>
+                            <tr><td>Correlation</td><td>Population Correlation</td><td>Sample Correlation</td><td><i>ρ</i> vs <i>r</i></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-5">
+
+        <!-- 1.3 Types of Data and Measurement Scales -->
+        <section id="data-types" class="mb-5">
+            <h2 class="section-title">1.3 Types of Data and Measurement Scales</h2>
+            <p class="lead">Before applying any statistical test, you must understand the nature of your variables. The measurement scale dictates which mathematical operations are meaningful and which statistical tests are valid.</p>
+            <div class="card">
+                <div class="card-body">
+                    <h5>Stevens' Levels of Measurement (NOIR)</h5>
+                    <div class="accordion" id="accordionNOIR">
+                        <!-- Nominal -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="headNom">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#colNom">
+                                    <span class="badge bg-danger me-2">1</span> Nominal Scale
+                                </button>
+                            </h2>
+                            <div id="colNom" class="accordion-collapse collapse" data-bs-parent="#accordionNOIR">
+                                <div class="accordion-body">
+                                    <p><strong>Definition:</strong> Categories with no inherent order or ranking. "Naming" the data.</p>
+                                    <p><strong>Properties:</strong> Identity only. Cannot say one is "greater" than another.</p>
+                                    <p><strong>Examples:</strong> Gender (Male/Female), Blood Type (A, B, AB, O), Country of Origin, Marital Status.</p>
+                                    <p><strong>Permitted Stats:</strong> Mode, Frequency Counts, Chi-Square tests.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Ordinal -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="headOrd">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#colOrd">
+                                    <span class="badge bg-warning me-2">2</span> Ordinal Scale
+                                </button>
+                            </h2>
+                            <div id="colOrd" class="accordion-collapse collapse" data-bs-parent="#accordionNOIR">
+                                <div class="accordion-body">
+                                    <p><strong>Definition:</strong> Categories with a meaningful order or ranking, but the intervals between categories are unknown or unequal.</p>
+                                    <p><strong>Properties:</strong> Identity + Order.</p>
+                                    <p><strong>Examples:</strong> Likert Scales (Strongly Disagree to Strongly Agree), Socioeconomic Status (Low, Medium, High), Cancer Stages (I, II, III, IV).</p>
+                                    <p><strong>Permitted Stats:</strong> Mode, Median, Percentiles, Spearman's Rank Correlation, Mann-Whitney U test.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Interval -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="headInt">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#colInt">
+                                    <span class="badge bg-info me-2">3</span> Interval Scale
+                                </button>
+                            </h2>
+                            <div id="colInt" class="accordion-collapse collapse" data-bs-parent="#accordionNOIR">
+                                <div class="accordion-body">
+                                    <p><strong>Definition:</strong> Numeric scales where intervals are equal and meaningful, but there is <strong>no true zero point</strong>. Zero does not mean "none".</p>
+                                    <p><strong>Properties:</strong> Identity + Order + Equal Intervals.</p>
+                                    <p><strong>Examples:</strong> Temperature in Celsius or Fahrenheit (0°C doesn't mean "no temperature"), IQ Scores, Calendar Years.</p>
+                                    <p><strong>Permitted Stats:</strong> Mean, Standard Deviation, Pearson Correlation, t-tests, ANOVA.</p>
+                                    <p><strong>Crucial Note:</strong> You cannot compute ratios. 40°C is not "twice as hot" as 20°C.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Ratio -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="headRat">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#colRat">
+                                    <span class="badge bg-success me-2">4</span> Ratio Scale
+                                </button>
+                            </h2>
+                            <div id="colRat" class="accordion-collapse collapse" data-bs-parent="#accordionNOIR">
+                                <div class="accordion-body">
+                                    <p><strong>Definition:</strong> The highest level of measurement. Has all properties of interval data, plus a <strong>true, absolute zero point</strong>.</p>
+                                    <p><strong>Properties:</strong> Identity + Order + Equal Intervals + Absolute Zero.</p>
+                                    <p><strong>Examples:</strong> Height, Weight, Age, Income, Distance, Reaction Time, Heart Rate.</p>
+                                    <p><strong>Permitted Stats:</strong> All statistical techniques (Geometric mean, Coefficient of Variation).</p>
+                                    <p><strong>Crucial Note:</strong> Ratios are meaningful. 100 kg is exactly twice as heavy as 50 kg. 0 kg means "no weight".</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h5 class="mt-4">Discrete vs. Continuous Numerical Data</h5>
+                    <ul>
+                        <li><strong>Discrete:</strong> Countable, finite (or countably infinite) values. Usually integers. (e.g., Number of children, Number of hospital visits). Modeled by Binomial/Poisson.</li>
+                        <li><strong>Continuous:</strong> Can take any value within a range. Measured, not counted. (e.g., Blood pressure, Time until failure). Modeled by Normal/Exponential.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-5">
+
+        <!-- 1.4 Descriptive Statistics Review -->
+        <section id="descriptive" class="mb-5">
+            <h2 class="section-title">1.4 Descriptive Statistics Review</h2>
+            <p class="lead">Before making inferences, we must summarize our sample data effectively. Descriptive statistics provide the foundation for understanding the shape, center, and spread of our data.</p>
+            <div class="card">
+                <div class="card-body">
+                    <h5>Measures of Central Tendency</h5>
+                    <ul>
+                        <li><strong>Mean (<i>x̄</i>):</strong> The arithmetic average. Highly sensitive to outliers.
+                            <div class="math-block"><i>x̄</i> = (1 / <i>n</i>) Σ<sub><i>i</i>=1</sub><sup><i>n</i></sup> <i>x<sub>i</sub></i></div>
+                        </li>
+                        <li><strong>Median (<i>x̃</i>):</strong> The middle value when sorted. Robust to outliers. Preferred for skewed distributions (e.g., income).</li>
+                        <li><strong>Mode:</strong> The most frequent value. The only measure valid for nominal data.</li>
+                    </ul>
+
+                    <h5 class="mt-4">Measures of Dispersion (Variability)</h5>
+                    <ul>
+                        <li><strong>Variance (<i>s</i><sup>2</sup>):</strong> The average of the squared deviations from the mean. We divide by <i>n-1</i> (Bessel's correction) to get an unbiased estimator of the population variance.
+                            <div class="math-block"><i>s</i><sup>2</sup> = [1 / (<i>n</i> - 1)] Σ<sub><i>i</i>=1</sub><sup><i>n</i></sup> (<i>x<sub>i</sub></i> - <i>x̄</i>)<sup>2</sup></div>
+                        </li>
+                        <li><strong>Standard Deviation (<i>s</i>):</strong> The square root of the variance. Expressed in the original units of the data.
+                            <div class="math-block"><i>s</i> = √<i>s</i><sup>2</sup></div>
+                        </li>
+                        <li><strong>Interquartile Range (IQR):</strong> <i>Q<sub>3</sub> - Q<sub>1</sub></i>. The spread of the middle 50% of the data. Robust to outliers. Used to detect outliers (Values &lt; <i>Q<sub>1</sub> - 1.5 × IQR</i> or &gt; <i>Q<sub>3</sub> + 1.5 × IQR</i>).</li>
+                    </ul>
+
+                    <h5 class="mt-4">Measures of Shape</h5>
+                    <ul>
+                        <li><strong>Skewness:</strong> Measures asymmetry.
+                            <ul>
+                                <li>Symmetric (Normal): Skewness ≈ 0</li>
+                                <li>Right-skewed (Positive): Tail extends to the right. Mean &gt; Median. (e.g., Income, Wait times).</li>
+                                <li>Left-skewed (Negative): Tail extends to the left. Mean &lt; Median. (e.g., Age at death).</li>
+                            </ul>
+                        </li>
+                        <li><strong>Kurtosis:</strong> Measures the "tailedness" and peakedness of the distribution. High kurtosis indicates heavy tails and a sharper peak (prone to extreme outliers).</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-5">
+
+        <!-- 1.5 Probability Concepts for Inference -->
+        <section id="probability" class="mb-5">
+            <h2 class="section-title">1.5 Probability Concepts for Inference</h2>
+            <p class="lead">Probability is the mathematical language of uncertainty. Inference relies on probability to quantify how likely it is that our sample statistics reflect the true population parameters.</p>
+            <div class="card">
+                <div class="card-body">
+                    <h5>Conditional Probability and Bayes' Theorem</h5>
+                    <p><strong>Conditional Probability:</strong> The probability of event <i>A</i> occurring, given that event <i>B</i> has already occurred.</p>
+                    <div class="math-block"><i>P</i>(<i>A</i> | <i>B</i>) = <i>P</i>(<i>A</i> ∩ <i>B</i>) / <i>P</i>(<i>B</i>)</div>
+                    
+                    <p><strong>Bayes' Theorem:</strong> Allows us to "reverse" conditional probabilities. It is the foundation of Bayesian statistics and many machine learning algorithms.</p>
+                    <div class="math-block"><i>P</i>(<i>A</i> | <i>B</i>) = [<i>P</i>(<i>B</i> | <i>A</i>) · <i>P</i>(<i>A</i>)] / <i>P</i>(<i>B</i>)</div>
+
+                    <div class="alert alert-info mt-4">
+                        <strong><i class="fas fa-stethoscope me-2"></i>Clinical Example: Diagnostic Testing</strong>
+                        <p class="mb-2">Suppose a disease affects 1% of the population (<i>P</i>(<i>D</i>) = 0.01). A test is 99% sensitive (<i>P</i>(+|<i>D</i>) = 0.99) and 95% specific (<i>P</i>(-|No <i>D</i>) = 0.95 → <i>P</i>(+|No <i>D</i>) = 0.05).</p>
+                        <p class="mb-0">If a patient tests positive, what is the probability they actually have the disease?</p>
+                        <div class="math-block mt-2"><i>P</i>(<i>D</i>|+) = (0.99 × 0.01) / [(0.99 × 0.01) + (0.05 × 0.99)] = 0.0099 / 0.0594 ≈ 0.1667</div>
+                        <p class="mt-2 mb-0"><strong>Shockingly, the patient only has a ~16.7% chance of actually having the disease despite a "99% accurate" test!</strong> This highlights the critical importance of the <em>base rate</em> (prior probability).</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-5">
+
+        <!-- 1.6 Random Variables -->
+        <section id="random-var" class="mb-5">
+            <h2 class="section-title">1.6 Random Variables</h2>
+            <p class="lead">A <strong>Random Variable (RV)</strong>, usually denoted by an uppercase letter like <i>X</i>, is a function that maps outcomes in the sample space to real numbers.</p>
+            <div class="card">
+                <div class="card-body">
+                    <h5>Expected Value and Variance</h5>
+                    <p>The <strong>Expected Value</strong> <i>E</i>[<i>X</i>] (or <i>μ</i>) is the theoretical mean of the random variable. It represents the long-run average value over many repetitions.</p>
+                    <div class="math-block"><i>E</i>[<i>X</i>] = Σ <i>x</i> · <i>P</i>(<i>x</i>)  <span class="ms-4">(For Discrete RV)</span></div>
+                    
+                    <p>The <strong>Variance</strong> <i>Var</i>(<i>X</i>) (or <i>σ</i><sup>2</sup>) measures the spread of the RV around its expected value.</p>
+                    <div class="math-block"><i>Var</i>(<i>X</i>) = <i>E</i>[<i>X</i><sup>2</sup>] - (<i>E</i>[<i>X</i>])<sup>2</sup></div>
+
+                    <h5 class="mt-4">Properties of Expectation and Variance</h5>
+                    <ul>
+                        <li><i>E</i>[<i>aX</i> + <i>b</i>] = <i>aE</i>[<i>X</i>] + <i>b</i></li>
+                        <li><i>Var</i>(<i>aX</i> + <i>b</i>) = <i>a</i><sup>2</sup> <i>Var</i>(<i>X</i>) <em>(Adding a constant shifts the data but doesn't change the spread!)</em></li>
+                        <li>If <i>X</i> and <i>Y</i> are <strong>independent</strong>: <i>Var</i>(<i>X</i> + <i>Y</i>) = <i>Var</i>(<i>X</i>) + <i>Var</i>(<i>Y</i>)</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-5">
+
+        <!-- 1.7 Probability Distributions -->
+        <section id="distributions" class="mb-5">
+            <h2 class="section-title">1.7 Probability Distributions</h2>
+            <p class="lead">A probability distribution describes how probabilities are distributed over the values of a random variable. Choosing the correct distribution is vital for accurate modeling and inference.</p>
+            <div class="card">
+                <div class="card-body">
+                    <h5>The Binomial Distribution</h5>
+                    <p>Models the number of successes in a fixed number of independent Bernoulli trials. Conditions: Binary outcomes, Independent trials, Fixed number of trials (<i>n</i>), Same probability of success (<i>p</i>).</p>
+                    <div class="math-block"><i>P</i>(<i>X</i> = <i>k</i>) = (<i>n</i>! / [<i>k</i>!(<i>n</i> - <i>k</i>)!]) · <i>p</i><sup><i>k</i></sup> · (1 - <i>p</i>)<sup><i>n</i>-<i>k</i></sup></div>
+                    <p><em>Mean:</em> <i>μ</i> = <i>np</i> &nbsp;&nbsp;&nbsp; <em>Variance:</em> <i>σ</i><sup>2</sup> = <i>np</i>(1 - <i>p</i>)</p>
+
+                    <h5 class="mt-4">The Poisson Distribution</h5>
+                    <p>Models the number of rare events occurring in a fixed interval of time or space, given a constant average rate (<i>λ</i>).</p>
+                    <div class="math-block"><i>P</i>(<i>X</i> = <i>k</i>) = (<i>λ</i><sup><i>k</i></sup> · <i>e</i><sup>-<i>λ</i></sup>) / <i>k</i>!</div>
+                    <p><em>Mean:</em> <i>μ</i> = <i>λ</i> &nbsp;&nbsp;&nbsp; <em>Variance:</em> <i>σ</i><sup>2</sup> = <i>λ</i></p>
+
+                    <h5 class="mt-4">The Normal (Gaussian) Distribution</h5>
+                    <p>The most important continuous distribution in statistics. It is symmetric, bell-shaped, and completely defined by its mean (<i>μ</i>) and standard deviation (<i>σ</i>).</p>
+                    <div class="math-block"><i>f</i>(<i>x</i>) = [1 / (<i>σ</i> √(2<i>π</i>))] · <i>e</i><sup>-(<i>x</i> - <i>μ</i>)<sup>2</sup> / (2<i>σ</i><sup>2</sup>)</sup></div>
+                    
+                    <h6 class="mt-3">The Standard Normal Distribution (<i>Z</i>)</h6>
+                    <p>A special normal distribution with <i>μ</i> = 0 and <i>σ</i> = 1. Any normal RV <i>X</i> can be standardized to <i>Z</i> using the Z-score formula:</p>
+                    <div class="math-block"><i>Z</i> = (<i>X</i> - <i>μ</i>) / <i>σ</i></div>
+
+                    <h6 class="mt-3">The Empirical Rule (68-95-99.7)</h6>
+                    <ul>
+                        <li>~68% of data falls within ±1<i>σ</i> of <i>μ</i>.</li>
+                        <li>~95% of data falls within ±2<i>σ</i> of <i>μ</i>.</li>
+                        <li>~99.7% of data falls within ±3<i>σ</i> of <i>μ</i>.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-5">
+
+        <!-- 1.8 Sampling Techniques -->
+        <section id="sampling" class="mb-5">
+            <h2 class="section-title">1.8 Sampling Techniques</h2>
+            <p class="lead">How we select our sample determines whether our statistical inferences are valid. A biased sample renders even the most advanced mathematical models useless ("Garbage In, Garbage Out").</p>
+            <div class="card">
+                <div class="card-body">
+                    <h5>Probability Sampling (Random)</h5>
+                    <p>Every member of the population has a known, non-zero chance of being selected. Allows for unbiased estimation of population parameters.</p>
+                    <ul>
+                        <li><strong>Simple Random Sampling (SRS):</strong> Every subset of size <i>n</i> has an equal chance of being chosen. <em>Pros:</em> Unbiased. <em>Cons:</em> Requires a complete sampling frame.</li>
+                        <li><strong>Stratified Sampling:</strong> Divide the population into homogeneous subgroups (strata), then take a random sample from <em>each</em> stratum. <em>Pros:</em> Ensures representation of all subgroups, increases precision.</li>
+                        <li><strong>Cluster Sampling:</strong> Divide the population into heterogeneous groups (clusters). Randomly select entire clusters, and survey <em>everyone</em> within them. <em>Pros:</em> Cost-effective. <em>Cons:</em> Higher sampling error than SRS.</li>
+                        <li><strong>Systematic Sampling:</strong> Select every <i>k</i>-th element from a list after a random start. <em>Pros:</em> Easy to execute. <em>Cons:</em> Vulnerable to hidden periodic patterns.</li>
+                    </ul>
+
+                    <h5 class="mt-4">Non-Probability Sampling</h5>
+                    <p>Selection is based on subjective judgment. Cannot calculate sampling error or guarantee representativeness.</p>
+                    <ul>
+                        <li><strong>Convenience Sampling:</strong> Selecting whoever is easiest to reach.</li>
+                        <li><strong>Purposive (Judgmental) Sampling:</strong> The researcher uses their expertise to select a sample.</li>
+                        <li><strong>Quota Sampling:</strong> Ensuring certain subgroups are represented to specific quotas, but selecting them non-randomly.</li>
+                        <li><strong>Snowball Sampling:</strong> Existing subjects recruit future subjects. Useful for hidden/rare populations.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-5">
+
+        <!-- 1.9 Sampling Distribution & CLT -->
+        <section id="clt" class="mb-5">
+            <h2 class="section-title">1.9 Sampling Distribution of the Mean & Central Limit Theorem</h2>
+            <p class="lead">This is the conceptual bridge between descriptive statistics and inferential statistics. It is the most important theorem in statistics.</p>
+            <div class="card">
+                <div class="card-body">
+                    <h5>What is a Sampling Distribution?</h5>
+                    <p>Imagine you take a random sample of size <i>n</i> and calculate the sample mean <i>x̄<sub>1</sub></i>. You repeat this process infinitely many times, getting <i>x̄<sub>2</sub></i>, <i>x̄<sub>3</sub></i>, ... The probability distribution of all possible values of <i>x̄</i> is called the <strong>Sampling Distribution of the Sample Mean</strong>.</p>
+                    
+                    <div class="alert alert-info">
+                        <strong><i class="fas fa-key me-2"></i>Key Properties of the Sampling Distribution of <i>X̄</i></strong>
+                        <ol class="mt-2 mb-0">
+                            <li>The mean of the sampling distribution equals the population mean: <i>μ<sub>x̄</sub></i> = <i>μ</i></li>
+                            <li>The variance of the sampling distribution is: <i>σ</i><sup>2</sup><sub><i>x̄</i></sub> = <i>σ</i><sup>2</sup> / <i>n</i></li>
+                            <li>The standard deviation of the sampling distribution is called the <strong>Standard Error</strong>: <i>SE</i> = <i>σ</i> / √<i>n</i></li>
+                        </ol>
+                    </div>
+
+                    <h5 class="mt-4">The Central Limit Theorem (CLT)</h5>
+                    <p>The CLT states that as the sample size <i>n</i> increases, the sampling distribution of the sample mean <i>X̄</i> approaches a <strong>Normal Distribution</strong>, <em>regardless of the shape of the original population distribution</em> (provided the population has a finite variance).</p>
+                    
+                    <h6>Why is the CLT so profound?</h6>
+                    <p>In the real world, data is rarely perfectly normal. Income is right-skewed, wait times are exponential. The CLT guarantees that if we take large enough samples, the <em>averages</em> of those samples will behave normally. This allows us to use Normal-based inference (Z-tests, t-tests, Confidence Intervals) on almost any data, provided <i>n</i> is sufficiently large.</p>
+                    
+                    <h6>Rules of Thumb for Sample Size (<i>n</i>):</h6>
+                    <ul>
+                        <li>If the population is <strong>Normal</strong>, the sampling distribution of <i>X̄</i> is exactly Normal for <em>any</em> <i>n</i>.</li>
+                        <li>If the population is <strong>Skewed or Unknown</strong>, <i>n</i> ≥ 30 is generally considered sufficient for the CLT to hold.</li>
+                        <li>If the population is <strong>Extremely Skewed</strong>, a much larger <i>n</i> (e.g., <i>n</i> ≥ 50 or 100) may be required.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-5">
+
+        <!-- 1.10 Standard Error -->
+        <section id="std-error" class="mb-5">
+            <h2 class="section-title">1.10 Standard Error (SE)</h2>
+            <p class="lead">The Standard Error is arguably the most misunderstood concept by beginners, who frequently confuse it with the Standard Deviation.</p>
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="card border-danger h-100">
+                                <div class="card-header bg-danger text-white">Standard Deviation (<i>σ</i> or <i>s</i>)</div>
+                                <div class="card-body">
+                                    <p>Measures the spread of <strong>individual data points</strong> around the mean.</p>
+                                    <p><strong>Question it answers:</strong> "How much variability is there in the population (or sample) itself?"</p>
+                                    <p><strong>Behavior:</strong> As <i>n</i> increases, <i>s</i> stabilizes and converges to the true population <i>σ</i>. It does <em>not</em> go to zero.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card border-success h-100">
+                                <div class="card-header bg-success text-white">Standard Error (<i>SE</i>)</div>
+                                <div class="card-body">
+                                    <p>Measures the spread of <strong>sample statistics</strong> (like the mean) around the true population parameter.</p>
+                                    <p><strong>Question it answers:</strong> "How much uncertainty/error is there in my estimate of the mean?"</p>
+                                    <div class="math-block"><i>SE</i><sub><i>x̄</i></sub> = <i>s</i> / √<i>n</i></div>
+                                    <p><strong>Behavior:</strong> As <i>n</i> increases, <i>SE</i> decreases towards zero. Larger samples yield more precise estimates!</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="alert alert-warning mt-4">
+                        <strong><i class="fas fa-lightbulb me-2"></i>The Trade-off of Precision</strong>
+                        To cut the Standard Error in half (i.e., double the precision of your estimate), you must <strong>quadruple</strong> your sample size (<i>n</i> → 4<i>n</i>). This highlights the law of diminishing returns in data collection.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-5">
+
+        <!-- 1.11 Introduction to Statistical Software -->
+        <section id="software" class="mb-5">
+            <h2 class="section-title">1.11 Introduction to Statistical Software</h2>
+            <p class="lead">Theoretical statistics must be implemented using software. We will focus on three industry-standard tools: <strong>R</strong>, <strong>Python</strong>, and <strong>SPSS</strong>.</p>
+            <div class="card">
+                <div class="card-body">
+                    <h5>R: The Statistician's Language</h5>
+                    <pre><code class="language-r"># Loading a dataset and calculating basic stats
+data(mtcars) # Built-in dataset
+
+# Calculate Mean, SD, and Variance of MPG
+mean_mpg <- mean(mtcars$mpg)
+sd_mpg <- sd(mtcars$mpg)
+
+# Simulating a Normal Distribution
+set.seed(42) # For reproducibility
+sim_data <- rnorm(n = 1000, mean = 100, sd = 15)
+hist(sim_data, breaks = 30, col = "skyblue", main = "Simulated Normal Data")</code></pre>
+
+                    <h5 class="mt-4">Python: The Data Science Powerhouse</h5>
+                    <pre><code class="language-python">import numpy as np
+import scipy.stats as stats
+import matplotlib.pyplot as plt
+
+# Sample data
+data = np.array([23, 25, 28, 22, 26, 29, 30, 24, 27, 25])
+
+# Descriptive Statistics
+print("Mean:", np.mean(data))
+print("Std Dev:", np.std(data, ddof=1)) # ddof=1 for sample SD
+
+# Probability Calculations (Normal Distribution)
+# P(X < 27) if mu=25, sigma=3
+prob = stats.norm.cdf(27, loc=25, scale=3)
+print(f"P(X < 27): {prob:.4f}")</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-5">
+
+        <!-- 1.12 Practical Session -->
+        <section id="practical" class="mb-5">
+            <h2 class="section-title">1.12 Practical Session: Simulating Inference</h2>
+            <p class="lead">Theory is best understood through simulation. In this lab, we will use R and Python to empirically demonstrate the Central Limit Theorem and calculate Standard Errors.</p>
+            <div class="card">
+                <div class="card-body">
+                    <h5>Lab: Demonstrating the Central Limit Theorem in R</h5>
+                    <p>We will draw thousands of samples from a heavily skewed distribution (Exponential), calculate the mean of each sample, and plot the distribution of those means. Watch how it becomes Normal!</p>
+                    <pre><code class="language-r"># R: CLT Simulation
+set.seed(123)
+# 1. Generate Skewed Population (Exponential Distribution)
+population <- rexp(100000, rate = 0.1)
+
+# 2. Simulate Sampling Distribution
+n_samples <- 5000  # Number of samples to draw
+sample_size <- 30  # Size of each sample (n >= 30)
+
+# Draw 5000 samples of size 30, and calculate the mean of each
+sample_means <- replicate(n_samples, mean(sample(population, sample_size)))
+
+# 3. Plot the Sampling Distribution
+hist(sample_means, breaks=50, col="skyblue", probability=TRUE,
+     main="Sampling Distribution of the Mean (n=30)",
+     xlab="Sample Mean")
+
+# Overlay the theoretical Normal curve
+curve(dnorm(x, mean=mean(population), sd=sd(population)/sqrt(sample_size)), 
+      add=TRUE, col="red", lwd=3)
+
+cat("Theoretical SE:", sd(population)/sqrt(sample_size), "\n")
+cat("Empirical SE (SD of sample_means):", sd(sample_means), "\n")</code></pre>
+
+                    <h5 class="mt-4">Lab: Computing Probabilities and Standard Errors</h5>
+                    <p><strong>Scenario:</strong> A pharmaceutical company knows a certain drug lowers blood pressure with a mean effect of <i>μ</i> = 12 mmHg and a standard deviation of <i>σ</i> = 4 mmHg in the population. If we test the drug on a random sample of <i>n</i> = 64 patients, what is the probability that the <em>sample mean</em> <i>X̄</i> is less than 11 mmHg?</p>
+                    
+                    <div class="math-block">
+                        <i>SE</i> = <i>σ</i> / √<i>n</i> = 4 / √64 = 4 / 8 = 0.5<br>
+                        <i>Z</i> = (<i>X̄</i> - <i>μ</i>) / <i>SE</i> = (11 - 12) / 0.5 = -2.0<br>
+                        <i>P</i>(<i>X̄</i> &lt; 11) = <i>P</i>(<i>Z</i> &lt; -2.0) ≈ 0.0228
+                    </div>
+
+                    <pre><code class="language-python"># Python Verification
+import scipy.stats as stats
+
+mu = 12
+sigma = 4
+n = 64
+se = sigma / (n**0.5)
+
+# Calculate Z-score
+z = (11 - mu) / se
+print(f"Z-score: {z}")
+
+# Calculate Probability using CDF
+prob = stats.norm.cdf(z)
+print(f"P(X_bar < 11): {prob:.4f}")</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-5">
+
+        <!-- Practical Exercises -->
+        <section id="exercises" class="mb-5">
+            <h2 class="section-title">Practical Exercises</h2>
+            <p class="lead">Test your understanding of the foundational concepts covered in this module. Try to solve them before revealing the solutions!</p>
+            
+            <!-- Exercise 1 -->
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">Exercise 1: Measurement Scales</div>
+                <div class="card-body">
+                    <div class="mb-0">
+                        <label class="form-label fw-bold">1. Classify the following variables according to Stevens' NOIR scales: <br> a) Religion (Christian, Muslim, Hindu) <br> b) Temperature in Kelvin <br> c) Pain level on a scale of 1 to 10 <br> d) Distance run by a marathoner (in km)</label>
+                        <div class="exercise-area">
+                            <textarea class="form-control font-monospace" rows="4" placeholder="Write your answers here..."></textarea>
+                            <button class="btn btn-outline-primary btn-sm mt-2" type="button" data-bs-toggle="collapse" data-bs-target="#ans1_1">Submit & Check Answer</button>
+                            <div class="collapse mt-3" id="ans1_1">
+                                <div class="alert alert-success mb-0">
+                                    <strong><i class="fas fa-check-circle me-2"></i>Correct Answer:</strong>
+                                    <ul class="mt-2 mb-0">
+                                        <li>a) <strong>Nominal:</strong> Categories with no inherent order.</li>
+                                        <li>b) <strong>Ratio:</strong> Kelvin has an absolute zero (0 K means no thermal energy). Ratios are meaningful.</li>
+                                        <li>c) <strong>Ordinal:</strong> 10 is worse than 1, but the "distance" between 1 and 2 is not necessarily the same as between 9 and 10.</li>
+                                        <li>d) <strong>Ratio:</strong> True zero exists (0 km means no distance). 42km is exactly twice 21km.</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Exercise 2 -->
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">Exercise 2: Bayes' Theorem Application</div>
+                <div class="card-body">
+                    <div class="mb-0">
+                        <label class="form-label fw-bold">1. A factory has two machines. Machine A produces 60% of the parts with a 2% defect rate. Machine B produces 40% of the parts with a 5% defect rate. A part is randomly selected and found to be defective. What is the probability it came from Machine A?</label>
+                        <div class="exercise-area">
+                            <textarea class="form-control font-monospace" rows="4" placeholder="Write your calculations here..."></textarea>
+                            <button class="btn btn-outline-primary btn-sm mt-2" type="button" data-bs-toggle="collapse" data-bs-target="#ans2_1">Submit & Check Answer</button>
+                            <div class="collapse mt-3" id="ans2_1">
+                                <div class="alert alert-success mb-0">
+                                    <strong><i class="fas fa-check-circle me-2"></i>Correct Answer:</strong>
+                                    <ul class="mt-2 mb-0">
+                                        <li><i>P</i>(<i>A</i>) = 0.60, <i>P</i>(<i>B</i>) = 0.40</li>
+                                        <li><i>P</i>(<i>D</i>|<i>A</i>) = 0.02, <i>P</i>(<i>D</i>|<i>B</i>) = 0.05</li>
+                                        <li><i>P</i>(<i>D</i>) = (0.02 × 0.6) + (0.05 × 0.4) = 0.012 + 0.020 = 0.032</li>
+                                        <li><i>P</i>(<i>A</i>|<i>D</i>) = 0.012 / 0.032 = <strong>0.375 (or 37.5%)</strong></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Exercise 3 -->
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">Exercise 3: Standard Error vs Standard Deviation</div>
+                <div class="card-body">
+                    <div class="mb-0">
+                        <label class="form-label fw-bold">1. A population has a mean of 50 and a standard deviation of 10. You draw a random sample of size <i>n</i>=25. What is the Standard Error of the mean? If you increase the sample size to <i>n</i>=100, what happens to the Standard Error?</label>
+                        <div class="exercise-area">
+                            <textarea class="form-control font-monospace" rows="4" placeholder="Write your calculations here..."></textarea>
+                            <button class="btn btn-outline-primary btn-sm mt-2" type="button" data-bs-toggle="collapse" data-bs-target="#ans3_1">Submit & Check Answer</button>
+                            <div class="collapse mt-3" id="ans3_1">
+                                <div class="alert alert-success mb-0">
+                                    <strong><i class="fas fa-check-circle me-2"></i>Correct Answer:</strong>
+                                    <ul class="mt-2 mb-0">
+                                        <li>For <i>n</i>=25: <i>SE</i> = 10 / √25 = 10 / 5 = <strong>2</strong>.</li>
+                                        <li>For <i>n</i>=100: <i>SE</i> = 10 / √100 = 10 / 10 = <strong>1</strong>.</li>
+                                        <li><strong>Conclusion:</strong> Quadrupling the sample size (from 25 to 100) cut the Standard Error in half (from 2 to 1), meaning our estimate of the mean is twice as precise.</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Exercise 4 -->
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">Exercise 4: Normal Distribution Probabilities</div>
+                <div class="card-body">
+                    <div class="mb-0">
+                        <label class="form-label fw-bold">1. The time it takes to complete a standardized exam is normally distributed with a mean of 70 minutes and a standard deviation of 10 minutes. What proportion of students will finish in less than 55 minutes? What proportion will take between 60 and 85 minutes?</label>
+                        <div class="exercise-area">
+                            <textarea class="form-control font-monospace" rows="4" placeholder="Write your calculations here..."></textarea>
+                            <button class="btn btn-outline-primary btn-sm mt-2" type="button" data-bs-toggle="collapse" data-bs-target="#ans4_1">Submit & Check Answer</button>
+                            <div class="collapse mt-3" id="ans4_1">
+                                <div class="alert alert-success mb-0">
+                                    <strong><i class="fas fa-check-circle me-2"></i>Correct Answer:</strong>
+                                    <ul class="mt-2 mb-0">
+                                        <li><strong>Part 1: <i>P</i>(<i>X</i> &lt; 55)</strong></li>
+                                        <li><i>Z</i> = (55 - 70) / 10 = -1.5. Using Z-table: <i>P</i>(<i>Z</i> &lt; -1.5) ≈ <strong>0.0668 (6.68%)</strong></li>
+                                        <li><strong>Part 2: <i>P</i>(60 &lt; <i>X</i> &lt; 85)</strong></li>
+                                        <li><i>Z<sub>1</sub></i> = (60 - 70) / 10 = -1.0</li>
+                                        <li><i>Z<sub>2</sub></i> = (85 - 70) / 10 = 1.5</li>
+                                        <li><i>P</i>(-1.0 &lt; <i>Z</i> &lt; 1.5) = 0.9332 - 0.1587 = <strong>0.7745 (77.45%)</strong></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Exercise 5 -->
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">Exercise 5: Poisson Distribution</div>
+                <div class="card-body">
+                    <div class="mb-0">
+                        <label class="form-label fw-bold">1. A help desk receives an average of 3 calls per hour. Assuming a Poisson distribution, what is the probability of receiving exactly 5 calls in a given hour? What is the probability of receiving no calls?</label>
+                        <div class="exercise-area">
+                            <textarea class="form-control font-monospace" rows="4" placeholder="Write your calculations here..."></textarea>
+                            <button class="btn btn-outline-primary btn-sm mt-2" type="button" data-bs-toggle="collapse" data-bs-target="#ans5_1">Submit & Check Answer</button>
+                            <div class="collapse mt-3" id="ans5_1">
+                                <div class="alert alert-success mb-0">
+                                    <strong><i class="fas fa-check-circle me-2"></i>Correct Answer:</strong>
+                                    <p class="mt-2 mb-1">Here, <i>λ</i> = 3. Formula: <i>P</i>(<i>X</i>=<i>k</i>) = (<i>λ</i><sup><i>k</i></sup> · <i>e</i><sup>-<i>λ</i></sup>) / <i>k</i>!</p>
+                                    <ul class="mb-0">
+                                        <li><strong>Exactly 5 calls (<i>k</i>=5):</strong> (3<sup>5</sup> · <i>e</i><sup>-3</sup>) / 5! = (243 × 0.04978) / 120 ≈ <strong>0.1008</strong></li>
+                                        <li><strong>No calls (<i>k</i>=0):</strong> (3<sup>0</sup> · <i>e</i><sup>-3</sup>) / 0! = <i>e</i><sup>-3</sup> ≈ <strong>0.0498</strong></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-5">
+
+        <!-- Module Summary -->
+        <section id="summary" class="mb-5">
+            <h2 class="section-title">Module Summary & Next Steps</h2>
+            <div class="card bg-light">
+                <div class="card-body">
+                    <p>In Module 1, we have built the essential mathematical and conceptual foundation for statistical inference. We learned how to distinguish populations from samples, classify data types, summarize distributions, and apply probability theory. Most importantly, we unlocked the power of the <strong>Central Limit Theorem</strong> and the <strong>Standard Error</strong>, which allow us to quantify uncertainty and make inferences about the world from limited data.</p>
+                    
+                    <div class="alert alert-success mt-3 mb-0">
+                        <strong><i class="fas fa-rocket me-2"></i>What's Next?</strong>
+                        In <strong>Module 2: Estimation and Confidence Intervals</strong>, we will use the Standard Error to construct Confidence Intervals for population means and proportions. We will learn how to determine the required sample size for a desired margin of error and explore the trade-offs between confidence and precision.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>Beyond Data Analytics</h5>
+                    <p class="fst-italic text-info">Transforming Raw Data into Insights</p>
+                    <p>Empowering the next generation of data professionals to master the tools that drive modern decision-making.</p>
+                </div>
+                <div class="col-md-3">
+                    <h5>Resources</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="https://cran.r-project.org/manuals.html" class="text-white text-decoration-none">R Manuals</a></li>
+                        <li><a href="https://docs.scipy.org/doc/scipy/reference/stats.html" class="text-white text-decoration-none">SciPy Stats</a></li>
+                        <li><a href="https://stackoverflow.com/questions/tagged/statistics" class="text-white text-decoration-none">Stack Overflow</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3">
+                    <h5>Program</h5>
+                    <ul class="list-unstyled">
+                        <li>Professional Certificate</li>
+                        <li>in Data Science</li>
+                        <li class="mt-2"><a href="#home" class="text-white text-decoration-none">Back to Top</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="text-center mt-4 pt-3 border-top border-secondary">
+                <small>&copy; 2026 Beyond Data Analytics. All Rights Reserved.</small>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Highlight.js JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/languages/r.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/languages/python.min.js"></script>
+    <script>hljs.highlightAll();</script>
+
+</body>
+</html>

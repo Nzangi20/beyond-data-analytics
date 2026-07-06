@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Module 4: Nonparametric Methods, Regression Inference, and Advanced Topics | Beyond Data Analytics</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Highlight.js for Code Syntax Highlighting -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark.min.css">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary-color: #0d6efd;
+            --secondary-color: #6c757d;
+            --accent-color: #0dcaf0;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+            padding-top: 70px;
+        }
+
+        .navbar {
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            background: linear-gradient(90deg, #0d6efd 0%, #0a58ca 100%);
+        }
+        .navbar-brand { font-weight: 700; letter-spacing: 1px; }
+        .nav-link { font-weight: 500; transition: all 0.3s; }
+        .nav-link:hover { color: #ffc107 !important; transform: translateY(-2px); }
+
+        .hero-section {
+            background: url('https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80') no-repeat center center/cover;
+            height: 450px;
+            position: relative;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+        .hero-overlay {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.75);
+        }
+        .hero-content { position: relative; z-index: 2; }
+
+        .card {
+            border: none;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            transition: transform 0.3s;
+            margin-bottom: 20px;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        .card-header {
+            background-color: #fff;
+            border-bottom: 2px solid #0d6efd;
+            font-weight: 700;
+            color: #0d6efd;
+        }
+
+        pre {
+            border-radius: 8px;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+        }
+        code { font-family: 'Consolas', 'Monaco', monospace; }
+
+        .section-title {
+            position: relative;
+            padding-bottom: 15px;
+            margin-bottom: 30px;
+            font-weight: 700;
+        }
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 4px;
+            background-color: #0d6efd;
+        }
+
+        .table-custom {
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .table-custom thead {
+            background: linear-gradient(90deg, #0d6efd 0%, #0a58ca 100%);
+            color: white;
+        }
+
+        footer {
+            background-color: #212529;
+            color: white;
+            padding: 40px 0;
+            margin-top: 50px;
+        }
+        
+        .exercise-area {
+            background: #f8f9fa;
+            border: 1px dashed #0d6efd;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 10px;
+        }
+
+        .beyond-data-section {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 30px 35px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            border-left: 6px solid #28a745;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            position: relative;
+            overflow: hidden;
+        }
+        .beyond-data-section::before {
+            content: "📊";
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 5em;
+            opacity: 0.1;
+        }
+        .beyond-data-section h2 { color: #1e3c72; font-size: 1.6em; margin-bottom: 15px; }
+        .beyond-data-section .highlight { color: #28a745; font-weight: bold; }
+
+        .math-block {
+            background: #f8f9fa;
+            border-left: 4px solid #6f42c1;
+            padding: 15px 25px;
+            margin: 20px 0;
+            border-radius: 0 8px 8px 0;
+            font-family: 'Cambria Math', 'Times New Roman', serif;
+            font-size: 1.25rem;
+            color: #212529;
+            overflow-x: auto;
+            line-height: 1.8;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="#"><i class="fas fa-chart-line me-2"></i>Beyond Data Analytics</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="#nonparametric">Part A: Nonparametric</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#regression">Part B: Regression</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#advanced">Part C: Advanced</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#practical">Practical</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="#exercises">Exercises</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header id="home" class="hero-section">
+        <div class="hero-overlay"></div>
+        <div class="hero-content container">
+            <h1 class="display-3 fw-bold">Module 4: Advanced Statistical Inference</h1>
+            <p class="lead fs-4">Nonparametric Methods, Regression Inference, and Computational Statistics</p>
+            <h3 class="text-info fw-light fst-italic">Beyond Data Analytics</h3>
+            <p class="fs-5 text-light">Transforming Raw Data into Insights</p>
+            <a href="#objectives" class="btn btn-primary btn-lg mt-3 px-5 rounded-pill">Start Learning</a>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <div class="container my-5">
+
+        <!-- Beyond Data Analytics Section -->
+        <section class="beyond-data-section mb-5">
+            <h2>🌐 Beyond Data Analytics</h2>
+            <p>At <span class="highlight">Beyond Data Analytics</span>, we believe that data is more than just numbers and tables—it is the strategic foundation of modern decision-making. Our curriculum is meticulously designed to bridge the gap between theoretical knowledge and real-world application, empowering professionals to extract actionable insights, drive business value, and innovate across industries.</p>
+            <p>In this final module, we break free from the strict assumptions of parametric statistics. You will master <span class="highlight">distribution-free nonparametric methods</span> for messy, real-world data, learn the rigorous mathematical <span class="highlight">inference behind linear regression</span>, and explore cutting-edge <span class="highlight">computational techniques</span> like Bootstrapping and Bayesian inference. This module transforms you from a standard analyst into a versatile, computationally fluent statistical architect.</p>
+        </section>
+
+        <!-- Learning Objectives -->
+        <section id="objectives" class="mb-5">
+            <h2 class="section-title">Learning Objectives</h2>
+            <div class="card bg-light">
+                <div class="card-body">
+                    <p class="lead mb-3">By the end of this comprehensive module, participants will be able to:</p>
+                    <ul class="list-unstyled mb-0">
+                        <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> Apply nonparametric statistical methods (Mann-Whitney, Kruskal-Wallis, Spearman) when data violates normality assumptions.</li>
+                        <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> Conduct formal inference in linear regression models, including confidence intervals and hypothesis tests for coefficients.</li>
+                        <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> Perform and interpret rigorous model diagnostics to validate the LINE assumptions of regression.</li>
+                        <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> Implement computational resampling methods, including Bootstrapping and Permutation tests, to estimate complex standard errors.</li>
+                        <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> Understand the foundational philosophy of Bayesian inference and how it differs from frequentist statistics.</li>
+                        <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> Write reproducible, publication-quality statistical reports using R and Python.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-5">
+
+        <!-- PART A: NONPARAMETRIC INFERENCE -->
+        <section id="nonparametric" class="mb-5">
+            <h2 class="section-title">Part A: Nonparametric Inference</h2>
+            <p class="lead">Parametric tests (like the t-test and ANOVA) assume that your data follows a specific distribution, usually the Normal distribution. But what happens when your data is heavily skewed, contains extreme outliers, or is measured on an ordinal scale (like a Likert scale)? Nonparametric methods provide the solution.</p>
+            
+            <div class="card mb-4">
+                <div class="card-header">Why and When to Use Nonparametric Tests?</div>
+                <div class="card-body">
+                    <p>Nonparametric tests are often called <strong>distribution-free tests</strong>. They do not assume a specific underlying distribution for the data.</p>
+                    <h5 class="mt-3">When to use them:</h5>
+                    <ul>
+                        <li>The data is severely skewed or has heavy tails.</li>
+                        <li>The sample size is very small, making it impossible to verify the normality assumption.</li>
+                        <li>The data is ordinal (e.g., pain scales, customer satisfaction ratings) rather than continuous.</li>
+                        <li>There are extreme outliers that cannot be justified for removal and heavily distort the mean.</li>
+                    </ul>
+                    <div class="alert alert-warning">
+                        <strong>Trade-off:</strong> If your data <em>is</em> perfectly normal, parametric tests (like the t-test) are mathematically more <em>powerful</em> (more likely to detect a true effect) than their nonparametric counterparts. Nonparametric tests achieve robustness by sacrificing a small amount of statistical power.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sign Test -->
+            <div class="card mb-4">
+                <div class="card-header">1. The Sign Test (One-Sample & Paired)</div>
+                <div class="card-body">
+                    <p>The simplest nonparametric test. It ignores the magnitude of the differences and only looks at the <strong>direction</strong> (the sign: positive or negative).</p>
+                    <h5>Clinical Example:</h5>
+                    <p>We measure patient pain scores (0-10 ordinal scale) before and after a new physical therapy. We want to know if the therapy generally reduces pain.</p>
+                    <h5 class="mt-3">How it works:</h5>
+                    <ol>
+                        <li>Calculate the difference for each pair: <i>D<sub>i</sub></i> = Post - Pre.</li>
+                        <li>Count the number of positive differences (pain got worse) and negative differences (pain got better).</li>
+                        <li>Ignore any zeros (no change).</li>
+                        <li>Under the null hypothesis (no effect), we expect a 50/50 split. We use the Binomial distribution to test if the observed proportion of negative signs is significantly greater than 0.5.</li>
+                    </ol>
+                    <pre><code class="language-r"># R: Paired Sign Test
+pre_pain <- c(8, 7, 9, 6, 8, 7, 9, 8, 7, 6)
+post_pain <- c(7, 6, 8, 6, 7, 5, 8, 7, 6, 5)
+
+# Using the BSDA package
+library(BSDA)
+SIGN.test(pre_pain, post_pain, alternative = "greater")</code></pre>
+                </div>
+            </div>
+
+            <!-- Wilcoxon Signed-Rank -->
+            <div class="card mb-4">
+                <div class="card-header">2. Wilcoxon Signed-Rank Test (Paired / One-Sample)</div>
+                <div class="card-body">
+                    <p>The Wilcoxon Signed-Rank test is the nonparametric equivalent of the <strong>Paired t-test</strong>. Unlike the Sign Test, it considers both the <strong>sign</strong> and the <strong>magnitude</strong> of the differences by ranking them.</p>
+                    <h5>How it works:</h5>
+                    <ol>
+                        <li>Calculate the differences <i>D<sub>i</sub></i>.</li>
+                        <li>Rank the absolute values of the differences from smallest to largest.</li>
+                        <li>Attach the original sign (+ or -) to each rank.</li>
+                        <li>Sum the positive ranks (<i>W+</i>) and the negative ranks (<i>W-</i>).</li>
+                        <li>The test statistic <i>W</i> is the smaller of the two sums. If the treatment has a real effect, one sum will be drastically larger than the other.</li>
+                    </ol>
+                    <pre><code class="language-r"># R: Wilcoxon Signed-Rank Test
+# Testing if median difference is zero
+wilcox.test(pre_pain, post_pain, paired = TRUE, alternative = "greater")</code></pre>
+                    <pre><code class="language-python"># Python: Wilcoxon Signed-Rank Test
+from scipy.stats import wilcoxon
+stat, p_value = wilcoxon(pre_pain, post_pain, alternative='greater')
+print(f"Statistic: {stat}, P-value: {p_value}")</code></pre>
+                </div>
+            </div>
+
+            <!-- Mann-Whitney U -->
+            <div class="card mb-4">
+                <div class="card-header">3. Mann-Whitney U Test (Independent Two-Sample)</div>
+                <div class="card-body">
+                    <p>The nonparametric equivalent of the <strong>Independent Two-Sample t-test</strong>. It tests whether two independent groups come from the same distribution (specifically, if one group tends to have larger values than the other).</p>
+                    <h5>Clinical Example:</h5>
+                    <p>Comparing the number of days it takes to recover from a surgery using Technique A vs. Technique B. The recovery days are heavily right-skewed (most recover in 3 days, but a few take 30+ days).</p>
+                    <h5 class="mt-3">How it works:</h5>
+                    <ol>
+                        <li>Pool all observations from both groups together.</li>
+                        <li>Rank the entire pooled dataset from 1 to <i>N</i>.</li>
+                        <li>Sum the ranks for Group A (<i>R<sub>A</sub></i>) and Group B (<i>R<sub>B</sub></i>).</li>
+                        <li>Calculate the <i>U</i> statistic, which represents the number of times a value from Group A precedes a value from Group B.</li>
+                    </ol>
+                    <pre><code class="language-r"># R: Mann-Whitney U Test (wilcox.test in R)
+group_A <- c(3, 4, 3, 5, 4, 30, 3) # Skewed with an outlier
+group_B <- c(5, 6, 5, 7, 6, 8, 7)
+
+wilcox.test(group_A, group_B, alternative = "less")</code></pre>
+                    <pre><code class="language-python"># Python: Mann-Whitney U Test
+from scipy.stats import mannwhitneyu
+stat, p_value = mannwhitneyu(group_A, group_B, alternative='less')
+print(f"U-Statistic: {stat}, P-value: {p_value}")</code></pre>
+                </div>
+            </div>
+
+            <!-- Kruskal-Wallis -->
+            <div class="card mb-4">
+                <div class="card-header">4. Kruskal-Wallis Test (Independent >2 Samples)</div>
+                <div class="card-body">
+                    <p>The nonparametric equivalent of <strong>One-Way ANOVA</strong>. It tests if there are statistically significant differences between the medians of three or more independent groups.</p>
+                    <h5>How it works:</h5>
+                    <ol>
+                        <li>Pool all data from all <i>k</i> groups and rank them from 1 to <i>N</i>.</li>
+                        <li>Calculate the sum of ranks for each group.</li>
+                        <li>The <i>H</i> statistic measures the variance of these rank sums. If all groups are identical, the rank sums will be roughly equal.</li>
+                        <li>The <i>H</i> statistic follows a Chi-Square distribution with <i>k-1</i> degrees of freedom.</li>
+                    </ol>
+                    <pre><code class="language-r"># R: Kruskal-Wallis Test
+therapy_A <- c(4, 5, 4, 6, 5)
+therapy_B <- c(6, 7, 6, 8, 7)
+therapy_C <- c(3, 4, 3, 5, 4)
+
+# Combine into a data frame
+df_kw <- data.frame(
+    score = c(therapy_A, therapy_B, therapy_C),
+    group = rep(c("A", "B", "C"), each = 5)
+)
+
+kruskal.test(score ~ group, data = df_kw)</code></pre>
+                </div>
+            </div>
+
+            <!-- Spearman -->
+            <div class="card mb-4">
+                <div class="card-header">5. Spearman Rank Correlation</div>
+                <div class="card-body">
+                    <p>The nonparametric equivalent of <strong>Pearson Correlation</strong>. While Pearson measures <em>linear</em> relationships between continuous variables, Spearman measures <em>monotonic</em> relationships (as one variable increases, the other consistently increases or decreases, even if not in a straight line).</p>
+                    <h5>How it works:</h5>
+                    <p>It is literally just the Pearson correlation coefficient calculated on the <strong>ranks</strong> of the data rather than the raw values.</p>
+                    <div class="math-block">
+                        <i>&rho;</i><sub>s</sub> = 1 - [ (6 &times; &Sigma;<i>d<sub>i</sub></i><sup>2</sup>) / (<i>n</i>(<i>n</i><sup>2</sup> - 1)) ]
+                    </div>
+                    <p>Where <i>d<sub>i</sub></i> is the difference between the ranks of corresponding variables.</p>
+                    <pre><code class="language-r"># R: Spearman Correlation
+age <- c(20, 30, 40, 50, 60, 70)
+pain_score <- c(2, 3, 4, 5, 7, 9) # Monotonic but not perfectly linear
+
+cor.test(age, pain_score, method = "spearman")</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-5">
+
+        <!-- PART B: REGRESSION INFERENCE -->
+        <section id="regression" class="mb-5">
+            <h2 class="section-title">Part B: Regression Inference</h2>
+            <p class="lead">In Module 3, we learned how to fit a regression line. But fitting a line is just the beginning. Regression <em>inference</em> allows us to quantify the uncertainty of our model, test if the relationships are real, and predict future outcomes with calculated confidence.</p>
+
+            <div class="card mb-4">
+                <div class="card-header">1. Introduction to Linear Regression & OLS</div>
+                <div class="card-body">
+                    <p>The Simple Linear Regression model assumes that the relationship between a predictor (<i>X</i>) and a response (<i>Y</i>) can be described by a straight line, plus some random error.</p>
+                    <div class="math-block">
+                        <i>Y<sub>i</sub></i> = <i>&beta;<sub>0</sub></i> + <i>&beta;<sub>1</sub></i><i>X<sub>i</sub></i> + <i>&epsilon;<sub>i</sub></i>
+                    </div>
+                    <ul>
+                        <li><i>&beta;<sub>0</sub></i>: The true population y-intercept.</li>
+                        <li><i>&beta;<sub>1</sub></i>: The true population slope (the change in <i>Y</i> for a 1-unit increase in <i>X</i>).</li>
+                        <li><i>&epsilon;<sub>i</sub></i>: The random error term, assumed to be normally distributed with mean 0 and constant variance <i>&sigma;</i><sup>2</sup>.</li>
+                    </ul>
+                    <p>We estimate these unknown population parameters using <strong>Ordinary Least Squares (OLS)</strong>, which finds the line that minimizes the sum of the squared vertical distances (residuals) between the observed data points and the line.</p>
+                </div>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-header">2. Inference for Regression Coefficients</div>
+                <div class="card-body">
+                    <p>Because our sample is just one of many possible samples, our estimated slope (<i>&beta;&#770;<sub>1</sub></i>) is a random variable. It has its own sampling distribution.</p>
+                    <p>If the assumptions of linear regression hold, the sampling distribution of <i>&beta;&#770;<sub>1</sub></i> is Normal:</p>
+                    <div class="math-block">
+                        <i>&beta;&#770;<sub>1</sub></i> ~ <i>N</i>( <i>&beta;<sub>1</sub></i> , <i>&sigma;</i><sup>2</sup> / &Sigma;(<i>X<sub>i</sub></i> - <i>X&#772;</i>)<sup>2</sup> )
+                    </div>
+                    <p>The standard error of the slope, <i>SE</i>(<i>&beta;&#770;<sub>1</sub></i>), measures how much the estimated slope would vary from sample to sample. It decreases (becomes more precise) if the data points are spread far apart along the X-axis, or if the residual variance (<i>&sigma;</i><sup>2</sup>) is small.</p>
+                </div>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-header">3. Confidence Intervals & Hypothesis Testing</div>
+                <div class="card-body">
+                    <h5>Confidence Interval for the Slope</h5>
+                    <p>We use the t-distribution with <i>n-2</i> degrees of freedom to construct a confidence interval for the true population slope:</p>
+                    <div class="math-block">
+                        <i>&beta;&#770;<sub>1</sub></i> &plusmn; <i>t</i><sub>&alpha;/2, n-2</sub> &times; <i>SE</i>(<i>&beta;&#770;<sub>1</sub></i>)
+                    </div>
+                    <p><em>Interpretation:</em> "We are 95% confident that for every 1-unit increase in X, the true average change in Y is between [Lower Bound] and [Upper Bound]."</p>
+
+                    <h5 class="mt-4">Hypothesis Testing (The t-test)</h5>
+                    <p>To test if there is a <em>statistically significant</em> linear relationship between X and Y:</p>
+                    <ul>
+                        <li><i>H<sub>0</sub></i>: <i>&beta;<sub>1</sub></i> = 0 (No linear relationship)</li>
+                        <li><i>H<sub>A</sub></i>: <i>&beta;<sub>1</sub></i> &ne; 0 (There is a linear relationship)</li>
+                    </ul>
+                    <p>The test statistic is:</p>
+                    <div class="math-block">
+                        <i>t</i> = <i>&beta;&#770;<sub>1</sub></i> / <i>SE</i>(<i>&beta;&#770;<sub>1</sub></i>)
+                    </div>
+                    <p>If the p-value associated with this t-statistic is &lt; 0.05, we reject the null hypothesis and conclude that the predictor is statistically significant.</p>
+                </div>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-header">4. Coefficient of Determination (R²)</div>
+                <div class="card-body">
+                    <p><i>R</i><sup>2</sup> measures the <strong>proportion of the variance in the dependent variable (<i>Y</i>) that is predictable from the independent variable (<i>X</i>)</strong>.</p>
+                    <div class="math-block">
+                        <i>R</i><sup>2</sup> = <i>SSR</i> / <i>SST</i> = 1 - (<i>SSE</i> / <i>SST</i>)
+                    </div>
+                    <ul>
+                        <li><strong>SST</strong> (Total Sum of Squares): Total variability in <i>Y</i>.</li>
+                        <li><strong>SSR</strong> (Regression Sum of Squares): Variability explained by the model.</li>
+                        <li><strong>SSE</strong> (Error Sum of Squares): Unexplained variability (residuals).</li>
+                    </ul>
+                    <p>An <i>R</i><sup>2</sup> of 0.85 means that 85% of the variation in <i>Y</i> is explained by the linear relationship with <i>X</i>, while 15% remains unexplained (due to other factors or random noise).</p>
+                </div>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-header">5. Model Diagnostics (Checking the LINE Assumptions)</div>
+                <div class="card-body">
+                    <p>Regression inference is only valid if the underlying assumptions hold. We use the acronym <strong>LINE</strong> to remember them:</p>
+                    <table class="table table-custom">
+                        <thead>
+                            <tr><th>Assumption</th><th>Meaning</th><th>How to Check (Visual)</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>L</strong>inearity</td>
+                                <td>The relationship between X and Y is linear.</td>
+                                <td><strong>Residuals vs. Fitted Plot:</strong> Should show a random scatter of points around the horizontal line at 0. A curved pattern indicates non-linearity.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>I</strong>ndependence</td>
+                                <td>The observations (and their residuals) are independent of each other.</td>
+                                <td>Checked via study design. For time-series data, check a <strong>Residuals vs. Order Plot</strong> for autocorrelation.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>N</strong>ormality</td>
+                                <td>The residuals are normally distributed.</td>
+                                <td><strong>Normal Q-Q Plot:</strong> Points should closely follow the diagonal dashed line. Deviations at the tails indicate skewness or heavy tails.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>E</strong>qual Variance<br>(Homoscedasticity)</td>
+                                <td>The variance of the residuals is constant across all levels of X.</td>
+                                <td><strong>Scale-Location Plot:</strong> The spread of points should be roughly equal across the x-axis. A funnel shape indicates heteroscedasticity.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <pre><code class="language-r"># R: Running Regression and Diagnostics
+model_lm <- lm(MaxHR ~ Age, data = heart)
+
+# View Inference Summary (Coefficients, p-values, R-squared)
+summary(model_lm)
+
+# Extract 95% Confidence Intervals for coefficients
+confint(model_lm, level = 0.95)
+
+# Generate the 4 Diagnostic Plots
+par(mfrow = c(2, 2))
+plot(model_lm)</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-5">
+
+        <!-- PART C: ADVANCED TOPICS -->
+        <section id="advanced" class="mb-5">
+            <h2 class="section-title">Part C: Advanced Topics</h2>
+            <p class="lead">Modern statistics is no longer just about looking up critical values in a textbook table. Computational power has given rise to resampling methods, Bayesian philosophy, and a strict emphasis on reproducibility.</p>
+
+            <div class="card mb-4">
+                <div class="card-header">1. Bootstrap Methods</div>
+                <div class="card-body">
+                    <p>The Bootstrap is a powerful resampling technique used to estimate the sampling distribution of <em>any</em> statistic (mean, median, odds ratio, etc.) by sampling with replacement from the original dataset.</p>
+                    <h5 class="mt-3">The Bootstrap Algorithm:</h5>
+                    <ol>
+                        <li>Draw a random sample of size <i>n</i> <strong>with replacement</strong> from your original dataset. (This is called a "bootstrap sample". Some original data points will appear multiple times, and some won't appear at all).</li>
+                        <li>Calculate the statistic of interest (e.g., the median) for this bootstrap sample.</li>
+                        <li>Repeat steps 1 and 2 <i>B</i> times (usually <i>B</i> = 1000 or 10000).</li>
+                        <li>The distribution of these <i>B</i> statistics approximates the true sampling distribution. You can calculate the standard error or construct a 95% Confidence Interval by taking the 2.5th and 97.5th percentiles.</li>
+                    </ol>
+                    <div class="alert alert-info">
+                        <strong>Why is this useful?</strong> If you want a confidence interval for the <em>median</em> or the <em>difference in medians</em>, there is no simple mathematical formula. The Bootstrap provides a computational workaround that requires zero distributional assumptions!
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-header">2. Permutation Tests</div>
+                <div class="card-body">
+                    <p>Also known as randomization tests, these are used to build an <strong>exact null distribution</strong> without relying on theoretical distributions like the t-distribution or F-distribution.</p>
+                    <h5>How it works:</h5>
+                    <ol>
+                        <li>Calculate your observed test statistic (e.g., the difference in means between Treatment and Control).</li>
+                        <li>Shuffle (permute) the group labels randomly. (e.g., randomly reassign the "Treatment" and "Control" tags to the patients).</li>
+                        <li>Recalculate the test statistic for this shuffled data.</li>
+                        <li>Repeat this thousands of times to build a distribution of what the test statistic looks like when the null hypothesis is <em>definitely true</em> (since shuffling destroys any real treatment effect).</li>
+                        <li>The p-value is simply the proportion of permuted statistics that are as extreme as or more extreme than your original observed statistic.</li>
+                    </ol>
+                </div>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-header">3. Introduction to Bayesian Inference</div>
+                <div class="card-body">
+                    <p>Frequentist statistics (everything we've done so far) treats parameters (like <i>&mu;</i> or <i>&beta;</i>) as fixed, unknown constants. Bayesian statistics treats parameters as <strong>random variables</strong> that have their own probability distributions.</p>
+                    <h5>The Bayesian Philosophy:</h5>
+                    <p>You start with a <strong>Prior Distribution</strong> (your belief about the parameter before seeing the data). You then collect data, and use Bayes' Theorem to update your belief, resulting in the <strong>Posterior Distribution</strong>.</p>
+                    <div class="math-block">
+                        <i>Posterior</i> &prop; <i>Likelihood</i> &times; <i>Prior</i>
+                    </div>
+                    <p><em>Clinical Interpretation:</em> "Based on prior clinical trials (Prior), and the new data from our 500 patients (Likelihood), there is a 95% probability that the true efficacy of the drug lies between 60% and 75% (Posterior)." This is a much more intuitive statement for clinicians than a Frequentist 95% Confidence Interval!</p>
+                </div>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-header">4. Reporting Results & Reproducibility</div>
+                <div class="card-body">
+                    <h5>Best Practices for Reporting:</h5>
+                    <ul>
+                        <li><strong>Always report Effect Sizes:</strong> A p-value only tells you if an effect exists. The effect size (e.g., Cohen's <i>d</i>, Odds Ratio, <i>&beta;</i> coefficient) tells you if it matters.</li>
+                        <li><strong>Prefer Confidence Intervals over p-values:</strong> CIs provide a range of plausible values and convey the precision of the estimate.</li>
+                        <li><strong>Avoid "p-hacking":</strong> Do not run 20 different statistical tests and only report the one that yielded <i>p</i> &lt; 0.05. Pre-register your analysis plan.</li>
+                    </ul>
+                    <h5 class="mt-4">Reproducible Statistical Analysis:</h5>
+                    <p>A study is reproducible if another researcher can take your raw data and your code, and arrive at the exact same conclusions. To achieve this:</p>
+                    <ul>
+                        <li>Use <strong>Literate Programming</strong> tools like R Markdown / Quarto, or Jupyter Notebooks. These combine your code, output, and written narrative into a single document.</li>
+                        <li>Always set a random seed (<code>set.seed(42)</code>) at the top of your script for any stochastic processes (train/test splits, bootstrapping, MCMC).</li>
+                        <li>Use version control (Git/GitHub) to track changes to your analysis code over time.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-5">
+
+        <!-- PRACTICAL SESSION -->
+        <section id="practical" class="mb-5">
+            <h2 class="section-title">Practical Session: Computational Inference</h2>
+            <p class="lead">Let's combine nonparametric testing, regression inference, and bootstrapping into a comprehensive R and Python workflow.</p>
+            
+            <div class="card mb-4">
+                <div class="card-header">R Implementation: Nonparametric & Regression</div>
+                <div class="card-body">
+                    <pre><code class="language-r"># ==============================================================================
+# 1. NONPARAMETRIC TESTING
+# ==============================================================================
+# Scenario: Does MaxHR differ significantly between Chest Pain types?
+# Since MaxHR might not be perfectly normal across all groups, we use Kruskal-Wallis.
+
+kruskal_res <- kruskal.test(MaxHR ~ ChestPain, data = heart)
+print(kruskal_res)
+
+# Post-hoc pairwise comparisons using Wilcoxon with Bonferroni correction
+pairwise.wilcox.test(heart$MaxHR, heart$ChestPain, p.adjust.method = "bonferroni")
+
+# Spearman Correlation: Is there a monotonic relationship between Age and Oldpeak?
+cor_res <- cor.test(heart$Age, heart$Oldpeak, method = "spearman")
+cat("Spearman Rho:", cor_res$estimate, "\n")
+cat("P-value:", cor_res$p.value, "\n")
+
+# ==============================================================================
+# 2. REGRESSION INFERENCE
+# ==============================================================================
+# Predicting MaxHR based on Age
+model_lm <- lm(MaxHR ~ Age, data = heart)
+
+# Full statistical summary
+summary(model_lm)
+# Interpretation: Look at the 'Estimate' for Age (the slope), its 'Std. Error',
+# the 't value', and the 'Pr(>|t|)' p-value.
+
+# ==============================================================================
+# 3. BOOTSTRAPPING A CONFIDENCE INTERVAL FOR THE MEDIAN
+# ==============================================================================
+library(boot)
+
+# Define a function to calculate the median
+median_func <- function(data, indices) {
+  d <- data[indices] # Sample with replacement
+  return(median(d))
+}
+
+# Run the bootstrap (1000 replications)
+set.seed(123)
+boot_results <- boot(data = heart$MaxHR, statistic = median_func, R = 1000)
+
+# View the Bootstrap Confidence Intervals
+boot.ci(boot_results, type = c("norm", "basic", "perc", "bca"))</code></pre>
+                </div>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-header">Python Implementation: Statsmodels & Scipy</div>
+                <div class="card-body">
+                    <pre><code class="language-python">import pandas as pd
+import numpy as np
+import scipy.stats as stats
+import statsmodels.api as sm
+import statsmodels.formula.api as smf
+
+# Load Data
+df = pd.read_csv("Heart.csv").dropna()
+
+# ==============================================================================
+# 1. NONPARAMETRIC TESTING
+# ==============================================================================
+# Mann-Whitney U: Compare MaxHR between Sex (0 vs 1)
+group_0 = df[df['Sex'] == 0]['MaxHR']
+group_1 = df[df['Sex'] == 1]['MaxHR']
+
+stat, p_val = stats.mannwhitneyu(group_0, group_1, alternative='two-sided')
+print(f"Mann-Whitney U P-value: {p_val:.4f}")
+
+# Spearman Correlation
+rho, p_val_spearman = stats.spearmanr(df['Age'], df['Oldpeak'])
+print(f"Spearman Rho: {rho:.4f}, P-value: {p_val_spearman:.6f}")
+
+# ==============================================================================
+# 2. REGRESSION INFERENCE
+# ==============================================================================
+# Using Statsmodels Formula API (similar to R's lm)
+model = smf.ols('MaxHR ~ Age', data=df).fit()
+
+# Print the comprehensive regression table
+print(model.summary())
+# The summary includes the coef, std err, t, P>|t|, and the 95% Conf. Intervals
+
+# ==============================================================================
+# 3. BOOTSTRAPPING IN PYTHON
+# ==============================================================================
+def bootstrap_median(data, n_iterations=10000):
+    np.random.seed(123)
+    medians = []
+    for _ in range(n_iterations):
+        sample = np.random.choice(data, size=len(data), replace=True)
+        medians.append(np.median(sample))
+    return np.array(medians)
+
+boot_medians = bootstrap_median(df['MaxHR'].values)
+
+# Calculate 95% Percentile Confidence Interval
+ci_lower = np.percentile(boot_medians, 2.5)
+ci_upper = np.percentile(boot_medians, 97.5)
+
+print(f"Bootstrap 95% CI for Median MaxHR: [{ci_lower:.2f}, {ci_upper:.2f}]")</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-5">
+
+        <!-- EXERCISES -->
+        <section id="exercises" class="mb-5">
+            <h2 class="section-title">Practical Exercises</h2>
+            <p class="lead">Test your mastery of advanced statistical inference. Write your answers or code, then reveal the solutions.</p>
+            
+            <!-- Exercise 1 -->
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">Exercise 1: Choosing the Right Nonparametric Test</div>
+                <div class="card-body">
+                    <div class="mb-0">
+                        <label class="form-label fw-bold">1. A researcher wants to evaluate the effectiveness of a new teaching method. She measures the exam scores of 30 students before the intervention, and again after the intervention. The score differences are heavily skewed by a few students who had massive improvements. Which statistical test should she use to determine if the intervention significantly improved scores?</label>
+                        <div class="exercise-area">
+                            <textarea class="form-control font-monospace" rows="3" placeholder="Write your answer here..."></textarea>
+                            <button class="btn btn-outline-primary btn-sm mt-2" type="button" data-bs-toggle="collapse" data-bs-target="#ans1_1">Submit & Check Answer</button>
+                            <div class="collapse mt-3" id="ans1_1">
+                                <div class="alert alert-success mb-0">
+                                    <strong><i class="fas fa-check-circle me-2"></i>Correct Answer:</strong>
+                                    <p class="mt-2 mb-0"><strong>Wilcoxon Signed-Rank Test (Paired).</strong></p>
+                                    <p class="mb-0"><em>Reasoning:</em> The data is paired (same students measured twice). Because the differences are heavily skewed (violating the normality assumption required for the Paired t-test), the nonparametric Wilcoxon Signed-Rank test is the appropriate choice. The Sign Test could also be used, but Wilcoxon is more powerful as it considers the magnitude of the ranks.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Exercise 2 -->
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">Exercise 2: Interpreting Regression Output</div>
+                <div class="card-body">
+                    <div class="mb-0">
+                        <label class="form-label fw-bold">1. You run a simple linear regression predicting Hospital Stay Duration (days) based on Patient Age (years). The output shows: <i>&beta;&#770;<sub>0</sub></i> = 2.5, <i>&beta;&#770;<sub>1</sub></i> = 0.15, <i>SE</i>(<i>&beta;&#770;<sub>1</sub></i>) = 0.03, <i>p-value</i> for <i>&beta;<sub>1</sub></i> &lt; 0.001, <i>R</i><sup>2</sup> = 0.42. <br> a) Write the estimated regression equation. <br> b) Interpret the slope coefficient in plain English. <br> c) What does the R-squared value tell you?</label>
+                        <div class="exercise-area">
+                            <textarea class="form-control font-monospace" rows="5" placeholder="Write your interpretation here..."></textarea>
+                            <button class="btn btn-outline-primary btn-sm mt-2" type="button" data-bs-toggle="collapse" data-bs-target="#ans2_1">Submit & Check Answer</button>
+                            <div class="collapse mt-3" id="ans2_1">
+                                <div class="alert alert-success mb-0">
+                                    <strong><i class="fas fa-check-circle me-2"></i>Correct Answer:</strong>
+                                    <ul class="mt-2 mb-0">
+                                        <li><strong>a) Equation:</strong> <i>Stay Duration&#770;</i> = 2.5 + 0.15 &times; <i>Age</i></li>
+                                        <li><strong>b) Slope Interpretation:</strong> For every additional year of age, the predicted hospital stay duration increases by 0.15 days (or roughly 3.6 hours), on average. Because the p-value &lt; 0.001, this relationship is highly statistically significant.</li>
+                                        <li><strong>c) R-squared Interpretation:</strong> 42% of the variability in hospital stay duration can be explained by the patient's age. The remaining 58% is due to other factors not included in the model (e.g., severity of illness, complications).</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Exercise 3 -->
+            <div class="card mb-4">
+                <div class="card-header bg-danger text-white">Exercise 3: Regression Diagnostics</div>
+                <div class="card-body">
+                    <div class="mb-0">
+                        <label class="form-label fw-bold">1. You fit a linear regression model and examine the diagnostic plots. <br> - The <strong>Residuals vs. Fitted</strong> plot shows a clear "U-shape" curve. <br> - The <strong>Normal Q-Q</strong> plot shows points hugging the diagonal line perfectly in the middle, but curving sharply away at the top right and bottom left. <br> What two LINE assumptions are violated, and what might you do to fix them?</label>
+                        <div class="exercise-area">
+                            <textarea class="form-control font-monospace" rows="4" placeholder="Write your answer here..."></textarea>
+                            <button class="btn btn-outline-danger btn-sm mt-2" type="button" data-bs-toggle="collapse" data-bs-target="#ans3_1">Submit & Check Answer</button>
+                            <div class="collapse mt-3" id="ans3_1">
+                                <div class="alert alert-success mb-0">
+                                    <strong><i class="fas fa-check-circle me-2"></i>Correct Answer:</strong>
+                                    <ul class="mt-2 mb-0">
+                                        <li><strong>Violation 1: Linearity.</strong> The "U-shape" in the Residuals vs. Fitted plot indicates that the true relationship is curved (non-linear), not a straight line. <em>Fix:</em> Add a polynomial term (e.g., <i>X</i><sup>2</sup>) to the model, or apply a transformation to <i>X</i> or <i>Y</i> (like log or square root).</li>
+                                        <li><strong>Violation 2: Normality of Residuals.</strong> The S-curve in the Q-Q plot indicates heavy tails (outliers) in the residuals. <em>Fix:</em> Investigate and potentially remove influential outliers, or use a robust regression method / nonparametric alternative.</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Exercise 4 -->
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">Exercise 4: Bootstrap Concept</div>
+                <div class="card-body">
+                    <div class="mb-0">
+                        <label class="form-label fw-bold">1. You have a dataset of 50 patient recovery times. You want to calculate a 95% confidence interval for the <strong>Interquartile Range (IQR)</strong> of recovery times. Why can't you use a standard mathematical formula for this, and how exactly does the Bootstrap solve this problem?</label>
+                        <div class="exercise-area">
+                            <textarea class="form-control font-monospace" rows="4" placeholder="Write your answer here..."></textarea>
+                            <button class="btn btn-outline-primary btn-sm mt-2" type="button" data-bs-toggle="collapse" data-bs-target="#ans4_1">Submit & Check Answer</button>
+                            <div class="collapse mt-3" id="ans4_1">
+                                <div class="alert alert-success mb-0">
+                                    <strong><i class="fas fa-check-circle me-2"></i>Correct Answer:</strong>
+                                    <p class="mt-2 mb-1">There is no simple, closed-form mathematical formula to calculate the standard error of the IQR, making traditional parametric confidence intervals impossible to construct.</p>
+                                    <p class="mb-0"><strong>The Bootstrap Solution:</strong> You would draw 10,000 random samples of size 50 <em>with replacement</em> from your original dataset. For each of the 10,000 samples, you calculate the IQR. The 2.5th percentile and 97.5th percentile of those 10,000 IQR values form your empirical 95% Bootstrap Confidence Interval.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-5">
+
+        <!-- Module Summary -->
+        <section id="summary" class="mb-5">
+            <h2 class="section-title">Module Summary & Course Conclusion</h2>
+            <div class="card bg-light">
+                <div class="card-body">
+                    <p>In Module 4, we completed our journey through statistical inference. We learned how to handle messy, real-world data using <strong>nonparametric tests</strong> that don't rely on strict distributional assumptions. We uncovered the mathematical engine behind <strong>linear regression</strong>, learning how to test coefficients, build confidence intervals, and rigorously diagnose model assumptions. Finally, we stepped into the modern era of computational statistics with <strong>Bootstrapping and Bayesian inference</strong>.</p>
+                    
+                    <div class="alert alert-success mt-3 mb-0">
+                        <strong><i class="fas fa-graduation-cap me-2"></i>Congratulations!</strong>
+                        You have completed the Statistical Inference course. You now possess the mathematical foundation and computational skills to design experiments, analyze complex data, quantify uncertainty, and make rigorous, data-driven decisions. You are ready to apply these skills to advanced machine learning, biostatistics, and predictive modeling!
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>Beyond Data Analytics</h5>
+                    <p class="fst-italic text-info">Transforming Raw Data into Insights</p>
+                    <p>Empowering the next generation of data professionals to master the tools that drive modern decision-making.</p>
+                </div>
+                <div class="col-md-3">
+                    <h5>Resources</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="https://cran.r-project.org/manuals.html" class="text-white text-decoration-none">R Manuals</a></li>
+                        <li><a href="https://docs.scipy.org/doc/scipy/reference/stats.html" class="text-white text-decoration-none">SciPy Stats</a></li>
+                        <li><a href="https://www.statsmodels.org/stable/index.html" class="text-white text-decoration-none">Statsmodels</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3">
+                    <h5>Program</h5>
+                    <ul class="list-unstyled">
+                        <li>Professional Certificate</li>
+                        <li>in Data Science</li>
+                        <li class="mt-2"><a href="#home" class="text-white text-decoration-none">Back to Top</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="text-center mt-4 pt-3 border-top border-secondary">
+                <small>&copy; 2026 Beyond Data Analytics. All Rights Reserved.</small>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Highlight.js JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/languages/r.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/languages/python.min.js"></script>
+    <script>hljs.highlightAll();</script>
+
+</body>
+</html>

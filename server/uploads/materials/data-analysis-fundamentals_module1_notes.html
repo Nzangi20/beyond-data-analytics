@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Module 1: Introduction to Data Analysis and Data Preparation | Beyond Data Analytics</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Highlight.js for Code Syntax Highlighting -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark.min.css">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary-color: #0d6efd;
+            --secondary-color: #6c757d;
+            --accent-color: #0dcaf0;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+            padding-top: 70px; /* Space for fixed navbar */
+        }
+
+        /* Navbar Styling */
+        .navbar {
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            background: linear-gradient(90deg, #0d6efd 0%, #0a58ca 100%);
+        }
+        .navbar-brand {
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+        .nav-link {
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        .nav-link:hover {
+            color: #ffc107 !important;
+            transform: translateY(-2px);
+        }
+
+        /* Hero Section */
+        .hero-section {
+            background: url('https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80') no-repeat center center/cover;
+            height: 450px;
+            position: relative;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+        .hero-overlay {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.75);
+        }
+        .hero-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Content Cards */
+        .card {
+            border: none;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            transition: transform 0.3s;
+            margin-bottom: 20px;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        .card-header {
+            background-color: #fff;
+            border-bottom: 2px solid #0d6efd;
+            font-weight: 700;
+            color: #0d6efd;
+        }
+
+        /* Code Blocks */
+        pre {
+            border-radius: 8px;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+        }
+        code {
+            font-family: 'Consolas', 'Monaco', monospace;
+        }
+
+        /* Section Titles */
+        .section-title {
+            position: relative;
+            padding-bottom: 15px;
+            margin-bottom: 30px;
+            font-weight: 700;
+        }
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 4px;
+            background-color: #0d6efd;
+        }
+
+        /* Tables */
+        .table-custom {
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .table-custom thead {
+            background: linear-gradient(90deg, #0d6efd 0%, #0a58ca 100%);
+            color: white;
+        }
+
+        /* Footer */
+        footer {
+            background-color: #212529;
+            color: white;
+            padding: 40px 0;
+            margin-top: 50px;
+        }
+        
+        /* Exercise Area */
+        .exercise-area {
+            background: #f8f9fa;
+            border: 1px dashed #0d6efd;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 10px;
+        }
+
+        /* Beyond Data Section */
+        .beyond-data-section {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 30px 35px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            border-left: 6px solid #28a745;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            position: relative;
+            overflow: hidden;
+        }
+        .beyond-data-section::before {
+            content: "📊";
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 5em;
+            opacity: 0.1;
+        }
+        .beyond-data-section h2 {
+            color: #1e3c72;
+            font-size: 1.6em;
+            margin-bottom: 15px;
+        }
+        .beyond-data-section .highlight {
+            color: #28a745;
+            font-weight: bold;
+        }
+
+        /* Math Blocks (Pure HTML/CSS Equations) */
+        .math-block {
+            background: #f8f9fa;
+            border-left: 4px solid #6f42c1;
+            padding: 15px 25px;
+            margin: 20px 0;
+            border-radius: 0 8px 8px 0;
+            font-family: 'Cambria Math', 'Times New Roman', serif;
+            font-size: 1.25rem;
+            color: #212529;
+            overflow-x: auto;
+            line-height: 1.8;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="#"><i class="fas fa-chart-line me-2"></i>Beyond Data Analytics</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="#intro">1.1 Intro</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#types">1.2 Data Types</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#import">1.3 Import/Export</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#cleaning">1.4 Cleaning</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#transform">1.5 Transform</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#practical">1.6 Practical</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="#exercises">Exercises</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header id="home" class="hero-section">
+        <div class="hero-overlay"></div>
+        <div class="hero-content container">
+            <h1 class="display-3 fw-bold">Module 1: Data Analysis & Preparation</h1>
+            <p class="lead fs-4">Master the foundations of data wrangling, cleaning, and preparation in R</p>
+            <h3 class="text-info fw-light fst-italic">Beyond Data Analytics</h3>
+            <p class="fs-5 text-light">Transforming Raw Data into Insights</p>
+            <a href="#objectives" class="btn btn-primary btn-lg mt-3 px-5 rounded-pill">Start Learning</a>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <div class="container my-5">
+
+        <!-- Beyond Data Analytics Section -->
+        <section class="beyond-data-section mb-5">
+            <h2>🌐 Beyond Data Analytics</h2>
+            <p>At <span class="highlight">Beyond Data Analytics</span>, we believe that data is more than just numbers and tables—it is the strategic foundation of modern decision-making. Our curriculum is meticulously designed to bridge the gap between theoretical knowledge and real-world application, empowering professionals to extract actionable insights, drive business value, and innovate across industries.</p>
+            <p>Before you can build predictive models or generate insights, you must master the art of data preparation. In the real world, data is messy, incomplete, and unstructured. This module equips you with the foundational skills to import, clean, transform, and validate data using <span class="highlight">R and the Tidyverse</span>, ensuring your analyses are built on a bedrock of quality and integrity.</p>
+        </section>
+
+        <!-- Learning Objectives -->
+        <section id="objectives" class="mb-5">
+            <h2 class="section-title">Learning Objectives</h2>
+            <div class="card bg-light">
+                <div class="card-body">
+                    <p class="lead mb-3">By the end of this comprehensive module, participants will be able to:</p>
+                    <ul class="list-unstyled mb-0">
+                        <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> Understand the end-to-end data analysis workflow and its applications in business and research.</li>
+                        <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> Identify and classify different types of data and levels of measurement to select appropriate analytical methods.</li>
+                        <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> Import, inspect, and export data from various formats (CSV, Excel, SPSS) using R.</li>
+                        <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> Systematically clean data by handling missing values (MCAR, MAR, MNAR) and treating outliers.</li>
+                        <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> Transform, code, and recode variables to prepare datasets for advanced statistical modeling and machine learning.</li>
+                        <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> Perform rigorous data validation and quality assessment to ensure analytical integrity.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-5">
+
+        <!-- 1.1 Introduction to Data Analysis -->
+        <section id="intro" class="mb-5">
+            <h2 class="section-title">1.1 Introduction to Data Analysis</h2>
+            <p class="lead">Data analysis is the process of inspecting, cleansing, transforming, and modeling data with the goal of discovering useful information, informing conclusions, and supporting decision-making.</p>
+            <div class="card">
+                <div class="card-body">
+                    <h5>The Data Analysis Workflow</h5>
+                    <p>Modern data analysis follows a structured, iterative lifecycle. While frameworks vary, the core steps remain consistent:</p>
+                    <ol>
+                        <li><strong>Ask:</strong> Define the problem, objectives, and key questions. What business or clinical decision will this analysis inform?</li>
+                        <li><strong>Collect:</strong> Gather data from primary sources (surveys, experiments) or secondary sources (databases, APIs, public repositories).</li>
+                        <li><strong>Process (Clean):</strong> Handle missing values, remove duplicates, fix errors, and standardize formats. <em>(This module's primary focus)</em>.</li>
+                        <li><strong>Analyze:</strong> Apply statistical methods, exploratory data analysis (EDA), or machine learning algorithms to find patterns.</li>
+                        <li><strong>Share:</strong> Visualize findings and communicate insights to stakeholders through reports and dashboards.</li>
+                        <li><strong>Act:</strong> Use the insights to make informed, data-driven decisions and implement changes.</li>
+                    </ol>
+
+                    <h5 class="mt-4">Data Sources and Collection Methods</h5>
+                    <table class="table table-custom">
+                        <thead>
+                            <tr><th>Source Type</th><th>Description</th><th>Examples</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Observational</strong></td>
+                                <td>Data collected without interfering or manipulating the environment.</td>
+                                <td>Customer purchase logs, Electronic Health Records (EHR), web scraping.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Experimental</strong></td>
+                                <td>Data collected under controlled conditions where variables are manipulated.</td>
+                                <td>Clinical trials (RCTs), A/B testing in marketing.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Survey/Self-Report</strong></td>
+                                <td>Data gathered by asking individuals questions.</td>
+                                <td>Questionnaires, interviews, Likert scales.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Sensor/IoT</strong></td>
+                                <td>Automated data collection via hardware devices.</td>
+                                <td>Wearable fitness trackers, smart meters, manufacturing telemetry.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-5">
+
+        <!-- 1.2 Types of Data & Levels of Measurement -->
+        <section id="types" class="mb-5">
+            <h2 class="section-title">1.2 Types of Data and Levels of Measurement</h2>
+            <p class="lead">Understanding the nature of your variables is the most critical step in data preparation. The data type dictates which cleaning techniques, visualizations, and statistical tests are mathematically valid.</p>
+            <div class="card">
+                <div class="card-body">
+                    <h5>1. Qualitative (Categorical) Data</h5>
+                    <p>Data that represents characteristics or categories. It cannot be measured on a numerical scale that supports meaningful arithmetic.</p>
+                    <ul>
+                        <li><strong>Nominal:</strong> Categories with no inherent order (e.g., Blood Type, Country, Marital Status).</li>
+                        <li><strong>Ordinal:</strong> Categories with a meaningful order or ranking, but unequal intervals (e.g., Pain Scale 1-10, Education Level, Likert Scales).</li>
+                    </ul>
+
+                    <h5 class="mt-4">2. Quantitative (Numerical) Data</h5>
+                    <p>Data that represents counts or measurements. Arithmetic operations are meaningful.</p>
+                    <ul>
+                        <li><strong>Discrete:</strong> Countable, usually whole numbers. (e.g., Number of children, Number of hospital visits).</li>
+                        <li><strong>Continuous:</strong> Measurable, can take any value within a range, including decimals. (e.g., Height, Weight, Temperature, Blood Pressure).</li>
+                    </ul>
+
+                    <h5 class="mt-4">Stevens' Levels of Measurement (NOIR)</h5>
+                    <div class="accordion" id="accordionNOIR">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#colNom"><span class="badge bg-danger me-2">1</span> Nominal</button></h2>
+                            <div id="colNom" class="accordion-collapse collapse" data-bs-parent="#accordionNOIR">
+                                <div class="accordion-body">Identity only. No order. <strong>Stats:</strong> Mode, Frequency. <strong>R Class:</strong> <code>factor</code> or <code>character</code>.</div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#colOrd"><span class="badge bg-warning me-2">2</span> Ordinal</button></h2>
+                            <div id="colOrd" class="accordion-collapse collapse" data-bs-parent="#accordionNOIR">
+                                <div class="accordion-body">Identity + Order. Intervals are unknown. <strong>Stats:</strong> Median, Percentiles. <strong>R Class:</strong> <code>ordered factor</code>.</div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#colInt"><span class="badge bg-info me-2">3</span> Interval</button></h2>
+                            <div id="colInt" class="accordion-collapse collapse" data-bs-parent="#accordionNOIR">
+                                <div class="accordion-body">Identity + Order + Equal Intervals. <strong>No true zero.</strong> <strong>Stats:</strong> Mean, SD. <strong>R Class:</strong> <code>numeric</code>.</div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#colRat"><span class="badge bg-success me-2">4</span> Ratio</button></h2>
+                            <div id="colRat" class="accordion-collapse collapse" data-bs-parent="#accordionNOIR">
+                                <div class="accordion-body">Identity + Order + Equal Intervals + <strong>Absolute Zero</strong>. Ratios are meaningful. <strong>Stats:</strong> All. <strong>R Class:</strong> <code>numeric</code>.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-5">
+
+        <!-- 1.3 Data Import and Export -->
+        <section id="import" class="mb-5">
+            <h2 class="section-title">1.3 Data Import and Export in R</h2>
+            <p class="lead">R provides powerful tools for reading and writing data. While Base R has built-in functions, the <code>tidyverse</code> ecosystem (specifically <code>readr</code>, <code>readxl</code>, and <code>haven</code>) offers significantly faster and more robust alternatives.</p>
+            <div class="card">
+                <div class="card-body">
+                    <h5>Importing Data</h5>
+                    <pre><code class="language-r"># Install packages if necessary
+# install.packages(c("tidyverse", "readxl", "haven"))
+library(tidyverse)
+library(readxl)
+library(haven)
+
+# 1. CSV Files (Using readr - much faster than base read.csv)
+df_csv <- read_csv("data/patient_records.csv")
+
+# 2. Excel Files (Using readxl - no Java dependencies required)
+df_excel <- read_excel("data/financial_report.xlsx", sheet = "Q1_Summary")
+
+# 3. SPSS / SAS / Stata Files (Using haven - crucial for clinical/survey data)
+df_spss <- read_sav("data/survey_data.sav")
+df_stata <- read_dta("data/economic_data.dta")
+
+# 4. R Data Files (.rds or .RData)
+df_rds <- read_rds("data/cleaned_model_data.rds")</code></pre>
+
+                    <h5 class="mt-4">Exporting Data</h5>
+                    <pre><code class="language-r"># Export to CSV
+write_csv(df_csv, "outputs/cleaned_patient_records.csv")
+
+# Export to Excel
+library(writexl)
+write_xlsx(df_excel, "outputs/financial_report_cleaned.xlsx")
+
+# Export to RDS (Best practice for saving R objects to reload later)
+write_rds(df_csv, "outputs/cleaned_patient_records.rds")</code></pre>
+
+                    <h5 class="mt-4">Initial Data Inspection</h5>
+                    <p>Always inspect your data immediately after importing to understand its structure.</p>
+                    <pre><code class="language-r"># View the first 6 rows
+head(df_csv)
+
+# Get a comprehensive glance at columns, types, and missing values
+glimpse(df_csv)
+
+# Statistical summary of all variables
+summary(df_csv)
+
+# Check dimensions (rows, columns)
+dim(df_csv)</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-5">
+
+        <!-- 1.4 Data Cleaning -->
+        <section id="cleaning" class="mb-5">
+            <h2 class="section-title">1.4 Data Cleaning: Missing Values & Outliers</h2>
+            <p class="lead">Real-world data is inherently messy. "Garbage in, garbage out" is the golden rule of data science. Cleaning is often the most time-consuming, yet most critical, phase of the analytical workflow.</p>
+            <div class="card">
+                <div class="card-body">
+                    <h5>1. Handling Missing Values</h5>
+                    <p>Missing data (represented as <code>NA</code> in R) is not just an annoyance; it can introduce severe bias if not handled correctly. We must first understand <em>why</em> data is missing:</p>
+                    <table class="table table-custom">
+                        <thead>
+                            <tr><th>Type</th><th>Definition</th><th>Clinical/Business Example</th><th>R Strategy</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>MCAR</strong><br>(Missing Completely at Random)</td>
+                                <td>The missingness has no relationship with any observed or unobserved data.</td>
+                                <td>A lab machine randomly fails to process a blood sample.</td>
+                                <td>Listwise deletion (<code>drop_na()</code>) is generally safe.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>MAR</strong><br>(Missing at Random)</td>
+                                <td>The missingness is related to observed data, but not the missing data itself.</td>
+                                <td>Older patients are less likely to report their income (missingness depends on Age, not Income).</td>
+                                <td>Imputation using predictive models (e.g., <code>mice</code> package).</td>
+                            </tr>
+                            <tr>
+                                <td><strong>MNAR</strong><br>(Missing Not at Random)</td>
+                                <td>The missingness is related to the unobserved missing data itself.</td>
+                                <td>People with very high incomes refuse to report their income on a survey.</td>
+                                <td>Requires domain expertise. Create a "Missing" indicator category or use specialized models.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h6 class="mt-4">Handling Missing Data in R</h6>
+                    <pre><code class="language-r">library(tidyverse)
+
+# Count missing values per column
+df_csv %>% summarise(across(everything(), ~ sum(is.na(.))))
+
+# Strategy 1: Drop rows with ANY missing value (Listwise Deletion)
+df_clean <- df_csv %>% drop_na()
+
+# Strategy 2: Drop rows where a SPECIFIC key column is missing
+df_clean <- df_csv %>% drop_na(Target_Variable)
+
+# Strategy 3: Replace missing values with a constant (e.g., 0 or "Unknown")
+df_clean <- df_csv %>%
+  mutate(
+    Income = replace_na(Income, 0),
+    Category = replace_na(Category, "Unknown")
+  )
+
+# Strategy 4: Impute with Mean/Median (for continuous variables)
+df_clean <- df_csv %>%
+  mutate(
+    Age = ifelse(is.na(Age), median(Age, na.rm = TRUE), Age)
+  )</code></pre>
+
+                    <h5 class="mt-5">2. Detecting and Treating Outliers</h5>
+                    <p>Outliers are extreme values that deviate significantly from other observations. They can be genuine anomalies (e.g., a rare disease) or data entry errors (e.g., typing 200 instead of 20 for Age).</p>
+                    
+                    <h6>Method A: The Interquartile Range (IQR) Rule</h6>
+                    <p>Robust to non-normal distributions. Uses the 25th (<i>Q<sub>1</sub></i>) and 75th (<i>Q<sub>3</sub></i>) percentiles.</p>
+                    <div class="math-block">
+                        <i>IQR</i> = <i>Q<sub>3</sub></i> - <i>Q<sub>1</sub></i><br>
+                        <i>Lower Bound</i> = <i>Q<sub>1</sub></i> - 1.5 &times; <i>IQR</i><br>
+                        <i>Upper Bound</i> = <i>Q<sub>3</sub></i> + 1.5 &times; <i>IQR</i>
+                    </div>
+
+                    <h6>Method B: The Z-Score Method</h6>
+                    <p>Assumes the data is approximately normally distributed. Identifies points that are multiple standard deviations away from the mean.</p>
+                    <div class="math-block">
+                        <i>Z</i> = (<i>X</i> - <i>&mu;</i>) / <i>&sigma;</i><br>
+                        Outliers are typically defined as |<i>Z</i>| &gt; 3
+                    </div>
+
+                    <h6 class="mt-4">Treating Outliers in R</h6>
+                    <pre><code class="language-r"># Visualizing Outliers with a Boxplot
+ggplot(df_csv, aes(y = Income)) + 
+  geom_boxplot(fill = "lightblue", color = "black") +
+  theme_minimal() +
+  labs(title = "Boxplot of Income to Detect Outliers")
+
+# Treating Outliers using the IQR Method (Winsorization / Capping)
+Q1 <- quantile(df_csv$Income, 0.25, na.rm = TRUE)
+Q3 <- quantile(df_csv$Income, 0.75, na.rm = TRUE)
+IQR_val <- IQR(Q3, Q1)
+
+lower_bound <- Q1 - 1.5 * IQR_val
+upper_bound <- Q3 + 1.5 * IQR_val
+
+# Cap the outliers at the bounds (Winsorization)
+df_csv <- df_csv %>%
+  mutate(
+    Income_Capped = case_when(
+      Income < lower_bound ~ lower_bound,
+      Income > upper_bound ~ upper_bound,
+      TRUE ~ Income
+    )
+  )
+
+# Alternatively, remove outliers entirely
+df_no_outliers <- df_csv %>%
+  filter(Income >= lower_bound & Income <= upper_bound)</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-5">
+
+        <!-- 1.5 Data Transformation -->
+        <section id="transform" class="mb-5">
+            <h2 class="section-title">1.5 Data Transformation and Validation</h2>
+            <p class="lead">Once data is clean, it must be transformed into the correct format and scale required for statistical modeling and machine learning algorithms.</p>
+            <div class="card">
+                <div class="card-body">
+                    <h5>1. Data Coding and Recoding</h5>
+                    <p>Often, raw data needs to be grouped, binned, or relabeled to make it analytically useful.</p>
+                    <pre><code class="language-r">library(dplyr)
+
+# Recoding categorical variables (e.g., cleaning messy survey responses)
+df_clean <- df_csv %>%
+  mutate(
+    Education_Clean = recode(Education_Raw,
+      "High School Grad" = "High School",
+      "HS Diploma" = "High School",
+      "Bachelors Degree" = "Bachelor's",
+      "BS" = "Bachelor's"
+    )
+  )
+
+# Creating Ordinal Factors (Crucial for statistical modeling in R)
+df_clean <- df_clean %>%
+  mutate(
+    Pain_Level = factor(Pain_Score, 
+                        levels = c(1, 2, 3, 4, 5), 
+                        labels = c("None", "Mild", "Moderate", "Severe", "Extreme"),
+                        ordered = TRUE)
+  )
+
+# Binning Continuous Variables (e.g., Age groups)
+df_clean <- df_clean %>%
+  mutate(
+    Age_Group = cut(Age, 
+                    breaks = c(0, 18, 35, 50, 65, 100), 
+                    labels = c("Minor", "Young Adult", "Adult", "Senior", "Elderly"))
+  )</code></pre>
+
+                    <h5 class="mt-4">2. Conditional Transformation with <code>case_when()</code></h5>
+                    <p>The <code>case_when()</code> function is R's equivalent to SQL's <code>CASE WHEN</code> or Excel's nested <code>IF</code>. It is the most readable way to create complex categorical variables.</p>
+                    <pre><code class="language-r">df_clean <- df_clean %>%
+  mutate(
+    Risk_Category = case_when(
+      Age > 65 & Chol > 240 ~ "High Risk",
+      Age > 50 & Chol > 200 ~ "Moderate Risk",
+      Age <= 50 & Chol <= 200 ~ "Low Risk",
+      is.na(Chol) ~ "Unknown Risk",
+      TRUE ~ "Standard Risk" # Default fallback condition
+    )
+  )</code></pre>
+
+                    <h5 class="mt-4">3. Data Validation and Quality Assessment</h5>
+                    <p>Before moving to analysis, perform a final sanity check to ensure logical consistency.</p>
+                    <pre><code class="language-r">library(janitor) # Excellent package for data cleaning and validation
+
+# 1. Check for duplicate rows
+df_clean <- df_clean %>% get_dupes(everything())
+# If no duplicates, it returns an empty tibble.
+
+# 2. Standardize column names (make them snake_case, lowercase)
+df_clean <- df_clean %>% clean_names()
+
+# 3. Check for logical inconsistencies
+# E.g., Discharge Date cannot be before Admission Date
+logical_errors <- df_clean %>%
+  filter(Discharge_Date < Admission_Date)
+
+# 4. Verify factor levels and counts
+table(df_clean$Risk_Category, useNA = "ifany")</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-5">
+
+        <!-- 1.6 Practical Session -->
+        <section id="practical" class="mb-5">
+            <h2 class="section-title">1.6 Practical Session: End-to-End Data Preparation</h2>
+            <p class="lead">Let's combine everything we've learned into a comprehensive, reproducible R script using the <code>tidyverse</code> pipeline.</p>
+            <div class="card">
+                <div class="card-body">
+                    <h5>Scenario: Preparing a Messy Clinical Dataset</h5>
+                    <p>We have a dataset <code>messy_clinical_data.csv</code> with missing ages, extreme cholesterol outliers, and messy text entries. We need to prepare it for a predictive model.</p>
+                    <pre><code class="language-r"># ==============================================================================
+# 1. SETUP AND IMPORT
+# ==============================================================================
+library(tidyverse)
+library(janitor)
+
+# Import and immediately clean column names
+raw_data <- read_csv("data/messy_clinical_data.csv") %>%
+  clean_names()
+
+# Initial inspection
+glimpse(raw_data)
+
+# ==============================================================================
+# 2. DATA CLEANING (Missing Values & Outliers)
+# ==============================================================================
+clean_data <- raw_data %>%
+  # Handle Missing Values
+  mutate(
+    # Impute missing Age with the median
+    age = ifelse(is.na(age), median(age, na.rm = TRUE), age),
+    
+    # Replace missing categorical data with "Unknown"
+    smoking_status = replace_na(smoking_status, "Unknown")
+  ) %>%
+  # Handle Outliers in Cholesterol (IQR Capping)
+  mutate(
+    chol_q1 = quantile(cholesterol, 0.25, na.rm = TRUE),
+    chol_q3 = quantile(cholesterol, 0.75, na.rm = TRUE),
+    chol_iqr = chol_q3 - chol_q1,
+    chol_lower = chol_q1 - 1.5 * chol_iqr,
+    chol_upper = chol_q3 + 1.5 * chol_iqr,
+    
+    # Cap the outliers
+    cholesterol_capped = case_when(
+      cholesterol < chol_lower ~ chol_lower,
+      cholesterol > chol_upper ~ chol_upper,
+      TRUE ~ cholesterol
+    )
+  ) %>%
+  # Remove the temporary helper columns
+  select(-starts_with("chol_"))
+
+# ==============================================================================
+# 3. DATA TRANSFORMATION & RECODING
+# ==============================================================================
+final_data <- clean_data %>%
+  # Recode messy text entries
+  mutate(
+    gender = recode(gender, "M" = "Male", "F" = "Female", "m" = "Male", "f" = "Female"),
+    
+    # Create a new categorical variable based on clinical guidelines
+    bp_category = case_when(
+      systolic_bp < 120 & diastolic_bp < 80 ~ "Normal",
+      systolic_bp >= 120 & systolic_bp < 130 ~ "Elevated",
+      systolic_bp >= 130 | diastolic_bp >= 80 ~ "Hypertension",
+      TRUE ~ "Unknown"
+    ),
+    
+    # Convert bp_category to an ordered factor
+    bp_category = factor(bp_category, 
+                         levels = c("Normal", "Elevated", "Hypertension", "Unknown"),
+                         ordered = TRUE)
+  ) %>%
+  # Drop rows where the target variable is missing
+  drop_na(target_disease)
+
+# ==============================================================================
+# 4. VALIDATION AND EXPORT
+# ==============================================================================
+# Final sanity check
+cat("Final Dataset Dimensions:", dim(final_data), "\n")
+cat("Missing Values Remaining:", sum(is.na(final_data)), "\n")
+
+# Export the clean dataset
+write_csv(final_data, "outputs/final_clean_clinical_data.csv")
+write_rds(final_data, "outputs/final_clean_clinical_data.rds")
+
+cat("✅ Data preparation complete! Ready for modeling.\n")</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-5">
+
+        <!-- Practical Exercises -->
+        <section id="exercises" class="mb-5">
+            <h2 class="section-title">Practical Exercises</h2>
+            <p class="lead">Test your data wrangling skills. Write your R code in the provided text areas, then click "Submit & Check Answer" to reveal the optimal <code>tidyverse</code> solutions.</p>
+            
+            <!-- Exercise 1 -->
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">Exercise 1: Data Import & Inspection</div>
+                <div class="card-body">
+                    <div class="mb-0">
+                        <label class="form-label fw-bold">1. You are given an Excel file named <code>sales_2025.xlsx</code> with multiple sheets. Write the R code to import the sheet named "Q1_Data" into a data frame called <code>q1_sales</code>, and then display the structure of the data using the most comprehensive function available in the <code>tidyverse</code>.</label>
+                        <div class="exercise-area">
+                            <textarea class="form-control font-monospace" rows="4" placeholder="Write your R code here..."></textarea>
+                            <button class="btn btn-outline-primary btn-sm mt-2" type="button" data-bs-toggle="collapse" data-bs-target="#ans1_1">Submit & Check Answer</button>
+                            <div class="collapse mt-3" id="ans1_1">
+                                <div class="alert alert-success mb-0">
+                                    <strong><i class="fas fa-check-circle me-2"></i>Correct Answer:</strong>
+                                    <pre class="mb-0 mt-2"><code class="language-r">library(readxl)
+library(tidyverse)
+
+# Import specific sheet
+q1_sales <- read_excel("sales_2025.xlsx", sheet = "Q1_Data")
+
+# Comprehensive inspection
+glimpse(q1_sales)</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Exercise 2 -->
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">Exercise 2: Handling Missing Data</div>
+                <div class="card-body">
+                    <div class="mb-0">
+                        <label class="form-label fw-bold">1. In your dataset <code>df</code>, the column <code>income</code> has missing values (<code>NA</code>). Write a <code>dplyr</code> pipeline to replace all missing values in <code>income</code> with the median income of the non-missing values. Additionally, drop any rows where the <code>age</code> column is missing.</label>
+                        <div class="exercise-area">
+                            <textarea class="form-control font-monospace" rows="6" placeholder="Write your R code here..."></textarea>
+                            <button class="btn btn-outline-primary btn-sm mt-2" type="button" data-bs-toggle="collapse" data-bs-target="#ans2_1">Submit & Check Answer</button>
+                            <div class="collapse mt-3" id="ans2_1">
+                                <div class="alert alert-success mb-0">
+                                    <strong><i class="fas fa-check-circle me-2"></i>Correct Answer:</strong>
+                                    <pre class="mb-0 mt-2"><code class="language-r">library(dplyr)
+
+df_clean <- df %>%
+  # Impute missing income with median
+  mutate(
+    income = ifelse(is.na(income), median(income, na.rm = TRUE), income)
+  ) %>%
+  # Drop rows where age is NA
+  drop_na(age)</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Exercise 3 -->
+            <div class="card mb-4">
+                <div class="card-header bg-danger text-white">Exercise 3: Outlier Detection & Treatment</div>
+                <div class="card-body">
+                    <div class="mb-0">
+                        <label class="form-label fw-bold">1. You suspect the <code>test_score</code> variable in your dataset <code>students</code> contains extreme outliers. Write the R code to calculate the IQR bounds (using the 1.5 multiplier) and create a new dataset <code>students_filtered</code> that completely removes any rows where <code>test_score</code> falls outside these bounds.</label>
+                        <div class="exercise-area">
+                            <textarea class="form-control font-monospace" rows="8" placeholder="Write your R code here..."></textarea>
+                            <button class="btn btn-outline-danger btn-sm mt-2" type="button" data-bs-toggle="collapse" data-bs-target="#ans3_1">Submit & Check Answer</button>
+                            <div class="collapse mt-3" id="ans3_1">
+                                <div class="alert alert-success mb-0">
+                                    <strong><i class="fas fa-check-circle me-2"></i>Correct Answer:</strong>
+                                    <pre class="mb-0 mt-2"><code class="language-r">library(dplyr)
+
+# Calculate bounds
+Q1 <- quantile(students$test_score, 0.25, na.rm = TRUE)
+Q3 <- quantile(students$test_score, 0.75, na.rm = TRUE)
+IQR_val <- IQR(Q3, Q1)
+
+lower_bound <- Q1 - 1.5 * IQR_val
+upper_bound <- Q3 + 1.5 * IQR_val
+
+# Filter out outliers
+students_filtered <- students %>%
+  filter(test_score >= lower_bound & test_score <= upper_bound)</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Exercise 4 -->
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">Exercise 4: Transformation & Recoding</div>
+                <div class="card-body">
+                    <div class="mb-0">
+                        <label class="form-label fw-bold">1. Using the <code>patients</code> dataset, write a <code>mutate()</code> pipeline using <code>case_when()</code> to create a new column called <code>bmi_category</code>. <br> - BMI &lt; 18.5 : "Underweight" <br> - BMI &gt;= 18.5 & &lt; 25 : "Normal" <br> - BMI &gt;= 25 & &lt; 30 : "Overweight" <br> - BMI &gt;= 30 : "Obese" <br> - Any other value (or NA) : "Unknown"</label>
+                        <div class="exercise-area">
+                            <textarea class="form-control font-monospace" rows="10" placeholder="Write your R code here..."></textarea>
+                            <button class="btn btn-outline-primary btn-sm mt-2" type="button" data-bs-toggle="collapse" data-bs-target="#ans4_1">Submit & Check Answer</button>
+                            <div class="collapse mt-3" id="ans4_1">
+                                <div class="alert alert-success mb-0">
+                                    <strong><i class="fas fa-check-circle me-2"></i>Correct Answer:</strong>
+                                    <pre class="mb-0 mt-2"><code class="language-r">library(dplyr)
+
+patients <- patients %>%
+  mutate(
+    bmi_category = case_when(
+      bmi < 18.5 ~ "Underweight",
+      bmi >= 18.5 & bmi < 25 ~ "Normal",
+      bmi >= 25 & bmi < 30 ~ "Overweight",
+      bmi >= 30 ~ "Obese",
+      TRUE ~ "Unknown" # Handles NAs and unexpected values
+    )
+  )</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-5">
+
+        <!-- Module Summary -->
+        <section id="summary" class="mb-5">
+            <h2 class="section-title">Module Summary & Next Steps</h2>
+            <div class="card bg-light">
+                <div class="card-body">
+                    <p>In Module 1, we laid the critical groundwork for all future data analysis. We learned how to classify data types, import data from diverse sources into R, and systematically clean messy datasets by handling missing values and treating outliers. We mastered the <code>tidyverse</code> pipeline to transform, recode, and validate data, ensuring it is primed for statistical modeling.</p>
+                    
+                    <div class="alert alert-info mt-3 mb-0">
+                        <strong>🚀 What's Next?</strong>
+                        In <strong>Module 2: Exploratory Data Analysis (EDA) and Visualization</strong>, we will take our clean data and bring it to life. We will master <code>ggplot2</code> to create publication-quality visualizations, calculate descriptive statistics, and uncover hidden patterns, correlations, and distributions before we ever build a predictive model.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>Beyond Data Analytics</h5>
+                    <p class="fst-italic text-info">Transforming Raw Data into Insights</p>
+                    <p>Empowering the next generation of data professionals to master the tools that drive modern decision-making.</p>
+                </div>
+                <div class="col-md-3">
+                    <h5>Resources</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="https://r4ds.hadley.nz/" class="text-white text-decoration-none">R for Data Science (Book)</a></li>
+                        <li><a href="https://www.tidyverse.org/packages/" class="text-white text-decoration-none">Tidyverse Packages</a></li>
+                        <li><a href="https://stackoverflow.com/questions/tagged/r" class="text-white text-decoration-none">Stack Overflow</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3">
+                    <h5>Program</h5>
+                    <ul class="list-unstyled">
+                        <li>Professional Certificate</li>
+                        <li>in Data Science</li>
+                        <li class="mt-2"><a href="#home" class="text-white text-decoration-none">Back to Top</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="text-center mt-4 pt-3 border-top border-secondary">
+                <small>&copy; 2026 Beyond Data Analytics. All Rights Reserved.</small>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Highlight.js JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/languages/r.min.js"></script>
+    <script>hljs.highlightAll();</script>
+
+</body>
+</html>

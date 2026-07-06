@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Module Two Assessment | Machine Learning & Predictive Modeling</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --success: #10b981;
+            --success-bg: #dcfce7;
+            --error: #ef4444;
+            --error-bg: #fee2e2;
+            --warning: #f59e0b;
+            --bg-body: #f8fafc;
+            --bg-card: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            line-height: 1.6;
+            padding-bottom: 100px;
+        }
+
+        .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+
+        /* Header */
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
+            color: white;
+            padding: 40px 20px;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px -5px rgba(37, 99, 235, 0.3);
+        }
+
+        header h1 { font-size: 2.2rem; font-weight: 800; margin-bottom: 10px; }
+        header p { font-size: 1.1rem; opacity: 0.9; max-width: 600px; margin: 0 auto; }
+        .badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-top: 15px;
+            backdrop-filter: blur(4px);
+        }
+
+        /* Question Cards */
+        .question-card {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            border: 1px solid var(--border);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .question-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px -4px rgba(0,0,0,0.08);
+        }
+
+        .q-number {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 8px;
+        }
+
+        .q-text {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: var(--text-main);
+        }
+
+        .options-container { display: flex; flex-direction: column; gap: 12px; }
+
+        .option-label {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            padding: 14px 18px;
+            background: #f8fafc;
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 0.95rem;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .option-label:hover {
+            background: #eff6ff;
+            border-color: var(--primary);
+        }
+
+        .option-label input[type="radio"] {
+            margin-right: 12px;
+            accent-color: var(--primary);
+            transform: scale(1.2);
+        }
+
+        .option-label.selected {
+            background: #eff6ff;
+            border-color: var(--primary);
+            font-weight: 500;
+        }
+
+        /* Submit Button */
+        .submit-container {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid var(--border);
+            padding: 20px;
+            text-align: center;
+            z-index: 50;
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            border: none;
+            padding: 16px 48px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            border-radius: 12px;
+            cursor: pointer;
+            box-shadow: 0 4px 14px rgba(37, 99, 235, 0.4);
+            transition: all 0.2s;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(37, 99, 235, 0.5);
+        }
+
+        .submit-btn:disabled {
+            background: #94a3b8;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* Modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 23, 42, 0.7);
+            backdrop-filter: blur(8px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        .modal-content {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            max-width: 450px;
+            width: 90%;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0.8) translateY(20px); opacity: 0; }
+            100% { transform: scale(1) translateY(0); opacity: 1; }
+        }
+
+        .modal-icon { font-size: 4rem; margin-bottom: 15px; display: block; }
+        .modal-title { font-size: 1.8rem; font-weight: 800; margin-bottom: 10px; }
+        
+        .score-display {
+            font-size: 3rem;
+            font-weight: 800;
+            margin: 20px 0;
+            line-height: 1;
+        }
+        
+        .pass-theme .score-display { color: var(--success); }
+        .fail-theme .score-display { color: var(--warning); }
+
+        .modal-message {
+            font-size: 1.05rem;
+            color: var(--text-muted);
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        .modal-btn {
+            border: none;
+            padding: 14px 32px;
+            font-size: 1rem;
+            font-weight: 700;
+            border-radius: 10px;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.2s;
+        }
+
+        .pass-btn {
+            background: var(--success);
+            color: white;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        }
+        .pass-btn:hover { background: #059669; }
+
+        .fail-btn {
+            background: var(--warning);
+            color: white;
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+        }
+        .fail-btn:hover { background: #d97706; }
+
+        /* Confetti */
+        .confetti {
+            position: absolute;
+            width: 10px; height: 10px;
+            background: var(--success);
+            opacity: 0;
+        }
+        .pass-theme .confetti { animation: confettiFall 3s ease-in-out forwards; }
+        @keyframes confettiFall {
+            0% { transform: translateY(-20px) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(400px) rotate(720deg); opacity: 0; }
+        }
+
+        @media (max-width: 640px) {
+            header h1 { font-size: 1.6rem; }
+            .question-card { padding: 18px; }
+            .q-text { font-size: 1rem; }
+            .option-label { font-size: 0.85rem; padding: 12px 14px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>Module Two Assessment</h1>
+            <p>Machine Learning, Predictive Modeling & Explainable AI</p>
+            <div class="badge">🎯 Pass Mark: 70% (14/20) &nbsp;|&nbsp; 🔄 20 Questions to Attempt</div>
+        </header>
+        
+        <form id="quiz-form">
+            <div id="quiz-container"></div>
+        </form>
+    </div>
+
+    <div class="submit-container">
+        <button type="button" class="submit-btn" id="submit-btn" onclick="submitQuiz()">Submit Assessment</button>
+    </div>
+
+    <!-- Results Modal -->
+    <div id="results-modal" class="modal-overlay">
+        <div class="modal-content" id="modal-card">
+            <div class="confetti-container" id="confetti-container"></div>
+            <span class="modal-icon" id="modal-icon">🏆</span>
+            <h2 class="modal-title" id="modal-title">Congratulations!</h2>
+            <div class="score-display" id="score-display">0%</div>
+            <p class="modal-message" id="modal-message"></p>
+            <button class="modal-btn pass-btn" id="modal-btn" onclick="location.reload()">Retake Assessment</button>
+        </div>
+    </div>
+
+    <script>
+        // ==========================================
+        // POOL OF 40 QUESTIONS (MODULE TWO: ML)
+        // ==========================================
+        const questionPool = [
+            { q: "What is the primary difference between supervised and unsupervised learning?", options: ["Supervised uses labeled data, unsupervised uses unlabeled data.", "Supervised uses neural networks, unsupervised uses decision trees.", "Supervised is for classification, unsupervised is for regression.", "Supervised requires less data than unsupervised."], correct: 0 },
+            { q: "In a clinical model predicting heart disease, why is Recall (Sensitivity) often prioritized over Precision?", options: ["False positives lead to higher costs.", "False negatives can result in missed life-threatening diagnoses.", "Recall is easier to calculate.", "Precision is only relevant for regression tasks."], correct: 1 },
+            { q: "Which of the following code snippets correctly creates a stratified train-test split while preserving class distribution?", options: ["train_test_split(X, y, test_size=0.2, random_state=42)", "train_test_split(X, y, test_size=0.2, stratify=y, random_state=42)", "train_test_split(X, y, test_size=0.2, stratify=X, random_state=42)", "train_test_split(X, y, test_size=0.2, shuffle=False)"], correct: 1 },
+            { q: "What does the F1-Score measure?", options: ["The harmonic mean of Precision and Recall.", "The arithmetic mean of Precision and Accuracy.", "The ratio of True Positives to False Negatives.", "The area under the ROC curve."], correct: 0 },
+            { q: "Which pipeline construction is correct for preprocessing followed by a classifier?", options: ["Pipeline([('scaler', StandardScaler()), ('clf', RandomForestClassifier())])", "Pipeline([StandardScaler(), RandomForestClassifier()])", "Pipeline(scaler=StandardScaler(), clf=RandomForestClassifier())", "Pipeline({'scaler': StandardScaler(), 'clf': RandomForestClassifier()})"], correct: 0 },
+            { q: "In RandomizedSearchCV, what is the main advantage over GridSearchCV?", options: ["It guarantees finding the absolute best hyperparameters.", "It evaluates a fixed number of random combinations, making it more computationally efficient.", "It only works with tree-based models.", "It automatically handles class imbalance."], correct: 1 },
+            { q: "What is the primary purpose of the scale_pos_weight parameter in XGBoost?", options: ["To scale numerical features before training.", "To adjust the model's focus toward the minority class in imbalanced datasets.", "To control the learning rate.", "To prune decision trees."], correct: 1 },
+            { q: "Which metric is most appropriate for evaluating model performance on highly imbalanced classification datasets?", options: ["Accuracy", "ROC-AUC or PR-AUC", "Mean Squared Error", "R-squared"], correct: 1 },
+            { q: "Identify the correct code to calculate Precision-Recall AUC.", options: ["roc_auc_score(y_test, y_pred)", "auc(rec, prec) after prec, rec, _ = precision_recall_curve(y_test, y_prob)", "precision_score(y_test, y_pred) * recall_score(y_test, y_pred)", "f1_score(y_test, y_pred, average='macro')"], correct: 1 },
+            { q: "What problem does SMOTE (Synthetic Minority Over-sampling Technique) solve?", options: ["Overfitting in deep learning models.", "Class imbalance by generating synthetic samples for the minority class.", "Feature scaling inconsistencies.", "Missing value imputation."], correct: 1 },
+            { q: "Why must SMOTE be applied inside the cross-validation pipeline rather than before it?", options: ["To speed up training.", "To prevent data leakage where synthetic samples from the training fold leak into validation folds.", "Because SMOTE requires GPU acceleration.", "To automatically normalize the data."], correct: 1 },
+            { q: "Which code correctly handles missing values with median imputation followed by standardization in a pipeline?", options: ["Pipeline([('imputer', SimpleImputer(strategy='mean')), ('scaler', StandardScaler())])", "Pipeline([('imputer', SimpleImputer(strategy='median')), ('scaler', StandardScaler())])", "Pipeline([SimpleImputer(strategy='median'), StandardScaler()])", "ColumnTransformer([('num', SimpleImputer(strategy='median'))])"], correct: 1 },
+            { q: "What does a ROC-AUC score of 0.95 indicate?", options: ["The model has a 95% accuracy.", "The model has excellent discriminative ability to separate classes across thresholds.", "The model overfits by 95%.", "95% of the features are important."], correct: 1 },
+            { q: "In SHAP analysis, what does the base value E[f(x)] represent?", options: ["The final prediction for a specific instance.", "The average model prediction across the entire training dataset.", "The contribution of a single feature.", "The learning rate of the model."], correct: 1 },
+            { q: "Which code snippet correctly extracts feature importances from a trained Random Forest model within a pipeline?", options: ["model.named_steps['rf'].feature_importances_", "model.feature_importances_", "model.named_steps['pre'].feature_importances_", "model.get_params()['rf'].importance"], correct: 0 },
+            { q: "What is the main difference between Bagging (e.g., Random Forest) and Boosting (e.g., XGBoost)?", options: ["Bagging builds trees sequentially, Boosting builds them independently.", "Bagging builds independent trees and aggregates them; Boosting builds trees sequentially, correcting previous errors.", "Bagging only works for classification, Boosting only for regression.", "There is no practical difference."], correct: 1 },
+            { q: "Which scoring parameter in RandomizedSearchCV is best for optimizing models on imbalanced medical data?", options: ["scoring='accuracy'", "scoring='roc_auc'", "scoring='mean_squared_error'", "scoring='r2'"], correct: 1 },
+            { q: "What does a high number of False Positives in a heart disease model imply?", options: ["Many sick patients are missed.", "Many healthy patients are incorrectly flagged as sick, leading to unnecessary tests.", "The model has perfect calibration.", "The dataset is perfectly balanced."], correct: 1 },
+            { q: "Identify the correct code to apply ColumnTransformer to scale numerical features and encode categorical features.", options: ["ColumnTransformer(transformers=[('num', StandardScaler(), num_cols), ('cat', OrdinalEncoder(), cat_cols)])", "ColumnTransformer([StandardScaler(num_cols), OrdinalEncoder(cat_cols)])", "ColumnTransformer(transformers=[StandardScaler(), OrdinalEncoder()])", "ColumnTransformer({'num': StandardScaler(), 'cat': OrdinalEncoder()})"], correct: 0 },
+            { q: "What is the primary purpose of a calibration curve in clinical ML?", options: ["To measure training time.", "To assess if predicted probabilities match observed event frequencies.", "To select the best features.", "To calculate the confusion matrix."], correct: 1 },
+            { q: "Which hyperparameter in a Decision Tree directly controls overfitting by limiting tree growth?", options: ["learning_rate", "max_depth", "n_estimators", "C"], correct: 1 },
+            { q: "In SVC, which parameter must be set to True to enable predict_proba?", options: ["kernel='linear'", "probability=True", "class_weight='balanced'", "decision_function_shape='ovr'"], correct: 1 },
+            { q: "What does class_weight='balanced' do in scikit-learn classifiers?", options: ["It duplicates minority class samples.", "It automatically adjusts weights inversely proportional to class frequencies.", "It scales features to have zero mean.", "It removes outliers."], correct: 1 },
+            { q: "Which code correctly computes the confusion matrix and extracts True Positives?", options: ["cm = confusion_matrix(y_test, y_pred); TP = cm[1, 1]", "cm = confusion_matrix(y_test, y_pred); TP = cm[0, 0]", "TP = accuracy_score(y_test, y_pred)", "TP = f1_score(y_test, y_pred)"], correct: 0 },
+            { q: "Why is OrdinalEncoder sometimes preferred over OneHotEncoder in tree-based models?", options: ["It reduces memory usage and trees handle ordinal codes well without assuming linearity.", "It creates more features for better accuracy.", "It automatically handles missing values.", "It normalizes the data."], correct: 0 },
+            { q: "What is the 'Golden Rule' for applying SMOTE during cross-validation?", options: ["Apply SMOTE to the entire dataset before splitting.", "Use imblearn.pipeline.Pipeline so SMOTE is only applied to training folds during CV.", "Only apply SMOTE to the test set.", "SMOTE should never be used with cross-validation."], correct: 1 },
+            { q: "Which metric measures the proportion of actual positives that are correctly identified?", options: ["Precision", "Recall", "Specificity", "F1-Score"], correct: 1 },
+            { q: "Identify the correct code to initialize a stratified K-Fold cross-validator.", options: ["KFold(n_splits=5, shuffle=True, random_state=42)", "StratifiedKFold(n_splits=5, shuffle=True, random_state=42)", "GroupKFold(n_splits=5)", "TimeSeriesSplit(n_splits=5)"], correct: 1 },
+            { q: "In a SHAP waterfall plot, what do the red bars represent?", options: ["Features that decrease the model's prediction.", "Features that increase the model's prediction.", "Missing values.", "The base value."], correct: 1 },
+            { q: "What is the primary risk of using accuracy as the sole metric for imbalanced data (e.g., 95% negative, 5% positive)?", options: ["The model will overfit.", "A naive model predicting only the majority class can achieve high accuracy while failing to detect positives.", "Accuracy is too slow to compute.", "It requires more RAM."], correct: 1 },
+            { q: "Which code correctly defines a hyperparameter grid for Random Forest in RandomizedSearchCV (assuming step name is 'rf')?", options: ["param_dist = {'n_estimators': [100, 200], 'max_depth': [None, 10]}", "param_dist = {'RandomForestClassifier__n_estimators': [100, 200]}", "param_dist = {'rf__n_estimators': [100, 200], 'rf__max_depth': [None, 10]}", "param_dist = {'estimators': 100, 'depth': 10}"], correct: 2 },
+            { q: "What does refit=True in RandomizedSearchCV do?", options: ["It trains the model only once.", "It refits the best found parameters on the entire training set after cross-validation.", "It shuffles the data again.", "It prevents overfitting."], correct: 1 },
+            { q: "Which Python library is specifically designed for handling imbalanced datasets and provides SMOTE?", options: ["scikit-learn", "imbalanced-learn (imblearn)", "xgboost", "pandas"], correct: 1 },
+            { q: "In the context of ML pipelines, what does remainder='drop' in ColumnTransformer do?", options: ["It drops columns not explicitly listed in transformers.", "It drops missing values.", "It drops duplicate rows.", "It drops the target variable."], correct: 0 },
+            { q: "What is the mathematical formula for Precision?", options: ["TP / (TP + FP)", "TP / (TP + FN)", "(TP + TN) / Total", "2 * (Precision * Recall) / (Precision + Recall)"], correct: 0 },
+            { q: "Which code snippet correctly extracts the predicted probabilities for the positive class?", options: ["model.predict(X_test)", "model.predict_proba(X_test)[:, 1]", "model.predict_proba(X_test)[:, 0]", "model.decision_function(X_test)"], correct: 1 },
+            { q: "Why might XGBoost be preferred over a standard Decision Tree for production?", options: ["It's simpler to interpret.", "It uses gradient boosting and regularization, reducing overfitting and improving generalization.", "It doesn't require hyperparameter tuning.", "It automatically scales features."], correct: 1 },
+            { q: "What does n_jobs=-1 do in scikit-learn estimators?", options: ["Disables parallel processing.", "Uses all available CPU cores for parallel computation.", "Limits memory usage to 1 GB.", "Runs the model on GPU."], correct: 1 },
+            { q: "Which visualization is best for diagnosing bias-variance tradeoff during training?", options: ["Confusion Matrix", "Learning Curve", "ROC Curve", "Feature Importance Plot"], correct: 1 },
+            { q: "In a clinical ML pipeline, what is the primary purpose of calibration_curve?", options: ["To check if predicted probabilities align with actual observed frequencies.", "To scale features.", "To remove outliers.", "To balance classes."], correct: 0 }
+        ];
+
+        // ==========================================
+        // UTILITY FUNCTIONS
+        // ==========================================
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        function getRandomQuestions(pool, count) {
+            const shuffledPool = shuffleArray([...pool]);
+            return shuffledPool.slice(0, count).map(item => {
+                // Shuffle options but keep track of the correct answer
+                const optionsWithIndex = item.options.map((opt, idx) => ({ text: opt, isCorrect: idx === item.correct }));
+                const shuffledOptions = shuffleArray(optionsWithIndex);
+                return {
+                    question: item.q,
+                    options: shuffledOptions
+                };
+            });
+        }
+
+        // ==========================================
+        // RENDER QUIZ
+        // ==========================================
+        let currentQuestions = [];
+
+        function renderQuiz() {
+            currentQuestions = getRandomQuestions(questionPool, 20);
+            const container = document.getElementById('quiz-container');
+            container.innerHTML = '';
+
+            currentQuestions.forEach((q, qIndex) => {
+                const card = document.createElement('div');
+                card.className = 'question-card';
+                
+                let optionsHtml = '';
+                q.options.forEach((opt, oIndex) => {
+                    optionsHtml += `
+                        <label class="option-label" onclick="selectOption(this)">
+                            <input type="radio" name="q${qIndex}" value="${opt.isCorrect ? 'correct' : 'incorrect'}">
+                            <span>${opt.text}</span>
+                        </label>
+                    `;
+                });
+
+                card.innerHTML = `
+                    <div class="q-number">Question ${qIndex + 1} of 20</div>
+                    <div class="q-text">${q.question}</div>
+                    <div class="options-container">
+                        ${optionsHtml}
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function selectOption(label) {
+            // Remove 'selected' class from all options in this question
+            const container = label.parentElement;
+            container.querySelectorAll('.option-label').forEach(l => l.classList.remove('selected'));
+            // Add 'selected' class to clicked option
+            label.classList.add('selected');
+            // Check the radio button
+            label.querySelector('input[type="radio"]').checked = true;
+        }
+
+        // ==========================================
+        // SUBMISSION & SCORING
+        // ==========================================
+        function submitQuiz() {
+            const form = document.getElementById('quiz-form');
+            const formData = new FormData(form);
+            let score = 0;
+            let answered = 0;
+
+            for (let i = 0; i < 20; i++) {
+                const answer = formData.get(`q${i}`);
+                if (answer) {
+                    answered++;
+                    if (answer === 'correct') {
+                        score++;
+                    }
+                }
+            }
+
+            if (answered < 20) {
+                if (!confirm(`You have only answered ${answered} out of 20 questions. Are you sure you want to submit?`)) {
+                    return;
+                }
+            }
+
+            const percentage = Math.round((score / 20) * 100);
+            const passed = percentage >= 70;
+
+            showResults(score, percentage, passed);
+        }
+
+        function showResults(score, percentage, passed) {
+            const modal = document.getElementById('results-modal');
+            const modalCard = document.getElementById('modal-card');
+            const icon = document.getElementById('modal-icon');
+            const title = document.getElementById('modal-title');
+            const scoreDisplay = document.getElementById('score-display');
+            const message = document.getElementById('modal-message');
+            const btn = document.getElementById('modal-btn');
+            const confettiContainer = document.getElementById('confetti-container');
+
+            // Reset classes
+            modalCard.className = 'modal-content ' + (passed ? 'pass-theme' : 'fail-theme');
+            confettiContainer.innerHTML = '';
+
+            if (passed) {
+                icon.innerText = '🎉';
+                title.innerText = 'Congratulations!';
+                title.style.color = 'var(--success)';
+                scoreDisplay.innerText = `${percentage}%`;
+                message.innerHTML = `Outstanding work! You scored <strong>${score}/20</strong>.<br>You have successfully passed the Module Two Assessment and are ready to proceed to Module Three.`;
+                btn.className = 'modal-btn pass-btn';
+                btn.innerText = 'Proceed to Module Three';
+                btn.onclick = () => alert("🎉 Redirecting to Module Three: Unsupervised ML & Dimensionality Reduction..."); 
+                
+                // Generate confetti
+                const colors = ['#10b981', '#3b82f6', '#f59e0b', '#ef4444', '#8b5cf6'];
+                for (let i = 0; i < 50; i++) {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    confetti.style.left = Math.random() * 100 + '%';
+                    confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                    confetti.style.animationDelay = Math.random() * 2 + 's';
+                    confetti.style.width = (Math.random() * 8 + 5) + 'px';
+                    confetti.style.height = (Math.random() * 8 + 5) + 'px';
+                    confettiContainer.appendChild(confetti);
+                }
+            } else {
+                icon.innerText = '📚';
+                title.innerText = 'Keep Practicing!';
+                title.style.color = 'var(--warning)';
+                scoreDisplay.innerText = `${percentage}%`;
+                message.innerHTML = `You scored <strong>${score}/20</strong>.<br>The pass mark is 70% (14/20). Don't be discouraged! Review the Module Two materials and try again. You've got this!`;
+                btn.className = 'modal-btn fail-btn';
+                btn.innerText = 'Retake Assessment';
+                btn.onclick = () => location.reload();
+            }
+
+            modal.style.display = 'flex';
+            document.getElementById('submit-btn').disabled = true;
+        }
+
+        // Initialize on load
+        document.addEventListener('DOMContentLoaded', renderQuiz);
+    </script>
+</body>
+</html>

@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Module Three Assessment | Unsupervised Learning & Clustering</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --success: #10b981;
+            --success-bg: #dcfce7;
+            --error: #ef4444;
+            --error-bg: #fee2e2;
+            --warning: #f59e0b;
+            --bg-body: #f8fafc;
+            --bg-card: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            line-height: 1.6;
+            padding-bottom: 100px;
+        }
+
+        .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+
+        /* Header */
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
+            color: white;
+            padding: 40px 20px;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px -5px rgba(37, 99, 235, 0.3);
+        }
+
+        header h1 { font-size: 2.2rem; font-weight: 800; margin-bottom: 10px; }
+        header p { font-size: 1.1rem; opacity: 0.9; max-width: 600px; margin: 0 auto; }
+        .badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-top: 15px;
+            backdrop-filter: blur(4px);
+        }
+
+        /* Question Cards */
+        .question-card {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            border: 1px solid var(--border);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .question-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px -4px rgba(0,0,0,0.08);
+        }
+
+        .q-number {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 8px;
+        }
+
+        .q-text {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: var(--text-main);
+        }
+
+        .options-container { display: flex; flex-direction: column; gap: 12px; }
+
+        .option-label {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            padding: 14px 18px;
+            background: #f8fafc;
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 0.95rem;
+        }
+
+        .option-label:hover {
+            background: #eff6ff;
+            border-color: var(--primary);
+        }
+
+        .option-label input[type="radio"] {
+            margin-right: 12px;
+            accent-color: var(--primary);
+            transform: scale(1.2);
+        }
+
+        .option-label.selected {
+            background: #eff6ff;
+            border-color: var(--primary);
+            font-weight: 500;
+        }
+
+        /* Code styling in options */
+        .option-label code, .q-text code {
+            background: #e2e8f0;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: #0f172a;
+        }
+
+        /* Submit Button */
+        .submit-container {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid var(--border);
+            padding: 20px;
+            text-align: center;
+            z-index: 50;
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            border: none;
+            padding: 16px 48px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            border-radius: 12px;
+            cursor: pointer;
+            box-shadow: 0 4px 14px rgba(37, 99, 235, 0.4);
+            transition: all 0.2s;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(37, 99, 235, 0.5);
+        }
+
+        .submit-btn:disabled {
+            background: #94a3b8;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* Modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 23, 42, 0.7);
+            backdrop-filter: blur(8px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        .modal-content {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            max-width: 450px;
+            width: 90%;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0.8) translateY(20px); opacity: 0; }
+            100% { transform: scale(1) translateY(0); opacity: 1; }
+        }
+
+        .modal-icon { font-size: 4rem; margin-bottom: 15px; display: block; }
+        .modal-title { font-size: 1.8rem; font-weight: 800; margin-bottom: 10px; }
+        
+        .score-display {
+            font-size: 3rem;
+            font-weight: 800;
+            margin: 20px 0;
+            line-height: 1;
+        }
+        
+        .pass-theme .score-display { color: var(--success); }
+        .fail-theme .score-display { color: var(--warning); }
+
+        .modal-message {
+            font-size: 1.05rem;
+            color: var(--text-muted);
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        .modal-btn {
+            border: none;
+            padding: 14px 32px;
+            font-size: 1rem;
+            font-weight: 700;
+            border-radius: 10px;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.2s;
+        }
+
+        .pass-btn {
+            background: var(--success);
+            color: white;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        }
+        .pass-btn:hover { background: #059669; }
+
+        .fail-btn {
+            background: var(--warning);
+            color: white;
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+        }
+        .fail-btn:hover { background: #d97706; }
+
+        /* Confetti */
+        .confetti {
+            position: absolute;
+            width: 10px; height: 10px;
+            background: var(--success);
+            opacity: 0;
+        }
+        .pass-theme .confetti { animation: confettiFall 3s ease-in-out forwards; }
+        @keyframes confettiFall {
+            0% { transform: translateY(-20px) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(400px) rotate(720deg); opacity: 0; }
+        }
+
+        @media (max-width: 640px) {
+            header h1 { font-size: 1.6rem; }
+            .question-card { padding: 18px; }
+            .q-text { font-size: 1rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>Module Three Assessment</h1>
+            <p>Unsupervised Learning & Clustering Algorithms</p>
+            <div class="badge">🎯 Pass Mark: 70% (14/20) &nbsp;|&nbsp; 🔄 20 Question to Attempt</div>
+        </header>
+        
+        <form id="quiz-form">
+            <div id="quiz-container"></div>
+        </form>
+    </div>
+
+    <div class="submit-container">
+        <button type="button" class="submit-btn" id="submit-btn" onclick="submitQuiz()">Submit Assessment</button>
+    </div>
+
+    <!-- Results Modal -->
+    <div id="results-modal" class="modal-overlay">
+        <div class="modal-content" id="modal-card">
+            <div class="confetti-container" id="confetti-container"></div>
+            <span class="modal-icon" id="modal-icon">🏆</span>
+            <h2 class="modal-title" id="modal-title">Congratulations!</h2>
+            <div class="score-display" id="score-display">0%</div>
+            <p class="modal-message" id="modal-message"></p>
+            <button class="modal-btn pass-btn" id="modal-btn" onclick="location.reload()">Retake Assessment</button>
+        </div>
+    </div>
+
+    <script>
+        // ==========================================
+        // POOL OF 40 QUESTIONS (MODULE THREE ONLY)
+        // ==========================================
+        const questionPool = [
+            { q: "What is the primary characteristic of unsupervised learning algorithms?", options: ["They require labeled data to train.", "They discover hidden patterns or structures in unlabeled data.", "They predict continuous numerical values.", "They optimize a reward function through trial and error."], correct: 1 },
+            { q: "Which of the following is a key assumption of the standard K-Means clustering algorithm?", options: ["Clusters are of arbitrary, non-convex shapes.", "Clusters are spherical and roughly equal in size.", "Clusters must have varying densities.", "Data must be strictly categorical."], correct: 1 },
+            { q: "What does the 'Inertia' or WCSS (Within-Cluster Sum of Squares) measure in K-Means?", options: ["The average distance between different cluster centroids.", "The sum of squared distances between each point and its assigned cluster centroid.", "The number of iterations required to converge.", "The probability of a point belonging to a cluster."], correct: 1 },
+            { q: "In the Elbow Method for determining the optimal number of clusters ($k$), what does the 'elbow' point represent?", options: ["The $k$ value where inertia reaches exactly zero.", "The $k$ value where the rate of decrease in inertia sharply slows down.", "The $k$ value that yields the highest Silhouette score.", "The $k$ value where the Davies-Bouldin index is maximized."], correct: 1 },
+            { q: "What is the valid range of the Silhouette Score?", options: ["0 to 1", "-1 to 1", "0 to infinity", "-infinity to 0"], correct: 1 },
+            { q: "If a data point has a Silhouette Score close to 0, what does this indicate?", options: ["The point is perfectly assigned to its cluster.", "The point is misassigned to the wrong cluster.", "The point lies on the decision boundary between two overlapping clusters.", "The point is considered noise or an outlier."], correct: 2 },
+            { q: "Which clustering evaluation metric should be minimized to indicate better, more separated clusters?", options: ["Silhouette Score", "Calinski-Harabasz Index", "Davies-Bouldin Index", "Adjusted Rand Index (ARI)"], correct: 2 },
+            { q: "In DBSCAN, what happens to data points that do not belong to any dense region?", options: ["They are assigned to the nearest cluster centroid.", "They are labeled as noise or outliers (typically -1).", "They form their own singleton clusters.", "They are automatically removed from the dataset."], correct: 1 },
+            { q: "What are the two primary hyperparameters required to tune a DBSCAN model?", options: ["<code>n_clusters</code> and <code>init</code>", "<code>n_estimators</code> and <code>max_depth</code>", "<code>eps</code> (epsilon) and <code>min_samples</code>", "<code>learning_rate</code> and <code>gamma</code>"], correct: 2 },
+            { q: "Which type of clustering algorithm builds a hierarchy of clusters, often visualized using a tree-like diagram?", options: ["K-Means", "DBSCAN", "Gaussian Mixture Models", "Hierarchical (Agglomerative) Clustering"], correct: 3 },
+            { q: "What is the name of the tree-like diagram used to visualize the sequence of merges in Hierarchical Clustering?", options: ["Scatter plot", "Dendrogram", "Elbow curve", "Silhouette plot"], correct: 1 },
+            { q: "Unlike K-Means, which assigns each point to exactly one cluster, what type of clustering does Gaussian Mixture Models (GMM) perform?", options: ["Hard clustering", "Soft (probabilistic) clustering", "Density-based clustering", "Hierarchical clustering"], correct: 1 },
+            { q: "When selecting the optimal number of components for a Gaussian Mixture Model, which statistical criteria are commonly used?", options: ["Inertia and WCSS", "BIC (Bayesian Information Criterion) and AIC (Akaike Information Criterion)", "Silhouette Score and Davies-Bouldin Index", "RMSE and MAE"], correct: 1 },
+            { q: "What does the Adjusted Rand Index (ARI) measure?", options: ["The compactness of clusters without using true labels.", "The similarity between predicted clusters and true ground-truth labels, adjusted for chance.", "The density of the clusters.", "The variance ratio between and within clusters."], correct: 1 },
+            { q: "Which of the following is an 'External' evaluation metric that requires the true ground-truth labels of the dataset?", options: ["Silhouette Score", "Davies-Bouldin Index", "Normalized Mutual Information (NMI)", "Calinski-Harabasz Score"], correct: 2 },
+            { q: "Why is it crucial to apply <code>StandardScaler</code> to features before running K-Means clustering?", options: ["K-Means requires data to be normally distributed.", "K-Means is a distance-based algorithm, and unscaled features with larger ranges will dominate the distance calculations.", "It converts categorical variables into numerical ones.", "It automatically removes outliers from the dataset."], correct: 1 },
+            { q: "What does the following scikit-learn code do?<br><code>kmeans = KMeans(n_clusters=3, random_state=42, n_init=10)</code><br><code>labels = kmeans.fit_predict(X_scaled)</code>", options: ["Fits the model and returns the cluster centroids.", "Fits the model and returns the cluster labels for each data point in X_scaled.", "Calculates the Silhouette score for 3 clusters.", "Reduces the dimensionality of X_scaled to 3 components."], correct: 1 },
+            { q: "In the context of DBSCAN, what defines a 'core point'?", options: ["A point that is exactly at the center of the dataset.", "A point that has at least <code>min_samples</code> within its <code>eps</code> radius.", "A point that is labeled as -1.", "A point that belongs to exactly two clusters."], correct: 1 },
+            { q: "Which algorithm is most suitable for discovering clusters of arbitrary, non-spherical shapes (e.g., rings or spirals)?", options: ["K-Means", "DBSCAN", "Gaussian Mixture Models", "K-Means++"], correct: 1 },
+            { q: "What does the <code>linkage='ward'</code> parameter in Agglomerative Clustering aim to minimize?", options: ["The maximum distance between clusters.", "The variance within each merged cluster.", "The number of clusters.", "The distance between the two closest points."], correct: 1 },
+            { q: "If a clustering model yields a Davies-Bouldin Index of 0.5, and another yields 1.2, which model is considered better?", options: ["The model with 1.2, because higher is better.", "The model with 0.5, because lower is better.", "They are equally good.", "Cannot be determined without the Silhouette score."], correct: 1 },
+            { q: "What is the primary purpose of using PCA (Principal Component Analysis) after clustering?", options: ["To improve the clustering accuracy.", "To reduce the high-dimensional data to 2D or 3D for visual inspection of the clusters.", "To calculate the Silhouette score.", "To handle missing values in the dataset."], correct: 1 },
+            { q: "Which of the following scikit-learn functions computes the similarity between two clusterings, returning a value between 0 and 1?", options: ["<code>silhouette_score()</code>", "<code>davies_bouldin_score()</code>", "<code>normalized_mutual_info_score()</code>", "<code>calinski_harabasz_score()</code>"], correct: 2 },
+            { q: "What is a major limitation of the K-Means algorithm?", options: ["It cannot handle numerical data.", "It is highly sensitive to the initial placement of centroids and outliers.", "It requires the data to be perfectly normally distributed.", "It cannot scale to large datasets."], correct: 1 },
+            { q: "In K-Means, what technique is used to mitigate the problem of poor initial centroid placement?", options: ["Ward linkage", "K-Means++ initialization", "Expectation-Maximization", "DBSCAN pre-processing"], correct: 1 },
+            { q: "What does the following code snippet calculate?<br><code>from sklearn.metrics import silhouette_score</code><br><code>score = silhouette_score(X_scaled, cluster_labels)</code>", options: ["The within-cluster sum of squares.", "The mean Silhouette coefficient for all samples in the dataset.", "The Adjusted Rand Index against true labels.", "The Davies-Bouldin index."], correct: 1 },
+            { q: "Which clustering algorithm uses the Expectation-Maximization (EM) algorithm to estimate the parameters of the underlying distributions?", options: ["K-Means", "DBSCAN", "Gaussian Mixture Models (GMM)", "Agglomerative Clustering"], correct: 2 },
+            { q: "If you run DBSCAN and all points are assigned a label of -1, what is the most likely cause?", options: ["The <code>eps</code> parameter is too large.", "The <code>eps</code> parameter is too small, or <code>min_samples</code> is too high.", "The data was not scaled.", "The dataset contains too many clusters."], correct: 1 },
+            { q: "Which metric evaluates the ratio of between-cluster dispersion to within-cluster dispersion?", options: ["Silhouette Score", "Davies-Bouldin Index", "Calinski-Harabasz Score", "Adjusted Rand Index"], correct: 2 },
+            { q: "What does an Adjusted Rand Index (ARI) of 1.0 indicate?", options: ["The predicted clusters perfectly match the true ground-truth labels.", "The predicted clusters are completely random.", "The predicted clusters are the exact opposite of the true labels.", "The model failed to converge."], correct: 0 },
+            { q: "In the Palmer Penguins clustering project, which four numerical features were primarily used to group the penguins?", options: ["island, sex, year, species", "bill_length_mm, bill_depth_mm, flipper_length_mm, body_mass_g", "species, island, bill_length_mm, sex", "year, body_mass_g, sex, island"], correct: 1 },
+            { q: "Why do we use <code>scaler.inverse_transform(cluster_centers_scaled)</code> after fitting K-Means on standardized data?", options: ["To convert the cluster centers back to the original measurement units for biological interpretation.", "To standardize the cluster centers.", "To calculate the Silhouette score.", "To reduce the dimensionality of the centers."], correct: 0 },
+            { q: "Which of the following is considered a 'Density-Based' clustering algorithm?", options: ["K-Means", "Agglomerative Clustering", "DBSCAN", "Gaussian Mixture Models"], correct: 2 },
+            { q: "What does the <code>n_init</code> parameter in scikit-learn's <code>KMeans</code> specify?", options: ["The number of clusters to form.", "The maximum number of iterations per run.", "The number of times the algorithm will run with different centroid seeds, selecting the best output.", "The number of features to use."], correct: 2 },
+            { q: "Which of the following correctly imports the DBSCAN algorithm from scikit-learn?", options: ["<code>from sklearn.cluster import KMeans</code>", "<code>from sklearn.cluster import DBSCAN</code>", "<code>from sklearn.metrics import DBSCAN</code>", "<code>from sklearn.preprocessing import DBSCAN</code>"], correct: 1 },
+            { q: "When comparing K-Means clusters to the true species of the Palmer Penguins, which external metric was used to measure the amount of shared information between the two labelings?", options: ["Davies-Bouldin Index", "Inertia", "Normalized Mutual Information (NMI)", "Calinski-Harabasz Score"], correct: 2 },
+            { q: "What is the main advantage of Hierarchical Clustering over K-Means?", options: ["It is much faster for very large datasets.", "It does not require pre-specifying the number of clusters ($k$) and provides a dendrogram.", "It handles non-spherical clusters better than DBSCAN.", "It uses probabilistic assignments."], correct: 1 },
+            { q: "In a Silhouette Analysis plot, what does the vertical dashed red line typically represent?", options: ["The maximum Silhouette score.", "The overall mean Silhouette score for the clustering.", "The number of clusters.", "The Davies-Bouldin threshold."], correct: 1 },
+            { q: "If a dataset has clusters with very different densities, which algorithm is likely to struggle the most?", options: ["DBSCAN", "K-Means", "Hierarchical Clustering", "Gaussian Mixture Models"], correct: 0 },
+            { q: "What is the output of the following code?<br><code>pca = PCA(n_components=2)</code><br><code>X_pca = pca.fit_transform(X_scaled)</code>", options: ["A 2D array of the original data scaled to 2 features.", "A 2D projection of the high-dimensional data, preserving as much variance as possible.", "The cluster labels for 2 clusters.", "The Silhouette scores for 2 components."], correct: 1 }
+        ];
+
+        // ==========================================
+        // UTILITY FUNCTIONS
+        // ==========================================
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        function getRandomQuestions(pool, count) {
+            const shuffledPool = shuffleArray([...pool]);
+            return shuffledPool.slice(0, count).map(item => {
+                // Shuffle options but keep track of the correct answer
+                const optionsWithIndex = item.options.map((opt, idx) => ({ text: opt, isCorrect: idx === item.correct }));
+                const shuffledOptions = shuffleArray(optionsWithIndex);
+                return {
+                    question: item.q,
+                    options: shuffledOptions
+                };
+            });
+        }
+
+        // ==========================================
+        // RENDER QUIZ
+        // ==========================================
+        let currentQuestions = [];
+
+        function renderQuiz() {
+            currentQuestions = getRandomQuestions(questionPool, 20);
+            const container = document.getElementById('quiz-container');
+            container.innerHTML = '';
+
+            currentQuestions.forEach((q, qIndex) => {
+                const card = document.createElement('div');
+                card.className = 'question-card';
+                
+                let optionsHtml = '';
+                q.options.forEach((opt, oIndex) => {
+                    optionsHtml += `
+                        <label class="option-label" onclick="selectOption(this)">
+                            <input type="radio" name="q${qIndex}" value="${opt.isCorrect ? 'correct' : 'incorrect'}">
+                            <span>${opt.text}</span>
+                        </label>
+                    `;
+                });
+
+                card.innerHTML = `
+                    <div class="q-number">Question ${qIndex + 1} of 20</div>
+                    <div class="q-text">${q.question}</div>
+                    <div class="options-container">
+                        ${optionsHtml}
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function selectOption(label) {
+            // Remove 'selected' class from all options in this question
+            const container = label.parentElement;
+            container.querySelectorAll('.option-label').forEach(l => l.classList.remove('selected'));
+            // Add 'selected' class to clicked option
+            label.classList.add('selected');
+            // Check the radio button
+            label.querySelector('input[type="radio"]').checked = true;
+        }
+
+        // ==========================================
+        // SUBMISSION & SCORING
+        // ==========================================
+        function submitQuiz() {
+            const form = document.getElementById('quiz-form');
+            const formData = new FormData(form);
+            let score = 0;
+            let answered = 0;
+
+            for (let i = 0; i < 20; i++) {
+                const answer = formData.get(`q${i}`);
+                if (answer) {
+                    answered++;
+                    if (answer === 'correct') {
+                        score++;
+                    }
+                }
+            }
+
+            if (answered < 20) {
+                if (!confirm(`You have only answered ${answered} out of 20 questions. Are you sure you want to submit?`)) {
+                    return;
+                }
+            }
+
+            const percentage = Math.round((score / 20) * 100);
+            const passed = percentage >= 70;
+
+            showResults(score, percentage, passed);
+        }
+
+        function showResults(score, percentage, passed) {
+            const modal = document.getElementById('results-modal');
+            const modalCard = document.getElementById('modal-card');
+            const icon = document.getElementById('modal-icon');
+            const title = document.getElementById('modal-title');
+            const scoreDisplay = document.getElementById('score-display');
+            const message = document.getElementById('modal-message');
+            const btn = document.getElementById('modal-btn');
+            const confettiContainer = document.getElementById('confetti-container');
+
+            // Reset classes
+            modalCard.className = 'modal-content ' + (passed ? 'pass-theme' : 'fail-theme');
+            confettiContainer.innerHTML = '';
+
+            if (passed) {
+                icon.innerText = '🎉';
+                title.innerText = 'Congratulations!';
+                title.style.color = 'var(--success)';
+                scoreDisplay.innerText = `${percentage}%`;
+                message.innerHTML = `Outstanding work! You scored <strong>${score}/20</strong>.<br>You have successfully passed the Module Three Assessment and are ready to proceed to Module Four.`;
+                btn.className = 'modal-btn pass-btn';
+                btn.innerText = 'Proceed to Module Four';
+                btn.onclick = () => alert("🎉 Redirecting to Module Four: ML Deployment & Dashboarding..."); 
+                
+                // Generate confetti
+                const colors = ['#10b981', '#3b82f6', '#f59e0b', '#ef4444', '#8b5cf6'];
+                for (let i = 0; i < 50; i++) {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    confetti.style.left = Math.random() * 100 + '%';
+                    confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                    confetti.style.animationDelay = Math.random() * 2 + 's';
+                    confetti.style.width = (Math.random() * 8 + 5) + 'px';
+                    confetti.style.height = (Math.random() * 8 + 5) + 'px';
+                    confettiContainer.appendChild(confetti);
+                }
+            } else {
+                icon.innerText = '📚';
+                title.innerText = 'Keep Practicing!';
+                title.style.color = 'var(--warning)';
+                scoreDisplay.innerText = `${percentage}%`;
+                message.innerHTML = `You scored <strong>${score}/20</strong>.<br>The pass mark is 70% (14/20). Don't be discouraged! Review the Module Three materials on clustering algorithms and try again. You've got this!`;
+                btn.className = 'modal-btn fail-btn';
+                btn.innerText = 'Retake Assessment';
+                btn.onclick = () => location.reload();
+            }
+
+            modal.style.display = 'flex';
+            document.getElementById('submit-btn').disabled = true;
+        }
+
+        // Initialize on load
+        document.addEventListener('DOMContentLoaded', renderQuiz);
+    </script>
+</body>
+</html>

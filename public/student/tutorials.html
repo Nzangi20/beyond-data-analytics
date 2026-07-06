@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Redirecting...</title>
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const slug = params.get('slug');
+        if (slug) {
+            window.location.href = `/student/dashboard.html?program=${slug}`;
+        } else {
+            window.location.href = '/student/dashboard.html';
+        }
+    </script>
+</head>
+<body>
+    <p>Redirecting to your new learning programs portal...</p>
+</body>
+</html>

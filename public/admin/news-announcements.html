@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>News & Announcements - BDA Admin</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/main.css">
+    <style>
+        .tabs-nav {
+            display: flex;
+            gap: 1rem;
+            border-bottom: 2px solid var(--border);
+            margin-bottom: 1.5rem;
+        }
+        .tab-link {
+            padding: 0.75rem 1.5rem;
+            font-weight: 600;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            color: var(--text-light);
+        }
+        .tab-link.active {
+            border-bottom-color: var(--primary);
+            color: var(--primary);
+        }
+    </style>
+</head>
+<body>
+    <button class="sidebar-toggle" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+    <div class="app-layout">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-auth-links" style="display: flex; justify-content: space-around; padding: 0.75rem 1rem; border-bottom: 1px solid rgba(255,255,255,0.08); font-size: 0.85rem; font-family: 'Outfit', sans-serif; background: rgba(0,0,0,0.15);">
+                <a href="/login.html" style="color: #63b3ed; font-weight: 600; text-decoration: none; display: flex; align-items: center; gap: 0.25rem; transition: opacity 0.2s;" onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'"><i class="fas fa-sign-in-alt"></i> Sign In</a>
+                <span style="color: rgba(255,255,255,0.2);">|</span>
+                <a href="https://forms.gle/iULxMYXieuC4px8p8" target="_blank" style="color: #48bb78; font-weight: 600; text-decoration: none; display: flex; align-items: center; gap: 0.25rem; transition: opacity 0.2s;" onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'"><i class="fas fa-user-plus"></i> Sign Up</a>
+            </div>
+            <div class="sidebar-header"><div class="sidebar-logo"><i class="fas fa-chart-line"></i></div><div class="sidebar-brand"><h2>BDA Admin</h2><p>Management Console</p></div></div>
+            <nav class="sidebar-nav">
+                <div class="nav-section">
+                    <div class="nav-section-title">Main</div>
+                    <a href="/admin/dashboard.html" class="nav-item"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+                    <a href="/admin/users.html" class="nav-item"><i class="fas fa-users"></i> Users</a>
+                    <a href="/admin/content.html" class="nav-item"><i class="fas fa-book-open"></i> Course Content</a>
+                    <a href="/admin/exams.html" class="nav-item"><i class="fas fa-file-signature"></i> Exams & Quizzes</a>
+                </div>
+                <div class="nav-section">
+                    <div class="nav-section-title">Operations</div>
+                    <a href="/admin/news-announcements.html" class="nav-item active"><i class="fas fa-bullhorn"></i> News & Bulletins</a>
+                    <a href="/admin/billing.html" class="nav-item"><i class="fas fa-credit-card"></i> Payments & Fees</a>
+                    <a href="/admin/reports.html" class="nav-item"><i class="fas fa-chart-bar"></i> Reports</a>
+                </div>
+            </nav>
+            <div class="sidebar-footer"><div class="user-info"><div class="user-avatar" id="userAvatar">AD</div><div class="user-details"><h4 id="userName">Administrator</h4><p>System Admin</p></div></div><button class="btn btn-sm btn-outline" style="width:100%;margin-top:1rem;color:rgba(255,255,255,0.7);border-color:rgba(255,255,255,0.2);" onclick="API.logout()"><i class="fas fa-sign-out-alt"></i> Logout</button></div>
+        </aside>
+
+        <main class="main-content">
+            <div class="main-header">
+                <div>
+                    <h1>News & Announcements Manager</h1>
+                    <p>Publish site articles and broadcast priority system notifications</p>
+                </div>
+            </div>
+
+            <div class="tabs-nav">
+                <div class="tab-link active" onclick="switchPane('news')">News Articles</div>
+                <div class="tab-link" onclick="switchPane('announcements')">Announcements</div>
+                <div class="tab-link" onclick="switchPane('events')">Upcoming Events</div>
+            </div>
+
+            <!-- NEWS ARTICLES PANE -->
+            <div id="pane-news" class="pane-content">
+                <div style="display:grid; grid-template-columns: 1fr 2fr; gap:1.5rem; align-items:start;">
+                    <!-- Create Article -->
+                    <div class="card">
+                        <div class="card-header"><h3 id="newsFormTitle">Create News Article</h3></div>
+                        <div class="card-body">
+                            <form id="newsForm" onsubmit="saveNews(event)">
+                                <input type="hidden" id="editArticleId">
+                                <div class="form-group"><label for="newsTitle">Title *</label><input type="text" class="form-control" id="newsTitle" required></div>
+                                <div class="form-group">
+                                    <label for="newsCategory">Category *</label>
+                                    <select class="form-control" id="newsCategory" required>
+                                        <option value="General News">General News</option>
+                                        <option value="Course Updates">Course Updates</option>
+                                        <option value="Community Activities">Community Activities</option>
+                                        <option value="System Notices">System Notices</option>
+                                    </select>
+                                </div>
+                                <div class="form-group"><label for="newsContent">Content *</label><textarea class="form-control" id="newsContent" rows="5" required></textarea></div>
+                                <div class="form-group"><label for="newsFile">Attachment File (Optional)</label><input type="file" class="form-control" id="newsFile"></div>
+                                <button type="submit" class="btn btn-primary" style="width:100%; margin-top:1rem;">Publish News Article</button>
+                                <button type="button" class="btn btn-outline" style="width:100%; margin-top:0.5rem; display:none;" id="btnCancelNewsEdit" onclick="cancelNewsEdit()">Cancel Edit</button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Articles List -->
+                    <div class="card">
+                        <div class="card-header"><h3>Active News Articles</h3></div>
+                        <div class="card-body">
+                            <div class="table-wrapper">
+                                <table>
+                                    <thead><tr><th>Title</th><th>Category</th><th>Author</th><th>Date</th><th>Actions</th></tr></thead>
+                                    <tbody id="newsTableBody"><tr><td colspan="5" class="empty-state">No news published yet.</td></tr></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ANNOUNCEMENTS PANE -->
+            <div id="pane-announcements" class="pane-content" style="display:none;">
+                <div style="display:grid; grid-template-columns: 1fr 2fr; gap:1.5rem; align-items:start;">
+                    <!-- Create Announcement -->
+                    <div class="card">
+                        <div class="card-header"><h3>Broadcast Announcement</h3></div>
+                        <div class="card-body">
+                            <form id="announceForm" onsubmit="saveAnnouncement(event)">
+                                <div class="form-group"><label for="annTitle">Title *</label><input type="text" class="form-control" id="annTitle" placeholder="e.g. Server Maintenance" required></div>
+                                <div class="form-group">
+                                    <label for="annPriority">Priority Level *</label>
+                                    <select class="form-control" id="annPriority" required><option value="Low">Low</option><option value="Medium" selected>Medium</option><option value="High">High</option></select>
+                                </div>
+                                <div class="form-group"><label for="annExpiry">Expiry Date</label><input type="date" class="form-control" id="annExpiry"></div>
+                                <div class="form-group"><label for="annLink">External Link / Action URL</label><input type="text" class="form-control" id="annLink" placeholder="http://..."></div>
+                                <div class="form-group"><label for="annContent">Announcement Details *</label><textarea class="form-control" id="annContent" rows="4" placeholder="Brief notice detail..." required></textarea></div>
+                                <div class="form-group"><label for="annFile">Attachment File (Optional)</label><input type="file" class="form-control" id="annFile"></div>
+                                <button type="submit" class="btn btn-primary" style="width:100%; margin-top:1rem;">Publish & Broadcast</button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Announcements List -->
+                    <div class="card">
+                        <div class="card-header"><h3>Active Broadcast Bulletins</h3></div>
+                        <div class="card-body">
+                            <div class="table-wrapper">
+                                <table>
+                                    <thead><tr><th>Title</th><th>Priority</th><th>Expires</th><th>Date Created</th><th>Actions</th></tr></thead>
+                                    <tbody id="annTableBody"><tr><td colspan="5" class="empty-state">No active bulletins.</td></tr></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- UPCOMING EVENTS PANE -->
+            <div id="pane-events" class="pane-content" style="display:none;">
+                <div style="display:grid; grid-template-columns: 1fr 2fr; gap:1.5rem; align-items:start;">
+                    <!-- Create/Edit Event -->
+                    <div class="card">
+                        <div class="card-header"><h3 id="eventFormTitle">Publish Upcoming Event</h3></div>
+                        <div class="card-body">
+                            <form id="eventForm" onsubmit="saveEvent(event)">
+                                <input type="hidden" id="editEventId">
+                                <div class="form-group"><label for="eventTitle">Event Title *</label><input type="text" class="form-control" id="eventTitle" required></div>
+                                <div class="form-group"><label for="eventContent">Event Details *</label><textarea class="form-control" id="eventContent" rows="5" placeholder="Include date, time, location and details..." required></textarea></div>
+                                <div class="form-group"><label for="eventFile">Attachment File (Optional)</label><input type="file" class="form-control" id="eventFile"></div>
+                                <button type="submit" class="btn btn-primary" style="width:100%; margin-top:1rem;">Publish Event</button>
+                                <button type="button" class="btn btn-outline" style="width:100%; margin-top:0.5rem; display:none;" id="btnCancelEventEdit" onclick="cancelEventEdit()">Cancel Edit</button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Events List -->
+                    <div class="card">
+                        <div class="card-header"><h3>Active Upcoming Events</h3></div>
+                        <div class="card-body">
+                            <div class="table-wrapper">
+                                <table>
+                                    <thead><tr><th>Event Title</th><th>Author</th><th>Date Created</th><th>Actions</th></tr></thead>
+                                    <tbody id="eventsTableBody"><tr><td colspan="4" class="empty-state">No upcoming events published yet.</td></tr></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="/js/api.js"></script>
+    <script>
+        if (!API.requireAuth(['admin'])) throw new Error('Not authorized');
+        const user = API.getUser();
+        if (user) {
+            document.getElementById('userName').textContent = user.fullName || user.username;
+            document.getElementById('userAvatar').textContent = getInitials(user.fullName || user.username);
+        }
+
+        let newsList = [];
+        let announcementsList = [];
+        let eventsList = [];
+
+        async function init() {
+            await loadNews();
+            await loadAnnouncements();
+        }
+
+        function switchPane(pane) {
+            document.querySelectorAll('.pane-content').forEach(el => el.style.display = 'none');
+            document.querySelectorAll('.tab-link').forEach(el => el.classList.remove('active'));
+
+            document.getElementById(`pane-${pane}`).style.display = 'block';
+            event.target.classList.add('active');
+        }
+
+        async function loadNews() {
+            try {
+                const res = await API.get('/news/articles');
+                const allArticles = res.articles || [];
+                
+                newsList = allArticles.filter(a => a.category !== 'Events');
+                eventsList = allArticles.filter(a => a.category === 'Events');
+
+                const tbody = document.getElementById('newsTableBody');
+                if (newsList.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="5" class="empty-state">No news published.</td></tr>';
+                } else {
+                    tbody.innerHTML = newsList.map(n => `
+                        <tr>
+                            <td>
+                                <strong>${escapeHtml(n.title)}</strong>
+                                ${n.file_path ? `<br><button onclick="viewDocument('${n.file_path}', '${escapeHtml(n.title)}')" class="btn btn-sm btn-outline" style="font-size:0.75rem; padding:0.1rem 0.4rem; display:inline-flex; align-items:center; gap:0.25rem; margin-top:0.25rem;"><i class="fas fa-paperclip"></i> View Attachment</button>` : ''}
+                            </td>
+                            <td><span class="badge badge-primary">${n.category}</span></td>
+                            <td>${escapeHtml(n.author_name)}</td>
+                            <td>${formatDate(n.created_at)}</td>
+                            <td>
+                                <button class="btn btn-sm btn-outline" style="padding:0.2rem 0.5rem;" onclick="editNews(${n.id})"><i class="fas fa-edit"></i></button>
+                                <button class="btn btn-sm btn-outline" style="padding:0.2rem 0.5rem; color:var(--red);" onclick="deleteNews(${n.id})"><i class="fas fa-trash"></i></button>
+                            </td>
+                        </tr>
+                    `).join('');
+                }
+
+                const etbody = document.getElementById('eventsTableBody');
+                if (eventsList.length === 0) {
+                    etbody.innerHTML = '<tr><td colspan="4" class="empty-state">No upcoming events published yet.</td></tr>';
+                } else {
+                    etbody.innerHTML = eventsList.map(e => `
+                        <tr>
+                            <td>
+                                <strong>${escapeHtml(e.title)}</strong>
+                                ${e.file_path ? `<br><button onclick="viewDocument('${e.file_path}', '${escapeHtml(e.title)}')" class="btn btn-sm btn-outline" style="font-size:0.75rem; padding:0.1rem 0.4rem; display:inline-flex; align-items:center; gap:0.25rem; margin-top:0.25rem;"><i class="fas fa-paperclip"></i> View Attachment</button>` : ''}
+                            </td>
+                            <td>${escapeHtml(e.author_name)}</td>
+                            <td>${formatDate(e.created_at)}</td>
+                            <td>
+                                <button class="btn btn-sm btn-outline" style="padding:0.2rem 0.5rem;" onclick="editEvent(${e.id})"><i class="fas fa-edit"></i></button>
+                                <button class="btn btn-sm btn-outline" style="padding:0.2rem 0.5rem; color:var(--red);" onclick="deleteNews(${e.id})"><i class="fas fa-trash"></i></button>
+                            </td>
+                        </tr>
+                    `).join('');
+                }
+            } catch (e) {
+                console.error(e);
+            }
+        }
+
+        async function loadAnnouncements() {
+            try {
+                const res = await API.get('/news/announcements');
+                announcementsList = res.announcements;
+                const tbody = document.getElementById('annTableBody');
+                if (announcementsList.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="5" class="empty-state">No active bulletins.</td></tr>';
+                    return;
+                }
+                tbody.innerHTML = announcementsList.map(a => `
+                    <tr>
+                        <td>
+                            <strong>${escapeHtml(a.title)}</strong>
+                            ${a.file_path ? `<br><button onclick="viewDocument('${a.file_path}', '${escapeHtml(a.title)}')" class="btn btn-sm btn-outline" style="font-size:0.75rem; padding:0.1rem 0.4rem; display:inline-flex; align-items:center; gap:0.25rem; margin-top:0.25rem;"><i class="fas fa-paperclip"></i> View Attachment</button>` : ''}
+                        </td>
+                        <td><span class="badge badge-${a.priority === 'High' ? 'danger' : (a.priority === 'Medium' ? 'warning' : 'primary')}">${a.priority}</span></td>
+                        <td>${a.expiry_date ? formatDate(a.expiry_date) : 'Never'}</td>
+                        <td>${formatDate(a.created_at)}</td>
+                        <td>
+                            <button class="btn btn-sm btn-outline" style="padding:0.2rem 0.5rem; color:var(--red);" onclick="deleteAnnouncement(${a.id})"><i class="fas fa-trash"></i></button>
+                        </td>
+                    </tr>
+                `).join('');
+            } catch (e) {}
+        }
+
+        async function saveNews(e) {
+            e.preventDefault();
+            const editId = document.getElementById('editArticleId').value;
+            const fileInput = document.getElementById('newsFile');
+            
+            const formData = new FormData();
+            formData.append('title', document.getElementById('newsTitle').value);
+            formData.append('category', document.getElementById('newsCategory').value);
+            formData.append('content', document.getElementById('newsContent').value);
+            if (fileInput.files.length > 0) {
+                formData.append('file', fileInput.files[0]);
+            }
+
+            try {
+                if (editId) {
+                    if (fileInput.files.length > 0) {
+                        await API.request('PUT', `/news/articles/${editId}`, formData, true);
+                    } else {
+                        const payload = {
+                            title: document.getElementById('newsTitle').value,
+                            category: document.getElementById('newsCategory').value,
+                            content: document.getElementById('newsContent').value
+                        };
+                        await API.put(`/news/articles/${editId}`, payload);
+                    }
+                    showToast('Article updated successfully!', 'success');
+                } else {
+                    await API.upload('/news/articles', formData);
+                    showToast('Article published!', 'success');
+                }
+                document.getElementById('newsForm').reset();
+                cancelNewsEdit();
+                await loadNews();
+            } catch (err) {
+                showToast(err.error || 'Operation failed', 'error');
+            }
+        }
+
+        function editNews(id) {
+            const art = newsList.find(n => n.id === id);
+            if (!art) return;
+
+            document.getElementById('editArticleId').value = art.id;
+            document.getElementById('newsTitle').value = art.title;
+            document.getElementById('newsCategory').value = art.category;
+            document.getElementById('newsContent').value = art.content;
+
+            document.getElementById('newsFormTitle').textContent = 'Edit News Article';
+            document.getElementById('btnCancelNewsEdit').style.display = 'block';
+        }
+
+        function cancelNewsEdit() {
+            document.getElementById('editArticleId').value = '';
+            document.getElementById('newsFormTitle').textContent = 'Create News Article';
+            document.getElementById('btnCancelNewsEdit').style.display = 'none';
+        }
+
+        async function deleteNews(id) {
+            if (!confirm('Are you sure you want to delete this article?')) return;
+            try {
+                await API.delete(`/news/articles/${id}`);
+                showToast('Article deleted successfully', 'success');
+                await loadNews();
+            } catch (e) {}
+        }
+
+        async function saveEvent(e) {
+            e.preventDefault();
+            const editId = document.getElementById('editEventId').value;
+            const fileInput = document.getElementById('eventFile');
+            
+            const formData = new FormData();
+            formData.append('title', document.getElementById('eventTitle').value);
+            formData.append('category', 'Events');
+            formData.append('content', document.getElementById('eventContent').value);
+            if (fileInput.files.length > 0) {
+                formData.append('file', fileInput.files[0]);
+            }
+
+            try {
+                if (editId) {
+                    if (fileInput.files.length > 0) {
+                        await API.request('PUT', `/news/articles/${editId}`, formData, true);
+                    } else {
+                        const payload = {
+                            title: document.getElementById('eventTitle').value,
+                            category: 'Events',
+                            content: document.getElementById('eventContent').value
+                        };
+                        await API.put(`/news/articles/${editId}`, payload);
+                    }
+                    showToast('Event updated successfully!', 'success');
+                } else {
+                    await API.upload('/news/articles', formData);
+                    showToast('Event published successfully!', 'success');
+                }
+                document.getElementById('eventForm').reset();
+                cancelEventEdit();
+                await loadNews();
+            } catch (err) {
+                showToast(err.error || 'Operation failed', 'error');
+            }
+        }
+
+        function editEvent(id) {
+            const ev = eventsList.find(e => e.id === id);
+            if (!ev) return;
+
+            document.getElementById('editEventId').value = ev.id;
+            document.getElementById('eventTitle').value = ev.title;
+            document.getElementById('eventContent').value = ev.content;
+
+            document.getElementById('eventFormTitle').textContent = 'Edit Event';
+            document.getElementById('btnCancelEventEdit').style.display = 'block';
+        }
+
+        function cancelEventEdit() {
+            document.getElementById('editEventId').value = '';
+            document.getElementById('eventFormTitle').textContent = 'Publish Upcoming Event';
+            document.getElementById('btnCancelEventEdit').style.display = 'none';
+        }
+
+        async function deleteAnnouncement(id) {
+            if (!confirm('Are you sure you want to delete this announcement?')) return;
+            try {
+                await API.delete(`/news/announcements/${id}`);
+                showToast('Announcement deleted', 'success');
+                await loadAnnouncements();
+            } catch (e) {}
+        }
+
+        async function saveAnnouncement(e) {
+            e.preventDefault();
+            const fileInput = document.getElementById('annFile');
+            const formData = new FormData();
+            formData.append('title', document.getElementById('annTitle').value);
+            formData.append('priority', document.getElementById('annPriority').value);
+            if (document.getElementById('annExpiry').value) {
+                formData.append('expiryDate', document.getElementById('annExpiry').value);
+            }
+            if (document.getElementById('annLink').value) {
+                formData.append('linkUrl', document.getElementById('annLink').value);
+            }
+            formData.append('content', document.getElementById('annContent').value);
+            if (fileInput.files.length > 0) {
+                formData.append('file', fileInput.files[0]);
+            }
+
+            try {
+                await API.upload('/news/announcements', formData);
+                showToast('Announcement broadcasted!', 'success');
+                document.getElementById('announceForm').reset();
+                await loadAnnouncements();
+            } catch (err) {
+                showToast(err.error || 'Failed to broadcast', 'error');
+            }
+        }
+
+        init();
+
+        function viewDocument(url, title) {
+            if (url.toLowerCase().endsWith('.html') || !url.toLowerCase().endsWith('.pdf')) {
+                window.open(url, '_blank');
+                return;
+            }
+            const frame = document.getElementById('docViewerFrame');
+            const modal = document.getElementById('docViewerModal');
+            document.getElementById('docViewerTitle').textContent = title || 'Document Viewer';
+            let viewerUrl = url;
+            if (url.toLowerCase().endsWith('.pdf')) {
+                viewerUrl = url + '#toolbar=0';
+            }
+            frame.src = viewerUrl;
+            modal.classList.add('active');
+        }
+
+        function closeDocViewer() {
+            const frame = document.getElementById('docViewerFrame');
+            const modal = document.getElementById('docViewerModal');
+            frame.src = '';
+            modal.classList.remove('active');
+        }
+    </script>
+
+    <!-- Document Viewer Modal -->
+    <div class="modal-overlay" id="docViewerModal" style="z-index: 9999;">
+        <div class="modal" style="max-width: 90%; width: 1000px; height: 85vh; display: flex; flex-direction: column;">
+            <div class="modal-header">
+                <h3 id="docViewerTitle">Document Viewer</h3>
+                <button class="btn btn-icon btn-outline" onclick="closeDocViewer()"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body" style="flex: 1; padding: 0; overflow: hidden; position: relative;">
+                <iframe id="docViewerFrame" src="" style="width: 100%; height: 100%; border: none;" allow="autoplay"></iframe>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

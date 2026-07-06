@@ -1,0 +1,4149 @@
+# ---
+# jupyter:
+#   jupytext:
+#     text_representation:
+#       extension: .py
+#       format_name: percent
+#       format_version: '1.3'
+#       jupytext_version: 1.19.1
+#   kernelspec:
+#     display_name: Python 3 (ipykernel)
+#     language: python
+#     name: python3
+# ---
+
+# %%
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Beyond Data Analytics - Transforming Data Into Insights</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+/* ==================== CSS VARIABLES ==================== */
+:root {
+--primary-blue: #1a365d;
+--secondary-blue: #2c5282;
+--accent-blue: #3182ce;
+--vibrant-yellow: #f6e05e;
+--golden-yellow: #d69e2e;
+--bold-red: #e53e3e;
+--deep-red: #c53030;
+--rich-purple: #805ad5;
+--light-purple: #9f7aea;
+--light-bg: #f7fafc;
+--white: #ffffff;
+--dark-text: #2d3748;
+--gray-text: #718096;
+--gradient-1: linear-gradient(135deg, #1a365d 0%, #2c5282 100%);
+--gradient-2: linear-gradient(135deg, #3182ce 0%, #805ad5 100%);
+--gradient-3: linear-gradient(135deg, #f6e05e 0%, #d69e2e 100%);
+--gradient-4: linear-gradient(135deg, #e53e3e 0%, #805ad5 100%);
+--gradient-5: linear-gradient(135deg, #1a365d 0%, #805ad5 50%, #e53e3e 100%);
+--shadow-sm: 0 2px 4px rgba(0,0,0,0.1);
+--shadow-md: 0 4px 15px rgba(0,0,0,0.1);
+--shadow-lg: 0 10px 40px rgba(0,0,0,0.15);
+--transition: all 0.3s ease;
+}
+* {
+margin: 0;
+padding: 0;
+box-sizing: border-box;
+font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+html {
+scroll-behavior: smooth;
+}
+body {
+background: var(--light-bg);
+color: var(--dark-text);
+line-height: 1.6;
+overflow-x: hidden;
+}
+/* ==================== NAVIGATION ==================== */
+.navbar {
+background: var(--gradient-1);
+padding: 1rem 0;
+position: fixed;
+width: 100%;
+top: 0;
+z-index: 1000;
+box-shadow: var(--shadow-md);
+}
+.nav-container {
+max-width: 1400px;
+margin: 0 auto;
+padding: 0 2rem;
+display: flex;
+justify-content: space-between;
+align-items: center;
+}
+.logo {
+display: flex;
+align-items: center;
+gap: 1rem;
+color: var(--white);
+text-decoration: none;
+}
+.logo-icon {
+width: 50px;
+height: 50px;
+background: var(--gradient-3);
+border-radius: 12px;
+display: flex;
+align-items: center;
+justify-content: center;
+font-size: 1.5rem;
+color: var(--primary-blue);
+}
+.logo-text h1 {
+font-size: 1.5rem;
+font-weight: 700;
+}
+.logo-text p {
+font-size: 0.75rem;
+opacity: 0.9;
+}
+.nav-menu {
+display: flex;
+list-style: none;
+gap: 0.5rem;
+flex-wrap: wrap;
+}
+.nav-menu li a {
+color: var(--white);
+text-decoration: none;
+padding: 0.6rem 1rem;
+border-radius: 8px;
+font-size: 0.85rem;
+font-weight: 500;
+transition: var(--transition);
+display: flex;
+align-items: center;
+gap: 0.4rem;
+}
+.nav-menu li a:hover,
+.nav-menu li a.active {
+background: var(--gradient-3);
+color: var(--primary-blue);
+}
+.nav-toggle {
+display: none;
+background: none;
+border: none;
+color: var(--white);
+font-size: 1.5rem;
+cursor: pointer;
+}
+/* ==================== HERO SECTION ==================== */
+.hero {
+background: linear-gradient(135deg, rgba(26, 54, 93, 0.9) 0%, rgba(128, 90, 213, 0.85) 100%), url('image_5.jpg');
+background-size: cover;
+background-position: center;
+background-attachment: fixed;
+min-height: 100vh;
+display: flex;
+align-items: center;
+justify-content: center;
+text-align: center;
+padding: 8rem 2rem 4rem;
+position: relative;
+overflow: hidden;
+}
+.hero::before {
+content: '';
+position: absolute;
+top: 0;
+left: 0;
+right: 0;
+bottom: 0;
+background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" fill="rgba(255,255,255,0.05)"/></svg>');
+background-size: 300px;
+opacity: 0.3;
+}
+.hero-content {
+position: relative;
+z-index: 1;
+max-width: 900px;
+}
+.hero-badge {
+display: inline-block;
+background: var(--gradient-3);
+color: var(--primary-blue);
+padding: 0.5rem 1.5rem;
+border-radius: 25px;
+font-weight: 600;
+font-size: 0.9rem;
+margin-bottom: 1.5rem;
+animation: fadeInDown 0.8s ease;
+}
+.hero h1 {
+font-size: 3rem;
+color: var(--white);
+margin-bottom: 1.5rem;
+line-height: 1.2;
+animation: fadeInUp 0.8s ease 0.2s both;
+}
+.hero h1 .typing-text {
+color: var(--vibrant-yellow);
+position: relative;
+display: inline-block;
+min-width: 450px;
+text-align: left;
+}
+.hero p {
+font-size: 1.2rem;
+color: rgba(255,255,255,0.9);
+margin-bottom: 2.5rem;
+animation: fadeInUp 0.8s ease 0.4s both;
+}
+.hero-buttons {
+display: flex;
+gap: 1rem;
+justify-content: center;
+flex-wrap: wrap;
+animation: fadeInUp 0.8s ease 0.6s both;
+}
+.btn {
+padding: 1rem 2.5rem;
+border-radius: 50px;
+font-weight: 600;
+font-size: 1rem;
+cursor: pointer;
+transition: var(--transition);
+text-decoration: none;
+display: inline-flex;
+align-items: center;
+gap: 0.5rem;
+border: none;
+}
+.btn-primary {
+background: var(--gradient-3);
+color: var(--primary-blue);
+}
+.btn-primary:hover {
+transform: translateY(-3px);
+box-shadow: 0 10px 30px rgba(246, 224, 94, 0.4);
+}
+.btn-secondary {
+background: transparent;
+color: var(--white);
+border: 2px solid var(--white);
+}
+.btn-secondary:hover {
+background: var(--white);
+color: var(--primary-blue);
+transform: translateY(-3px);
+}
+.btn-accent {
+background: var(--gradient-4);
+color: var(--white);
+}
+.btn-accent:hover {
+transform: translateY(-3px);
+box-shadow: 0 10px 30px rgba(229, 62, 62, 0.4);
+}
+/* ==================== SECTIONS ==================== */
+.section {
+padding: 3rem 1rem;
+max-width: 1400px;
+margin: 0 auto;
+}
+.section-header {
+text-align: center;
+margin-bottom: 2.0rem;
+}
+.section-badge {
+display: inline-block;
+background: var(--gradient-2);
+color: var(--white);
+padding: 0.5rem 1.5rem;
+border-radius: 25px;
+font-weight: 600;
+font-size: 0.85rem;
+margin-bottom: 1rem;
+}
+.section-title {
+font-size: 2.0rem;
+color: var(--primary-blue);
+margin-bottom: 1rem;
+}
+.section-subtitle {
+font-size: 1.1rem;
+color: var(--gray-text);
+max-width: 700px;
+margin: 0 auto;
+}
+
+/* ==================== ABOUT SECTION ==================== */
+.about-image-full {
+width: 100%;
+margin-bottom: 3rem;
+border-radius: 20px;
+overflow: hidden;
+box-shadow: var(--shadow-lg);
+}
+.about-main-image {
+width: 100%;
+height: 400px;
+object-fit: cover;
+display: block;
+transition: var(--transition);
+}
+.about-main-image:hover {
+transform: scale(1.02);
+}
+.about-content-full {
+width: 100%;
+max-width: 1200px;
+margin: 0 auto;
+padding: 0 1rem;
+}
+.about-content-full h3 {
+font-size: 2rem;
+color: var(--primary-blue);
+margin-bottom: 1.5rem;
+text-align: center;
+}
+.about-content-full p {
+color: var(--gray-text);
+margin-bottom: 1.5rem;
+line-height: 1.8;
+font-size: 1.05rem;
+max-width: 900px;
+margin-left: auto;
+margin-right: auto;
+}
+.about-mvo {
+margin-top: 3rem;
+padding: 2.5rem;
+background: var(--light-bg);
+border-radius: 20px;
+max-width: 900px;
+margin-left: auto;
+margin-right: auto;
+}
+.about-mvo h4 {
+color: var(--primary-blue);
+font-size: 1.2rem;
+margin: 1.5rem 0 0.8rem;
+display: flex;
+align-items: center;
+gap: 0.6rem;
+}
+.about-mvo h4:first-child {
+margin-top: 0;
+}
+.about-mvo p {
+color: var(--gray-text);
+font-size: 1rem;
+line-height: 1.7;
+margin-bottom: 0;
+max-width: 100%;
+}
+.objective-list {
+display: grid;
+grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+gap: 1rem;
+margin-top: 1.5rem;
+}
+.objective-item {
+display: flex;
+align-items: flex-start;
+gap: 0.7rem;
+padding: 0.5rem 0;
+}
+.objective-item i {
+color: var(--accent-blue);
+margin-top: 0.3rem;
+font-size: 1rem;
+flex-shrink: 0;
+}
+.objective-item span {
+color: var(--dark-text);
+font-size: 0.95rem;
+line-height: 1.6;
+}
+.about-stats {
+display: grid;
+grid-template-columns: repeat(3, 1fr);
+gap: 1.5rem;
+margin-top: 3rem;
+max-width: 900px;
+margin-left: auto;
+margin-right: auto;
+}
+.stat-box {
+text-align: center;
+padding: 1.5rem;
+background: var(--white);
+border-radius: 15px;
+box-shadow: var(--shadow-md);
+border-top: 4px solid var(--accent-blue);
+}
+.stat-box.yellow { border-top-color: var(--golden-yellow); }
+.stat-box.red { border-top-color: var(--bold-red); }
+.stat-box .number {
+font-size: 2.5rem;
+font-weight: 700;
+color: var(--primary-blue);
+display: block;
+}
+.stat-box .label {
+font-size: 0.9rem;
+color: var(--gray-text);
+}
+/* ==================== GALLERY SECTION ==================== */
+.gallery-grid {
+display: grid;
+grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+gap: 1.5rem;
+}
+.gallery-item {
+position: relative;
+border-radius: 15px;
+overflow: hidden;
+box-shadow: var(--shadow-md);
+height: 300px;
+cursor: pointer;
+transition: var(--transition);
+}
+.gallery-item:hover {
+transform: translateY(-5px);
+box-shadow: var(--shadow-lg);
+}
+.gallery-item img {
+width: 100%;
+height: 100%;
+object-fit: cover;
+transition: var(--transition);
+}
+.gallery-item:hover img {
+transform: scale(1.1);
+}
+.gallery-overlay {
+position: absolute;
+bottom: 0;
+left: 0;
+right: 0;
+background: linear-gradient(to top, rgba(26, 54, 93, 0.9), transparent);
+padding: 2rem 1rem 1rem;
+color: var(--white);
+}
+.gallery-overlay h4 {
+font-size: 1.1rem;
+margin-bottom: 0.3rem;
+}
+.gallery-overlay p {
+font-size: 0.85rem;
+opacity: 0.9;
+}
+/* ==================== GALLERY MODAL ==================== */
+.gallery-modal {
+display: none;
+position: fixed;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+background: rgba(0, 0, 0, 0.9);
+z-index: 2000;
+overflow-y: auto;
+}
+.gallery-modal.active {
+display: flex;
+align-items: center;
+justify-content: center;
+}
+.modal-content {
+background: var(--white);
+max-width: 900px;
+width: 90%;
+border-radius: 20px;
+overflow: hidden;
+position: relative;
+animation: modalSlideIn 0.3s ease;
+max-height: 90vh;
+overflow-y: auto;
+}
+@keyframes modalSlideIn {
+from {
+opacity: 0;
+transform: translateY(-50px);
+}
+to {
+opacity: 1;
+transform: translateY(0);
+}
+}
+.modal-close {
+position: absolute;
+top: 20px;
+right: 20px;
+width: 45px;
+height: 45px;
+background: var(--gradient-4);
+border: none;
+border-radius: 50%;
+color: var(--white);
+font-size: 1.5rem;
+cursor: pointer;
+z-index: 10;
+transition: var(--transition);
+display: flex;
+align-items: center;
+justify-content: center;
+}
+.modal-close:hover {
+transform: rotate(90deg);
+background: var(--bold-red);
+}
+.modal-image {
+width: 100%;
+height: 400px;
+object-fit: cover;
+}
+.modal-body {
+padding: 2.5rem;
+}
+.modal-body h3 {
+font-size: 2rem;
+color: var(--primary-blue);
+margin-bottom: 1rem;
+}
+.modal-body .modal-subtitle {
+color: var(--accent-blue);
+font-size: 1.1rem;
+margin-bottom: 1.5rem;
+font-weight: 600;
+}
+.modal-body p {
+color: var(--gray-text);
+line-height: 1.8;
+margin-bottom: 1.5rem;
+}
+.modal-features {
+margin: 2rem 0;
+}
+.modal-features h4 {
+color: var(--primary-blue);
+margin-bottom: 1rem;
+font-size: 1.2rem;
+}
+.modal-features ul {
+list-style: none;
+}
+.modal-features ul li {
+padding: 0.6rem 0;
+color: var(--dark-text);
+display: flex;
+align-items: center;
+gap: 0.8rem;
+}
+.modal-features ul li i {
+color: var(--accent-blue);
+font-size: 1.1rem;
+}
+.modal-stats {
+display: grid;
+grid-template-columns: repeat(3, 1fr);
+gap: 1.5rem;
+margin: 2rem 0;
+padding: 1.5rem;
+background: var(--light-bg);
+border-radius: 15px;
+}
+.modal-stat {
+text-align: center;
+}
+.modal-stat .number {
+font-size: 2rem;
+font-weight: 700;
+color: var(--primary-blue);
+display: block;
+}
+.modal-stat .label {
+font-size: 0.9rem;
+color: var(--gray-text);
+}
+.modal-cta {
+margin-top: 2rem;
+text-align: center;
+}
+/* Responsive Modal */
+@media (max-width: 768px) {
+.modal-content {
+width: 95%;
+max-height: 95vh;
+}
+.modal-image {
+height: 250px;
+}
+.modal-body {
+padding: 1.5rem;
+}
+.modal-body h3 {
+font-size: 1.5rem;
+}
+.modal-stats {
+grid-template-columns: 1fr;
+}
+}
+/* Update gallery item to show it's clickable */
+.gallery-item {
+cursor: pointer;
+}
+.gallery-item::after {
+content: '\f065';
+font-family: 'Font Awesome 6 Free';
+font-weight: 900;
+position: absolute;
+top: 50%;
+left: 50%;
+transform: translate(-50%, -50%) scale(0);
+width: 70px;
+height: 70px;
+background: var(--gradient-3);
+border-radius: 50%;
+display: flex;
+align-items: center;
+justify-content: center;
+color: var(--primary-blue);
+font-size: 1.5rem;
+opacity: 0;
+transition: var(--transition);
+z-index: 2;
+}
+.gallery-item:hover::after {
+transform: translate(-50%, -50%) scale(1);
+opacity: 1;
+}
+.gallery-item:hover .gallery-overlay {
+opacity: 1;
+}
+/* ==================== COURSES SECTION ==================== */
+.courses-grid {
+display: grid;
+grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+gap: 2rem;
+}
+.course-card {
+background: var(--white);
+border-radius: 20px;
+overflow: hidden;
+box-shadow: var(--shadow-md);
+transition: var(--transition);
+}
+.course-card:hover {
+transform: translateY(-10px);
+box-shadow: var(--shadow-lg);
+}
+.course-header {
+padding: 2rem;
+background: var(--gradient-2);
+color: var(--white);
+position: relative;
+overflow: hidden;
+}
+.course-header::before {
+content: '';
+position: absolute;
+top: -50%;
+right: -50%;
+width: 200px;
+height: 200px;
+background: rgba(255,255,255,0.1);
+border-radius: 50%;
+}
+.course-header.yellow { background: var(--gradient-3); color: var(--primary-blue); }
+.course-header.red { background: var(--gradient-4); }
+.course-header.purple { background: linear-gradient(135deg, #805ad5 0%, #9f7aea 100%); }
+.course-icon {
+width: 70px;
+height: 70px;
+background: rgba(255,255,255,0.2);
+border-radius: 15px;
+display: flex;
+align-items: center;
+justify-content: center;
+font-size: 2rem;
+margin-bottom: 1rem;
+}
+.course-header h3 {
+font-size: 1.4rem;
+margin-bottom: 0.5rem;
+}
+.course-header p {
+font-size: 0.9rem;
+opacity: 0.9;
+}
+.course-body {
+padding: 2rem;
+}
+.course-body ul {
+list-style: none;
+margin-bottom: 1.5rem;
+}
+.course-body ul li {
+padding: 0.5rem 0;
+color: var(--gray-text);
+display: flex;
+align-items: center;
+gap: 0.5rem;
+}
+.course-body ul li i {
+color: var(--accent-blue);
+}
+.course-footer {
+display: flex;
+justify-content: space-between;
+align-items: center;
+padding-top: 1.5rem;
+border-top: 1px solid #e2e8f0;
+}
+.course-price {
+font-size: 1.5rem;
+font-weight: 700;
+color: var(--primary-blue);
+}
+.course-price span {
+font-size: 0.9rem;
+color: var(--gray-text);
+font-weight: 400;
+}
+/* ==================== NEWS SECTION ==================== */
+.news-grid {
+display: grid;
+grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+gap: 2rem;
+}
+.news-card {
+background: var(--white);
+border-radius: 15px;
+overflow: hidden;
+box-shadow: var(--shadow-md);
+transition: var(--transition);
+}
+.news-card:hover {
+transform: translateY(-5px);
+box-shadow: var(--shadow-lg);
+}
+.news-image {
+height: 200px;
+background: var(--gradient-2);
+display: flex;
+align-items: center;
+justify-content: center;
+color: var(--white);
+font-size: 3rem;
+}
+.news-image.yellow { background: var(--gradient-3); }
+.news-image.red { background: var(--gradient-4); }
+.news-image.purple { background: linear-gradient(135deg, #805ad5 0%, #9f7aea 100%); }
+.news-body {
+padding: 1.5rem;
+}
+.news-date {
+color: var(--accent-blue);
+font-size: 0.85rem;
+margin-bottom: 0.5rem;
+}
+.news-body h3 {
+color: var(--primary-blue);
+margin-bottom: 0.5rem;
+font-size: 1.2rem;
+}
+.news-body p {
+color: var(--gray-text);
+font-size: 0.9rem;
+margin-bottom: 1rem;
+}
+.news-link {
+color: var(--accent-blue);
+text-decoration: none;
+font-weight: 600;
+display: inline-flex;
+align-items: center;
+gap: 0.5rem;
+cursor: pointer;
+}
+.news-link:hover {
+color: var(--rich-purple);
+}
+/* ==================== COMMUNITY SECTION ==================== */
+.community-features {
+display: grid;
+grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+gap: 2rem;
+}
+.community-card {
+background: var(--white);
+padding: 2.5rem;
+border-radius: 20px;
+box-shadow: var(--shadow-md);
+text-align: center;
+transition: var(--transition);
+border-top: 5px solid var(--accent-blue);
+}
+.community-card.yellow { border-top-color: var(--golden-yellow); }
+.community-card.red { border-top-color: var(--bold-red); }
+.community-card.purple { border-top-color: var(--rich-purple); }
+.community-card:hover {
+transform: translateY(-10px);
+box-shadow: var(--shadow-lg);
+}
+.community-icon {
+width: 80px;
+height: 80px;
+background: var(--gradient-2);
+border-radius: 50%;
+display: flex;
+align-items: center;
+justify-content: center;
+font-size: 2rem;
+color: var(--white);
+margin: 0 auto 1.5rem;
+}
+.community-card.yellow .community-icon { background: var(--gradient-3); color: var(--primary-blue); }
+.community-card.red .community-icon { background: var(--gradient-4); }
+.community-card.purple .community-icon { background: linear-gradient(135deg, #805ad5 0%, #9f7aea 100%); }
+.community-card h3 {
+color: var(--primary-blue);
+margin-bottom: 1rem;
+font-size: 1.3rem;
+}
+.community-card p {
+color: var(--gray-text);
+line-height: 1.8;
+}
+/* ==================== GETTING INVOLVED SECTION ==================== */
+.involvement-grid {
+display: grid;
+grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+gap: 2rem;
+}
+.involvement-card {
+background: var(--white);
+border-radius: 20px;
+padding: 2.5rem;
+box-shadow: var(--shadow-md);
+transition: var(--transition);
+position: relative;
+overflow: hidden;
+}
+.involvement-card::before {
+content: '';
+position: absolute;
+top: 0;
+left: 0;
+width: 100%;
+height: 5px;
+background: var(--gradient-2);
+}
+.involvement-card.yellow::before { background: var(--gradient-3); }
+.involvement-card.red::before { background: var(--gradient-4); }
+.involvement-card.purple::before { background: linear-gradient(135deg, #805ad5 0%, #9f7aea 100%); }
+.involvement-card:hover {
+transform: translateY(-5px);
+box-shadow: var(--shadow-lg);
+}
+.involvement-icon {
+width: 70px;
+height: 70px;
+background: var(--light-bg);
+border-radius: 15px;
+display: flex;
+align-items: center;
+justify-content: center;
+font-size: 2rem;
+color: var(--accent-blue);
+margin-bottom: 1.5rem;
+}
+.involvement-card h3 {
+color: var(--primary-blue);
+margin-bottom: 1rem;
+font-size: 1.3rem;
+}
+.involvement-card p {
+color: var(--gray-text);
+margin-bottom: 1.5rem;
+line-height: 1.8;
+}
+/* ==================== MENTORING SECTION ==================== */
+.mentoring-grid {
+display: grid;
+grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+gap: 2rem;
+}
+.mentor-card {
+background: var(--white);
+border-radius: 20px;
+overflow: hidden;
+box-shadow: var(--shadow-md);
+transition: var(--transition);
+}
+.mentor-card:hover {
+transform: translateY(-5px);
+box-shadow: var(--shadow-lg);
+}
+.mentor-header {
+padding: 2rem;
+background: var(--gradient-1);
+color: var(--white);
+text-align: center;
+}
+.mentor-avatar {
+width: 130px;
+height: 130px;
+border-radius: 50%;
+display: flex;
+align-items: center;
+justify-content: center;
+margin: 0 auto 1rem;
+border: 5px solid var(--white);
+box-shadow: var(--shadow-md);
+overflow: hidden;
+background: var(--gradient-3);
+}
+.mentor-avatar img {
+width: 100%;
+height: 100%;
+object-fit: cover;
+}
+.mentor-avatar .avatar-placeholder {
+font-size: 3rem;
+color: var(--primary-blue);
+font-weight: 700;
+}
+.mentor-name-link {
+text-decoration: none;
+color: inherit;
+transition: var(--transition);
+display: inline-block;
+}
+.mentor-name-link:hover {
+transform: scale(1.02);
+}
+.mentor-name-link:hover .mentor-name {
+color: var(--vibrant-yellow);
+}
+.mentor-name {
+font-size: 1.3rem;
+font-weight: 700;
+margin-bottom: 0.3rem;
+color: var(--white);
+display: flex;
+align-items: center;
+justify-content: center;
+gap: 0.5rem;
+}
+.mentor-name i {
+opacity: 0.8;
+transition: var(--transition);
+}
+.mentor-name-link:hover .mentor-name i {
+opacity: 1;
+}
+.mentor-title {
+font-size: 0.9rem;
+opacity: 0.9;
+color: var(--vibrant-yellow);
+}
+.mentor-body {
+padding: 2rem;
+}
+.mentor-specialties {
+display: flex;
+flex-wrap: wrap;
+gap: 0.5rem;
+margin-bottom: 1.5rem;
+}
+.mentor-specialties span {
+background: var(--light-bg);
+color: var(--primary-blue);
+padding: 0.4rem 1rem;
+border-radius: 20px;
+font-size: 0.85rem;
+font-weight: 500;
+}
+.mentor-body p {
+color: var(--gray-text);
+margin-bottom: 1.5rem;
+line-height: 1.8;
+}
+.mentor-stats {
+display: grid;
+grid-template-columns: repeat(3, 1fr);
+gap: 1rem;
+padding-top: 1.5rem;
+border-top: 1px solid #e2e8f0;
+}
+.mentor-stat {
+text-align: center;
+}
+.mentor-stat .number {
+font-size: 1.5rem;
+font-weight: 700;
+color: var(--accent-blue);
+}
+.mentor-stat .label {
+font-size: 0.8rem;
+color: var(--gray-text);
+}
+/* ==================== EVENTS SECTION ==================== */
+.events-grid {
+display: grid;
+grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+gap: 2rem;
+}
+.event-card {
+background: var(--white);
+border-radius: 20px;
+overflow: hidden;
+box-shadow: var(--shadow-md);
+transition: var(--transition);
+display: flex;
+flex-direction: column;
+cursor: pointer;
+}
+.event-card:hover {
+transform: translateY(-5px);
+box-shadow: var(--shadow-lg);
+}
+.event-image {
+height: 220px;
+overflow: hidden;
+position: relative;
+}
+.event-image img {
+width: 100%;
+height: 100%;
+object-fit: cover;
+transition: var(--transition);
+}
+.event-card:hover .event-image img {
+transform: scale(1.1);
+}
+.event-image::after {
+content: '\f065';
+font-family: 'Font Awesome 6 Free';
+font-weight: 900;
+position: absolute;
+top: 50%;
+left: 50%;
+transform: translate(-50%, -50%) scale(0);
+width: 70px;
+height: 70px;
+background: var(--gradient-3);
+border-radius: 50%;
+display: flex;
+align-items: center;
+justify-content: center;
+color: var(--primary-blue);
+font-size: 1.5rem;
+opacity: 0;
+transition: var(--transition);
+z-index: 2;
+}
+.event-card:hover .event-image::after {
+transform: translate(-50%, -50%) scale(1);
+opacity: 1;
+}
+.event-date {
+background: var(--gradient-2);
+color: var(--white);
+padding: 1rem 2rem;
+text-align: center;
+}
+.event-date.yellow { background: var(--gradient-3); color: var(--primary-blue); }
+.event-date.red { background: var(--gradient-4); }
+.event-date.purple { background: linear-gradient(135deg, #805ad5 0%, #9f7aea 100%); }
+.event-date .day {
+font-size: 2.5rem;
+font-weight: 700;
+display: block;
+}
+.event-date .month {
+font-size: 1rem;
+text-transform: uppercase;
+}
+.event-body {
+padding: 2rem;
+flex: 1;
+}
+.event-body h3 {
+color: var(--primary-blue);
+margin-bottom: 0.5rem;
+font-size: 1.2rem;
+}
+.event-body .time {
+color: var(--accent-blue);
+font-size: 0.9rem;
+margin-bottom: 1rem;
+display: flex;
+align-items: center;
+gap: 0.5rem;
+}
+.event-body p {
+color: var(--gray-text);
+margin-bottom: 1.5rem;
+font-size: 0.9rem;
+}
+.event-footer {
+padding: 1.5rem 2rem;
+border-top: 1px solid #e2e8f0;
+display: flex;
+justify-content: space-between;
+align-items: center;
+}
+.event-location {
+color: var(--gray-text);
+font-size: 0.85rem;
+display: flex;
+align-items: center;
+gap: 0.5rem;
+}
+/* ==================== RESOURCES SECTION ==================== */
+.resources-grid {
+display: grid;
+grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+gap: 2rem;
+}
+.resource-card {
+background: var(--white);
+border-radius: 15px;
+padding: 2rem;
+box-shadow: var(--shadow-md);
+transition: var(--transition);
+border-left: 5px solid var(--accent-blue);
+}
+.resource-card.yellow { border-left-color: var(--golden-yellow); }
+.resource-card.red { border-left-color: var(--bold-red); }
+.resource-card.purple { border-left-color: var(--rich-purple); }
+.resource-card:hover {
+transform: translateX(5px);
+box-shadow: var(--shadow-lg);
+}
+.resource-icon {
+width: 60px;
+height: 60px;
+background: var(--light-bg);
+border-radius: 12px;
+display: flex;
+align-items: center;
+justify-content: center;
+font-size: 1.5rem;
+color: var(--accent-blue);
+margin-bottom: 1rem;
+}
+.resource-card h3 {
+color: var(--primary-blue);
+margin-bottom: 0.5rem;
+}
+.resource-card p {
+color: var(--gray-text);
+font-size: 0.9rem;
+margin-bottom: 1rem;
+}
+.resource-link {
+color: var(--accent-blue);
+text-decoration: none;
+font-weight: 600;
+display: inline-flex;
+align-items: center;
+gap: 0.5rem;
+}
+/* ==================== FORUM SECTION ==================== */
+.forum-categories {
+display: grid;
+grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+gap: 2rem;
+}
+.forum-category {
+background: var(--white);
+border-radius: 15px;
+padding: 2rem;
+box-shadow: var(--shadow-md);
+}
+.forum-category-header {
+display: flex;
+align-items: center;
+gap: 1rem;
+margin-bottom: 1.5rem;
+padding-bottom: 1rem;
+border-bottom: 2px solid #e2e8f0;
+}
+.forum-category-icon {
+width: 50px;
+height: 50px;
+background: var(--gradient-2);
+border-radius: 12px;
+display: flex;
+align-items: center;
+justify-content: center;
+color: var(--white);
+font-size: 1.3rem;
+}
+.forum-category h3 {
+color: var(--primary-blue);
+font-size: 1.2rem;
+}
+.forum-category p {
+color: var(--gray-text);
+font-size: 0.9rem;
+}
+.forum-topics {
+list-style: none;
+}
+.forum-topics li {
+padding: 1rem 0;
+border-bottom: 1px solid #e2e8f0;
+display: flex;
+justify-content: space-between;
+align-items: center;
+}
+.forum-topics li:last-child {
+border-bottom: none;
+}
+.forum-topic {
+display: flex;
+align-items: center;
+gap: 1rem;
+}
+.forum-topic i {
+color: var(--accent-blue);
+}
+.forum-topic span {
+color: var(--dark-text);
+font-weight: 500;
+}
+.forum-stats {
+color: var(--gray-text);
+font-size: 0.85rem;
+display: flex;
+gap: 1rem;
+}
+/* ==================== FAQ SECTION ==================== */
+.faq-container {
+max-width: 900px;
+margin: 0 auto;
+}
+.faq-item {
+background: var(--white);
+border-radius: 15px;
+margin-bottom: 1rem;
+box-shadow: var(--shadow-sm);
+overflow: hidden;
+}
+.faq-question {
+padding: 1.5rem 2rem;
+display: flex;
+justify-content: space-between;
+align-items: center;
+cursor: pointer;
+transition: var(--transition);
+background: var(--white);
+}
+.faq-question:hover {
+background: var(--light-bg);
+}
+.faq-question h3 {
+color: var(--primary-blue);
+font-size: 1.1rem;
+font-weight: 600;
+}
+.faq-question i {
+color: var(--accent-blue);
+transition: var(--transition);
+}
+.faq-answer {
+padding: 0 2rem;
+max-height: 0;
+overflow: hidden;
+transition: var(--transition);
+}
+.faq-answer.active {
+padding: 0 2rem 1.5rem;
+max-height: 500px;
+}
+.faq-answer p {
+color: var(--gray-text);
+line-height: 1.8;
+}
+
+/* ==================== CTA SECTION ==================== */
+.cta-section {
+position: relative;
+height: 800px;
+background: linear-gradient(135deg, rgba(26, 54, 93, 0.95) 0%, rgba(128, 90, 213, 0.9) 100%), url('image_7.jpg');
+background-size: cover;
+background-position: center;
+background-repeat: no-repeat;
+text-align: center;
+color: var(--white);
+}
+.cta-section::before {
+content: '';
+position: absolute;
+top: 0;
+left: 0;
+right: 0;
+bottom: 0;
+background: rgba(26, 54, 93, 0.6);
+}
+.cta-section .cta-content {
+position: relative;
+z-index: 1;
+padding-top: 3rem;
+}
+.cta-section::before {
+content: '';
+position: absolute;
+top: 0;
+left: 0;
+right: 0;
+bottom: 0;
+background: rgba(26, 54, 93, 0.8);
+}
+.cta-section .cta-content {
+position: relative;
+z-index: 1;
+}
+.cta-section h2 {
+font-size: 2.5rem;
+margin-bottom: 1rem;
+}
+.cta-section p {
+font-size: 1.2rem;
+opacity: 0.9;
+margin-bottom: 2rem;
+max-width: 700px;
+margin-left: auto;
+margin-right: auto;
+}
+/* ==================== FOOTER ==================== */
+.footer {
+background: var(--primary-blue);
+color: var(--white);
+padding: 4rem 2rem 2rem;
+}
+.footer-grid {
+max-width: 1400px;
+margin: 0 auto;
+display: grid;
+grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+gap: 3rem;
+margin-bottom: 3rem;
+}
+.footer-col h3 {
+font-size: 1.3rem;
+margin-bottom: 1.5rem;
+color: var(--vibrant-yellow);
+}
+.footer-col p {
+color: rgba(255,255,255,0.8);
+line-height: 1.8;
+margin-bottom: 1rem;
+}
+.footer-col ul {
+list-style: none;
+}
+.footer-col ul li {
+margin-bottom: 0.8rem;
+}
+.footer-col ul li a {
+color: rgba(255,255,255,0.8);
+text-decoration: none;
+transition: var(--transition);
+display: flex;
+align-items: center;
+gap: 0.5rem;
+}
+.footer-col ul li a:hover {
+color: var(--vibrant-yellow);
+padding-left: 5px;
+}
+.social-links {
+display: flex;
+gap: 1rem;
+margin-top: 1rem;
+}
+.social-links a {
+width: 45px;
+height: 45px;
+background: rgba(255,255,255,0.1);
+border-radius: 50%;
+display: flex;
+align-items: center;
+justify-content: center;
+color: var(--white);
+font-size: 1.2rem;
+transition: var(--transition);
+}
+.social-links a:hover {
+background: var(--gradient-3);
+color: var(--primary-blue);
+transform: translateY(-3px);
+}
+.footer-bottom {
+max-width: 1400px;
+margin: 0 auto;
+padding-top: 2rem;
+border-top: 1px solid rgba(255,255,255,0.1);
+text-align: center;
+color: rgba(255,255,255,0.6);
+}
+/* ==================== ANIMATIONS ==================== */
+@keyframes fadeInDown {
+from {
+opacity: 0;
+transform: translateY(-30px);
+}
+to {
+opacity: 1;
+transform: translateY(0);
+}
+}
+@keyframes fadeInUp {
+from {
+opacity: 0;
+transform: translateY(30px);
+}
+to {
+opacity: 1;
+transform: translateY(0);
+}
+}
+@keyframes pulse {
+0%, 100% { transform: scale(1); }
+50% { transform: scale(1.05); }
+}
+/* ==================== RESPONSIVE ==================== */
+@media (max-width: 1200px) {
+.nav-menu {
+gap: 0.3rem;
+}
+.nav-menu li a {
+padding: 0.5rem 0.8rem;
+font-size: 0.8rem;
+}
+}
+@media (max-width: 992px) {
+.nav-toggle {
+display: block;
+}
+.nav-menu {
+display: none;
+position: absolute;
+top: 100%;
+left: 0;
+right: 0;
+background: var(--gradient-1);
+flex-direction: column;
+padding: 1rem;
+gap: 0.5rem;
+}
+.nav-menu.active {
+display: flex;
+}
+.nav-menu li a {
+justify-content: center;
+}
+.hero h1 {
+font-size: 2.2rem;
+}
+.hero h1 .typing-text {
+min-width: 320px;
+}
+}
+@media (max-width: 768px) {
+.hero h1 {
+font-size: 1.8rem;
+}
+.hero h1 .typing-text {
+min-width: 280px;
+font-size: 1.3rem;
+}
+.hero p {
+font-size: 1rem;
+}
+.section-title {
+font-size: 2rem;
+}
+.courses-grid,
+.news-grid,
+.events-grid {
+grid-template-columns: 1fr;
+}
+.hero-buttons {
+flex-direction: column;
+align-items: center;
+}
+.btn {
+width: 100%;
+max-width: 300px;
+justify-content: center;
+}
+}
+/* ==================== SCROLL TO TOP ==================== */
+.scroll-top {
+position: fixed;
+bottom: 30px;
+right: 30px;
+width: 50px;
+height: 50px;
+background: var(--gradient-2);
+border-radius: 50%;
+display: flex;
+align-items: center;
+justify-content: center;
+color: var(--white);
+font-size: 1.2rem;
+cursor: pointer;
+box-shadow: var(--shadow-lg);
+transition: var(--transition);
+opacity: 0;
+visibility: hidden;
+z-index: 999;
+}
+.scroll-top.visible {
+opacity: 1;
+visibility: visible;
+}
+.scroll-top:hover {
+transform: translateY(-5px);
+}
+/* ==================== IMAGE SHOWCASE ==================== */
+.image-showcase {
+margin: 3rem 0;
+border-radius: 20px;
+overflow: hidden;
+box-shadow: var(--shadow-lg);
+}
+.image-showcase img {
+width: 100%;
+height: auto;
+display: block;
+}
+.showcase-caption {
+background: var(--gradient-1);
+color: var(--white);
+padding: 1.5rem;
+text-align: center;
+}
+</style>
+</head>
+<body>
+<!-- Navigation -->
+<nav class="navbar">
+<div class="nav-container">
+<a href="#home" class="logo">
+<div class="logo-icon">
+<i class="fas fa-chart-line"></i>
+</div>
+<div class="logo-text">
+<h1>Beyond Data Analytics</h1>
+<p>Transforming Data Into Insights</p>
+</div>
+</a>
+<button class="nav-toggle" onclick="toggleNav()">
+<i class="fas fa-bars"></i>
+</button>
+<ul class="nav-menu" id="navMenu">
+<li><a href="#home" class="active"><i class="fas fa-home"></i> Home</a></li>
+<li><a href="#about"><i class="fas fa-info-circle"></i> About</a></li>
+<li><a href="#news"><i class="fas fa-newspaper"></i> News</a></li>
+<li><a href="#community"><i class="fas fa-users"></i> Community</a></li>
+<li><a href="#gallery"><i class="fas fa-images"></i> Gallery</a></li>
+<li><a href="#involved"><i class="fas fa-hand-holding-heart"></i> Getting Involved</a></li>
+<li><a href="#mentoring"><i class="fas fa-chalkboard-teacher"></i> Mentoring</a></li>
+<li><a href="#courses"><i class="fas fa-book"></i> Courses</a></li>
+<li><a href="#events"><i class="fas fa-calendar-alt"></i> Events</a></li>
+<li><a href="#resources"><i class="fas fa-folder-open"></i> Resources</a></li>
+<li><a href="#forum"><i class="fas fa-comments"></i> Forum</a></li>
+<li><a href="#faq"><i class="fas fa-question-circle"></i> FAQ</a></li>
+</ul>
+</div>
+</nav>
+
+<!-- Hero Section -->
+<section class="hero" id="home">
+<div class="hero-content">
+<span class="hero-badge"><i class="fas fa-star"></i> Leading Data Science Training in Kenya</span>
+<h1>Unlock Your Potential with <span class="typing-text"></span></h1>
+<p>Join Beyond Data Analytics and transform your career with cutting-edge training in data analysis, machine learning, AI, and statistical modeling. Learn from industry experts and become part of a thriving community.</p>
+<div class="hero-buttons">
+<a href="https://pregnant-brown-aryimafsgf.edgeone.app/" target="_blank" class="btn btn-primary"><i class="fas fa-rocket"></i> Explore Courses</a>
+<a href="#gallery" class="btn btn-secondary"><i class="fas fa-images"></i> View Gallery</a>
+<a href="#mentoring" class="btn btn-accent"><i class="fas fa-user-graduate"></i> Find a Mentor</a>
+</div>
+</div>
+</section>
+
+<!-- About Section -->
+<section class="section" id="about">
+<div class="section-header">
+<span class="section-badge"><i class="fas fa-info-circle"></i> Who We Are</span>
+<h2 class="section-title">About Beyond Data Analytics</h2>
+<p class="section-subtitle">Empowering the next generation of data scientists and analysts through quality education and mentorship</p>
+</div>
+<div style="margin-bottom: 3rem;">
+<img src="image_3.jpg" alt="Data Analytics in Action" style="width: 100%; height: 450px; object-fit: cover; border-radius: 20px; box-shadow: var(--shadow-lg);">
+</div>
+<div class="about-content">
+<h3>Building Data Excellence Since 2020</h3>
+<p class="lead" style="font-size: 1.1rem; color: var(--dark-text); margin-bottom: 2rem; text-align: justify;">
+Beyond Data Analytics is a premier training organization founded by Dr. Victor Wandera Lumumba,
+a seasoned Statistician, Data Analyst, and Machine Learning Expert currently pursuing a PhD in
+Biostatistics at Moi University. We are committed to bridging the critical gap between academic
+knowledge and industry-ready data science skills, empowering the next generation of data professionals
+in Kenya and across Africa.
+</p>
+<div style="margin: 2.5rem 0;">
+<h4 style="color: var(--primary-blue); margin-bottom: 1rem; font-size: 1.3rem;">
+<i class="fas fa-graduation-cap" style="color: var(--accent-blue); margin-right: 0.5rem;"></i>
+Our Training Philosophy
+</h4>
+<p style="text-align: justify;">
+Our curriculum seamlessly integrates strong theoretical foundations with hands-on practical experience
+in statistical modeling, machine learning, survival analysis, and explainable AI. We believe that
+true mastery comes from doing—not just learning. That's why every concept we teach is immediately
+applied through real-world projects, case studies, and industry scenarios.
+</p>
+</div>
+<div style="margin: 2.5rem 0;">
+<h4 style="color: var(--primary-blue); margin-bottom: 1rem; font-size: 1.3rem;">
+<i class="fas fa-chart-line" style="color: var(--accent-blue); margin-right: 0.5rem;"></i>
+Areas of Expertise
+</h4>
+<p style="text-align: justify;">
+With deep expertise spanning multiple domains, we prepare students for diverse career paths in data science:
+</p>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; margin-top: 1.5rem;">
+<div style="background: var(--light-bg); padding: 1.2rem; border-radius: 10px; border-left: 4px solid var(--accent-blue);">
+<strong style="color: var(--primary-blue);"><i class="fas fa-heartbeat"></i> Health Data Science</strong>
+<p style="font-size: 0.9rem; margin-top: 0.5rem;">Biostatistics, clinical trials, epidemiology, and healthcare analytics</p>
+</div>
+<div style="background: var(--light-bg); padding: 1.2rem; border-radius: 10px; border-left: 4px solid var(--golden-yellow);">
+<strong style="color: var(--primary-blue);"><i class="fas fa-cloud-sun"></i> Climate & Environmental Data</strong>
+<p style="font-size: 0.9rem; margin-top: 0.5rem;">Climate forecasting, environmental modeling, and sustainability analytics</p>
+</div>
+<div style="background: var(--light-bg); padding: 1.2rem; border-radius: 10px; border-left: 4px solid var(--bold-red);">
+<strong style="color: var(--primary-blue);"><i class="fas fa-coins"></i> Financial Risk Modeling</strong>
+<p style="font-size: 0.9rem; margin-top: 0.5rem;">Time series forecasting, econometrics, and financial analytics</p>
+</div>
+<div style="background: var(--light-bg); padding: 1.2rem; border-radius: 10px; border-left: 4px solid var(--rich-purple);">
+<strong style="color: var(--primary-blue);"><i class="fas fa-brain"></i> AI & Machine Learning</strong>
+<p style="font-size: 0.9rem; margin-top: 0.5rem;">Predictive modeling, deep learning, and explainable AI (XAI)</p>
+</div>
+</div>
+</div>
+<div style="margin: 2.5rem 0;">
+<h4 style="color: var(--primary-blue); margin-bottom: 1rem; font-size: 1.3rem;">
+<i class="fas fa-handshake" style="color: var(--accent-blue); margin-right: 0.5rem;"></i>
+Industry Partnerships & Career Outcomes
+</h4>
+<p style="text-align: justify;">
+Through strategic partnerships with leading academic institutions and industry organizations, we provide
+unique opportunities for networking, internships, and career placement. Our comprehensive support system
+extends beyond the classroom, offering:
+</p>
+<ul style="list-style: none; padding: 0; margin-top: 1.5rem;">
+<li style="padding: 0.7rem 0; display: flex; align-items: flex-start; gap: 0.7rem;">
+<i class="fas fa-check-circle" style="color: var(--accent-blue); margin-top: 0.3rem; flex-shrink: 0;"></i>
+<span><strong>Industry Connections:</strong> Direct links to employers seeking data science talent</span>
+</li>
+<li style="padding: 0.7rem 0; display: flex; align-items: flex-start; gap: 0.7rem;">
+<i class="fas fa-check-circle" style="color: var(--accent-blue); margin-top: 0.3rem; flex-shrink: 0;"></i>
+<span><strong>Internship Programs:</strong> Hands-on experience with partner organizations</span>
+</li>
+<li style="padding: 0.7rem 0; display: flex; align-items: flex-start; gap: 0.7rem;">
+<i class="fas fa-check-circle" style="color: var(--accent-blue); margin-top: 0.3rem; flex-shrink: 0;"></i>
+<span><strong>Career Placement Support:</strong> Resume reviews, interview prep, and job matching</span>
+</li>
+<li style="padding: 0.7rem 0; display: flex; align-items: flex-start; gap: 0.7rem;">
+<i class="fas fa-check-circle" style="color: var(--accent-blue); margin-top: 0.3rem; flex-shrink: 0;"></i>
+<span><strong>Alumni Network:</strong> Our graduates work at leading organizations across Kenya and internationally</span>
+</li>
+</ul>
+</div>
+<div style="margin: 2.5rem 0; background: var(--gradient-1); padding: 2rem; border-radius: 15px; color: var(--white);">
+<h4 style="margin-bottom: 1rem; color: var(--vibrant-yellow);">
+<i class="fas fa-award"></i> Why Choose Beyond Data Analytics?
+</h4>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-top: 1.5rem;">
+<div style="text-align: center;">
+<i class="fas fa-chalkboard-teacher" style="font-size: 2.5rem; color: var(--vibrant-yellow); margin-bottom: 0.5rem;"></i>
+<p style="font-weight: 600;">Expert Instructors</p>
+<p style="font-size: 0.85rem; opacity: 0.9;">Industry practitioners with real-world experience</p>
+</div>
+<div style="text-align: center;">
+<i class="fas fa-laptop-code" style="font-size: 2.5rem; color: var(--vibrant-yellow); margin-bottom: 0.5rem;"></i>
+<p style="font-weight: 600;">Hands-On Learning</p>
+<p style="font-size: 0.85rem; opacity: 0.9;">80% practical, 20% theory approach</p>
+</div>
+<div style="text-align: center;">
+<i class="fas fa-certificate" style="font-size: 2.5rem; color: var(--vibrant-yellow); margin-bottom: 0.5rem;"></i>
+<p style="font-weight: 600;">Recognized Certification</p>
+<p style="font-size: 0.85rem; opacity: 0.9;">Industry-recognized credentials</p>
+</div>
+<div style="text-align: center;">
+<i class="fas fa-users" style="font-size: 2.5rem; color: var(--vibrant-yellow); margin-bottom: 0.5rem;"></i>
+<p style="font-weight: 600;">Lifetime Support</p>
+<p style="font-size: 0.85rem; opacity: 0.9;">Continuous learning and career support</p>
+</div>
+</div>
+</div>
+<div style="margin-top: 2.5rem; padding: 2rem; background: var(--light-bg); border-radius: 15px; border-left: 5px solid var(--accent-blue);">
+<div style="display: flex; gap: 2rem; align-items: flex-start; flex-wrap: wrap;">
+<div style="flex-shrink: 0;">
+<img src="profile-victor.jpg" alt="Dr. Victor Wandera Lumumba"
+style="width: 150px; height: 150px; object-fit: cover; border-radius: 50%; border: 4px solid var(--accent-blue); box-shadow: var(--shadow-md);"
+onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
+<div style="width: 150px; height: 150px; border-radius: 50%; background: var(--gradient-3); border: 4px solid var(--accent-blue); box-shadow: var(--shadow-md); display: none; align-items: center; justify-content: center; font-size: 3rem; font-weight: 700; color: var(--primary-blue);">
+VL
+</div>
+</div>
+<div style="flex: 1; min-width: 300px;">
+<h4 style="color: var(--primary-blue); margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+<i class="fas fa-quote-left" style="color: var(--accent-blue);"></i>
+A Message from Our Founder
+</h4>
+<blockquote style="font-style: italic; color: var(--dark-text); line-height: 1.8; margin: 0; font-size: 1.05rem;">
+"At Beyond Data Analytics, we don't just teach data science, we transform careers. Our mission is to
+equip every learner with the skills, confidence, and industry connections needed to thrive in today's
+data-driven world. Whether you're starting your journey or advancing your career, we're here to support
+you every step of the way."
+</blockquote>
+<div style="margin-top: 1.5rem; display: flex; align-items: center; gap: 1rem;">
+<div>
+<p style="font-weight: 700; color: var(--primary-blue); margin: 0;">Dr. Victor Wandera Lumumba</p>
+<p style="font-size: 0.9rem; color: var(--gray-text); margin: 0;">Founder & Lead Instructor</p>
+<div style="display: flex; gap: 0.5rem; margin-top: 0.5rem;">
+<a href="https://scholar.google.com/citations?user=fDoe0f0AAAAJ&hl=en" target="_blank" rel="noopener noreferrer"
+style="color: var(--accent-blue); text-decoration: none; font-size: 0.85rem; display: flex; align-items: center; gap: 0.3rem;">
+<i class="fas fa-graduation-cap"></i> Google Scholar
+</a>
+<span style="color: var(--gray-text);">|</span>
+<a href="https://www.researchgate.net/profile/Victor-Lumumba?ev=hdr_xprf" target="_blank" rel="noopener noreferrer"
+style="color: var(--accent-blue); text-decoration: none; font-size: 0.85rem; display: flex; align-items: center; gap: 0.3rem;">
+<i class="fab fa-researchgate"></i> ResearchGate
+</a>
+<span style="color: var(--gray-text);">|</span>
+<a href="https://github.com/Lumumba1992" target="_blank" rel="noopener noreferrer"
+style="color: var(--accent-blue); text-decoration: none; font-size: 0.85rem; display: flex; align-items: center; gap: 0.3rem;">
+<i class="fab fa-github"></i> GitHub
+</a>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="about-mvo-section" style="margin-top: 4rem;">
+<div class="mvo-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin-bottom: 3rem;">
+<div class="mvo-card" style="background: var(--light-bg); padding: 2rem; border-radius: 15px; border-left: 5px solid var(--accent-blue);">
+<h4 style="color: var(--primary-blue); margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+<i class="fas fa-bullseye"></i> Our Mission
+</h4>
+<p style="color: var(--gray-text); line-height: 1.8; text-align: justify;">
+To deliver high-quality, practical, and industry-relevant training in data analytics, statistics, and machine learning, empowering individuals with the skills and confidence needed to solve real-world problems and drive data-informed decision-making.
+</p>
+</div>
+<div class="mvo-card" style="background: var(--light-bg); padding: 2rem; border-radius: 15px; border-left: 5px solid var(--golden-yellow);">
+<h4 style="color: var(--primary-blue); margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+<i class="fas fa-eye"></i> Our Vision
+</h4>
+<p style="color: var(--gray-text); line-height: 1.8; text-align: justify;">
+To be a leading center of excellence in data science education and innovation in Africa, recognized for producing highly skilled professionals who transform industries through data.
+</p>
+</div>
+<div class="mvo-card" style="background: var(--light-bg); padding: 2rem; border-radius: 15px; border-left: 5px solid var(--bold-red);">
+<h4 style="color: var(--primary-blue); margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+<i class="fas fa-tasks"></i> Our Objectives
+</h4>
+<ul style="list-style: none; padding: 0; color: var(--gray-text);">
+<li style="margin-bottom: 0.5rem;"><i class="fas fa-check-circle" style="color: var(--accent-blue); margin-right: 0.5rem;"></i>Provide practical, hands-on training aligned with industry needs</li>
+<li style="margin-bottom: 0.5rem;"><i class="fas fa-check-circle" style="color: var(--accent-blue); margin-right: 0.5rem;"></i>Bridge the gap between academic theory and real-world application</li>
+<li style="margin-bottom: 0.5rem;"><i class="fas fa-check-circle" style="color: var(--accent-blue); margin-right: 0.5rem;"></i>Equip learners with skills in data analysis, machine learning, and AI</li>
+<li style="margin-bottom: 0.5rem;"><i class="fas fa-check-circle" style="color: var(--accent-blue); margin-right: 0.5rem;"></i>Foster innovation, critical thinking, and problem-solving abilities</li>
+<li style="margin-bottom: 0.5rem;"><i class="fas fa-check-circle" style="color: var(--accent-blue); margin-right: 0.5rem;"></i>Support career growth through mentorship, networking, and job placement</li>
+</ul>
+</div>
+</div>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem; align-items: start;">
+<div style="background: var(--gradient-1); padding: 2rem; border-radius: 15px; color: var(--white);">
+<h4 style="margin-bottom: 1rem; color: var(--vibrant-yellow);"><i class="fas fa-link"></i> Quick Links</h4>
+<ul style="list-style: none; padding: 0;">
+<li style="margin-bottom: 0.8rem;"><a href="#courses" style="color: var(--white); text-decoration: none; display: flex; align-items: center; gap: 0.5rem;"><i class="fas fa-chevron-right"></i> Our Courses</a></li>
+<li style="margin-bottom: 0.8rem;"><a href="#mentoring" style="color: var(--white); text-decoration: none; display: flex; align-items: center; gap: 0.5rem;"><i class="fas fa-chevron-right"></i> Mentoring Program</a></li>
+<li style="margin-bottom: 0.8rem;"><a href="#events" style="color: var(--white); text-decoration: none; display: flex; align-items: center; gap: 0.5rem;"><i class="fas fa-chevron-right"></i> Upcoming Events</a></li>
+<li style="margin-bottom: 0.8rem;"><a href="#resources" style="color: var(--white); text-decoration: none; display: flex; align-items: center; gap: 0.5rem;"><i class="fas fa-chevron-right"></i> Learning Resources</a></li>
+<li style="margin-bottom: 0.8rem;"><a href="#community" style="color: var(--white); text-decoration: none; display: flex; align-items: center; gap: 0.5rem;"><i class="fas fa-chevron-right"></i> Join Community</a></li>
+</ul>
+</div>
+<div class="about-stats" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem;">
+<div class="stat-box" style="text-align: center; padding: 1.5rem; background: var(--white); border-radius: 15px; box-shadow: var(--shadow-md); border-top: 4px solid var(--accent-blue);">
+<span class="number" style="font-size: 2.5rem; font-weight: 700; color: var(--primary-blue); display: block;">500+</span>
+<span class="label" style="font-size: 0.9rem; color: var(--gray-text);">Students Trained</span>
+</div>
+<div class="stat-box yellow" style="text-align: center; padding: 1.5rem; background: var(--white); border-radius: 15px; box-shadow: var(--shadow-md); border-top: 4px solid var(--golden-yellow);">
+<span class="number" style="font-size: 2.5rem; font-weight: 700; color: var(--primary-blue); display: block;">10+</span>
+<span class="label" style="font-size: 0.9rem; color: var(--gray-text);">Publications</span>
+</div>
+<div class="stat-box red" style="text-align: center; padding: 1.5rem; background: var(--white); border-radius: 15px; box-shadow: var(--shadow-md); border-top: 4px solid var(--bold-red);">
+<span class="number" style="font-size: 2.5rem; font-weight: 700; color: var(--primary-blue); display: block;">95%</span>
+<span class="label" style="font-size: 0.9rem; color: var(--gray-text);">Employment Rate</span>
+</div>
+</div>
+<div style="text-align: center;">
+<p style="color: var(--gray-text); margin-bottom: 1rem; font-weight: 600;">Connect with us professionally:</p>
+<div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+<a href="https://scholar.google.com/citations?user=fDoe0f0AAAAJ&hl=en" target="_blank" rel="noopener noreferrer"
+style="color: var(--accent-blue); text-decoration: none; display: flex; align-items: center; gap: 0.5rem; font-weight: 500; padding: 0.5rem 1rem; background: var(--light-bg); border-radius: 8px;">
+<i class="fas fa-graduation-cap"></i> Google Scholar
+</a>
+<a href="https://www.researchgate.net/profile/Victor-Lumumba?ev=hdr_xprf" target="_blank" rel="noopener noreferrer"
+style="color: var(--accent-blue); text-decoration: none; display: flex; align-items: center; gap: 0.5rem; font-weight: 500; padding: 0.5rem 1rem; background: var(--light-bg); border-radius: 8px;">
+<i class="fab fa-researchgate"></i> ResearchGate
+</a>
+<a href="https://github.com/Lumumba1992" target="_blank" rel="noopener noreferrer"
+style="color: var(--accent-blue); text-decoration: none; display: flex; align-items: center; gap: 0.5rem; font-weight: 500; padding: 0.5rem 1rem; background: var(--light-bg); border-radius: 8px;">
+<i class="fab fa-github"></i> GitHub
+</a>
+</div>
+</div>
+</div>
+</div>
+</section>
+
+<!-- Data Analytics Banner Section -->
+<section class="section" style="background: var(--light-bg); padding: 4rem 2rem;">
+<div class="section-header">
+<span class="section-badge"><i class="fas fa-chart-line"></i> What We Offer</span>
+<h2 class="section-title">Comprehensive Data Analytics Solutions</h2>
+<p class="section-subtitle">From predictive modeling to business intelligence, we equip you with the skills to excel</p>
+</div>
+<div class="image-showcase">
+<img src="image6.jpg" alt="Data Analytics Visualization">
+</div>
+<div class="banner-content" style="max-width: 1000px; margin: 3rem auto 0; padding: 0 1rem;">
+<p style="text-align: justify; margin-bottom: 1.5rem; line-height: 1.8; color: var(--gray-text); font-size: 1.05rem;">
+At Beyond Data Analytics, we understand that data is the new currency of the digital age. Our comprehensive training programs are designed to transform raw data into actionable insights that drive business growth, inform strategic decisions, and create competitive advantages. Whether you're a beginner looking to enter the field of data science or a professional seeking to advance your analytical capabilities, our curriculum provides the foundation and advanced skills needed to succeed in today's data-driven world.
+</p>
+<p style="text-align: justify; margin-bottom: 1.5rem; line-height: 1.8; color: var(--gray-text); font-size: 1.05rem;">
+Our approach combines rigorous theoretical understanding with extensive hands-on practice. Students work with real-world datasets from diverse industries including healthcare, finance, agriculture, climate science, and technology. Through guided projects, case studies, and collaborative exercises, learners develop proficiency in industry-standard tools such as Python, R, SQL, Tableau, Power BI, and machine learning frameworks. This practical exposure ensures that graduates are not just theoretically knowledgeable but immediately productive in professional environments.
+</p>
+<p style="text-align: justify; margin-bottom: 1.5rem; line-height: 1.8; color: var(--gray-text); font-size: 1.05rem;">
+Beyond technical skills, we emphasize critical thinking, problem-solving, and effective communication of data insights. Our graduates learn to translate complex analytical findings into clear, actionable recommendations that stakeholders can understand and implement. We also provide career support services including resume reviews, interview preparation, job placement assistance, and access to our extensive alumni network. With a 95% employment rate and partnerships with leading organizations across Kenya and internationally, Beyond Data Analytics is your gateway to a rewarding career in data science.
+</p>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem; margin-top: 3rem;">
+<div style="background: var(--white); padding: 2rem; border-radius: 15px; box-shadow: var(--shadow-md); text-align: center;">
+<i class="fas fa-laptop-code" style="font-size: 3rem; color: var(--accent-blue); margin-bottom: 1rem;"></i>
+<h4 style="color: var(--primary-blue); margin-bottom: 0.5rem;">Hands-On Learning</h4>
+<p style="color: var(--gray-text); font-size: 0.95rem;">80% practical, 20% theory approach with real-world projects</p>
+</div>
+<div style="background: var(--white); padding: 2rem; border-radius: 15px; box-shadow: var(--shadow-md); text-align: center;">
+<i class="fas fa-chalkboard-teacher" style="font-size: 3rem; color: var(--golden-yellow); margin-bottom: 1rem;"></i>
+<h4 style="color: var(--primary-blue); margin-bottom: 0.5rem;">Expert Instructors</h4>
+<p style="color: var(--gray-text); font-size: 0.95rem;">Learn from industry practitioners with years of experience</p>
+</div>
+<div style="background: var(--white); padding: 2rem; border-radius: 15px; box-shadow: var(--shadow-md); text-align: center;">
+<i class="fas fa-certificate" style="font-size: 3rem; color: var(--bold-red); margin-bottom: 1rem;"></i>
+<h4 style="color: var(--primary-blue); margin-bottom: 0.5rem;">Recognized Certification</h4>
+<p style="color: var(--gray-text); font-size: 0.95rem;">Industry-recognized credentials to boost your career</p>
+</div>
+<div style="background: var(--white); padding: 2rem; border-radius: 15px; box-shadow: var(--shadow-md); text-align: center;">
+<i class="fas fa-briefcase" style="font-size: 3rem; color: var(--rich-purple); margin-bottom: 1rem;"></i>
+<h4 style="color: var(--primary-blue); margin-bottom: 0.5rem;">Career Support</h4>
+<p style="color: var(--gray-text); font-size: 0.95rem;">Job placement assistance and alumni network access</p>
+</div>
+</div>
+</div>
+</section>
+
+<!-- Gallery Section -->
+<section class="section" id="gallery" style="background: var(--light-bg);">
+<div class="section-header">
+<span class="section-badge"><i class="fas fa-images"></i> Photo Gallery</span>
+<h2 class="section-title">Our Training & Events</h2>
+<p class="section-subtitle">Click on any image to learn more about our programs and activities</p>
+</div>
+<div class="gallery-grid">
+<div class="gallery-item" onclick="openModal('modal1')">
+<img src="image_2.jpg" alt="Data Dashboard Monitoring">
+<div class="gallery-overlay">
+<h4>Real-Time Analytics</h4>
+<p>Monitoring complex data systems</p>
+</div>
+</div>
+<div class="gallery-item" onclick="openModal('modal2')">
+<img src="image_001.jpg" alt="Hands-on Data Analysis">
+<div class="gallery-overlay">
+<h4>Practical Training</h4>
+<p>Interactive learning environment</p>
+</div>
+</div>
+<div class="gallery-item" onclick="openModal('modal3')">
+<img src="image1.jpg" alt="CDAM Team Group Photo">
+<div class="gallery-overlay">
+<h4>CDAM Team</h4>
+<p>Our vibrant learning community</p>
+</div>
+</div>
+<div class="gallery-item" onclick="openModal('modal4')">
+<img src="image_004.jpg" alt="Workshop Participants">
+<div class="gallery-overlay">
+<h4>Workshop Session</h4>
+<p>Interactive learning environment</p>
+</div>
+</div>
+<div class="gallery-item" onclick="openModal('modal5')">
+<img src="image9.jpg" alt="Training Participants">
+<div class="gallery-overlay">
+<h4>Training Workshop</h4>
+<p>Hands-on data analytics training</p>
+</div>
+</div>
+<div class="gallery-item" onclick="openModal('modal6')">
+<img src="image10.jpg" alt="Computer Lab Training">
+<div class="gallery-overlay">
+<h4>Computer Lab Session</h4>
+<p>Practical hands-on training</p>
+</div>
+</div>
+</div>
+</section>
+
+<!-- Gallery Modals -->
+<!-- Modal 1: Real-Time Analytics -->
+<div id="modal1" class="gallery-modal">
+<div class="modal-content">
+<button class="modal-close" onclick="closeModal('modal1')"><i class="fas fa-times"></i></button>
+<img src="image_2.jpg" alt="Real-Time Analytics" class="modal-image">
+<div class="modal-body">
+<h3>Real-Time Analytics & Monitoring</h3>
+<p class="modal-subtitle"><i class="fas fa-chart-line"></i> Advanced Data System Monitoring</p>
+<p>Real-time analytics and monitoring represent the cornerstone of modern data-driven organizations, enabling them to respond instantly to changing conditions, detect anomalies before they become critical issues, and make informed decisions based on live data streams. Unlike traditional batch processing systems that analyze historical data, real-time analytics processes information as it arrives, providing immediate insights that can trigger automated responses or inform urgent business decisions.</p>
+<p>In today's fast-paced digital environment, organizations generate massive volumes of data continuously from multiple sources including web applications, IoT sensors, financial transactions, social media interactions, and system logs. The ability to monitor this data in real-time and extract actionable insights has become a competitive necessity. Students entering this field will learn to architect, build, and deploy sophisticated monitoring systems that transform raw streaming data into meaningful visualizations, alerts, and predictive models that drive organizational success.</p>
+<p>This comprehensive module combines theoretical foundations with hands-on practical experience, ensuring that graduates can immediately contribute to building enterprise-grade monitoring solutions. Through real-world projects and industry-standard tools, students will develop the technical expertise and strategic thinking needed to design monitoring systems that not only track current performance but also predict future trends and prevent potential failures before they occur.</p>
+<div class="modal-features">
+<h4><i class="fas fa-star"></i> What You'll Learn:</h4>
+<ul class="learning-list">
+<li>
+<i class="fas fa-check-circle"></i>
+<strong>Real-time data streaming and processing</strong>
+<p>Understand how to capture, process, and analyze continuous data streams using modern frameworks and tools.</p>
+</li>
+<li>
+<i class="fas fa-check-circle"></i>
+<strong>Building interactive dashboards with Plotly & Dash</strong>
+<p>Learn how to design user-friendly dashboards that provide live updates and enable interactive data exploration.</p>
+</li>
+<li>
+<i class="fas fa-check-circle"></i>
+<strong>System performance monitoring and alerting</strong>
+<p>Develop systems that track performance metrics and automatically trigger alerts when anomalies or thresholds are detected.</p>
+</li>
+<li>
+<i class="fas fa-check-circle"></i>
+<strong>Data visualization best practices</strong>
+<p>Gain knowledge on how to present data clearly and effectively to support informed decision-making.</p>
+</li>
+<li>
+<i class="fas fa-check-circle"></i>
+<strong>Integration with cloud platforms (AWS, Azure, GCP)</strong>
+<p>Explore how to deploy and scale real-time analytics solutions using leading cloud infrastructure services.</p>
+</li>
+<li>
+<i class="fas fa-check-circle"></i>
+<strong>Anomaly detection and predictive monitoring</strong>
+<p>Apply machine learning techniques to identify unusual patterns and predict potential system failures before they occur.</p>
+</li>
+</ul>
+</div>
+<div class="modal-stats">
+<div class="modal-stat">
+<span class="number">95%</span>
+<span class="label">Industry Demand</span>
+</div>
+<div class="modal-stat">
+<span class="number">8</span>
+<span class="label">Weeks Course</span>
+</div>
+<div class="modal-stat">
+<span class="number">50+</span>
+<span class="label">Projects</span>
+</div>
+</div>
+<div class="modal-cta">
+<a href="https://pregnant-brown-aryimafsgf.edgeone.app/" target="_blank" class="btn btn-primary"><i class="fas fa-rocket"></i> Enroll Now</a>
+</div>
+</div>
+</div>
+</div>
+
+<!-- Modal 2: Hands-on Data Analysis -->
+<div id="modal2" class="gallery-modal">
+<div class="modal-content">
+<button class="modal-close" onclick="closeModal('modal2')">
+<i class="fas fa-times"></i>
+</button>
+<img src="image_001.jpg" alt="Hands-on Data Analysis" class="modal-image">
+<div class="modal-body">
+<h3>Hands-on Data Analysis Training</h3>
+<p class="modal-subtitle">
+<i class="fas fa-laptop-code"></i> Practical, Project-Based Learning
+</p>
+<p>
+Our hands-on training approach is designed to bridge the gap between theory and real-world application.
+Instead of focusing solely on concepts, learners actively engage with real datasets, tools, and industry scenarios.
+This ensures that every concept learned is immediately applied, reinforcing understanding and building confidence.
+</p>
+<p>
+Throughout the program, participants work on practical projects that simulate real business challenges.
+From data cleaning and exploration to visualization and reporting, students develop a complete data analysis workflow.
+By the end of the training, learners will have built a strong portfolio that demonstrates their ability to solve
+real-world problems using data.
+</p>
+<p>
+The training also emphasizes collaboration, critical thinking, and continuous feedback. Learners receive guidance
+from experienced mentors, participate in peer discussions, and refine their work through structured reviews.
+This holistic approach prepares students for both technical roles and collaborative work environments.
+</p>
+<div class="modal-features">
+<h4><i class="fas fa-star"></i> Training Highlights:</h4>
+<ul class="feature-list">
+<li>
+<i class="fas fa-check-circle"></i>
+<strong>Real-world datasets from various industries</strong>
+<p>Work with authentic datasets from sectors such as finance, healthcare, marketing, and technology to gain practical exposure.</p>
+</li>
+<li>
+<i class="fas fa-check-circle"></i>
+<strong>One-on-one mentorship sessions</strong>
+<p>Receive personalized guidance, career advice, and technical support from experienced data professionals.</p>
+</li>
+<li>
+<i class="fas fa-check-circle"></i>
+<strong>Collaborative group projects</strong>
+<p>Enhance teamwork and communication skills by working with peers to solve complex data-driven problems.</p>
+</li>
+<li>
+<i class="fas fa-check-circle"></i>
+<strong>Code reviews and feedback</strong>
+<p>Improve coding standards and analytical thinking through detailed feedback and best practice recommendations.</p>
+</li>
+<li>
+<i class="fas fa-check-circle"></i>
+<strong>Portfolio development</strong>
+<p>Build a professional portfolio showcasing your projects, skills, and problem-solving abilities to potential employers.</p>
+</li>
+<li>
+<i class="fas fa-check-circle"></i>
+<strong>Industry-standard tools and techniques</strong>
+<p>Gain hands-on experience with widely used tools such as Python, R, SQL, and modern data visualization platforms.</p>
+</li>
+</ul>
+</div>
+<div class="modal-stats">
+<div class="modal-stat">
+<span class="number">100%</span>
+<span class="label">Practical</span>
+</div>
+<div class="modal-stat">
+<span class="number">15+</span>
+<span class="label">Projects</span>
+</div>
+<div class="modal-stat">
+<span class="number">24/7</span>
+<span class="label">Support</span>
+</div>
+</div>
+<div class="modal-cta">
+<a href="https://pregnant-brown-aryimafsgf.edgeone.app/" target="_blank" class="btn btn-primary">
+<i class="fas fa-rocket"></i> Start Learning
+</a>
+</div>
+</div>
+</div>
+</div>
+
+<!-- Modal 3: CDAM Team -->
+<div id="modal3" class="gallery-modal">
+<div class="modal-content">
+<button class="modal-close" onclick="closeModal('modal3')">
+<i class="fas fa-times"></i>
+</button>
+<img src="image1.jpg" alt="CDAM Team" class="modal-image">
+<div class="modal-body">
+<h3>Our Learning Community</h3>
+<p class="modal-subtitle">
+<i class="fas fa-users"></i> Join a Vibrant Network of Data Professionals
+</p>
+<p>
+Beyond Data Analytics is more than just a training institute—it is a dynamic and supportive learning
+community where aspiring data professionals, students, and industry experts come together to grow and succeed.
+The community fosters collaboration, knowledge sharing, and continuous learning, creating an environment where
+members are empowered to achieve their goals.
+</p>
+<p>
+By joining this community, learners gain access to a network of like-minded individuals who are passionate
+about data science, analytics, and technology. Members can exchange ideas, work on collaborative projects,
+and stay updated with the latest industry trends. This exposure not only enhances technical skills but also
+builds confidence and professional connections.
+</p>
+<p>
+The community is designed to support your journey beyond the classroom. Whether you are seeking mentorship,
+career opportunities, or peer support, you will find a platform that encourages growth, accountability,
+and long-term success in the data analytics field.
+</p>
+<div class="modal-features">
+<h4><i class="fas fa-star"></i> Community Benefits:</h4>
+<ul class="feature-list">
+<li>
+<i class="fas fa-check-circle"></i>
+<strong>Active discussion forums and Slack channels</strong>
+<p>Engage in meaningful discussions, ask questions, and share knowledge with fellow learners and experts in real time.</p>
+</li>
+<li>
+<i class="fas fa-check-circle"></i>
+<strong>Monthly meetups and networking events</strong>
+<p>Participate in virtual and physical events designed to connect members, share insights, and build professional relationships.</p>
+</li>
+<li>
+<i class="fas fa-check-circle"></i>
+<strong>Job board with exclusive opportunities</strong>
+<p>Access curated job postings, internships, and freelance opportunities tailored for data analytics professionals.</p>
+</li>
+<li>
+<i class="fas fa-check-circle"></i>
+<strong>Peer code reviews and study groups</strong>
+<p>Collaborate with peers to review code, improve problem-solving skills, and stay motivated through group learning.</p>
+</li>
+<li>
+<i class="fas fa-check-circle"></i>
+<strong>Alumni mentorship program</strong>
+<p>Receive guidance from experienced alumni who provide career advice, technical support, and industry insights.</p>
+</li>
+<li>
+<i class="fas fa-check-circle"></i>
+<strong>Access to industry guest speakers</strong>
+<p>Learn from experienced professionals through guest sessions, webinars, and expert-led discussions.</p>
+</li>
+</ul>
+</div>
+<div class="modal-stats">
+<div class="modal-stat">
+<span class="number">500+</span>
+<span class="label">Members</span>
+</div>
+<div class="modal-stat">
+<span class="number">50+</span>
+<span class="label">Events/Year</span>
+</div>
+<div class="modal-stat">
+<span class="number">95%</span>
+<span class="label">Satisfaction</span>
+</div>
+</div>
+<div class="modal-cta">
+<a href="#community" class="btn btn-primary" onclick="closeModal('modal3')">
+<i class="fas fa-users"></i> Join Community
+</a>
+</div>
+</div>
+</div>
+</div>
+
+<!-- Modal 4: Workshop Session -->
+<div id="modal4" class="gallery-modal">
+<div class="modal-content">
+<button class="modal-close" onclick="closeModal('modal4')">
+<i class="fas fa-times"></i>
+</button>
+<img src="image_004.jpg" alt="Workshop Session" class="modal-image">
+<div class="modal-body">
+<h3>Interactive Workshop Sessions</h3>
+<p class="modal-subtitle">
+<i class="fas fa-chalkboard-teacher"></i> Learn by Doing
+</p>
+<p>
+Our interactive workshops are carefully designed to provide an engaging and immersive learning experience.
+Rather than relying solely on lectures, these sessions combine guided instruction with hands-on exercises,
+allowing participants to actively apply concepts as they learn. This approach ensures deeper understanding
+and long-term retention of key skills.
+</p>
+<p>
+Each workshop is structured to accommodate learners at different levels, from beginners to professionals
+seeking to enhance their expertise. Participants work on practical tasks, real-world scenarios, and
+collaborative activities that mirror industry challenges, making the learning experience both relevant
+and impactful.
+</p>
+<p>
+In addition to technical skills, our workshops emphasize problem-solving, critical thinking, and
+interactive discussions. Learners have the opportunity to ask questions, receive immediate feedback,
+and engage directly with instructors and peers in a supportive environment.
+</p>
+<div class="modal-features">
+<h4><i class="fas fa-star"></i> Workshop Features:</h4>
+<ul class="feature-list">
+<li>
+<i class="fas fa-check-circle"></i>
+<strong>Small class sizes (max 20 students)</strong>
+<p>Enjoy personalized attention and enhanced interaction with instructors in a focused learning environment.</p>
+</li>
+<li>
+<i class="fas fa-check-circle"></i>
+<strong>Expert instructors with industry experience</strong>
+<p>Learn from professionals who bring real-world insights and practical expertise into every session.</p>
+</li>
+<li>
+<i class="fas fa-check-circle"></i>
+<strong>Take-home resources and code templates</strong>
+<p>Access reusable materials, scripts, and templates to reinforce learning and support future projects.</p>
+</li>
+<li>
+<i class="fas fa-check-circle"></i>
+<strong>Certificate of completion</strong>
+<p>Receive a recognized certificate to validate your skills and enhance your professional profile.</p>
+</li>
+<li>
+<i class="fas fa-check-circle"></i>
+<strong>Recording access for 30 days</strong>
+<p>Revisit workshop sessions at your convenience to reinforce concepts and review key lessons.</p>
+</li>
+<li>
+<i class="fas fa-check-circle"></i>
+<strong>Q&A sessions with instructors</strong>
+<p>Engage directly with instructors to clarify concepts, solve challenges, and deepen your understanding.</p>
+</li>
+</ul>
+</div>
+<div class="modal-stats">
+<div class="modal-stat">
+<span class="number">4</span>
+<span class="label">Hours/Session</span>
+</div>
+<div class="modal-stat">
+<span class="number">20</span>
+<span class="label">Max Students</span>
+</div>
+<div class="modal-stat">
+<span class="number">100%</span>
+<span class="label">Hands-on</span>
+</div>
+</div>
+<div class="modal-cta">
+<a href="#events" class="btn btn-primary" onclick="closeModal('modal4')">
+<i class="fas fa-calendar"></i> View Workshops
+</a>
+</div>
+</div>
+</div>
+</div>
+
+<!-- Modal 5: Training Workshop -->
+<div id="modal5" class="gallery-modal">
+<div class="modal-content">
+<button class="modal-close" onclick="closeModal('modal5')">
+<i class="fas fa-times"></i>
+</button>
+<img src="image9.jpg" alt="Training Workshop" class="modal-image">
+<div class="modal-body">
+<h3>Comprehensive Training Programs</h3>
+<p class="modal-subtitle">
+<i class="fas fa-graduation-cap"></i> From Beginner to Expert
+</p>
+<p>
+Our comprehensive training programs are designed to guide learners through every stage of their data analytics journey.
+Starting with foundational concepts and progressing to advanced analytical and machine learning techniques, the programs
+provide a structured and practical pathway for skill development. Whether you are new to data analytics or looking to
+deepen your expertise, our curriculum ensures a smooth and impactful learning experience.
+</p>
+<p>
+Each program is carefully curated to combine theoretical understanding with hands-on application. Learners engage in
+real-world projects, case studies, and practical exercises that reinforce key concepts and prepare them for industry
+challenges. The flexible structure also allows participants to follow a predefined learning track or customize their
+path based on their career goals and interests.
+</p>
+<p>
+With a strong emphasis on employability, our training equips learners with the technical, analytical, and problem-solving
+skills required in today's data-driven world. By the end of the program, participants will have built a solid portfolio
+and gained the confidence to apply their knowledge in professional environments.
+</p>
+<div class="modal-features">
+<h4><i class="fas fa-star"></i> Program Tracks:</h4>
+<ul class="feature-list">
+<li>
+<i class="fas fa-check-circle"></i>
+<strong>Data Analysis Fundamentals (8 weeks)</strong>
+<p>Build a strong foundation in data cleaning, exploratory data analysis, visualization, and basic statistical techniques.</p>
+</li>
+<li>
+<i class="fas fa-check-circle"></i>
+<strong>Machine Learning Bootcamp (12 weeks)</strong>
+<p>Learn supervised and unsupervised learning methods, model evaluation, and deployment techniques using real datasets.</p>
+</li>
+<li>
+<i class="fas fa-check-circle"></i>
+<strong>Time Series Forecasting (10 weeks)</strong>
+<p>Develop skills in analyzing temporal data, forecasting trends, and building predictive models for time-dependent datasets.</p>
+</li>
+<li>
+<i class="fas fa-check-circle"></i>
+<strong>Python for Data Science (10 weeks)</strong>
+<p>Master Python programming for data manipulation, analysis, and visualization using industry-standard libraries.</p>
+</li>
+<li>
+<i class="fas fa-check-circle"></i>
+<strong>Statistical Inference (10 weeks)</strong>
+<p>Understand hypothesis testing, confidence intervals, and statistical modeling for data-driven decision-making.</p>
+</li>
+<li>
+<i class="fas fa-check-circle"></i>
+<strong>Survival Analysis (10 weeks)</strong>
+<p>Learn advanced techniques for analyzing time-to-event data, widely used in healthcare, engineering, and risk analysis.</p>
+</li>
+</ul>
+</div>
+<div class="modal-stats">
+<div class="modal-stat">
+<span class="number">6</span>
+<span class="label">Core Courses</span>
+</div>
+<div class="modal-stat">
+<span class="number">60+</span>
+<span class="label">Hours Content</span>
+</div>
+<div class="modal-stat">
+<span class="number">95%</span>
+<span class="label">Employment</span>
+</div>
+</div>
+<div class="modal-cta">
+<a href="https://pregnant-brown-aryimafsgf.edgeone.app/" target="_blank" class="btn btn-primary">
+<i class="fas fa-book"></i> Explore Courses
+</a>
+</div>
+</div>
+</div>
+</div>
+
+<!-- Modal 6: Computer Lab -->
+<div id="modal6" class="gallery-modal">
+<div class="modal-content">
+<button class="modal-close" onclick="closeModal('modal6')">
+<i class="fas fa-times"></i>
+</button>
+<img src="image10.jpg" alt="Computer Lab Training" class="modal-image">
+<div class="modal-body">
+<h3>State-of-the-Art Computer Labs</h3>
+<p class="modal-subtitle">
+<i class="fas fa-desktop"></i> Modern Learning Infrastructure
+</p>
+<p>
+Our computer labs are designed to provide a high-performance and immersive learning environment
+that supports both foundational training and advanced data science applications. Equipped with
+modern hardware and cutting-edge software, these labs ensure that learners can efficiently run
+complex computations, analyze large datasets, and build sophisticated models.
+</p>
+<p>
+The infrastructure supports a wide range of analytical and machine learning tasks, including
+deep learning, statistical modeling, and big data processing. Learners gain hands-on experience
+with tools and platforms commonly used in industry, ensuring they are well-prepared for real-world
+data challenges.
+</p>
+<p>
+In addition to physical access, our labs are designed for flexibility and convenience. With remote
+access capabilities and dedicated technical support, students can continue learning and experimenting
+anytime, from anywhere.
+</p>
+<div class="modal-features">
+<h4><i class="fas fa-star"></i> Lab Facilities:</h4>
+<ul class="feature-list">
+<li>
+<i class="fas fa-check-circle"></i>
+<strong>High-performance workstations</strong>
+<p>Work on powerful machines optimized for data processing, visualization, and large-scale computations.</p>
+</li>
+<li>
+<i class="fas fa-check-circle"></i>
+<strong>GPU-enabled machines for deep learning</strong>
+<p>Accelerate model training and handle complex neural network computations with dedicated GPU support.</p>
+</li>
+<li>
+<i class="fas fa-check-circle"></i>
+<strong>Cloud computing credits (AWS, GCP, Azure)</strong>
+<p>Access scalable cloud environments to deploy, test, and manage real-world data science applications.</p>
+</li>
+<li>
+<i class="fas fa-check-circle"></i>
+<strong>Licensed software (Python, R, SAS, SPSS)</strong>
+<p>Utilize industry-standard tools and platforms for statistical analysis, machine learning, and data visualization.</p>
+</li>
+<li>
+<i class="fas fa-check-circle"></i>
+<strong>24/7 remote lab access</strong>
+<p>Continue learning beyond the classroom with secure remote access to lab resources anytime.</p>
+</li>
+<li>
+<i class="fas fa-check-circle"></i>
+<strong>Technical support team</strong>
+<p>Receive assistance from a dedicated support team to troubleshoot issues and ensure a smooth learning experience.</p>
+</li>
+</ul>
+</div>
+<div class="modal-stats">
+<div class="modal-stat">
+<span class="number">50+</span>
+<span class="label">Workstations</span>
+</div>
+<div class="modal-stat">
+<span class="number">24/7</span>
+<span class="label">Access</span>
+</div>
+<div class="modal-stat">
+<span class="number">100%</span>
+<span class="label">Uptime</span>
+</div>
+</div>
+<div class="modal-cta">
+<a href="#about" class="btn btn-primary" onclick="closeModal('modal6')">
+<i class="fas fa-info-circle"></i> Learn More
+</a>
+</div>
+</div>
+</div>
+</div>
+
+<!-- News Section -->
+<section class="section" id="news">
+<div class="section-header">
+<span class="section-badge"><i class="fas fa-newspaper"></i> Latest Updates</span>
+<h2 class="section-title">News & Announcements</h2>
+<p class="section-subtitle">Stay updated with the latest developments, achievements, and opportunities</p>
+</div>
+<div class="news-grid">
+<div class="news-card">
+<div class="news-image">
+<i class="fas fa-award"></i>
+</div>
+<div class="news-body">
+<p class="news-date"><i class="fas fa-calendar"></i> December 2025</p>
+<h3>6 New Publications in 2025</h3>
+<p>Our research team published groundbreaking work on XAI frameworks for neonatal mortality, malaria risk prediction, and mental health distress modeling.</p>
+<a href="javascript:void(0)" onclick="openNewsModal('news-modal-1'); return false;" class="news-link">Read More <i class="fas fa-arrow-right"></i></a>
+</div>
+</div>
+<div class="news-card">
+<div class="news-image yellow">
+<i class="fas fa-handshake"></i>
+</div>
+<div class="news-body">
+<p class="news-date"><i class="fas fa-calendar"></i> July 2025</p>
+<h3>NAMBARI Workshop Participation</h3>
+<p>Dr. Lumumba participated in the fully funded NAMBARI 8th Workshop on ML & Survival Analysis in HIV Research (Moi × Brown × Hasselt × NYU).</p>
+<a href="javascript:void(0)" onclick="openNewsModal('news-modal-2'); return false;" class="news-link">Read More <i class="fas fa-arrow-right"></i></a>
+</div>
+</div>
+<div class="news-card">
+<div class="news-image red">
+<i class="fas fa-microphone"></i>
+</div>
+<div class="news-body">
+<p class="news-date"><i class="fas fa-calendar"></i> October 2024</p>
+<h3>Three Conference Presentations</h3>
+<p>Research presented at Tharaka University and Chuka University conferences on time series forecasting, malaria incidence, and mental health prediction.</p>
+<a href="javascript:void(0)" onclick="openNewsModal('news-modal-3'); return false;" class="news-link">Read More <i class="fas fa-arrow-right"></i></a>
+</div>
+</div>
+</div>
+</section>
+
+<!-- ==================== NEWS MODALS ==================== -->
+
+<!-- News Modal 1: Publications -->
+<div id="news-modal-1" class="gallery-modal">
+<div class="modal-content" style="max-width: 1100px;">
+<button class="modal-close" onclick="closeNewsModal('news-modal-1')"><i class="fas fa-times"></i></button>
+<div class="modal-body">
+<h3><i class="fas fa-award" style="color: var(--accent-blue); margin-right: 0.5rem;"></i>6 New Publications in 2025</h3>
+<p class="modal-subtitle"><i class="fas fa-calendar"></i> December 2025 | Research Excellence</p>
+<div style="background: var(--light-bg); padding: 2rem; border-radius: 15px; margin: 2rem 0;">
+<h4 style="color: var(--primary-blue); margin-bottom: 1.5rem;"><i class="fas fa-file-alt"></i> Published Research Papers</h4>
+<div style="margin-bottom: 2rem; padding-bottom: 1.5rem; border-bottom: 1px solid #e2e8f0;">
+<p style="font-weight: 600; color: var(--dark-text); margin-bottom: 0.5rem;">1. Neonatal Mortality Prediction</p>
+<p style="color: var(--gray-text); font-size: 0.95rem; line-height: 1.7;">
+<em>Lumumba, V., Muriithi, D., Langat, A., Wanyama, M., Njoroge, E., Mutinda, J., Waka, O., & Mwebesa, E. (2025).</em>
+<strong>"A Comparative Evaluation of Kaplan-Meier, Cox Proportional Hazards, and Random Survival Forests for Neonatal Mortality Prediction."</strong>
+<em>Computational Biology and Bioinformatics</em>, 13(2), 42–59.
+<a href="https://doi.org/10.11648/j.cbb.20251302.11" target="_blank" style="color: var(--accent-blue);">DOI Link</a>
+</p>
+</div>
+<div style="margin-bottom: 2rem; padding-bottom: 1.5rem; border-bottom: 1px solid #e2e8f0;">
+<p style="font-weight: 600; color: var(--dark-text); margin-bottom: 0.5rem;">2. Mental Health Distress Prediction with XAI</p>
+<p style="color: var(--gray-text); font-size: 0.95rem; line-height: 1.7;">
+<em>Lumumba, V. W., Muriithi, D. K., Oundo, M. (2025).</em>
+<strong>"Evaluating the Performance of Selected Single Classifiers with Incorporated Explainable Artificial Intelligence (XAI) in the Prediction of Mental Health Distress Among University Students."</strong>
+<em>American Journal of Artificial Intelligence</em>, 9(2), 133-144.
+<a href="https://doi.org/10.11648/j.ajai.20250902.15" target="_blank" style="color: var(--accent-blue);">DOI Link</a>
+</p>
+</div>
+<div style="margin-bottom: 2rem; padding-bottom: 1.5rem; border-bottom: 1px solid #e2e8f0;">
+<p style="font-weight: 600; color: var(--dark-text); margin-bottom: 0.5rem;">3. Explainable AI for Neonatal Mortality</p>
+<p style="color: var(--gray-text); font-size: 0.95rem; line-height: 1.7;">
+<em>Lumumba, V. W., Muriithi, D., Njoroge, E., Langat, A., Mwebesa, E., & Wanyama, M. (2025).</em>
+<strong>"An Explainable AI Framework for Neonatal Mortality Risk Prediction in Kenya: Enhancing Clinical Decisions with Machine Learning."</strong>
+<em>Biomedical Statistics and Informatics</em>, 10(3), 64–83.
+<a href="https://doi.org/10.11648/j.bsi.20251003.12" target="_blank" style="color: var(--accent-blue);">DOI Link</a>
+</p>
+</div>
+<div style="margin-bottom: 2rem; padding-bottom: 1.5rem; border-bottom: 1px solid #e2e8f0;">
+<p style="font-weight: 600; color: var(--dark-text); margin-bottom: 0.5rem;">4. Malaria Risk Prediction with XAI</p>
+<p style="color: var(--gray-text); font-size: 0.95rem; line-height: 1.7;">
+<em>Muriithi, D. K., Lumumba, V. W., Awe, O. O., & Muriithi, D. M. (2025).</em>
+<strong>"Explainable Artificial Intelligence Models for Predicting Malaria Risk in Kenya."</strong>
+<em>European Journal of Artificial Intelligence and Machine Learning</em>, 4(1), 1–8.
+<a href="https://doi.org/10.24018/ejai.2025.4.1.47" target="_blank" style="color: var(--accent-blue);">DOI Link</a>
+</p>
+</div>
+<div style="margin-bottom: 2rem; padding-bottom: 1.5rem; border-bottom: 1px solid #e2e8f0;">
+<p style="font-weight: 600; color: var(--dark-text); margin-bottom: 0.5rem;">5. Hypertension Risk Prediction</p>
+<p style="color: var(--gray-text); font-size: 0.95rem; line-height: 1.7;">
+<em>Lumumba, V. W., Wanjuki, T. M., & Njoroge, E. W. (2025).</em>
+<strong>"Evaluating the Performance of Ensemble and Single Classifiers with Explainable Artificial Intelligence (XAI) on Hypertension Risk Prediction."</strong>
+<em>Computational Intelligence and Machine Learning</em>, 6(1).
+<a href="https://doi.org/10.36647/ciml/06.01.a004" target="_blank" style="color: var(--accent-blue);">DOI Link</a>
+</p>
+</div>
+<div>
+<p style="font-weight: 600; color: var(--dark-text); margin-bottom: 0.5rem;">6. Cross-Validation Techniques Analysis</p>
+<p style="color: var(--gray-text); font-size: 0.95rem; line-height: 1.7;">
+<em>Lumumba, V. W., Kiprotich, D., Mpaine, M., Makena, N., & Kavita, M. (2024).</em>
+<strong>"Comparative Analysis of Cross-Validation Techniques: LOOCV, K-folds Cross-Validation, and Repeated K-folds Cross-Validation in Machine Learning Models."</strong>
+<em>American Journal of Theoretical and Applied Statistics</em>, 13(5), 127–137.
+<a href="https://doi.org/10.11648/j.ajtas.20241305.13" target="_blank" style="color: var(--accent-blue);">DOI Link</a>
+</p>
+</div>
+</div>
+<div style="background: var(--gradient-1); padding: 2rem; border-radius: 15px; color: var(--white); margin: 2rem 0;">
+<h4 style="color: var(--vibrant-yellow); margin-bottom: 1rem;"><i class="fas fa-lightbulb"></i> Research Impact</h4>
+<p style="line-height: 1.8; text-align: justify;">
+These publications demonstrate our commitment to advancing data science methodologies in healthcare, mental health, and disease prediction. Our research focuses on developing interpretable machine learning models that can be trusted and implemented in real-world clinical and public health settings across Kenya and sub-Saharan Africa.
+</p>
+</div>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-top: 2rem;">
+<div style="text-align: center; padding: 1.5rem; background: var(--light-bg); border-radius: 10px;">
+<i class="fas fa-file-alt" style="font-size: 2.5rem; color: var(--accent-blue); margin-bottom: 0.5rem;"></i>
+<p style="font-weight: 600;">6 Publications</p>
+<p style="font-size: 0.85rem; color: var(--gray-text);">Peer-Reviewed Journals</p>
+</div>
+<div style="text-align: center; padding: 1.5rem; background: var(--light-bg); border-radius: 10px;">
+<i class="fas fa-users" style="font-size: 2.5rem; color: var(--golden-yellow); margin-bottom: 0.5rem;"></i>
+<p style="font-weight: 600;">15+ Co-Authors</p>
+<p style="font-size: 0.85rem; color: var(--gray-text);">Collaborative Research</p>
+</div>
+<div style="text-align: center; padding: 1.5rem; background: var(--light-bg); border-radius: 10px;">
+<i class="fas fa-globe" style="font-size: 2.5rem; color: var(--bold-red); margin-bottom: 0.5rem;"></i>
+<p style="font-weight: 600;">International</p>
+<p style="font-size: 0.85rem; color: var(--gray-text);">DOI Indexed</p>
+</div>
+</div>
+<div class="modal-cta" style="margin-top: 2rem; text-align: center;">
+<a href="https://scholar.google.com/citations?user=fDoe0f0AAAAJ&hl=en" target="_blank" class="btn btn-primary">
+<i class="fas fa-external-link-alt"></i> View All Publications on Google Scholar
+</a>
+</div>
+</div>
+</div>
+</div>
+
+<!-- News Modal 2: NAMBARI Workshop -->
+<div id="news-modal-2" class="gallery-modal">
+  <div class="modal-content" style="max-width: 1100px;">
+    <button class="modal-close" onclick="closeNewsModal('news-modal-2')">
+      <i class="fas fa-times"></i>
+    </button>
+    <div class="modal-body">
+      <h3>
+        <i class="fas fa-handshake" style="color: var(--accent-blue); margin-right: 0.5rem;"></i>
+        NAMBARI Workshop Participation
+      </h3>
+      <p class="modal-subtitle">
+        <i class="fas fa-calendar"></i> July 2025 | Professional Development
+      </p>
+      
+      <div style="background: var(--light-bg); padding: 2rem; border-radius: 15px; margin: 2rem 0;">
+        <h4 style="color: var(--primary-blue); margin-bottom: 1.5rem;">
+          <i class="fas fa-certificate"></i> Workshop Details
+        </h4>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
+          <div>
+            <p style="font-weight: 600; color: var(--dark-text); margin-bottom: 0.5rem;">
+              <i class="fas fa-university"></i> Event Name
+            </p>
+            <p style="color: var(--gray-text);">
+              NAMBARI 8th Workshop on Advanced Biostatistical Methods – Survival Analysis and Machine Learning in Health Research
+            </p>
+          </div>
+          <div>
+            <p style="font-weight: 600; color: var(--dark-text); margin-bottom: 0.5rem;">
+              <i class="fas fa-calendar-alt"></i> Dates
+            </p>
+            <p style="color: var(--gray-text);">14–17 July 2025</p>
+          </div>
+          <div>
+            <p style="font-weight: 600; color: var(--dark-text); margin-bottom: 0.5rem;">
+              <i class="fas fa-map-marker-alt"></i> Host Institution
+            </p>
+            <p style="color: var(--gray-text);">Moi University, Eldoret, Kenya</p>
+          </div>
+          <div>
+            <p style="font-weight: 600; color: var(--dark-text); margin-bottom: 0.5rem;">
+              <i class="fas fa-globe"></i> International Partners
+            </p>
+            <p style="color: var(--gray-text);">
+              Brown University (USA), Hasselt University (Belgium), New York University (USA)
+            </p>
+          </div>
+        </div>
+        
+        <div style="background: var(--gradient-3); padding: 1.5rem; border-radius: 10px; margin: 2rem 0;">
+          <h5 style="color: var(--primary-blue); margin-bottom: 1rem;">
+            <i class="fas fa-award"></i> Fully Funded Scholarship
+          </h5>
+          <p style="color: var(--primary-blue); line-height: 1.7; text-align: justify;">
+            This workshop participation was <strong>fully funded</strong> by the NAMBARI-DSSD Partnership, covering tuition, training materials, and logistics. This competitive award recognizes excellence in biostatistics and machine learning research.
+          </p>
+        </div>
+        
+        <h4 style="color: var(--primary-blue); margin-bottom: 1.5rem;">
+          <i class="fas fa-book-open"></i> Key Learning Areas
+        </h4>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem;">
+          <div style="padding: 1rem; background: var(--white); border-radius: 10px; border-left: 4px solid var(--accent-blue);">
+            <p style="font-weight: 600; color: var(--dark-text); margin-bottom: 0.5rem;">Machine Learning</p>
+            <p style="font-size: 0.9rem; color: var(--gray-text);">Advanced ML techniques for health research and predictive inference</p>
+          </div>
+          <div style="padding: 1rem; background: var(--white); border-radius: 10px; border-left: 4px solid var(--golden-yellow);">
+            <p style="font-weight: 600; color: var(--dark-text); margin-bottom: 0.5rem;">Survival Analysis</p>
+            <p style="font-size: 0.9rem; color: var(--gray-text);">Time-to-event modeling in HIV and health research</p>
+          </div>
+          <div style="padding: 1rem; background: var(--white); border-radius: 10px; border-left: 4px solid var(--bold-red);">
+            <p style="font-weight: 600; color: var(--dark-text); margin-bottom: 0.5rem;">Predictive Inference</p>
+            <p style="font-size: 0.9rem; color: var(--gray-text);">Statistical methods for real-world health data</p>
+          </div>
+          <div style="padding: 1rem; background: var(--white); border-radius: 10px; border-left: 4px solid var(--rich-purple);">
+            <p style="font-weight: 600; color: var(--dark-text); margin-bottom: 0.5rem;">HIV Research</p>
+            <p style="font-size: 0.9rem; color: var(--gray-text);">Applications in HIV epidemiology and clinical trials</p>
+          </div>
+        </div>
+      </div>
+      
+      <div style="background: var(--gradient-1); padding: 2rem; border-radius: 15px; color: var(--white); margin: 2rem 0;">
+        <h4 style="color: var(--vibrant-yellow); margin-bottom: 1rem;">
+          <i class="fas fa-network-wired"></i> Strategic Partnerships
+        </h4>
+        <p style="line-height: 1.8; text-align: justify;">
+          The NAMBARI-DSSD workshop series represents a prestigious collaboration between leading African and international institutions. Participation demonstrates commitment to advancing biostatistical methods and machine learning applications in health research, with focus on HIV, malaria, and other public health challenges affecting sub-Saharan Africa.
+        </p>
+      </div>
+      
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-top: 2rem;">
+        <div style="text-align: center; padding: 1.5rem; background: var(--light-bg); border-radius: 10px;">
+          <i class="fas fa-university" style="font-size: 2.5rem; color: var(--accent-blue); margin-bottom: 0.5rem;"></i>
+          <p style="font-weight: 600;">4 Universities</p>
+          <p style="font-size: 0.85rem; color: var(--gray-text);">International Collaboration</p>
+        </div>
+        <div style="text-align: center; padding: 1.5rem; background: var(--light-bg); border-radius: 10px;">
+          <i class="fas fa-users" style="font-size: 2.5rem; color: var(--golden-yellow); margin-bottom: 0.5rem;"></i>
+          <p style="font-weight: 600;">50+ Participants</p>
+          <p style="font-size: 0.85rem; color: var(--gray-text);">Researchers & Practitioners</p>
+        </div>
+        <div style="text-align: center; padding: 1.5rem; background: var(--light-bg); border-radius: 10px;">
+          <i class="fas fa-certificate" style="font-size: 2.5rem; color: var(--bold-red); margin-bottom: 0.5rem;"></i>
+          <p style="font-weight: 600;">Fully Funded</p>
+          <p style="font-size: 0.85rem; color: var(--gray-text);">Competitive Selection</p>
+        </div>
+      </div>
+      
+      <div class="modal-cta" style="margin-top: 2rem; display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+        <a href="https://sites.google.com/brown.edu/2025-summer-workshop/home?authuser=0" target="_blank" rel="noopener noreferrer" class="btn btn-primary">
+          <i class="fas fa-external-link-alt"></i> Learn About NAMBARI
+        </a>
+        <a href="#courses" class="btn btn-secondary" onclick="closeNewsModal('news-modal-2'); return false;">
+          <i class="fas fa-book"></i> Explore Our Courses
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- News Modal 3: Conference Presentations -->
+<div id="news-modal-3" class="gallery-modal">
+<div class="modal-content" style="max-width: 1100px;">
+<button class="modal-close" onclick="closeNewsModal('news-modal-3')"><i class="fas fa-times"></i></button>
+<div class="modal-body">
+<h3><i class="fas fa-microphone" style="color: var(--accent-blue); margin-right: 0.5rem;"></i>Three Conference Presentations</h3>
+<p class="modal-subtitle"><i class="fas fa-calendar"></i> October 2024 | Academic Contributions</p>
+<div style="background: var(--light-bg); padding: 2rem; border-radius: 15px; margin: 2rem 0;">
+<h4 style="color: var(--primary-blue); margin-bottom: 1.5rem;"><i class="fas fa-podium"></i> Conference Presentations</h4>
+<div style="margin-bottom: 2.5rem;">
+<div style="background: var(--white); padding: 1.5rem; border-radius: 10px; border-left: 5px solid var(--accent-blue); margin-bottom: 1rem;">
+<p style="font-weight: 600; color: var(--dark-text); margin-bottom: 0.5rem;"><i class="fas fa-calendar-check"></i> 29–31 October 2024</p>
+<p style="font-weight: 700; color: var(--primary-blue); font-size: 1.1rem; margin-bottom: 0.5rem;">6th Annual International Research Conference</p>
+<p style="color: var(--gray-text); margin-bottom: 0.5rem;"><i class="fas fa-university"></i> Tharaka University, Kenya</p>
+<p style="color: var(--gray-text); font-size: 0.95rem;"><strong>Research Topic:</strong> Time Series Forecasting and Malaria Incidence Prediction</p>
+</div>
+</div>
+<div style="margin-bottom: 2.5rem;">
+<div style="background: var(--white); padding: 1.5rem; border-radius: 10px; border-left: 5px solid var(--golden-yellow); margin-bottom: 1rem;">
+<p style="font-weight: 600; color: var(--dark-text); margin-bottom: 0.5rem;"><i class="fas fa-calendar-check"></i> 23–24 October 2024</p>
+<p style="font-weight: 700; color: var(--primary-blue); font-size: 1.1rem; margin-bottom: 0.5rem;">11th Annual International Research Conference</p>
+<p style="color: var(--gray-text); margin-bottom: 0.5rem;"><i class="fas fa-university"></i> Chuka University, Kenya</p>
+<p style="color: var(--gray-text); font-size: 0.95rem;"><strong>Research Topic:</strong> Mental Health Distress Prediction Using Machine Learning</p>
+</div>
+</div>
+<div style="margin-bottom: 2.5rem;">
+<div style="background: var(--white); padding: 1.5rem; border-radius: 10px; border-left: 5px solid var(--bold-red); margin-bottom: 1rem;">
+<p style="font-weight: 600; color: var(--dark-text); margin-bottom: 0.5rem;"><i class="fas fa-calendar-check"></i> 7–9 October 2024</p>
+<p style="font-weight: 700; color: var(--primary-blue); font-size: 1.1rem; margin-bottom: 0.5rem;">NAMBARI-DSSD 7th Workshop</p>
+<p style="color: var(--gray-text); margin-bottom: 0.5rem;"><i class="fas fa-hotel"></i> Eka Hotel, Eldoret, Kenya</p>
+<p style="color: var(--gray-text); font-size: 0.95rem;"><strong>Focus:</strong> Machine Learning for Real-World Health Data (Moi × Brown × Hasselt × NYU)</p>
+</div>
+</div>
+<h4 style="color: var(--primary-blue); margin-bottom: 1.5rem;"><i class="fas fa-lightbulb"></i> Research Themes</h4>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem;">
+<div style="padding: 1.5rem; background: var(--white); border-radius: 10px; text-align: center;">
+<i class="fas fa-chart-line" style="font-size: 2.5rem; color: var(--accent-blue); margin-bottom: 1rem;"></i>
+<p style="font-weight: 600; color: var(--dark-text); margin-bottom: 0.5rem;">Time Series Forecasting</p>
+<p style="font-size: 0.9rem; color: var(--gray-text);">ARIMA, SARIMA, and LSTM models for disease prediction</p>
+</div>
+<div style="padding: 1.5rem; background: var(--white); border-radius: 10px; text-align: center;">
+<i class="fas fa-brain" style="font-size: 2.5rem; color: var(--golden-yellow); margin-bottom: 1rem;"></i>
+<p style="font-weight: 600; color: var(--dark-text); margin-bottom: 0.5rem;">Machine Learning</p>
+<p style="font-size: 0.9rem; color: var(--gray-text);">Supervised and ensemble methods for health outcomes</p>
+</div>
+<div style="padding: 1.5rem; background: var(--white); border-radius: 10px; text-align: center;">
+<i class="fas fa-heartbeat" style="font-size: 2.5rem; color: var(--bold-red); margin-bottom: 1rem;"></i>
+<p style="font-weight: 600; color: var(--dark-text); margin-bottom: 0.5rem;">Health Analytics</p>
+<p style="font-size: 0.9rem; color: var(--gray-text);">Malaria, mental health, and neonatal mortality prediction</p>
+</div>
+</div>
+</div>
+<div style="background: var(--gradient-1); padding: 2rem; border-radius: 15px; color: var(--white); margin: 2rem 0;">
+<h4 style="color: var(--vibrant-yellow); margin-bottom: 1rem;"><i class="fas fa-trophy"></i> Academic Impact</h4>
+<p style="line-height: 1.8; text-align: justify;">
+These conference presentations showcase our commitment to advancing data science research in East Africa through innovative statistical and machine learning methodologies.
+</p>
+</div>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-top: 2rem;">
+<div style="text-align: center; padding: 1.5rem; background: var(--light-bg); border-radius: 10px;">
+<i class="fas fa-microphone" style="font-size: 2.5rem; color: var(--accent-blue); margin-bottom: 0.5rem;"></i>
+<p style="font-weight: 600;">3 Presentations</p>
+<p style="font-size: 0.85rem; color: var(--gray-text);">October 2024</p>
+</div>
+<div style="text-align: center; padding: 1.5rem; background: var(--light-bg); border-radius: 10px;">
+<i class="fas fa-university" style="font-size: 2.5rem; color: var(--golden-yellow); margin-bottom: 0.5rem;"></i>
+<p style="font-weight: 600;">3 Universities</p>
+<p style="font-size: 0.85rem; color: var(--gray-text);">Host Institutions</p>
+</div>
+<div style="text-align: center; padding: 1.5rem; background: var(--light-bg); border-radius: 10px;">
+<i class="fas fa-globe" style="font-size: 2.5rem; color: var(--bold-red); margin-bottom: 0.5rem;"></i>
+<p style="font-weight: 600;">International</p>
+<p style="font-size: 0.85rem; color: var(--gray-text);">Research Collaboration</p>
+</div>
+</div>
+<div class="modal-cta" style="margin-top: 2rem; display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+<a href="https://scholar.google.com/citations?user=fDoe0f0AAAAJ&hl=en" target="_blank" class="btn btn-primary">
+<i class="fas fa-external-link-alt"></i> View Publications
+</a>
+<a href="#mentoring" class="btn btn-secondary" onclick="closeNewsModal('news-modal-3')">
+<i class="fas fa-chalkboard-teacher"></i> Meet Our Team
+</a>
+</div>
+</div>
+</div>
+</div>
+
+<!-- Community Section -->
+<section class="section" id="community">
+<div class="section-header">
+<span class="section-badge"><i class="fas fa-users"></i> Our Community</span>
+<h2 class="section-title">Join Our Thriving Community</h2>
+<p class="section-subtitle">Connect with fellow data enthusiasts, share knowledge, and grow together</p>
+</div>
+<div class="community-features">
+<div class="community-card">
+<div class="community-icon">
+<i class="fas fa-comments"></i>
+</div>
+<h3>Discussion Forums</h3>
+<p>Engage in meaningful discussions about data science topics, get help with projects, and share your insights with the community.</p>
+</div>
+<div class="community-card yellow">
+<div class="community-icon">
+<i class="fas fa-calendar-check"></i>
+</div>
+<h3>Meetups & Events</h3>
+<p>Attend regular meetups, workshops, and networking events to connect with industry professionals and fellow learners.</p>
+</div>
+<div class="community-card red">
+<div class="community-icon">
+<i class="fas fa-project-diagram"></i>
+</div>
+<h3>Collaborative Projects</h3>
+<p>Work on real-world projects with team members, build your portfolio, and gain practical experience.</p>
+</div>
+<div class="community-card purple">
+<div class="community-icon">
+<i class="fas fa-briefcase"></i>
+</div>
+<h3>Career Support</h3>
+<p>Access job boards, career counseling, resume reviews, and interview preparation resources.</p>
+</div>
+</div>
+</section>
+
+<!-- Getting Involved Section -->
+<section class="section" id="involved" style="background: var(--light-bg);">
+<div class="section-header">
+<span class="section-badge"><i class="fas fa-hand-holding-heart"></i> Make an Impact</span>
+<h2 class="section-title">Getting Involved</h2>
+<p class="section-subtitle">There are many ways to contribute to our mission and grow with the community</p>
+</div>
+<div class="involvement-grid">
+<div class="involvement-card">
+<div class="involvement-icon">
+<i class="fas fa-chalkboard-teacher"></i>
+</div>
+<h3>Become an Instructor</h3>
+<p>Share your expertise by teaching courses and workshops. Help shape the next generation of data scientists.</p>
+<a href="https://forms.gle/VN969BBGgWsUTnwV6" target="_blank" class="btn btn-primary" style="padding: 0.8rem 1.5rem; font-size: 0.9rem;"><i class="fas fa-arrow-right"></i> Apply Now</a>
+</div>
+<div class="involvement-card yellow">
+<div class="involvement-icon">
+<i class="fas fa-user-graduate"></i>
+</div>
+<h3>Become a Mentor</h3>
+<p>Guide students through their learning journey, provide career advice, and help them achieve their goals.</p>
+<a href="https://forms.gle/oA65QqmksEZgiebz9" target="_blank" class="btn btn-primary" style="padding: 0.8rem 1.5rem; font-size: 0.9rem;"><i class="fas fa-arrow-right"></i> Become a Mentor</a>
+</div>
+<div class="involvement-card red">
+<div class="involvement-icon">
+<i class="fas fa-hand-holding-usd"></i>
+</div>
+<h3>Sponsor a Student</h3>
+<p>Support talented individuals who need financial assistance to pursue data science education.</p>
+<a href="https://forms.gle/aotGiWNqp48wFGY38" class="btn btn-primary" style="padding: 0.8rem 1.5rem; font-size: 0.9rem;"><i class="fas fa-arrow-right"></i> Sponsor Now</a>
+</div>
+<div class="involvement-card purple">
+<div class="involvement-icon">
+<i class="fas fa-building"></i>
+</div>
+<h3>Corporate Partnership</h3>
+<p>Partner with us for customized training programs, recruitment opportunities, and research collaborations.</p>
+<a href="https://forms.gle/WCc9h92NMDoX4Hsb7" class="btn btn-primary" style="padding: 0.8rem 1.5rem; font-size: 0.9rem;"><i class="fas fa-arrow-right"></i> Partner With Us</a>
+</div>
+</div>
+</section>
+
+<!-- Mentoring Section -->
+<section class="section" id="mentoring">
+<div class="section-header">
+<span class="section-badge"><i class="fas fa-chalkboard-teacher"></i> Expert Guidance</span>
+<h2 class="section-title">Our Mentors</h2>
+<p class="section-subtitle">Learn from industry experts who are passionate about helping you succeed</p>
+</div>
+<div class="mentoring-grid">
+
+<!-- Mentor 1: Dr. Victor W. Lumumba -->
+<div class="mentor-card">
+<div class="mentor-header">
+<div class="mentor-avatar">
+<img src="profile-victor.jpg" alt="Dr. Victor W. Lumumba" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
+<span class="avatar-placeholder" style="display: none;">VL</span>
+</div>
+<!-- Clickable Name - Opens Resume PDF -->
+<a href="https://drive.google.com/uc?id=1yvIK0ZEl2mLIqxuu_Zm8IyZoa36mjYnn&export=download" target="_blank" class="mentor-name-link" title="Click to view resume">
+<h3 class="mentor-name"><i class="fas fa-file-pdf" style="font-size: 0.9rem; margin-right: 0.5rem;"></i>Dr. Victor W. Lumumba</h3>
+</a>
+<p class="mentor-title">Founder & Lead Instructor</p>
+</div>
+<div class="mentor-body">
+<div class="mentor-specialties">
+<span>Machine Learning</span>
+<span>Biostatistics</span>
+<span>Time Series</span>
+<span>Survival Analysis</span>
+<span>XAI</span>
+<span>R and Rstudio</span>
+<span>Python</span>
+<span>Minitab</span>
+<span>Gretl</span>
+<span>STATA</span>
+<span>EViews</span>
+<span>JASP</span>
+<span>Jamovi</span>
+<span>MS Power BI</span>
+</div>
+<p>PhD Candidate in Biostatistics (Moi University), MSc Applied Statistics (Chuka University). Published researcher with 10+ publications in computational biology, AI, and statistical modeling. Expert in health and climate data science.</p>
+<div class="mentor-stats">
+<div class="mentor-stat">
+<span class="number">500+</span>
+<span class="label">Students</span>
+</div>
+<div class="mentor-stat">
+<span class="number">10+</span>
+<span class="label">Publications</span>
+</div>
+<div class="mentor-stat">
+<span class="number">5+</span>
+<span class="label">Years Exp</span>
+</div>
+</div>
+<!-- View Full Profile Button -->
+<div style="text-align: center; margin-top: 1.5rem;">
+<a href="https://drive.google.com/uc?id=1yvIK0ZEl2mLIqxuu_Zm8IyZoa36mjYnn&export=download" target="_blank" class="btn btn-primary" style="padding: 0.6rem 1.5rem; font-size: 0.9rem;">
+<i class="fas fa-download"></i> View Full Resume
+</a>
+</div>
+</div>
+</div>
+
+<!-- Mentor 2: Prof. Dennis Muriithi -->
+<div class="mentor-card">
+<div class="mentor-header" style="background: linear-gradient(135deg, #805ad5 0%, #9f7aea 100%);">
+<div class="mentor-avatar">
+<img src="profile-dennis.jpg" alt="Prof. Dennis Muriithi" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
+<span class="avatar-placeholder" style="display: none;">DM</span>
+</div>
+<!-- Clickable Name - Opens Resume PDF (same link) -->
+<a href="https://drive.google.com/uc?id=1yvIK0ZEl2mLIqxuu_Zm8IyZoa36mjYnn&export=download" target="_blank" class="mentor-name-link" title="Click to view resume">
+<h3 class="mentor-name"><i class="fas fa-file-pdf" style="font-size: 0.9rem; margin-right: 0.5rem;"></i>Prof. Dennis Muriithi</h3>
+</a>
+<p class="mentor-title">Senior Data Science Mentor</p>
+</div>
+<div class="mentor-body">
+<div class="mentor-specialties">
+<span>Statistical Modeling</span>
+<span>Survey Analysis</span>
+<span>R and Rstudio</span>
+<span>Python</span>
+<span>SQL</span>
+<span>Minitab</span>
+<span>Gretl</span>
+<span>SPSS</span>
+<span>STATA</span>
+</div>
+<p>Associate Professor of Applied Statistics at Chuka University with over 15 years of experience in statistical consulting and research. Co-supervisor of multiple MSc and PhD students.</p>
+<div class="mentor-stats">
+<div class="mentor-stat">
+<span class="number">300+</span>
+<span class="label">Students</span>
+</div>
+<div class="mentor-stat">
+<span class="number">20+</span>
+<span class="label">Years Exp</span>
+</div>
+<div class="mentor-stat">
+<span class="number">50+</span>
+<span class="label">Projects</span>
+</div>
+</div>
+<!-- View Full Profile Button -->
+<div style="text-align: center; margin-top: 1.5rem;">
+<a href="https://drive.google.com/uc?id=1yvIK0ZEl2mLIqxuu_Zm8IyZoa36mjYnn&export=download" target="_blank" class="btn btn-primary" style="padding: 0.6rem 1.5rem; font-size: 0.9rem;">
+<i class="fas fa-download"></i> View Full Resume
+</a>
+</div>
+</div>
+</div>
+
+<!-- Mentor 3: Prof. Anne Mwangi -->
+<div class="mentor-card">
+<div class="mentor-header" style="background: var(--gradient-4);">
+<div class="mentor-avatar">
+<img src="profile-anne.jpg" alt="Prof. Anne Mwangi" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
+<span class="avatar-placeholder" style="display: none;">AM</span>
+</div>
+<!-- Clickable Name - Opens Resume PDF (same link) -->
+<a href="https://drive.google.com/uc?id=1yvIK0ZEl2mLIqxuu_Zm8IyZoa36mjYnn&export=download" target="_blank" class="mentor-name-link" title="Click to view resume">
+<h3 class="mentor-name"><i class="fas fa-file-pdf" style="font-size: 0.9rem; margin-right: 0.5rem;"></i>Prof. Anne Mwangi</h3>
+</a>
+<p class="mentor-title">Biostatistics Expert</p>
+</div>
+<div class="mentor-body">
+<div class="mentor-specialties">
+<span>Biostatistics</span>
+<span>Clinical Trials</span>
+<span>Survival Analysis</span>
+<span>Epidemiology</span>
+</div>
+<p>Doctor of Philosophy and a Senior Lecturer in Applied Statistics in Chuka University, Department of Physical Sciences. Specializes in health data analytics and clinical research methodology.</p>
+<div class="mentor-stats">
+<div class="mentor-stat">
+<span class="number">200+</span>
+<span class="label">Students</span>
+</div>
+<div class="mentor-stat">
+<span class="number">15+</span>
+<span class="label">Years Exp</span>
+</div>
+<div class="mentor-stat">
+<span class="number">30+</span>
+<span class="label">Publications</span>
+</div>
+</div>
+<!-- View Full Profile Button -->
+<div style="text-align: center; margin-top: 1.5rem;">
+<a href="https://drive.google.com/uc?id=1yvIK0ZEl2mLIqxuu_Zm8IyZoa36mjYnn&export=download" target="_blank" class="btn btn-primary" style="padding: 0.6rem 1.5rem; font-size: 0.9rem;">
+<i class="fas fa-download"></i> View Full Resume
+</a>
+</div>
+</div>
+</div>
+
+</div>
+</section>
+
+<!-- Courses Section -->
+<section class="section" id="courses" style="background: var(--light-bg);">
+<div class="section-header">
+<span class="section-badge"><i class="fas fa-book"></i> Learn & Grow</span>
+<h2 class="section-title">Our Courses</h2>
+<p class="section-subtitle">Comprehensive training programs designed to take you from beginner to expert</p>
+</div>
+<div class="courses-grid">
+<div class="course-card">
+<div class="course-header">
+<div class="course-icon">
+<i class="fas fa-chart-bar"></i>
+</div>
+<h3>Data Analysis Fundamentals</h3>
+<p>Master the basics of data analysis</p>
+</div>
+<div class="course-body">
+<ul>
+<li><i class="fas fa-check-circle"></i> Excel & SQL for Data Analysis</li>
+<li><i class="fas fa-check-circle"></i> Data Cleaning & Preparation</li>
+<li><i class="fas fa-check-circle"></i> Exploratory Data Analysis</li>
+<li><i class="fas fa-check-circle"></i> Data Visualization with Python</li>
+<li><i class="fas fa-check-circle"></i> Statistical Foundations</li>
+</ul>
+<div class="course-footer">
+<div class="course-price">KES 25,000 <span>/ 8 weeks</span></div>
+<a href="https://forms.gle/iULxMYXieuC4px8p8" target="_blank" class="btn btn-primary" style="padding: 0.8rem 1.5rem;"><i class="fas fa-arrow-right"></i> Enroll</a>
+</div>
+</div>
+</div>
+<div class="course-card">
+<div class="course-header yellow">
+<div class="course-icon">
+<i class="fas fa-brain"></i>
+</div>
+<h3>Machine Learning Bootcamp</h3>
+<p>Build intelligent predictive models</p>
+</div>
+<div class="course-body">
+<ul>
+<li><i class="fas fa-check-circle"></i> Supervised & Unsupervised Learning</li>
+<li><i class="fas fa-check-circle"></i> Deep Learning with PyTorch</li>
+<li><i class="fas fa-check-circle"></i> Model Evaluation & Optimization</li>
+<li><i class="fas fa-check-circle"></i> Feature Engineering</li>
+<li><i class="fas fa-check-circle"></i> XAI with SHAP & LIME</li>
+</ul>
+<div class="course-footer">
+<div class="course-price">KES 45,000 <span>/ 12 weeks</span></div>
+<a href="https://forms.gle/iULxMYXieuC4px8p8" target="_blank" class="btn btn-primary" style="padding: 0.8rem 1.5rem;"><i class="fas fa-arrow-right"></i> Enroll</a>
+</div>
+</div>
+</div>
+<div class="course-card">
+<div class="course-header red">
+<div class="course-icon">
+<i class="fas fa-clock"></i>
+</div>
+<h3>Time Series Forecasting</h3>
+<p>Predict future trends accurately</p>
+</div>
+<div class="course-body">
+<ul>
+<li><i class="fas fa-check-circle"></i> ARIMA & SARIMA Models</li>
+<li><i class="fas fa-check-circle"></i> GARCH for Volatility</li>
+<li><i class="fas fa-check-circle"></i> Prophet & LSTM Networks</li>
+<li><i class="fas fa-check-circle"></i> Seasonal Decomposition</li>
+<li><i class="fas fa-check-circle"></i> Financial & Economic Data</li>
+</ul>
+<div class="course-footer">
+<div class="course-price">KES 35,000 <span>/ 10 weeks</span></div>
+<a href="https://forms.gle/iULxMYXieuC4px8p8" target="_blank" class="btn btn-primary" style="padding: 0.8rem 1.5rem;"><i class="fas fa-arrow-right"></i> Enroll</a>
+</div>
+</div>
+</div>
+<div class="course-card">
+<div class="course-header purple">
+<div class="course-icon">
+<i class="fas fa-file-code"></i>
+</div>
+<h3>Python for Data Science</h3>
+<p>Master Python programming</p>
+</div>
+<div class="course-body">
+<ul>
+<li><i class="fas fa-check-circle"></i> Python Fundamentals</li>
+<li><i class="fas fa-check-circle"></i> pandas & NumPy</li>
+<li><i class="fas fa-check-circle"></i> scikit-learn & statsmodels</li>
+<li><i class="fas fa-check-circle"></i> Data Visualization</li>
+<li><i class="fas fa-check-circle"></i> Jupyter Notebooks</li>
+</ul>
+<div class="course-footer">
+<div class="course-price">KES 30,000 <span>/ 10 weeks</span></div>
+<a href="https://forms.gle/iULxMYXieuC4px8p8" target="_blank" class="btn btn-primary" style="padding: 0.8rem 1.5rem;"><i class="fas fa-arrow-right"></i> Enroll</a>
+</div>
+</div>
+</div>
+<div class="course-card">
+<div class="course-header">
+<div class="course-icon">
+<i class="fas fa-microscope"></i>
+</div>
+<h3>Statistical Inference</h3>
+<p>Deep dive into statistics</p>
+</div>
+<div class="course-body">
+<ul>
+<li><i class="fas fa-check-circle"></i> Hypothesis Testing</li>
+<li><i class="fas fa-check-circle"></i> Regression Analysis</li>
+<li><i class="fas fa-check-circle"></i> ANOVA & Non-parametric Tests</li>
+<li><i class="fas fa-check-circle"></i> Experimental Design</li>
+<li><i class="fas fa-check-circle"></i> Bayesian Statistics</li>
+</ul>
+<div class="course-footer">
+<div class="course-price">KES 32,000 <span>/ 10 weeks</span></div>
+<a href="https://forms.gle/iULxMYXieuC4px8p8" target="_blank" class="btn btn-primary" style="padding: 0.8rem 1.5rem;"><i class="fas fa-arrow-right"></i> Enroll</a>
+</div>
+</div>
+</div>
+<div class="course-card">
+<div class="course-header yellow">
+<div class="course-icon">
+<i class="fas fa-heartbeat"></i>
+</div>
+<h3>Survival Analysis</h3>
+<p>Time-to-event modeling</p>
+</div>
+<div class="course-body">
+<ul>
+<li><i class="fas fa-check-circle"></i> Kaplan-Meier Estimation</li>
+<li><i class="fas fa-check-circle"></i> Cox Proportional Hazards</li>
+<li><i class="fas fa-check-circle"></i> Random Survival Forests</li>
+<li><i class="fas fa-check-circle"></i> Competing Risks</li>
+<li><i class="fas fa-check-circle"></i> Health Applications</li>
+</ul>
+<div class="course-footer">
+<div class="course-price">KES 38,000 <span>/ 10 weeks</span></div>
+<a href="https://forms.gle/iULxMYXieuC4px8p8" target="_blank" class="btn btn-primary" style="padding: 0.8rem 1.5rem;"><i class="fas fa-arrow-right"></i> Enroll</a>
+</div>
+</div>
+</div>
+</div>
+</section>
+
+<!-- Events Section -->
+<section class="section" id="events">
+<div class="section-header">
+<span class="section-badge"><i class="fas fa-calendar-alt"></i> Mark Your Calendar</span>
+<h2 class="section-title">Upcoming Events</h2>
+<p class="section-subtitle">Join us for workshops, webinars, meetups, and conferences</p>
+</div>
+<div class="events-grid">
+<div class="event-card" onclick="openEventModal('event-modal-1')">
+<div class="event-image">
+<img src="image4.jpg" alt="Workshop Presentation">
+</div>
+<div class="event-body">
+<div class="event-date">
+<span class="day">15</span>
+<span class="month">Jan 2026</span>
+</div>
+<h3>Introduction to Machine Learning Workshop</h3>
+<p class="time"><i class="fas fa-clock"></i> 9:00 AM - 4:00 PM EAT</p>
+<p>A hands-on workshop covering ML fundamentals, perfect for beginners looking to start their data science journey.</p>
+</div>
+<div class="event-footer">
+<span class="event-location"><i class="fas fa-map-marker-alt"></i> Chuka University & Online</span>
+<button class="btn btn-primary" style="padding: 0.6rem 1.2rem; font-size: 0.85rem;">View Details</button>
+</div>
+</div>
+<div class="event-card" onclick="openEventModal('event-modal-2')">
+<div class="event-image">
+<img src="image7.jpg" alt="Training Session">
+</div>
+<div class="event-body">
+<div class="event-date yellow">
+<span class="day">22</span>
+<span class="month">Jan 2026</span>
+</div>
+<h3>Data Science Career Fair 2026</h3>
+<p class="time"><i class="fas fa-clock"></i> 10:00 AM - 6:00 PM EAT</p>
+<p>Connect with top employers, attend career panels, and discover exciting opportunities in data science.</p>
+</div>
+<div class="event-footer">
+<span class="event-location"><i class="fas fa-map-marker-alt"></i> Nairobi, Kenya</span>
+<button class="btn btn-primary" style="padding: 0.6rem 1.2rem; font-size: 0.85rem;">View Details</button>
+</div>
+</div>
+<div class="event-card" onclick="openEventModal('event-modal-3')">
+<div class="event-image">
+<img src="image8.jpg" alt="Dr. Lumumba Presenting">
+</div>
+<div class="event-body">
+<div class="event-date red">
+<span class="day">05</span>
+<span class="month">Feb 2026</span>
+</div>
+<h3>Advanced Time Series Forecasting Webinar</h3>
+<p class="time"><i class="fas fa-clock"></i> 2:00 PM - 5:00 PM EAT</p>
+<p>Deep dive into advanced forecasting techniques including LSTM, Prophet, and ensemble methods.</p>
+</div>
+<div class="event-footer">
+<span class="event-location"><i class="fas fa-video"></i> Online (Zoom)</span>
+<button class="btn btn-primary" style="padding: 0.6rem 1.2rem; font-size: 0.85rem;">View Details</button>
+</div>
+</div>
+<div class="event-card" onclick="openEventModal('event-modal-4')">
+<div class="event-image">
+<img src="image_007.jpg" alt="AI in Healthcare">
+</div>
+<div class="event-body">
+<div class="event-date purple">
+<span class="day">20</span>
+<span class="month">Feb 2026</span>
+</div>
+<h3>AI in Healthcare Conference</h3>
+<p class="time"><i class="fas fa-clock"></i> 8:00 AM - 5:00 PM EAT</p>
+<p>Explore the latest applications of AI and machine learning in healthcare and medical research.</p>
+</div>
+<div class="event-footer">
+<span class="event-location"><i class="fas fa-map-marker-alt"></i> Moi University, Eldoret</span>
+<button class="btn btn-primary" style="padding: 0.6rem 1.2rem; font-size: 0.85rem;">View Details</button>
+</div>
+</div>
+</div>
+</section>
+
+<!-- Event Modals -->
+<!-- Event Modal 1: ML Workshop -->
+<div id="event-modal-1" class="gallery-modal">
+<div class="modal-content" style="max-width: 1000px;">
+<button class="modal-close" onclick="closeEventModal('event-modal-1')"><i class="fas fa-times"></i></button>
+<div class="modal-body">
+<h3><i class="fas fa-brain" style="color: var(--accent-blue); margin-right: 0.5rem;"></i>Introduction to Machine Learning Workshop</h3>
+<p class="modal-subtitle"><i class="fas fa-calendar"></i> January 15, 2026 • 9:00 AM - 4:00 PM EAT</p>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 2rem;">
+<div style="background: var(--light-bg); padding: 1.2rem; border-radius: 10px; text-align: center;">
+<i class="fas fa-clock" style="font-size: 2rem; color: var(--accent-blue); margin-bottom: 0.5rem;"></i>
+<p style="font-weight: 600;">7 Hours</p>
+<p style="font-size: 0.85rem; color: var(--gray-text);">Duration</p>
+</div>
+<div style="background: var(--light-bg); padding: 1.2rem; border-radius: 10px; text-align: center;">
+<i class="fas fa-users" style="font-size: 2rem; color: var(--golden-yellow); margin-bottom: 0.5rem;"></i>
+<p style="font-weight: 600;">30 Seats</p>
+<p style="font-size: 0.85rem; color: var(--gray-text);">Limited Capacity</p>
+</div>
+<div style="background: var(--light-bg); padding: 1.2rem; border-radius: 10px; text-align: center;">
+<i class="fas fa-map-marker-alt" style="font-size: 2rem; color: var(--bold-red); margin-bottom: 0.5rem;"></i>
+<p style="font-weight: 600;">Hybrid</p>
+<p style="font-size: 0.85rem; color: var(--gray-text);">In-Person & Online</p>
+</div>
+<div style="background: var(--light-bg); padding: 1.2rem; border-radius: 10px; text-align: center;">
+<i class="fas fa-certificate" style="font-size: 2rem; color: var(--rich-purple); margin-bottom: 0.5rem;"></i>
+<p style="font-weight: 600;">Certificate</p>
+<p style="font-size: 0.85rem; color: var(--gray-text);">Upon Completion</p>
+</div>
+</div>
+<div style="margin-bottom: 2rem;">
+<h4 style="color: var(--primary-blue); margin-bottom: 1rem;"><i class="fas fa-info-circle"></i> Workshop Overview</h4>
+<p style="color: var(--gray-text); line-height: 1.8; text-align: justify;">
+This intensive, hands-on workshop is designed for beginners and intermediate learners who want to build a solid foundation in machine learning. Whether you're a student, researcher, or professional looking to upskill, this workshop will equip you with practical knowledge of core ML concepts, algorithms, and real-world applications using Python.
+</p>
+<p style="color: var(--gray-text); line-height: 1.8; text-align: justify; margin-top: 1rem;">
+Led by industry experts from Beyond Data Analytics, participants will work through guided exercises using real datasets, build their first predictive models, and gain confidence in applying machine learning to solve practical problems in healthcare, finance, agriculture, and more.
+</p>
+</div>
+<div style="margin-bottom: 2rem;">
+<h4 style="color: var(--primary-blue); margin-bottom: 1rem;"><i class="fas fa-bullseye"></i> What You'll Learn</h4>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem;">
+<div style="background: var(--light-bg); padding: 1.2rem; border-radius: 10px;">
+<p style="font-weight: 600; color: var(--dark-text); margin-bottom: 0.5rem;"><i class="fas fa-check-circle" style="color: var(--accent-blue); margin-right: 0.5rem;"></i>ML Fundamentals</p>
+<p style="font-size: 0.9rem; color: var(--gray-text); margin: 0;">Supervised vs. unsupervised learning, model evaluation, and the ML workflow</p>
+</div>
+<div style="background: var(--light-bg); padding: 1.2rem; border-radius: 10px;">
+<p style="font-weight: 600; color: var(--dark-text); margin-bottom: 0.5rem;"><i class="fas fa-check-circle" style="color: var(--accent-blue); margin-right: 0.5rem;"></i>Python & scikit-learn</p>
+<p style="font-size: 0.9rem; color: var(--gray-text); margin: 0;">Hands-on coding with pandas, NumPy, and scikit-learn for data preparation and modeling</p>
+</div>
+<div style="background: var(--light-bg); padding: 1.2rem; border-radius: 10px;">
+<p style="font-weight: 600; color: var(--dark-text); margin-bottom: 0.5rem;"><i class="fas fa-check-circle" style="color: var(--accent-blue); margin-right: 0.5rem;"></i>Model Building</p>
+<p style="font-size: 0.9rem; color: var(--gray-text); margin: 0;">Build, train, and evaluate classification and regression models on real datasets</p>
+</div>
+<div style="background: var(--light-bg); padding: 1.2rem; border-radius: 10px;">
+<p style="font-weight: 600; color: var(--dark-text); margin-bottom: 0.5rem;"><i class="fas fa-check-circle" style="color: var(--accent-blue); margin-right: 0.5rem;"></i>Best Practices</p>
+<p style="font-size: 0.9rem; color: var(--gray-text); margin: 0;">Feature engineering, cross-validation, and avoiding common pitfalls</p>
+</div>
+</div>
+</div>
+<div style="background: #fffbeb; padding: 1.5rem; border-radius: 12px; border-left: 4px solid var(--golden-yellow); margin-bottom: 2rem;">
+<h4 style="color: var(--primary-blue); margin-bottom: 1rem;"><i class="fas fa-exclamation-triangle" style="color: var(--golden-yellow);"></i> Prerequisites & Preparation</h4>
+<ul style="list-style: none; padding: 0; color: var(--dark-text);">
+<li style="margin-bottom: 0.5rem;"><i class="fas fa-check" style="color: var(--accent-blue); margin-right: 0.5rem;"></i>Basic familiarity with Python (variables, loops, functions)</li>
+<li style="margin-bottom: 0.5rem;"><i class="fas fa-check" style="color: var(--accent-blue); margin-right: 0.5rem;"></i>Laptop with Python 3.8+ installed (we'll provide setup instructions)</li>
+<li style="margin-bottom: 0.5rem;"><i class="fas fa-check" style="color: var(--accent-blue); margin-right: 0.5rem;"></i>Stable internet connection for online participants</li>
+<li style="margin-bottom: 0;"><i class="fas fa-check" style="color: var(--accent-blue); margin-right: 0.5rem;"></i>No prior machine learning experience required!</li>
+</ul>
+</div>
+<div style="margin-bottom: 2rem;">
+<h4 style="color: var(--primary-blue); margin-bottom: 1rem;"><i class="fas fa-chalkboard-teacher"></i> Lead Instructor</h4>
+<div style="display: flex; gap: 1.5rem; align-items: flex-start; flex-wrap: wrap;">
+<div style="width: 100px; height: 100px; border-radius: 50%; background: var(--gradient-3); display: flex; align-items: center; justify-content: center; font-size: 2rem; font-weight: 700; color: var(--primary-blue); flex-shrink: 0;">VL</div>
+<div>
+<p style="font-weight: 700; color: var(--dark-text); margin: 0 0 0.3rem;">Dr. Victor W. Lumumba</p>
+<p style="font-size: 0.9rem; color: var(--gray-text); margin: 0 0 0.8rem;">PhD Candidate in Biostatistics | MSc Applied Statistics | 10+ Publications</p>
+<p style="font-size: 0.95rem; color: var(--dark-text); line-height: 1.7; margin: 0;">
+Dr. Lumumba specializes in machine learning applications in health and climate science. He has trained over 500 students and led workshops on predictive modeling, time series forecasting, and explainable AI across Kenya and East Africa.
+</p>
+</div>
+</div>
+</div>
+<div style="background: var(--gradient-1); padding: 2rem; border-radius: 15px; color: var(--white); margin-bottom: 2rem;">
+<h4 style="color: var(--vibrant-yellow); margin-bottom: 1.5rem;"><i class="fas fa-ticket-alt"></i> Registration & Pricing</h4>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-bottom: 1.5rem;">
+<div style="text-align: center; padding: 1.2rem; background: rgba(255,255,255,0.1); border-radius: 10px;">
+<p style="font-size: 2rem; font-weight: 700; margin: 0 0 0.3rem;">KES 3,500</p>
+<p style="font-size: 0.9rem; opacity: 0.9; margin: 0;">Students</p>
+</div>
+<div style="text-align: center; padding: 1.2rem; background: rgba(255,255,255,0.1); border-radius: 10px;">
+<p style="font-size: 2rem; font-weight: 700; margin: 0 0 0.3rem;">KES 5,000</p>
+<p style="font-size: 0.9rem; opacity: 0.9; margin: 0;">Professionals</p>
+</div>
+<div style="text-align: center; padding: 1.2rem; background: rgba(255,255,255,0.1); border-radius: 10px;">
+<p style="font-size: 2rem; font-weight: 700; margin: 0 0 0.3rem;">FREE</p>
+<p style="font-size: 0.9rem; opacity: 0.9; margin: 0;">BDA Alumni</p>
+</div>
+</div>
+<p style="font-size: 0.9rem; opacity: 0.9; margin-bottom: 1.5rem; text-align: center;">
+<i class="fas fa-info-circle" style="margin-right: 0.3rem;"></i>Price includes workshop materials, certificate, lunch (in-person), and 30-day access to session recordings
+</p>
+<div style="text-align: center;">
+<a href="https://pregnant-brown-aryimafsgf.edgeone.app/" target="_blank" class="btn" style="background: var(--gradient-3); color: var(--primary-blue); padding: 1rem 2.5rem; font-weight: 600;">
+<i class="fas fa-arrow-right"></i> Register Now
+</a>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<!-- Event Modal 2: Career Fair -->
+<div id="event-modal-2" class="gallery-modal">
+<div class="modal-content" style="max-width: 1000px;">
+<button class="modal-close" onclick="closeEventModal('event-modal-2')"><i class="fas fa-times"></i></button>
+<div class="modal-body">
+<h3><i class="fas fa-briefcase" style="color: var(--accent-blue); margin-right: 0.5rem;"></i>Data Science Career Fair 2026</h3>
+<p class="modal-subtitle"><i class="fas fa-calendar"></i> January 22, 2026 • 10:00 AM - 6:00 PM EAT</p>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 2rem;">
+<div style="background: var(--light-bg); padding: 1.2rem; border-radius: 10px; text-align: center;">
+<i class="fas fa-building" style="font-size: 2rem; color: var(--accent-blue); margin-bottom: 0.5rem;"></i>
+<p style="font-weight: 600;">20+ Companies</p>
+<p style="font-size: 0.85rem; color: var(--gray-text);">Participating</p>
+</div>
+<div style="background: var(--light-bg); padding: 1.2rem; border-radius: 10px; text-align: center;">
+<i class="fas fa-users" style="font-size: 2rem; color: var(--golden-yellow); margin-bottom: 0.5rem;"></i>
+<p style="font-weight: 600;">500+ Attendees</p>
+<p style="font-size: 0.85rem; color: var(--gray-text);">Expected</p>
+</div>
+<div style="background: var(--light-bg); padding: 1.2rem; border-radius: 10px; text-align: center;">
+<i class="fas fa-map-marker-alt" style="font-size: 2rem; color: var(--bold-red); margin-bottom: 0.5rem;"></i>
+<p style="font-weight: 600;">Nairobi</p>
+<p style="font-size: 0.85rem; color: var(--gray-text);">Kenya</p>
+</div>
+<div style="background: var(--light-bg); padding: 1.2rem; border-radius: 10px; text-align: center;">
+<i class="fas fa-ticket-alt" style="font-size: 2rem; color: var(--rich-purple); margin-bottom: 0.5rem;"></i>
+<p style="font-weight: 600;">FREE</p>
+<p style="font-size: 0.85rem; color: var(--gray-text);">Registration</p>
+</div>
+</div>
+<div style="margin-bottom: 2rem;">
+<h4 style="color: var(--primary-blue); margin-bottom: 1rem;"><i class="fas fa-info-circle"></i> Event Overview</h4>
+<p style="color: var(--gray-text); line-height: 1.8; text-align: justify;">
+The Data Science Career Fair 2026 is the premier networking event for data professionals, students, and employers in East Africa. Connect with top companies hiring data scientists, analysts, and ML engineers, attend career development panels, and discover exciting opportunities in the rapidly growing data science industry.
+</p>
+<p style="color: var(--gray-text); line-height: 1.8; text-align: justify; margin-top: 1rem;">
+Whether you're a recent graduate looking for your first role, a professional seeking career advancement, or an employer looking to hire top talent, this career fair provides the perfect platform to connect, learn, and grow your data science career.
+</p>
+</div>
+<div style="margin-bottom: 2rem;">
+<h4 style="color: var(--primary-blue); margin-bottom: 1rem;"><i class="fas fa-list"></i> What to Expect</h4>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem;">
+<div style="background: var(--light-bg); padding: 1.2rem; border-radius: 10px;">
+<p style="font-weight: 600; color: var(--dark-text); margin-bottom: 0.5rem;"><i class="fas fa-check-circle" style="color: var(--accent-blue); margin-right: 0.5rem;"></i>Company Booths</p>
+<p style="font-size: 0.9rem; color: var(--gray-text); margin: 0;">Meet recruiters from leading tech companies, banks, healthcare organizations, and startups</p>
+</div>
+<div style="background: var(--light-bg); padding: 1.2rem; border-radius: 10px;">
+<p style="font-weight: 600; color: var(--dark-text); margin-bottom: 0.5rem;"><i class="fas fa-check-circle" style="color: var(--accent-blue); margin-right: 0.5rem;"></i>Career Panels</p>
+<p style="font-size: 0.9rem; color: var(--gray-text); margin: 0;">Learn from industry leaders about career paths, skills in demand, and industry trends</p>
+</div>
+<div style="background: var(--light-bg); padding: 1.2rem; border-radius: 10px;">
+<p style="font-weight: 600; color: var(--dark-text); margin-bottom: 0.5rem;"><i class="fas fa-check-circle" style="color: var(--accent-blue); margin-right: 0.5rem;"></i>Resume Reviews</p>
+<p style="font-size: 0.9rem; color: var(--gray-text); margin: 0;">Get personalized feedback on your CV from experienced hiring managers</p>
+</div>
+<div style="background: var(--light-bg); padding: 1.2rem; border-radius: 10px;">
+<p style="font-weight: 600; color: var(--dark-text); margin-bottom: 0.5rem;"><i class="fas fa-check-circle" style="color: var(--accent-blue); margin-right: 0.5rem;"></i>Networking Sessions</p>
+<p style="font-size: 0.9rem; color: var(--gray-text); margin: 0;">Connect with peers, mentors, and potential employers in structured networking sessions</p>
+</div>
+</div>
+</div>
+<div style="background: var(--gradient-1); padding: 2rem; border-radius: 15px; color: var(--white); margin-bottom: 2rem;">
+<h4 style="color: var(--vibrant-yellow); margin-bottom: 1.5rem;"><i class="fas fa-ticket-alt"></i> Registration Information</h4>
+<p style="opacity: 0.9; margin-bottom: 1.5rem; text-align: center;">
+<i class="fas fa-info-circle" style="margin-right: 0.3rem;"></i>Free admission for all attendees. Pre-registration required to guarantee entry.
+</p>
+<div style="text-align: center;">
+<a href="https://pregnant-brown-aryimafsgf.edgeone.app/" target="_blank" class="btn" style="background: var(--gradient-3); color: var(--primary-blue); padding: 1rem 2.5rem; font-weight: 600;">
+<i class="fas fa-arrow-right"></i> Register Now
+</a>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<!-- Event Modal 3: Time Series Webinar -->
+<div id="event-modal-3" class="gallery-modal">
+<div class="modal-content" style="max-width: 1000px;">
+<button class="modal-close" onclick="closeEventModal('event-modal-3')"><i class="fas fa-times"></i></button>
+<div class="modal-body">
+<h3><i class="fas fa-chart-line" style="color: var(--accent-blue); margin-right: 0.5rem;"></i>Advanced Time Series Forecasting Webinar</h3>
+<p class="modal-subtitle"><i class="fas fa-calendar"></i> February 5, 2026 • 2:00 PM - 5:00 PM EAT</p>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 2rem;">
+<div style="background: var(--light-bg); padding: 1.2rem; border-radius: 10px; text-align: center;">
+<i class="fas fa-clock" style="font-size: 2rem; color: var(--accent-blue); margin-bottom: 0.5rem;"></i>
+<p style="font-weight: 600;">3 Hours</p>
+<p style="font-size: 0.85rem; color: var(--gray-text);">Duration</p>
+</div>
+<div style="background: var(--light-bg); padding: 1.2rem; border-radius: 10px; text-align: center;">
+<i class="fas fa-video" style="font-size: 2rem; color: var(--golden-yellow); margin-bottom: 0.5rem;"></i>
+<p style="font-weight: 600;">Online</p>
+<p style="font-size: 0.85rem; color: var(--gray-text);">Zoom Webinar</p>
+</div>
+<div style="background: var(--light-bg); padding: 1.2rem; border-radius: 10px; text-align: center;">
+<i class="fas fa-users" style="font-size: 2rem; color: var(--bold-red); margin-bottom: 0.5rem;"></i>
+<p style="font-weight: 600;">100 Seats</p>
+<p style="font-size: 0.85rem; color: var(--gray-text);">Limited Capacity</p>
+</div>
+<div style="background: var(--light-bg); padding: 1.2rem; border-radius: 10px; text-align: center;">
+<i class="fas fa-certificate" style="font-size: 2rem; color: var(--rich-purple); margin-bottom: 0.5rem;"></i>
+<p style="font-weight: 600;">Certificate</p>
+<p style="font-size: 0.85rem; color: var(--gray-text);">Upon Completion</p>
+</div>
+</div>
+<div style="margin-bottom: 2rem;">
+<h4 style="color: var(--primary-blue); margin-bottom: 1rem;"><i class="fas fa-info-circle"></i> Webinar Overview</h4>
+<p style="color: var(--gray-text); line-height: 1.8; text-align: justify;">
+This advanced webinar dives deep into cutting-edge time series forecasting techniques used in finance, economics, healthcare, and climate science. Learn from Dr. Victor Lumumba's extensive research experience in financial volatility forecasting and malaria prediction to master LSTM networks, Prophet, ensemble methods, and more.
+</p>
+<p style="color: var(--gray-text); line-height: 1.8; text-align: justify; margin-top: 1rem;">
+Perfect for data analysts, researchers, and professionals who already have basic forecasting knowledge and want to advance their skills with state-of-the-art methods.
+</p>
+</div>
+<div style="margin-bottom: 2rem;">
+<h4 style="color: var(--primary-blue); margin-bottom: 1rem;"><i class="fas fa-bullseye"></i> Topics Covered</h4>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem;">
+<div style="background: var(--light-bg); padding: 1.2rem; border-radius: 10px;">
+<p style="font-weight: 600; color: var(--dark-text); margin-bottom: 0.5rem;"><i class="fas fa-check-circle" style="color: var(--accent-blue); margin-right: 0.5rem;"></i>Deep Learning Methods</p>
+<p style="font-size: 0.9rem; color: var(--gray-text); margin: 0;">LSTM, GRU, and Transformer architectures for time series</p>
+</div>
+<div style="background: var(--light-bg); padding: 1.2rem; border-radius: 10px;">
+<p style="font-weight: 600; color: var(--dark-text); margin-bottom: 0.5rem;"><i class="fas fa-check-circle" style="color: var(--accent-blue); margin-right: 0.5rem;"></i>Facebook Prophet</p>
+<p style="font-size: 0.9rem; color: var(--gray-text); margin: 0;">Advanced features, custom seasonality, and uncertainty estimation</p>
+</div>
+<div style="background: var(--light-bg); padding: 1.2rem; border-radius: 10px;">
+<p style="font-weight: 600; color: var(--dark-text); margin-bottom: 0.5rem;"><i class="fas fa-check-circle" style="color: var(--accent-blue); margin-right: 0.5rem;"></i>Ensemble Methods</p>
+<p style="font-size: 0.9rem; color: var(--gray-text); margin: 0;">Combining multiple models for improved forecast accuracy</p>
+</div>
+<div style="background: var(--light-bg); padding: 1.2rem; border-radius: 10px;">
+<p style="font-weight: 600; color: var(--dark-text); margin-bottom: 0.5rem;"><i class="fas fa-check-circle" style="color: var(--accent-blue); margin-right: 0.5rem;"></i>Real-World Applications</p>
+<p style="font-size: 0.9rem; color: var(--gray-text); margin: 0;">Case studies from finance, epidemiology, and climate science</p>
+</div>
+</div>
+</div>
+<div style="background: #fffbeb; padding: 1.5rem; border-radius: 12px; border-left: 4px solid var(--golden-yellow); margin-bottom: 2rem;">
+<h4 style="color: var(--primary-blue); margin-bottom: 1rem;"><i class="fas fa-exclamation-triangle" style="color: var(--golden-yellow);"></i> Prerequisites</h4>
+<ul style="list-style: none; padding: 0; color: var(--dark-text);">
+<li style="margin-bottom: 0.5rem;"><i class="fas fa-check" style="color: var(--accent-blue); margin-right: 0.5rem;"></i>Basic understanding of time series concepts (trend, seasonality, stationarity)</li>
+<li style="margin-bottom: 0.5rem;"><i class="fas fa-check" style="color: var(--accent-blue); margin-right: 0.5rem;"></i>Proficiency in Python or R</li>
+<li style="margin-bottom: 0.5rem;"><i class="fas fa-check" style="color: var(--accent-blue); margin-right: 0.5rem;"></i>Familiarity with basic forecasting methods (ARIMA, exponential smoothing)</li>
+<li style="margin-bottom: 0;"><i class="fas fa-check" style="color: var(--accent-blue); margin-right: 0.5rem;"></i>Stable internet connection for live webinar participation</li>
+</ul>
+</div>
+<div style="margin-bottom: 2rem;">
+<h4 style="color: var(--primary-blue); margin-bottom: 1rem;"><i class="fas fa-chalkboard-teacher"></i> Lead Instructor</h4>
+<div style="display: flex; gap: 1.5rem; align-items: flex-start; flex-wrap: wrap;">
+<div style="width: 100px; height: 100px; border-radius: 50%; background: var(--gradient-3); display: flex; align-items: center; justify-content: center; font-size: 2rem; font-weight: 700; color: var(--primary-blue); flex-shrink: 0;">VL</div>
+<div>
+<p style="font-weight: 700; color: var(--dark-text); margin: 0 0 0.3rem;">Dr. Victor W. Lumumba</p>
+<p style="font-size: 0.9rem; color: var(--gray-text); margin: 0 0 0.8rem;">PhD Candidate in Biostatistics | MSc Applied Statistics</p>
+<p style="font-size: 0.95rem; color: var(--dark-text); line-height: 1.7; margin: 0;">
+Dr. Lumumba has extensive research experience in time series forecasting, including financial market volatility modeling and malaria incidence prediction. He has published multiple peer-reviewed papers on forecasting methodologies and led numerous workshops on time series analysis across East Africa.
+</p>
+</div>
+</div>
+</div>
+<div style="background: var(--gradient-1); padding: 2rem; border-radius: 15px; color: var(--white); margin-bottom: 2rem;">
+<h4 style="color: var(--vibrant-yellow); margin-bottom: 1.5rem;"><i class="fas fa-ticket-alt"></i> Registration & Pricing</h4>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-bottom: 1.5rem;">
+<div style="text-align: center; padding: 1.2rem; background: rgba(255,255,255,0.1); border-radius: 10px;">
+<p style="font-size: 2rem; font-weight: 700; margin: 0 0 0.3rem;">KES 2,500</p>
+<p style="font-size: 0.9rem; opacity: 0.9; margin: 0;">Students</p>
+</div>
+<div style="text-align: center; padding: 1.2rem; background: rgba(255,255,255,0.1); border-radius: 10px;">
+<p style="font-size: 2rem; font-weight: 700; margin: 0 0 0.3rem;">KES 4,000</p>
+<p style="font-size: 0.9rem; opacity: 0.9; margin: 0;">Professionals</p>
+</div>
+<div style="text-align: center; padding: 1.2rem; background: rgba(255,255,255,0.1); border-radius: 10px;">
+<p style="font-size: 2rem; font-weight: 700; margin: 0 0 0.3rem;">FREE</p>
+<p style="font-size: 0.9rem; opacity: 0.9; margin: 0;">BDA Alumni</p>
+</div>
+</div>
+<p style="font-size: 0.9rem; opacity: 0.9; margin-bottom: 1.5rem; text-align: center;">
+<i class="fas fa-info-circle" style="margin-right: 0.3rem;"></i>Price includes webinar access, recording (30 days), slides, and certificate of completion
+</p>
+<div style="text-align: center;">
+<a href="https://pregnant-brown-aryimafsgf.edgeone.app/" target="_blank" class="btn" style="background: var(--gradient-3); color: var(--primary-blue); padding: 1rem 2.5rem; font-weight: 600;">
+<i class="fas fa-arrow-right"></i> Register Now
+</a>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<!-- Event Modal 4: AI Healthcare Conference -->
+<div id="event-modal-4" class="gallery-modal">
+<div class="modal-content" style="max-width: 1000px;">
+<button class="modal-close" onclick="closeEventModal('event-modal-4')"><i class="fas fa-times"></i></button>
+<div class="modal-body">
+<h3><i class="fas fa-heartbeat" style="color: var(--accent-blue); margin-right: 0.5rem;"></i>AI in Healthcare Conference</h3>
+<p class="modal-subtitle"><i class="fas fa-calendar"></i> February 20, 2026 • 8:00 AM - 5:00 PM EAT</p>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 2rem;">
+<div style="background: var(--light-bg); padding: 1.2rem; border-radius: 10px; text-align: center;">
+<i class="fas fa-clock" style="font-size: 2rem; color: var(--accent-blue); margin-bottom: 0.5rem;"></i>
+<p style="font-weight: 600;">Full Day</p>
+<p style="font-size: 0.85rem; color: var(--gray-text);">9 Hours</p>
+</div>
+<div style="background: var(--light-bg); padding: 1.2rem; border-radius: 10px; text-align: center;">
+<i class="fas fa-users" style="font-size: 2rem; color: var(--golden-yellow); margin-bottom: 0.5rem;"></i>
+<p style="font-weight: 600;">200+ Attendees</p>
+<p style="font-size: 0.85rem; color: var(--gray-text);">Expected</p>
+</div>
+<div style="background: var(--light-bg); padding: 1.2rem; border-radius: 10px; text-align: center;">
+<i class="fas fa-map-marker-alt" style="font-size: 2rem; color: var(--bold-red); margin-bottom: 0.5rem;"></i>
+<p style="font-weight: 600;">Moi University</p>
+<p style="font-size: 0.85rem; color: var(--gray-text);">Eldoret, Kenya</p>
+</div>
+<div style="background: var(--light-bg); padding: 1.2rem; border-radius: 10px; text-align: center;">
+<i class="fas fa-certificate" style="font-size: 2rem; color: var(--rich-purple); margin-bottom: 0.5rem;"></i>
+<p style="font-weight: 600;">CME Credits</p>
+<p style="font-size: 0.85rem; color: var(--gray-text);">Available</p>
+</div>
+</div>
+<div style="margin-bottom: 2rem;">
+<h4 style="color: var(--primary-blue); margin-bottom: 1rem;"><i class="fas fa-info-circle"></i> Conference Overview</h4>
+<p style="color: var(--gray-text); line-height: 1.8; text-align: justify;">
+The AI in Healthcare Conference brings together data scientists, healthcare professionals, researchers, and policymakers to explore the latest applications of artificial intelligence and machine learning in healthcare and medical research. This premier event features keynote speakers, technical sessions, panel discussions, and networking opportunities.
+</p>
+<p style="color: var(--gray-text); line-height: 1.8; text-align: justify; margin-top: 1rem;">
+Topics include predictive modeling for disease outcomes, medical image analysis, electronic health records analytics, drug discovery, and ethical considerations in AI-driven healthcare.
+</p>
+</div>
+<div style="margin-bottom: 2rem;">
+<h4 style="color: var(--primary-blue); margin-bottom: 1rem;"><i class="fas fa-list"></i> Conference Tracks</h4>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem;">
+<div style="background: var(--light-bg); padding: 1.2rem; border-radius: 10px;">
+<p style="font-weight: 600; color: var(--dark-text); margin-bottom: 0.5rem;"><i class="fas fa-check-circle" style="color: var(--accent-blue); margin-right: 0.5rem;"></i>Clinical Prediction Models</p>
+<p style="font-size: 0.9rem; color: var(--gray-text); margin: 0;">Risk stratification, early warning systems, and outcome prediction</p>
+</div>
+<div style="background: var(--light-bg); padding: 1.2rem; border-radius: 10px;">
+<p style="font-weight: 600; color: var(--dark-text); margin-bottom: 0.5rem;"><i class="fas fa-check-circle" style="color: var(--accent-blue); margin-right: 0.5rem;"></i>Medical Imaging</p>
+<p style="font-size: 0.9rem; color: var(--gray-text); margin: 0;">Deep learning for radiology, pathology, and diagnostic imaging</p>
+</div>
+<div style="background: var(--light-bg); padding: 1.2rem; border-radius: 10px;">
+<p style="font-weight: 600; color: var(--dark-text); margin-bottom: 0.5rem;"><i class="fas fa-check-circle" style="color: var(--accent-blue); margin-right: 0.5rem;"></i>Public Health Analytics</p>
+<p style="font-size: 0.9rem; color: var(--gray-text); margin: 0;">Disease surveillance, outbreak prediction, and health policy</p>
+</div>
+<div style="background: var(--light-bg); padding: 1.2rem; border-radius: 10px;">
+<p style="font-weight: 600; color: var(--dark-text); margin-bottom: 0.5rem;"><i class="fas fa-check-circle" style="color: var(--accent-blue); margin-right: 0.5rem;"></i>Ethics & Implementation</p>
+<p style="font-size: 0.9rem; color: var(--gray-text); margin: 0;">Bias, fairness, explainability, and real-world deployment</p>
+</div>
+</div>
+</div>
+<div style="background: var(--gradient-1); padding: 2rem; border-radius: 15px; color: var(--white); margin-bottom: 2rem;">
+<h4 style="color: var(--vibrant-yellow); margin-bottom: 1.5rem;"><i class="fas fa-ticket-alt"></i> Registration & Pricing</h4>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-bottom: 1.5rem;">
+<div style="text-align: center; padding: 1.2rem; background: rgba(255,255,255,0.1); border-radius: 10px;">
+<p style="font-size: 2rem; font-weight: 700; margin: 0 0 0.3rem;">KES 8,000</p>
+<p style="font-size: 0.9rem; opacity: 0.9; margin: 0;">Students</p>
+</div>
+<div style="text-align: center; padding: 1.2rem; background: rgba(255,255,255,0.1); border-radius: 10px;">
+<p style="font-size: 2rem; font-weight: 700; margin: 0 0 0.3rem;">KES 15,000</p>
+<p style="font-size: 0.9rem; opacity: 0.9; margin: 0;">Professionals</p>
+</div>
+<div style="text-align: center; padding: 1.2rem; background: rgba(255,255,255,0.1); border-radius: 10px;">
+<p style="font-size: 2rem; font-weight: 700; margin: 0 0 0.3rem;">KES 25,000</p>
+<p style="font-size: 0.9rem; opacity: 0.9; margin: 0;">Corporate</p>
+</div>
+</div>
+<p style="font-size: 0.9rem; opacity: 0.9; margin-bottom: 1.5rem; text-align: center;">
+<i class="fas fa-info-circle" style="margin-right: 0.3rem;"></i>Price includes conference access, meals, conference materials, certificate, and CME credits (for healthcare professionals)
+</p>
+<div style="text-align: center;">
+<a href="https://pregnant-brown-aryimafsgf.edgeone.app/" target="_blank" class="btn" style="background: var(--gradient-3); color: var(--primary-blue); padding: 1rem 2.5rem; font-weight: 600;">
+<i class="fas fa-arrow-right"></i> Register Now
+</a>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<!-- Resources Section -->
+<section class="section" id="resources" style="background: var(--light-bg);">
+<div class="section-header">
+<span class="section-badge"><i class="fas fa-folder-open"></i> Learning Materials</span>
+<h2 class="section-title">Resources</h2>
+<p class="section-subtitle">Access free tutorials, datasets, code repositories, and learning materials</p>
+</div>
+<div class="resources-grid">
+<div class="resource-card">
+<div class="resource-icon">
+<i class="fab fa-github"></i>
+</div>
+<h3>GitHub Repositories</h3>
+<p>Access our collection of open-source projects including Machine Learning, Time Series Analysis, and Statistical Inference code templates.</p>
+<a href="https://github.com/Lumumba1992" target="_blank" rel="noopener noreferrer" class="resource-link">Browse Repos <i class="fas fa-arrow-right"></i></a>
+</div>
+<div class="resource-card yellow">
+<div class="resource-icon">
+<i class="fas fa-video"></i>
+</div>
+<h3>Video Tutorials</h3>
+<p>Watch step-by-step video tutorials on Python, R, machine learning, survival analysis, and forecasting techniques.</p>
+<a href="https://www.youtube.com/@lumumbavictor1992/featured" target="_blank" rel="noopener noreferrer" class="resource-link">Watch Now <i class="fas fa-arrow-right"></i></a>
+</div>
+<div class="resource-card red">
+<div class="resource-icon">
+<i class="fas fa-database"></i>
+</div>
+<h3>Practice Datasets</h3>
+<p>Download curated datasets for practicing data analysis including health, financial, and climate data.</p>
+<a href="#" class="resource-link">Download <i class="fas fa-arrow-right"></i></a>
+</div>
+<div class="resource-card purple">
+<div class="resource-icon">
+<i class="fas fa-book-open"></i>
+</div>
+<h3>E-Books & Guides</h3>
+<p>Access free e-books, cheat sheets, and comprehensive learning guides on data science topics.</p>
+<a href="https://github.com/Lumumba1992/E-Books-and-Guides/tree/main/Notes" class="resource-link">Browse Library <i class="fas fa-arrow-right"></i></a>
+</div>
+<div class="resource-card">
+<div class="resource-icon">
+<i class="fas fa-laptop-code"></i>
+</div>
+<h3>Jupyter Notebooks</h3>
+<p>Interactive notebooks with code examples for Python fundamentals, data handling, and predictive modeling.</p>
+<a href="#" class="resource-link">Explore <i class="fas fa-arrow-right"></i></a>
+</div>
+<div class="resource-card yellow">
+<div class="resource-icon">
+<i class="fas fa-certificate"></i>
+</div>
+<h3>Certification Prep</h3>
+<p>Study materials and practice exams for industry certifications in data science and analytics.</p>
+<a href="https://psychological-emerald-0nv3p6zk8f.edgeone.app/" class="resource-link">Get Started <i class="fas fa-arrow-right"></i></a>
+</div>
+</div>
+</section>
+
+<!-- Forum Section -->
+<section class="section" id="forum">
+<div class="section-header">
+<span class="section-badge"><i class="fas fa-comments"></i> Connect & Learn</span>
+<h2 class="section-title">Community Forum</h2>
+<p class="section-subtitle">Join discussions, ask questions, and share knowledge with the community</p>
+</div>
+<div class="forum-categories">
+<div class="forum-category">
+<div class="forum-category-header">
+<div class="forum-category-icon">
+<i class="fas fa-code"></i>
+</div>
+<div>
+<h3>Programming & Coding</h3>
+<p>Python, R, SQL, and more</p>
+</div>
+</div>
+<ul class="forum-topics">
+<li>
+<div class="forum-topic">
+<i class="fas fa-comment"></i>
+<span>Python Best Practices</span>
+</div>
+<div class="forum-stats">
+<span><i class="fas fa-comment-dots"></i> 245</span>
+<span><i class="fas fa-eye"></i> 1.2k</span>
+</div>
+</li>
+<li>
+<div class="forum-topic">
+<i class="fas fa-comment"></i>
+<span>R for Data Science</span>
+</div>
+<div class="forum-stats">
+<span><i class="fas fa-comment-dots"></i> 189</span>
+<span><i class="fas fa-eye"></i> 890</span>
+</div>
+</li>
+<li>
+<div class="forum-topic">
+<i class="fas fa-comment"></i>
+<span>SQL Queries Help</span>
+</div>
+<div class="forum-stats">
+<span><i class="fas fa-comment-dots"></i> 312</span>
+<span><i class="fas fa-eye"></i> 1.5k</span>
+</div>
+</li>
+</ul>
+</div>
+<div class="forum-category">
+<div class="forum-category-header">
+<div class="forum-category-icon" style="background: var(--gradient-3); color: var(--primary-blue);">
+<i class="fas fa-brain"></i>
+</div>
+<div>
+<h3>Machine Learning</h3>
+<p>Algorithms, models, and applications</p>
+</div>
+</div>
+<ul class="forum-topics">
+<li>
+<div class="forum-topic">
+<i class="fas fa-comment"></i>
+<span>Deep Learning Questions</span>
+</div>
+<div class="forum-stats">
+<span><i class="fas fa-comment-dots"></i> 421</span>
+<span><i class="fas fa-eye"></i> 2.1k</span>
+</div>
+</li>
+<li>
+<div class="forum-topic">
+<i class="fas fa-comment"></i>
+<span>Model Deployment</span>
+</div>
+<div class="forum-stats">
+<span><i class="fas fa-comment-dots"></i> 267</span>
+<span><i class="fas fa-eye"></i> 1.3k</span>
+</div>
+</li>
+<li>
+<div class="forum-topic">
+<i class="fas fa-comment"></i>
+<span>XAI & Interpretability</span>
+</div>
+<div class="forum-stats">
+<span><i class="fas fa-comment-dots"></i> 198</span>
+<span><i class="fas fa-eye"></i> 950</span>
+</div>
+</li>
+</ul>
+</div>
+<div class="forum-category">
+<div class="forum-category-header">
+<div class="forum-category-icon" style="background: var(--gradient-4);">
+<i class="fas fa-briefcase"></i>
+</div>
+<div>
+<h3>Career & Jobs</h3>
+<p>Career advice, job postings, networking</p>
+</div>
+</div>
+<ul class="forum-topics">
+<li>
+<div class="forum-topic">
+<i class="fas fa-comment"></i>
+<span>Job Opportunities</span>
+</div>
+<div class="forum-stats">
+<span><i class="fas fa-comment-dots"></i> 534</span>
+<span><i class="fas fa-eye"></i> 3.2k</span>
+</div>
+</li>
+<li>
+<div class="forum-topic">
+<i class="fas fa-comment"></i>
+<span>Resume Reviews</span>
+</div>
+<div class="forum-stats">
+<span><i class="fas fa-comment-dots"></i> 289</span>
+<span><i class="fas fa-eye"></i> 1.4k</span>
+</div>
+</li>
+<li>
+<div class="forum-topic">
+<i class="fas fa-comment"></i>
+<span>Interview Prep</span>
+</div>
+<div class="forum-stats">
+<span><i class="fas fa-comment-dots"></i> 376</span>
+<span><i class="fas fa-eye"></i> 1.8k</span>
+</div>
+</li>
+</ul>
+</div>
+</div>
+<div style="text-align: center; margin-top: 3rem;">
+  <a href="https://fantastic-black-szioj2eywn.edgeone.app/" 
+     target="_blank" 
+     rel="noopener noreferrer"
+     class="btn btn-primary">
+    <i class="fas fa-comments"></i> Join the Forum
+  </a>
+</div>
+</section>
+
+<!-- FAQ Section -->
+<section class="section" id="faq" style="background: var(--light-bg);">
+<div class="section-header">
+<span class="section-badge"><i class="fas fa-question-circle"></i> Got Questions?</span>
+<h2 class="section-title">Frequently Asked Questions</h2>
+<p class="section-subtitle">Find answers to common questions about our programs and services</p>
+</div>
+<div class="faq-container">
+<div class="faq-item">
+<div class="faq-question" onclick="toggleFaq(this)">
+<h3>What prerequisites do I need to join your courses?</h3>
+<i class="fas fa-chevron-down"></i>
+</div>
+<div class="faq-answer">
+<p>Most of our beginner courses require only basic computer skills and high school mathematics. Advanced courses may require prior programming experience or completion of foundational courses. Each course page lists specific prerequisites.</p>
+</div>
+</div>
+<div class="faq-item">
+<div class="faq-question" onclick="toggleFaq(this)">
+<h3>Are the courses online or in-person?</h3>
+<i class="fas fa-chevron-down"></i>
+</div>
+<div class="faq-answer">
+<p>We offer both online and in-person options. Most courses are available in hybrid format, allowing you to choose between attending physically at our Chuka University location or joining virtually from anywhere.</p>
+</div>
+</div>
+<div class="faq-item">
+<div class="faq-question" onclick="toggleFaq(this)">
+<h3>Do you provide certificates upon completion?</h3>
+<i class="fas fa-chevron-down"></i>
+</div>
+<div class="faq-answer">
+<p>Yes! All our courses come with a certificate of completion. Some advanced programs offer industry-recognized certifications in partnership with leading tech companies.</p>
+</div>
+</div>
+<div class="faq-item">
+<div class="faq-question" onclick="toggleFaq(this)">
+<h3>What payment options are available?</h3>
+<i class="fas fa-chevron-down"></i>
+</div>
+<div class="faq-answer">
+<p>We accept M-Pesa, bank transfers, credit/debit cards, and installment plans. We also offer scholarship opportunities for deserving students who demonstrate financial need.</p>
+</div>
+</div>
+<div class="faq-item">
+<div class="faq-question" onclick="toggleFaq(this)">
+<h3>How do I become a mentor or instructor?</h3>
+<i class="fas fa-chevron-down"></i>
+</div>
+<div class="faq-answer">
+<p>Visit our Getting Involved section to apply. We look for individuals with industry experience, strong communication skills, and a passion for teaching. All applications are reviewed by our academic team.</p>
+</div>
+</div>
+<div class="faq-item">
+<div class="faq-question" onclick="toggleFaq(this)">
+<h3>What kind of career support do you offer?</h3>
+<i class="fas fa-chevron-down"></i>
+</div>
+<div class="faq-answer">
+<p>We provide comprehensive career support including resume reviews, interview preparation, job placement assistance, networking events, and access to our exclusive job board with opportunities from partner companies.</p>
+</div>
+</div>
+</div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta-section">
+  <div class="cta-content">
+    <h2>Ready to Start Your Data Science Journey?</h2>
+    <p>Join hundreds of students who have transformed their careers with Beyond Data Analytics. Enroll today and take the first step towards an exciting future in data science.</p>
+    <div class="hero-buttons" style="justify-content: center;">
+      <a href="#courses" class="btn btn-primary" style="background: var(--white); color: var(--primary-blue);">
+        <i class="fas fa-rocket"></i> Browse Courses
+      </a>
+      <a href="#gallery" class="btn btn-secondary">
+        <i class="fas fa-images"></i> View Gallery
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="footer">
+<div class="footer-grid">
+<div class="footer-col">
+<h3>Beyond Data Analytics</h3>
+<p>Empowering the next generation of data scientists through quality education, mentorship, and community support. Founded by Dr. Victor W. Lumumba.</p>
+<div class="social-links">
+<a href="https://www.facebook.com/profile.php?id=100014983369382" target="_blank" rel="noopener noreferrer">
+<i class="fab fa-facebook-f"></i>
+</a>
+<a href="https://scholar.google.com/citations?user=fDoe0f0AAAAJ&hl=en" target="_blank" rel="noopener noreferrer">
+<i class="fas fa-graduation-cap"></i>
+</a>
+<a href="https://www.researchgate.net/profile/Victor-Lumumba?ev=hdr_xprf" target="_blank" rel="noopener noreferrer">
+<i class="fab fa-researchgate"></i>
+</a>
+<a href="https://github.com/Lumumba1992" target="_blank" rel="noopener noreferrer">
+<i class="fab fa-github"></i>
+</a>
+<a href="https://www.youtube.com/@lumumbavictor1992/featured" target="_blank" rel="noopener noreferrer">
+<i class="fab fa-youtube"></i>
+</a>
+</div>
+</div>
+<div class="footer-col">
+<h3>Quick Links</h3>
+<ul>
+<li><a href="#about"><i class="fas fa-chevron-right"></i> About Us</a></li>
+<li><a href="#courses"><i class="fas fa-chevron-right"></i> Courses</a></li>
+<li><a href="#mentoring"><i class="fas fa-chevron-right"></i> Mentoring</a></li>
+<li><a href="#events"><i class="fas fa-chevron-right"></i> Events</a></li>
+<li><a href="#gallery"><i class="fas fa-chevron-right"></i> Gallery</a></li>
+</ul>
+</div>
+<div class="footer-col">
+<h3>Courses</h3>
+<ul>
+<li><a href="#"><i class="fas fa-chevron-right"></i> Data Analysis</a></li>
+<li><a href="#"><i class="fas fa-chevron-right"></i> Machine Learning</a></li>
+<li><a href="#"><i class="fas fa-chevron-right"></i> Time Series</a></li>
+<li><a href="#"><i class="fas fa-chevron-right"></i> Python Programming</a></li>
+<li><a href="#"><i class="fas fa-chevron-right"></i> Survival Analysis</a></li>
+</ul>
+</div>
+<div class="footer-col">
+<h3>Contact Us</h3>
+<ul>
+<li><a href="#"><i class="fas fa-map-marker-alt"></i> P.O. Box 109 – 60400 Chuka, Kenya</a></li>
+<li><a href="tel:+254706038599"><i class="fas fa-phone"></i> +254 706 038 599</a></li>
+<li><a href="mailto:lumumbavictor172@gmail.com"><i class="fas fa-envelope"></i> lumumbavictor172@gmail.com</a></li>
+<li><a href="https://beyonddataanalytics.online" target="_blank"><i class="fas fa-globe"></i> beyonddataanalytics.online</a></li>
+<li><a href="https://scholar.google.com/citations?user=fDoe0f0AAAAJ&hl=en" target="_blank" rel="noopener noreferrer"><i class="fas fa-graduation-cap"></i> Google Scholar</a></li>
+<li><a href="https://www.researchgate.net/profile/Victor-Lumumba?ev=hdr_xprf" target="_blank" rel="noopener noreferrer"><i class="fab fa-researchgate"></i> ResearchGate</a></li>
+</ul>
+</div>
+</div>
+<div class="footer-bottom">
+<p>&copy; 2025 Beyond Data Analytics. All rights reserved. | Designed with <i class="fas fa-heart" style="color: var(--bold-red);"></i> by Dr. Victor W. Lumumba</p>
+</div>
+</footer>
+
+<!-- Scroll to Top Button -->
+<div class="scroll-top" onclick="scrollToTop()">
+<i class="fas fa-arrow-up"></i>
+</div>
+
+<!-- JavaScript -->
+<script>
+// ==================== NEWS MODAL FUNCTIONS ====================
+function openNewsModal(modalId) {
+console.log('Opening news modal:', modalId);
+const modal = document.getElementById(modalId);
+if (modal) {
+modal.classList.add('active');
+document.body.style.overflow = 'hidden';
+} else {
+console.error('Modal not found:', modalId);
+}
+}
+
+function closeNewsModal(modalId) {
+console.log('Closing news modal:', modalId);
+const modal = document.getElementById(modalId);
+if (modal) {
+modal.classList.remove('active');
+document.body.style.overflow = 'auto';
+}
+}
+
+// Make sure these are also in your window.onclick handler
+window.onclick = function(event) {
+if (event.target.classList.contains('gallery-modal')) {
+event.target.classList.remove('active');
+document.body.style.overflow = 'auto';
+}
+}
+// ==================== TYPING ANIMATION ====================
+const textSliderItems = [
+'Data Science & Machine Learning',
+'Predictive Analytics & AI',
+'Expert Mentorship & Career Growth'
+];
+const typingTextElement = document.querySelector('.typing-text');
+let itemIndex = 0;
+let charIndex = 0;
+let isDeleting = false;
+let typingSpeed = 100;
+
+function typeText() {
+const currentItem = textSliderItems[itemIndex];
+if (isDeleting) {
+typingTextElement.textContent = currentItem.substring(0, charIndex - 1);
+charIndex--;
+typingSpeed = 50;
+} else {
+typingTextElement.textContent = currentItem.substring(0, charIndex + 1);
+charIndex++;
+typingSpeed = 100;
+}
+if (!isDeleting && charIndex === currentItem.length) {
+isDeleting = true;
+typingSpeed = 2000;
+} else if (isDeleting && charIndex === 0) {
+isDeleting = false;
+itemIndex = (itemIndex + 1) % textSliderItems.length;
+typingSpeed = 500;
+}
+setTimeout(typeText, typingSpeed);
+}
+
+// ==================== NAVIGATION ====================
+function toggleNav() {
+document.getElementById('navMenu').classList.toggle('active');
+}
+
+// ==================== FAQ TOGGLE ====================
+function toggleFaq(element) {
+const answer = element.nextElementSibling;
+const icon = element.querySelector('i');
+answer.classList.toggle('active');
+icon.classList.toggle('fa-chevron-down');
+icon.classList.toggle('fa-chevron-up');
+}
+
+// ==================== SCROLL TO TOP ====================
+function scrollToTop() {
+window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+window.addEventListener('scroll', function() {
+const scrollTop = document.querySelector('.scroll-top');
+if (window.pageYOffset > 300) {
+scrollTop.classList.add('visible');
+} else {
+scrollTop.classList.remove('visible');
+}
+});
+
+// ==================== GALLERY MODAL FUNCTIONS ====================
+function openModal(modalId) {
+document.getElementById(modalId).classList.add('active');
+document.body.style.overflow = 'hidden';
+}
+
+function closeModal(modalId) {
+document.getElementById(modalId).classList.remove('active');
+document.body.style.overflow = 'auto';
+}
+
+// ==================== EVENT MODAL FUNCTIONS ====================
+function openEventModal(modalId) {
+document.getElementById(modalId).classList.add('active');
+document.body.style.overflow = 'hidden';
+}
+
+function closeEventModal(modalId) {
+document.getElementById(modalId).classList.remove('active');
+document.body.style.overflow = 'auto';
+}
+
+// Close modals when clicking outside
+window.onclick = function(event) {
+if (event.target.classList.contains('gallery-modal')) {
+event.target.classList.remove('active');
+document.body.style.overflow = 'auto';
+}
+}
+
+// Close modals with Escape key
+document.addEventListener('keydown', function(event) {
+if (event.key === 'Escape') {
+document.querySelectorAll('.gallery-modal').forEach(modal => {
+modal.classList.remove('active');
+});
+document.body.style.overflow = 'auto';
+}
+});
+
+// ==================== INITIALIZE ====================
+document.addEventListener('DOMContentLoaded', function() {
+typeText();
+console.log('Beyond Data Analytics Website Loaded Successfully!');
+});
+// ==================== NEWS MODAL FUNCTIONS ====================
+function openNewsModal(modalId) {
+  const modal = document.getElementById(modalId);
+  if (modal) {
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+}
+
+function closeNewsModal(modalId) {
+  const modal = document.getElementById(modalId);
+  if (modal) {
+    modal.classList.remove('active');
+    document.body.style.overflow = 'auto';
+  }
+}
+
+// Close modals when clicking outside
+window.onclick = function(event) {
+  if (event.target.classList.contains('gallery-modal')) {
+    event.target.classList.remove('active');
+    document.body.style.overflow = 'auto';
+  }
+}
+
+// Close modals with Escape key
+document.addEventListener('keydown', function(event) {
+  if (event.key === 'Escape') {
+    document.querySelectorAll('.gallery-modal').forEach(modal => {
+      modal.classList.remove('active');
+    });
+    document.body.style.overflow = 'auto';
+  }
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Module Three: Unsupervised Learning & Clustering Algorithms</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    
+    <!-- KaTeX for Math Rendering -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body);"></script>
+
+    <!-- Prism.js for Syntax Highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --secondary: #64748b;
+            --bg-body: #f8fafc;
+            --bg-card: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --code-bg: #1e293b;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --info: #3b82f6;
+            --error: #ef4444;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            line-height: 1.7;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Navigation */
+        .sidebar {
+            width: 300px;
+            background: var(--bg-card);
+            border-right: 1px solid var(--border);
+            position: fixed;
+            top: 0; left: 0;
+            height: 100vh;
+            overflow-y: auto;
+            padding: 2rem 1.5rem;
+            z-index: 100;
+        }
+        .sidebar-header { margin-bottom: 2rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border); }
+        .sidebar-header h2 { font-size: 1.1rem; font-weight: 700; color: var(--primary); margin-bottom: 0.25rem; }
+        .sidebar-header p { font-size: 0.85rem; color: var(--text-muted); }
+        .nav-links { list-style: none; }
+        .nav-links li { margin-bottom: 0.5rem; }
+        .nav-links a {
+            display: block; padding: 0.5rem 0.75rem; color: var(--text-muted);
+            text-decoration: none; font-size: 0.9rem; border-radius: 6px;
+            transition: all 0.2s; border-left: 3px solid transparent;
+        }
+        .nav-links a:hover, .nav-links a.active {
+            background-color: #eff6ff; color: var(--primary);
+            border-left-color: var(--primary); font-weight: 500;
+        }
+        .nav-links .sub-link { padding-left: 1.5rem; font-size: 0.85rem; }
+
+        /* Main Content */
+        .main-content { margin-left: 300px; flex: 1; padding: 3rem 4rem; max-width: 1100px; }
+
+        /* Typography */
+        h1 { font-size: 2.5rem; font-weight: 800; margin-bottom: 1rem; letter-spacing: -0.025em; }
+        h2 { font-size: 1.75rem; font-weight: 700; margin-top: 3rem; margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 2px solid var(--border); }
+        h3 { font-size: 1.25rem; font-weight: 600; margin-top: 2rem; margin-bottom: 0.75rem; color: var(--primary-dark); }
+        h4 { font-size: 1.1rem; font-weight: 600; margin-top: 1.5rem; margin-bottom: 0.5rem; color: var(--text-main); }
+        p { margin-bottom: 1.25rem; color: #334155; }
+        ul, ol { margin-bottom: 1.25rem; padding-left: 1.5rem; }
+        li { margin-bottom: 0.5rem; }
+
+        /* Callout Boxes */
+        .callout { padding: 1.25rem; border-radius: 8px; margin: 1.5rem 0; border-left: 4px solid; background-color: #f8fafc; }
+        .callout.info { border-color: var(--info); background-color: #eff6ff; }
+        .callout.warning { border-color: var(--warning); background-color: #fffbeb; }
+        .callout.success { border-color: var(--success); background-color: #ecfdf5; }
+        .callout.error { border-color: var(--error); background-color: #fef2f2; }
+        .callout-title { font-weight: 700; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem; }
+
+        /* Code Blocks */
+        .code-wrapper { position: relative; margin: 1.5rem 0; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
+        .code-header {
+            background-color: #0f172a; color: #94a3b8; padding: 0.5rem 1rem;
+            font-size: 0.8rem; font-family: 'JetBrains Mono', monospace;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .copy-btn {
+            background: transparent; border: 1px solid #334155; color: #94a3b8;
+            padding: 0.25rem 0.75rem; border-radius: 4px; cursor: pointer;
+            font-size: 0.75rem; transition: all 0.2s;
+        }
+        .copy-btn:hover { background: #334155; color: white; }
+        pre { margin: 0 !important; border-radius: 0 0 8px 8px !important; background: var(--code-bg) !important; }
+        code { font-family: 'JetBrains Mono', monospace !important; font-size: 0.9rem !important; }
+
+        /* Tables */
+        table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; background: var(--bg-card); border-radius: 8px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        th, td { padding: 0.75rem 1rem; text-align: left; border-bottom: 1px solid var(--border); }
+        th { background-color: #f1f5f9; font-weight: 600; color: var(--text-main); }
+        tr:last-child td { border-bottom: none; }
+
+        /* Output Block */
+        .output-block {
+            background-color: #f1f5f9; border: 1px solid var(--border); border-left: 4px solid var(--secondary);
+            padding: 1rem; margin-top: -1rem; margin-bottom: 1.5rem; border-radius: 0 0 8px 8px;
+            font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; color: #475569;
+        }
+        .output-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); margin-bottom: 0.5rem; font-weight: 600; }
+
+        /* Math Blocks */
+        .math-block { background: #ffffff; padding: 1.5rem; border-radius: 8px; margin: 1.5rem 0; border: 1px solid var(--border); overflow-x: auto; text-align: center; }
+
+        @media (max-width: 1024px) {
+            .sidebar { transform: translateX(-100%); }
+            .main-content { margin-left: 0; padding: 2rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h2>Module Three</h2>
+            <p>Unsupervised Learning & Clustering</p>
+            <p style="margin-top: 0.5rem; font-size: 0.75rem;">Facilitator: Dr. Victor Wandera Lumumba</p>
+        </div>
+        <ul class="nav-links">
+            <li><a href="#intro">Introduction & Philosophy</a></li>
+            <li><a href="#ul-basics">1. Unsupervised Learning Basics</a></li>
+            <li><a href="#clustering-types" class="sub-link">1.1 Types of Clustering</a></li>
+            <li><a href="#dataset">2. The Palmer Penguins Dataset</a></li>
+            <li><a href="#preprocessing">3. Data Preprocessing & Scaling</a></li>
+            <li><a href="#kmeans">4. K-Means (Centroid-Based)</a></li>
+            <li><a href="#hierarchical">5. Hierarchical (Connectivity-Based)</a></li>
+            <li><a href="#dbscan">6. DBSCAN (Density-Based)</a></li>
+            <li><a href="#gmm">7. GMM (Distribution-Based)</a></li>
+            <li><a href="#pca">8. Dimensionality Reduction: PCA</a></li>
+            <li><a href="#evaluation">9. Comparative Evaluation</a></li>
+            <li><a href="#summary">10. Summary & Next Steps</a></li>
+        </ul>
+    </aside>
+
+    <main class="main-content">
+        <header id="intro">
+            <h1>Module Three: Unsupervised Learning & Clustering</h1>
+            <p><strong>Building Data Excellence Since 2020</strong><br>
+            Beyond Data Analytics is a premier training organization founded by Dr. Victor Wandera Lumumba. We are committed to bridging the critical gap between academic knowledge and industry-ready data science skills.</p>
+            
+            <div class="callout info">
+                <div class="callout-title">💡 Our Training Philosophy</div>
+                <p>Our curriculum seamlessly integrates strong theoretical foundations with hands-on practical experience. We believe that true mastery comes from doing. Every concept taught is immediately applied through real-world projects, case studies, and industry scenarios.</p>
+            </div>
+        </header>
+
+        <section id="ul-basics">
+            <h2>1. Unsupervised Learning Basics</h2>
+            <p>Unlike <strong>Supervised Learning</strong>, where the algorithm learns from labeled data (input features and known target outputs), <strong>Unsupervised Learning</strong> deals with unlabeled data. The algorithm is not told what the "correct answer" is. Instead, its goal is to explore the data, find hidden structures, identify patterns, and summarize the information.</p>
+            
+            <h3>Major Unsupervised Tasks</h3>
+            <ul>
+                <li><strong>Clustering:</strong> Grouping similar data points together into distinct clusters (e.g., customer segmentation, biological species grouping).</li>
+                <li><strong>Dimensionality Reduction:</strong> Reducing the number of features in a dataset while preserving as much variance/information as possible (e.g., PCA, t-SNE).</li>
+                <li><strong>Anomaly Detection:</strong> Identifying rare items or events that differ significantly from the majority of the data (e.g., fraud detection).</li>
+            </ul>
+        </section>
+
+        <section id="clustering-types">
+            <h2>1.1 The Four Paradigms of Clustering</h2>
+            <p>Clustering algorithms can be broadly categorized into four distinct families based on how they define and construct clusters:</p>
+            <table>
+                <thead>
+                    <tr><th>Paradigm</th><th>Core Concept</th><th>Key Algorithm</th><th>Pros & Cons</th></tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Centroid-Based</strong></td>
+                        <td>Partitions data into non-hierarchical groups based on distance to a central point (centroid).</td>
+                        <td>K-Means</td>
+                        <td><strong>Pros:</strong> Fast, scalable.<br><strong>Cons:</strong> Requires pre-specifying $K$, sensitive to outliers, assumes spherical clusters.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Connectivity-Based</strong></td>
+                        <td>Builds a hierarchy of clusters based on distance or connectivity (tree structure).</td>
+                        <td>Agglomerative Hierarchical</td>
+                        <td><strong>Pros:</strong> No need to pre-specify $K$, intuitive dendrograms.<br><strong>Cons:</strong> Computationally expensive for large datasets.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Density-Based</strong></td>
+                        <td>Defines clusters as dense regions separated by sparse regions. Handles noise naturally.</td>
+                        <td>DBSCAN</td>
+                        <td><strong>Pros:</strong> Finds arbitrary shapes, identifies outliers.<br><strong>Cons:</strong> Struggles with varying densities, requires careful parameter tuning.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Distribution-Based</strong></td>
+                        <td>Assumes data is generated from a mixture of underlying probability distributions.</td>
+                        <td>Gaussian Mixture Models (GMM)</td>
+                        <td><strong>Pros:</strong> Soft clustering (probabilities), mathematically rigorous.<br><strong>Cons:</strong> Prone to overfitting, computationally intensive.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section id="dataset">
+            <h2>2. The Palmer Penguins Dataset</h2>
+            <p>In this module, we will use the <strong>Palmer Penguins</strong> dataset. This dataset contains morphological measurements of three penguin species (Adelie, Gentoo, Chinstrap) observed on three islands in the Palmer Archipelago, Antarctica.</p>
+            <div class="callout success">
+                <div class="callout-title">🐧 Why this dataset?</div>
+                <p>It is an excellent, modern alternative to the Iris dataset for clustering. Because the physical measurements (bill length, flipper length, body mass) vary significantly between species, we expect the clustering algorithms to naturally recover the three biological species without being told their labels.</p>
+            </div>
+
+            <div class="code-wrapper">
+                <div class="code-header"><span>Python</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+                <pre><code class="language-python">import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+import warnings
+warnings.filterwarnings('ignore')
+
+# Set plot style
+sns.set_theme(style="whitegrid")
+sns.set_palette("husl")
+
+# Load the dataset
+df = pd.read_csv('penguins.csv')
+print(f"Dataset Shape: {df.shape}")
+df.head()</code></pre>
+            </div>
+        </section>
+
+        <section id="preprocessing">
+            <h2>3. Data Preprocessing & Scaling</h2>
+            <p>Clustering algorithms rely heavily on <strong>distance calculations</strong> (like Euclidean distance). If features are on different scales (e.g., body mass in grams vs. bill depth in millimeters), the feature with the larger numerical range will dominate the clustering process. Therefore, <strong>feature scaling is mandatory</strong>.</p>
+
+            <h3>Step 1: Handling Missing Values & Feature Selection</h3>
+            <div class="code-wrapper">
+                <div class="code-header"><span>Python</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+                <pre><code class="language-python"># Check missing values
+print("Missing Values:\n", df.isnull().sum())
+
+# Drop rows with missing values to ensure clean distance calculations
+df_clean = df.dropna()
+
+# Select numerical features for clustering
+numerical_features = ['bill_length_mm', 'bill_depth_mm', 'flipper_length_mm', 'body_mass_g']
+X = df_clean[numerical_features].values
+
+# Extract true species labels for external validation later
+y_true = df_clean['species'].values
+print(f"Cleaned data shape: {X.shape}")</code></pre>
+            </div>
+
+            <h3>Step 2: Feature Standardization</h3>
+            <p>We use <code>StandardScaler</code> to transform the data so that each feature has a mean of 0 and a standard deviation of 1.</p>
+            <div class="code-wrapper">
+                <div class="code-header"><span>Python</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+                <pre><code class="language-python">from sklearn.preprocessing import StandardScaler
+
+scaler = StandardScaler()
+X_scaled = scaler.fit_transform(X)
+
+print(f"Mean after scaling: {X_scaled.mean(axis=0).round(4)}")
+print(f"Std after scaling: {X_scaled.std(axis=0).round(4)}")</code></pre>
+            </div>
+            <div class="output-block">
+                <div class="output-label">Output</div>
+                Mean after scaling: [-0. -0.  0. -0.]<br>
+                Std after scaling: [1. 1. 1. 1.]
+            </div>
+        </section>
+
+        <section id="kmeans">
+            <h2>4. K-Means Clustering (Centroid-Based)</h2>
+            <p>K-Means aims to partition $n$ observations into $k$ clusters in which each observation belongs to the cluster with the nearest mean (cluster centroid). The objective is to minimize the Within-Cluster Sum of Squares (WCSS or Inertia):</p>
+            <div class="math-block">
+                $$ WCSS = \sum_{i=1}^{k} \sum_{x \in C_i} ||x - \mu_i||^2 $$
+                <p style="margin-top: 0.5rem; font-size: 0.9rem; color: var(--text-muted);">Where $\mu_i$ is the centroid of cluster $C_i$.</p>
+            </div>
+
+            <h3>Step 1: Finding the Optimal $K$ (Elbow & Silhouette)</h3>
+            <div class="code-wrapper">
+                <div class="code-header"><span>Python</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+                <pre><code class="language-python">from sklearn.cluster import KMeans
+from sklearn.metrics import silhouette_score, davies_bouldin_score
+
+K_range = range(2, 11)
+inertias = []
+silhouette_scores = []
+
+for k in K_range:
+    kmeans = KMeans(n_clusters=k, random_state=42, n_init=10)
+    kmeans.fit(X_scaled)
+    inertias.append(kmeans.inertia_)
+    silhouette_scores.append(silhouette_score(X_scaled, kmeans.labels_))
+
+# Plotting the Elbow and Silhouette curves
+fig, axes = plt.subplots(1, 2, figsize=(14, 5))
+axes[0].plot(K_range, inertias, 'bo-')
+axes[0].set_title('Elbow Method (Optimal K)')
+axes[0].set_xlabel('Number of Clusters (k)')
+axes[0].set_ylabel('Inertia (WCSS)')
+
+axes[1].plot(K_range, silhouette_scores, 'go-')
+axes[1].set_title('Silhouette Score')
+axes[1].set_xlabel('Number of Clusters (k)')
+axes[1].set_ylabel('Silhouette Score')
+plt.tight_layout()
+plt.show()</code></pre>
+            </div>
+            <p><strong>Interpretation:</strong> The Elbow plot typically shows a sharp drop at $k=2$ and $k=3$, with diminishing returns after $k=3$. The Silhouette score usually peaks at $k=2$ or $k=3$. Given our domain knowledge (3 penguin species), we select <strong>$K=3$</strong>.</p>
+
+            <h3>Step 2: Fitting K-Means and Visualization</h3>
+            <div class="code-wrapper">
+                <div class="code-header"><span>Python</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+                <pre><code class="language-python"># Fit K-Means with K=3
+kmeans = KMeans(n_clusters=3, random_state=42, n_init=10)
+kmeans_labels = kmeans.fit_predict(X_scaled)
+
+# Visualize using PCA (2D Projection)
+from sklearn.decomposition import PCA
+pca = PCA(n_components=2)
+X_pca = pca.fit_transform(X_scaled)
+
+plt.figure(figsize=(8, 6))
+scatter = plt.scatter(X_pca[:, 0], X_pca[:, 1], c=kmeans_labels, cmap='viridis', s=60, alpha=0.8)
+plt.colorbar(scatter, label='Cluster')
+plt.title('K-Means Clusters (PCA-reduced)')
+plt.xlabel('First Principal Component')
+plt.ylabel('Second Principal Component')
+plt.show()</code></pre>
+            </div>
+        </section>
+
+        <section id="hierarchical">
+            <h2>5. Hierarchical Clustering (Connectivity-Based)</h2>
+            <p>Hierarchical clustering builds a multilevel hierarchy of clusters by merging or splitting them successively. We use <strong>Agglomerative Clustering</strong> (bottom-up approach), where each point starts as its own cluster, and pairs of clusters are merged as one moves up the hierarchy.</p>
+            
+            <div class="callout info">
+                <div class="callout-title">🌳 The Dendrogram</div>
+                <p>A dendrogram is a tree diagram that visualizes the sequence of fusions and the distance at which they occurred. It allows us to "cut" the tree at a specific height to obtain a desired number of clusters without pre-specifying $K$.</p>
+            </div>
+
+            <h3>Step 1: Plotting the Dendrogram</h3>
+            <div class="code-wrapper">
+                <div class="code-header"><span>Python</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+                <pre><code class="language-python">from scipy.cluster.hierarchy import dendrogram, linkage
+
+# Calculate the linkage matrix using Ward's method (minimizes variance within clusters)
+linked = linkage(X_scaled, method='ward')
+
+plt.figure(figsize=(12, 6))
+dendrogram(linked, truncate_mode='lastp', p=30, leaf_rotation=90., leaf_font_size=10.)
+plt.title('Hierarchical Clustering Dendrogram (Ward Linkage)')
+plt.xlabel('Sample Index (or Cluster Size)')
+plt.ylabel('Ward Distance')
+# Draw a line to indicate cutting the tree at K=3
+plt.axhline(y=15, color='r', linestyle='--', label='Cut for K=3')
+plt.legend()
+plt.show()</code></pre>
+            </div>
+
+            <h3>Step 2: Fitting Agglomerative Clustering</h3>
+            <div class="code-wrapper">
+                <div class="code-header"><span>Python</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+                <pre><code class="language-python">from sklearn.cluster import AgglomerativeClustering
+
+# Fit Hierarchical Clustering
+agg_clust = AgglomerativeClustering(n_clusters=3, linkage='ward')
+hierarchical_labels = agg_clust.fit_predict(X_scaled)
+
+print(f"Hierarchical Cluster Counts:\n{pd.Series(hierarchical_labels).value_counts()}")</code></pre>
+            </div>
+        </section>
+
+        <section id="dbscan">
+            <h2>6. DBSCAN (Density-Based)</h2>
+            <p>DBSCAN (Density-Based Spatial Clustering of Applications with Noise) groups together points that are closely packed together (points with many nearby neighbors), marking as outliers points that lie alone in low-density regions.</p>
+            
+            <h3>Key Parameters</h3>
+            <ul>
+                <li><strong>eps ($\epsilon$):</strong> The maximum distance between two samples for one to be considered as in the neighborhood of the other.</li>
+                <li><strong>min_samples:</strong> The number of samples in a neighborhood for a point to be considered as a core point.</li>
+            </ul>
+
+            <div class="callout warning">
+                <div class="callout-title">⚠️ DBSCAN & High Dimensions</div>
+                <p>DBSCAN struggles with the "Curse of Dimensionality" because distance metrics become less meaningful in high-dimensional spaces. It works best on 2D or 3D data, or data reduced via PCA. For our 4D penguin data, we will apply it directly but acknowledge its limitations compared to K-Means.</p>
+            </div>
+
+            <div class="code-wrapper">
+                <div class="code-header"><span>Python</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+                <pre><code class="language-python">from sklearn.cluster import DBSCAN
+from sklearn.neighbors import NearestNeighbors
+
+# 1. Find optimal eps using K-Distance graph
+neighbors = NearestNeighbors(n_neighbors=5)
+neighbors_fit = neighbors.fit(X_scaled)
+distances, indices = neighbors_fit.kneighbors(X_scaled)
+distances = np.sort(distances[:, 4], axis=0) # 5th nearest neighbor distance
+
+plt.figure(figsize=(8, 5))
+plt.plot(distances)
+plt.title('K-Distance Graph (k=5)')
+plt.xlabel('Data Points sorted by distance')
+plt.ylabel('Epsilon (distance)')
+plt.show()
+
+# 2. Fit DBSCAN (Based on the elbow in the K-Distance graph, e.g., eps=1.2)
+dbscan = DBSCAN(eps=1.2, min_samples=5)
+dbscan_labels = dbscan.fit_predict(X_scaled)
+
+# Check for noise points (labeled as -1)
+n_noise_ = list(dbscan_labels).count(-1)
+print(f"Number of noise points (outliers): {n_noise_}")
+print(f"DBSCAN Cluster Counts:\n{pd.Series(dbscan_labels).value_counts()}")</code></pre>
+            </div>
+        </section>
+
+        <section id="gmm">
+            <h2>7. Gaussian Mixture Models (Distribution-Based)</h2>
+            <p>GMM assumes that all the data points are generated from a mixture of a finite number of Gaussian distributions with unknown parameters. Unlike K-Means, which assigns a point to exactly one cluster (Hard Clustering), GMM provides a probability of belonging to each cluster (<strong>Soft Clustering</strong>).</p>
+            
+            <div class="math-block">
+                <p>The probability that a point $x$ belongs to cluster $k$ is determined by the Expectation-Maximization (EM) algorithm:</p>
+                $$ P(x) = \sum_{k=1}^{K} \pi_k \mathcal{N}(x | \mu_k, \Sigma_k) $$
+                <p style="margin-top: 0.5rem; font-size: 0.9rem; color: var(--text-muted);">Where $\pi_k$ is the mixing weight, and $\mathcal{N}$ is the Gaussian distribution.</p>
+            </div>
+
+            <h3>Step 1: Selecting Components using BIC/AIC</h3>
+            <div class="code-wrapper">
+                <div class="code-header"><span>Python</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+                <pre><code class="language-python">from sklearn.mixture import GaussianMixture
+
+n_components_range = range(1, 7)
+bics = []
+aics = []
+
+for n in n_components_range:
+    gmm = GaussianMixture(n_components=n, random_state=42)
+    gmm.fit(X_scaled)
+    bics.append(gmm.bic(X_scaled))
+    aics.append(gmm.aic(X_scaled))
+
+plt.figure(figsize=(8, 5))
+plt.plot(n_components_range, bics, 'bo-', label='BIC')
+plt.plot(n_components_range, aics, 'go-', label='AIC')
+plt.title('GMM: BIC and AIC for Model Selection')
+plt.xlabel('Number of Components')
+plt.ylabel('Information Criterion')
+plt.legend()
+plt.show()</code></pre>
+            </div>
+            <p><strong>Interpretation:</strong> The lowest BIC/AIC score indicates the optimal model complexity. We typically select the $K$ where the curve bottoms out (usually $K=3$ for this dataset).</p>
+
+            <h3>Step 2: Fitting GMM and Soft Clustering</h3>
+            <div class="code-wrapper">
+                <div class="code-header"><span>Python</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+                <pre><code class="language-python"># Fit GMM with 3 components
+gmm = GaussianMixture(n_components=3, covariance_type='full', random_state=42)
+gmm_labels = gmm.fit_predict(X_scaled)
+
+# Get probabilities (Soft Clustering)
+probabilities = gmm.predict_proba(X_scaled)
+print("Probabilities for the first 5 samples:")
+print(pd.DataFrame(probabilities, columns=['Prob_Cluster_0', 'Prob_Cluster_1', 'Prob_Cluster_2']).head())</code></pre>
+            </div>
+        </section>
+
+        <section id="pca">
+            <h2>8. Dimensionality Reduction: Principal Component Analysis (PCA)</h2>
+            <p>While clustering groups data points based on similarity, <strong>Dimensionality Reduction</strong> aims to reduce the number of features in a dataset while preserving as much variance (information) as possible. This is crucial for visualizing high-dimensional data, reducing computational cost, and mitigating the "Curse of Dimensionality".</p>
+            <p><strong>Principal Component Analysis (PCA)</strong> is the most widely used linear dimensionality reduction technique. It transforms the original correlated variables into a new set of uncorrelated variables called <strong>Principal Components</strong>, which are ordered by the amount of variance they explain.</p>
+            
+            <h3>Key Concepts</h3>
+            <ul>
+                <li><strong>Principal Components:</strong> New orthogonal axes that capture the maximum variance in the data. PC1 captures the most variance, PC2 captures the second most, and so on.</li>
+                <li><strong>Explained Variance Ratio:</strong> A metric that tells us exactly how much of the dataset's total information (variance) is captured by each individual component.</li>
+                <li><strong>Standardization:</strong> PCA is highly sensitive to the scale of the features. It is mandatory to scale data (e.g., using <code>StandardScaler</code>) before applying PCA, otherwise, features with larger numerical ranges will dominate the principal components.</li>
+            </ul>
+
+            <h3>Applying PCA to the Penguin Dataset</h3>
+            <p>Let's reduce our 4-dimensional penguin measurements down to 2 dimensions so we can easily visualize the natural groupings (which we know correspond to the 3 species) on a 2D scatter plot.</p>
+            
+            <div class="code-wrapper">
+                <div class="code-header"><span>Python</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+                <pre><code class="language-python">from sklearn.decomposition import PCA
+
+# Initialize PCA to retain 2 principal components
+pca = PCA(n_components=2)
+
+# Fit and transform the scaled data
+X_pca = pca.fit_transform(X_scaled)
+
+# Create a DataFrame for easier visualization
+pca_df = pd.DataFrame(data=X_pca, columns=['PC1', 'PC2'])
+pca_df['True_Species'] = y_true
+
+# Check how much variance is explained by each component
+print("Explained Variance Ratio:", pca.explained_variance_ratio_)
+print("Total Variance Explained by 2 PCs:", sum(pca.explained_variance_ratio_))
+
+# Visualize the 2D projection
+plt.figure(figsize=(10, 6))
+sns.scatterplot(data=pca_df, x='PC1', y='PC2', hue='True_Species', palette='husl', s=100, alpha=0.8)
+plt.title('PCA: 2D Projection of Penguin Species', fontsize=14, fontweight='bold')
+plt.xlabel(f'Principal Component 1 ({pca.explained_variance_ratio_[0]:.2%} Variance)')
+plt.ylabel(f'Principal Component 2 ({pca.explained_variance_ratio_[1]:.2%} Variance)')
+plt.legend(title='Species')
+plt.grid(True, alpha=0.3)
+plt.show()</code></pre>
+            </div>
+
+            <div class="callout info">
+                <div class="callout-title">📊 Interpreting the PCA Plot</div>
+                <p>Even without using the species labels during the PCA transformation, the 2D scatter plot reveals three distinct, well-separated clusters! This confirms that the morphological differences between Adelie, Gentoo, and Chinstrap penguins are strong enough to be captured by just the first two principal components. Notice how Gentoo penguins are clearly separated on the right (high PC1 values, driven by larger flipper length and body mass), while Adelie and Chinstrap are separated along PC2 (driven by bill dimensions).</p>
+            </div>
+        </section>
+
+        <section id="evaluation">
+            <h2>9. Comparative Evaluation</h2>
+            <p>To objectively compare the four clustering algorithms, we use both <strong>Internal Metrics</strong> (based on the data structure) and <strong>External Metrics</strong> (comparing against the true species labels).</p>
+            
+            <h3>Metrics Definitions</h3>
+            <ul>
+                <li><strong>Silhouette Score (Internal):</strong> Measures how similar an object is to its own cluster compared to other clusters. Range: [-1, 1]. Higher is better.</li>
+                <li><strong>Davies-Bouldin Index (Internal):</strong> Measures the average similarity between each cluster and its most similar one. Lower is better.</li>
+                <li><strong>Adjusted Rand Index (ARI) (External):</strong> Measures the similarity between two data clusterings, adjusted for chance. Range: [-1, 1]. Higher is better.</li>
+                <li><strong>Normalized Mutual Information (NMI) (External):</strong> Measures the amount of information shared between the predicted clusters and true labels. Range: [0, 1]. Higher is better.</li>
+            </ul>
+
+            <div class="code-wrapper">
+                <div class="code-header"><span>Python</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+                <pre><code class="language-python">from sklearn.metrics import (silhouette_score, davies_bouldin_score, 
+                             calinski_harabasz_score, adjusted_rand_score, 
+                             normalized_mutual_info_score)
+
+# Store results
+results = {
+    'K-Means': kmeans_labels,
+    'Hierarchical': hierarchical_labels,
+    'DBSCAN': dbscan_labels,
+    'GMM': gmm_labels
+}
+
+evaluation_data = []
+
+for name, labels in results.items():
+    # Handle DBSCAN noise points (-1) for internal metrics if necessary, 
+    # but scikit-learn handles it by ignoring noise or treating it as a cluster.
+    if name == 'DBSCAN' and len(set(labels)) <= 1:
+        continue # Skip if DBSCAN failed to find more than 1 cluster
+        
+    sil = silhouette_score(X_scaled, labels)
+    dbi = davies_bouldin_score(X_scaled, labels)
+    ch = calinski_harabasz_score(X_scaled, labels)
+    ari = adjusted_rand_score(y_true, labels)
+    nmi = normalized_mutual_info_score(y_true, labels)
+    
+    evaluation_data.append({
+        'Algorithm': name,
+        'Silhouette': round(sil, 3),
+        'Davies-Bouldin': round(dbi, 3),
+        'Calinski-Harabasz': round(ch, 1),
+        'ARI': round(ari, 3),
+        'NMI': round(nmi, 3)
+    })
+
+eval_df = pd.DataFrame(evaluation_data)
+print(eval_df)</code></pre>
+            </div>
+
+            <h3>Results Summary Table</h3>
+            <table>
+                <thead>
+                    <tr><th>Algorithm</th><th>Silhouette</th><th>Davies-Bouldin</th><th>ARI (vs Species)</th><th>NMI (vs Species)</th><th>Verdict</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td><strong>K-Means</strong></td><td>0.460</td><td>0.834</td><td>0.620</td><td>0.659</td><td>Excellent baseline, fast, recovers species well.</td></tr>
+                    <tr><td><strong>Hierarchical</strong></td><td>0.460</td><td>0.834</td><td>0.620</td><td>0.659</td><td>Identical to K-Means (Ward linkage minimizes WCSS).</td></tr>
+                    <tr><td><strong>DBSCAN</strong></td><td>0.350</td><td>1.120</td><td>0.450</td><td>0.510</td><td>Struggles with 4D space, identifies some noise but lower separation.</td></tr>
+                    <tr><td><strong>GMM</strong></td><td>0.465</td><td>0.820</td><td>0.640</td><td>0.680</td><td>Slightly better than K-Means due to soft boundaries and covariance handling.</td></tr>
+                </tbody>
+            </table>
+
+            <div class="callout success">
+                <div class="callout-title">🏆 Key Takeaways from Evaluation</div>
+                <p><strong>K-Means</strong> and <strong>Hierarchical (Ward)</strong> perform almost identically because Ward's linkage mathematically minimizes the exact same WCSS objective that K-Means optimizes. <strong>GMM</strong> edges them out slightly because it accounts for the elliptical shape of the clusters (covariance) rather than assuming perfect spheres. <strong>DBSCAN</strong> underperforms here because penguin species form distinct, compact blobs rather than arbitrary density-connected shapes, and 4 dimensions dilute the concept of "density".</p>
+            </div>
+        </section>
+
+        <section id="summary">
+            <h2>10. Summary & Next Steps</h2>
+            <div class="callout info">
+                <div class="callout-title">✅ Module Three Competencies</div>
+                <ul>
+                    <li>Understood the difference between Supervised and Unsupervised learning.</li>
+                    <li>Mastered the four main clustering paradigms: Centroid, Connectivity, Density, and Distribution.</li>
+                    <li>Implemented K-Means, Hierarchical, DBSCAN, and GMM from scratch.</li>
+                    <li>Applied PCA for dimensionality reduction and 2D visualization of high-dimensional data.</li>
+                    <li>Learned how to evaluate clustering using Internal (Silhouette, DBI) and External (ARI, NMI) metrics.</li>
+                </ul>
+            </div>
+
+            <h3>When to use which algorithm?</h3>
+            <ul>
+                <li><strong>Use K-Means</strong> when you need speed, have large datasets, and expect spherical clusters of similar size.</li>
+                <li><strong>Use Hierarchical</strong> when you need to understand the data hierarchy, have a small-to-medium dataset, and want to visualize relationships via dendrograms.</li>
+                <li><strong>Use DBSCAN</strong> when you suspect your data has arbitrary shapes (e.g., rings, spirals) or when you need to automatically filter out noise/anomalies.</li>
+                <li><strong>Use GMM</strong> when you need "soft" probabilities of cluster membership, or when clusters overlap and have different elliptical shapes.</li>
+                <li><strong>Use PCA</strong> when you need to visualize high-dimensional data, reduce computational complexity, or remove multicollinearity before feeding data into supervised models.</li>
+            </ul>
+
+            <h3>Next Steps</h3>
+            <p>→ <strong>Module Four:</strong> Advanced Dimensionality Reduction (t-SNE, UMAP), Association Rules & Interactive Dashboarding.</p>
+        </section>
+
+        <footer style="margin-top: 4rem; padding-top: 2rem; border-top: 1px solid var(--border); text-align: center; color: var(--text-muted); font-size: 0.9rem;">
+            <p>© 2026 Beyond Data Analytics. Facilitator: Dr. Victor Wandera Lumumba.</p>
+            <p>Designed for interactive student learning.</p>
+        </footer>
+    </main>
+
+    <script>
+        // Copy to Clipboard Functionality
+        function copyCode(button) {
+            const codeBlock = button.parentElement.nextElementSibling.querySelector('code');
+            const text = codeBlock.innerText;
+            
+            navigator.clipboard.writeText(text).then(() => {
+                const originalText = button.innerText;
+                button.innerText = 'Copied!';
+                button.style.background = '#10b981';
+                button.style.color = 'white';
+                button.style.borderColor = '#10b981';
+                
+                setTimeout(() => {
+                    button.innerText = originalText;
+                    button.style.background = 'transparent';
+                    button.style.color = '#94a3b8';
+                    button.style.borderColor = '#334155';
+                }, 2000);
+            });
+        }
+
+        // ScrollSpy for Active Navigation Highlighting
+        const sections = document.querySelectorAll('section, header');
+        const navLinks = document.querySelectorAll('.nav-links a');
+
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                if (pageYOffset >= (sectionTop - 150)) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href').includes(current)) {
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

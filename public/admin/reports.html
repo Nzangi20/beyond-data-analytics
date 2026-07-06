@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Platform Reports & Projects - Beyond Data Analytics</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/main.css">
+    <style>
+        .tabs-nav {
+            display: flex;
+            gap: 1rem;
+            border-bottom: 2px solid var(--border);
+            margin-bottom: 1.5rem;
+        }
+        .tab-link {
+            padding: 0.75rem 1.5rem;
+            font-weight: 600;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            color: var(--text-light);
+        }
+        .tab-link.active {
+            border-bottom-color: var(--primary);
+            color: var(--primary);
+        }
+    </style>
+</head>
+<body>
+    <button class="sidebar-toggle" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+    <div class="app-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-auth-links" style="display: flex; justify-content: space-around; padding: 0.75rem 1rem; border-bottom: 1px solid rgba(255,255,255,0.08); font-size: 0.85rem; font-family: 'Outfit', sans-serif; background: rgba(0,0,0,0.15);">
+                <a href="/login.html" style="color: #63b3ed; font-weight: 600; text-decoration: none; display: flex; align-items: center; gap: 0.25rem; transition: opacity 0.2s;" onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'"><i class="fas fa-sign-in-alt"></i> Sign In</a>
+                <span style="color: rgba(255,255,255,0.2);">|</span>
+                <a href="https://forms.gle/iULxMYXieuC4px8p8" target="_blank" style="color: #48bb78; font-weight: 600; text-decoration: none; display: flex; align-items: center; gap: 0.25rem; transition: opacity 0.2s;" onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'"><i class="fas fa-user-plus"></i> Sign Up</a>
+            </div>
+            <div class="sidebar-header"><div class="sidebar-logo"><i class="fas fa-chart-line"></i></div><div class="sidebar-brand"><h2>BDA Admin</h2><p>Management Console</p></div></div>
+            <nav class="sidebar-nav">
+                <div class="nav-section">
+                    <div class="nav-section-title">Main</div>
+                    <a href="/admin/dashboard.html" class="nav-item"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+                    <a href="/admin/users.html" class="nav-item"><i class="fas fa-users"></i> Users</a>
+                    <a href="/admin/content.html" class="nav-item"><i class="fas fa-book-open"></i> Course Content</a>
+                    <a href="/admin/exams.html" class="nav-item"><i class="fas fa-file-signature"></i> Exams & Quizzes</a>
+                </div>
+                <div class="nav-section">
+                    <div class="nav-section-title">Operations</div>
+                    <a href="/admin/news-announcements.html" class="nav-item"><i class="fas fa-bullhorn"></i> News & Bulletins</a>
+                    <a href="/admin/billing.html" class="nav-item"><i class="fas fa-credit-card"></i> Payments & Fees</a>
+                    <a href="/admin/reports.html" class="nav-item active"><i class="fas fa-chart-bar"></i> Reports</a>
+                </div>
+            </nav>
+            <div class="sidebar-footer"><div class="user-info"><div class="user-avatar" id="userAvatar">AD</div><div class="user-details"><h4 id="userName">Administrator</h4><p>System Admin</p></div></div><button class="btn btn-sm btn-outline" style="width:100%;margin-top:1rem;color:rgba(255,255,255,0.7);border-color:rgba(255,255,255,0.2);" onclick="API.logout()"><i class="fas fa-sign-out-alt"></i> Logout</button></div>
+        </aside>
+
+        <main class="main-content">
+            <div class="main-header">
+                <div>
+                    <h1>System Reports</h1>
+                    <p>Track student outcomes and view logs</p>
+                </div>
+            </div>
+
+            <div class="tabs-nav">
+                <div class="tab-link active" onclick="switchPane('exams')">Exam Metrics</div>
+                <div class="tab-link" onclick="switchPane('audit')">Audit logs</div>
+            </div>
+
+            <!-- EXAMS PANE -->
+            <div id="pane-exams" class="pane-content">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Exam Performance Metrics</h3>
+                        <button class="btn btn-sm btn-outline" onclick="exportExams()"><i class="fas fa-file-csv"></i> Export CSV</button>
+                    </div>
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr><th>Exam Title</th><th>Module & Course</th><th>Attempts</th><th>Avg Score</th><th>Passed</th><th>Failed</th><th>Pass Rate</th></tr>
+                            </thead>
+                            <tbody id="examStatsBody">
+                                <tr><td colspan="7" class="empty-state">Loading exam performance data...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- AUDIT PANE -->
+            <div id="pane-audit" class="pane-content" style="display:none;">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Detailed Audit Log</h3>
+                        <button class="btn btn-sm btn-outline" onclick="exportLogs()"><i class="fas fa-file-csv"></i> Export CSV</button>
+                    </div>
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr><th>User</th><th>Action</th><th>details</th><th>IP Address</th><th>Timestamp</th></tr>
+                            </thead>
+                            <tbody id="logsBody">
+                                <tr><td colspan="5" class="empty-state">Loading activity logs...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="/js/api.js"></script>
+    <script>
+        if (!API.requireAuth(['admin'])) throw new Error('Not authorized');
+        const user = API.getUser();
+        if (user) {
+            document.getElementById('userName').textContent = user.fullName || user.username;
+            document.getElementById('userAvatar').textContent = getInitials(user.fullName || user.username);
+        }
+
+        let examStats = [];
+        let activityLogs = [];
+
+        async function init() {
+            await loadReports();
+        }
+
+        function switchPane(pane) {
+            document.querySelectorAll('.pane-content').forEach(el => el.style.display = 'none');
+            document.querySelectorAll('.tab-link').forEach(el => el.classList.remove('active'));
+
+            document.getElementById(`pane-${pane}`).style.display = 'block';
+            event.target.classList.add('active');
+        }
+
+
+        async function loadReports() {
+            try {
+                const examsData = await API.get('/admin/reports/exams');
+                examStats = examsData.examStats;
+                renderExams();
+
+                const logsData = await API.get('/admin/reports/activity');
+                activityLogs = logsData.logs;
+                renderLogs();
+            } catch (err) {
+                showToast('Failed to load reports', 'error');
+            }
+        }
+
+        function renderExams() {
+            const tbody = document.getElementById('examStatsBody');
+            if (examStats.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" class="empty-state">No exam stats logged yet</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = examStats.map(e => {
+                const total = e.passed + e.failed;
+                const passRate = total > 0 ? Math.round((e.passed / total) * 100) : 0;
+                let badgeClass = 'danger';
+                if (passRate >= 70) badgeClass = 'success';
+                else if (passRate >= 50) badgeClass = 'warning';
+
+                return `
+                    <tr>
+                        <td style="font-weight:600;">${escapeHtml(e.exam_title)}</td>
+                        <td>${escapeHtml(e.module_title)} (${escapeHtml(e.tutorial_name)})</td>
+                        <td>${e.total_attempts}</td>
+                        <td><strong style="color:var(--accent);">${e.avg_score !== null ? e.avg_score + '%' : '-'}</strong></td>
+                        <td style="color:var(--green); font-weight:600;">${e.passed}</td>
+                        <td style="color:var(--red); font-weight:600;">${e.failed}</td>
+                        <td><span class="badge badge-${badgeClass}">${passRate}%</span></td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function renderLogs() {
+            const tbody = document.getElementById('logsBody');
+            if (activityLogs.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" class="empty-state">No audit events recorded</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = activityLogs.map(l => `
+                <tr>
+                    <td>
+                        <div style="font-weight:600;">${escapeHtml(l.full_name || 'System')}</div>
+                        <div style="font-size:0.75rem; color:var(--text-muted);">@${escapeHtml(l.username || 'system')}</div>
+                    </td>
+                    <td><span class="badge badge-primary">${escapeHtml(l.action)}</span></td>
+                    <td style="font-size:0.85rem; color:var(--text-light); max-width:300px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${escapeHtml(l.details || '')}">${escapeHtml(l.details || '')}</td>
+                    <td style="font-size:0.85rem; color:var(--text-muted); font-family:monospace;">${escapeHtml(l.ip_address || '-')}</td>
+                    <td style="font-size:0.8rem; color:var(--text-muted);">${formatDateTime(l.created_at)}</td>
+                </tr>
+            `).join('');
+        }
+
+        function convertToCSV(headers, rows) {
+            const csvRows = [];
+            csvRows.push(headers.join(','));
+            for (const row of rows) {
+                const values = row.map(val => {
+                    const migrated = ('' + val).replace(/"/g, '""');
+                    return `"${migrated}"`;
+                });
+                csvRows.push(values.join(','));
+            }
+            return csvRows.join('\n');
+        }
+
+        function downloadCSV(csvContent, filename) {
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.setAttribute('href', url);
+            link.setAttribute('download', filename);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        function exportExams() {
+            const headers = ['Exam Title', 'Module', 'Tutorial', 'Total Attempts', 'Avg Score', 'Passed', 'Failed', 'Pass Rate'];
+            const rows = examStats.map(e => {
+                const total = e.passed + e.failed;
+                const passRate = total > 0 ? Math.round((e.passed / total) * 100) : 0;
+                return [
+                    e.exam_title,
+                    e.module_title,
+                    e.tutorial_name,
+                    e.total_attempts,
+                    e.avg_score || 0,
+                    e.passed,
+                    e.failed,
+                    passRate + '%'
+                ];
+            });
+            const csv = convertToCSV(headers, rows);
+            downloadCSV(csv, 'exam_performance_report.csv');
+        }
+
+        function exportLogs() {
+            const headers = ['User', 'Username', 'Action', 'details', 'IP Address', 'Timestamp'];
+            const rows = activityLogs.map(l => [
+                l.full_name || 'System',
+                l.username || 'system',
+                l.action,
+                l.details || '',
+                l.ip_address || '',
+                l.created_at
+            ]);
+            const csv = convertToCSV(headers, rows);
+            downloadCSV(csv, 'activity_audit_logs.csv');
+        }
+
+        init();
+    </script>
+</body>
+</html>

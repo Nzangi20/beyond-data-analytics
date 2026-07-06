@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Module Two: Machine Learning & Predictive Modeling</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    
+    <!-- KaTeX for Math Rendering -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body);"></script>
+
+    <!-- Prism.js for Syntax Highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --secondary: #64748b;
+            --bg-body: #f8fafc;
+            --bg-card: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --code-bg: #1e293b;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --info: #3b82f6;
+            --error: #ef4444;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            line-height: 1.7;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Navigation */
+        .sidebar {
+            width: 300px;
+            background: var(--bg-card);
+            border-right: 1px solid var(--border);
+            position: fixed;
+            top: 0; left: 0;
+            height: 100vh;
+            overflow-y: auto;
+            padding: 2rem 1.5rem;
+            z-index: 100;
+        }
+        .sidebar-header { margin-bottom: 2rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border); }
+        .sidebar-header h2 { font-size: 1.1rem; font-weight: 700; color: var(--primary); margin-bottom: 0.25rem; }
+        .sidebar-header p { font-size: 0.85rem; color: var(--text-muted); }
+        .nav-links { list-style: none; }
+        .nav-links li { margin-bottom: 0.5rem; }
+        .nav-links a {
+            display: block; padding: 0.5rem 0.75rem; color: var(--text-muted);
+            text-decoration: none; font-size: 0.9rem; border-radius: 6px;
+            transition: all 0.2s; border-left: 3px solid transparent;
+        }
+        .nav-links a:hover, .nav-links a.active {
+            background-color: #eff6ff; color: var(--primary);
+            border-left-color: var(--primary); font-weight: 500;
+        }
+        .nav-links .sub-link { padding-left: 1.5rem; font-size: 0.85rem; }
+
+        /* Main Content */
+        .main-content { margin-left: 300px; flex: 1; padding: 3rem 4rem; max-width: 1100px; }
+
+        /* Typography */
+        h1 { font-size: 2.5rem; font-weight: 800; margin-bottom: 1rem; letter-spacing: -0.025em; }
+        h2 { font-size: 1.75rem; font-weight: 700; margin-top: 3rem; margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 2px solid var(--border); }
+        h3 { font-size: 1.25rem; font-weight: 600; margin-top: 2rem; margin-bottom: 0.75rem; color: var(--primary-dark); }
+        h4 { font-size: 1.1rem; font-weight: 600; margin-top: 1.5rem; margin-bottom: 0.5rem; color: var(--text-main); }
+        p { margin-bottom: 1.25rem; color: #334155; }
+        ul, ol { margin-bottom: 1.25rem; padding-left: 1.5rem; }
+        li { margin-bottom: 0.5rem; }
+
+        /* Callout Boxes */
+        .callout { padding: 1.25rem; border-radius: 8px; margin: 1.5rem 0; border-left: 4px solid; background-color: #f8fafc; }
+        .callout.info { border-color: var(--info); background-color: #eff6ff; }
+        .callout.warning { border-color: var(--warning); background-color: #fffbeb; }
+        .callout.success { border-color: var(--success); background-color: #ecfdf5; }
+        .callout.error { border-color: var(--error); background-color: #fef2f2; }
+        .callout-title { font-weight: 700; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5px; }
+
+        /* Code Blocks */
+        .code-wrapper { position: relative; margin: 1.5rem 0; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
+        .code-header {
+            background-color: #0f172a; color: #94a3b8; padding: 0.5rem 1rem;
+            font-size: 0.8rem; font-family: 'JetBrains Mono', monospace;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .copy-btn {
+            background: transparent; border: 1px solid #334155; color: #94a3b8;
+            padding: 0.25rem 0.75rem; border-radius: 4px; cursor: pointer;
+            font-size: 0.75rem; transition: all 0.2s;
+        }
+        .copy-btn:hover { background: #334155; color: white; }
+        pre { margin: 0 !important; border-radius: 0 0 8px 8px !important; background: var(--code-bg) !important; }
+        code { font-family: 'JetBrains Mono', monospace !important; font-size: 0.9rem !important; }
+
+        /* Tables */
+        table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; background: var(--bg-card); border-radius: 8px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        th, td { padding: 0.75rem 1rem; text-align: left; border-bottom: 1px solid var(--border); }
+        th { background-color: #f1f5f9; font-weight: 600; color: var(--text-main); }
+        tr:last-child td { border-bottom: none; }
+
+        /* Output Block */
+        .output-block {
+            background-color: #f1f5f9; border: 1px solid var(--border); border-left: 4px solid var(--secondary);
+            padding: 1rem; margin-top: -1rem; margin-bottom: 1.5rem; border-radius: 0 0 8px 8px;
+            font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; color: #475569;
+        }
+        .output-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); margin-bottom: 0.5rem; font-weight: 600; }
+
+        /* Math Blocks */
+        .math-block { background: #ffffff; padding: 1.5rem; border-radius: 8px; margin: 1.5rem 0; border: 1px solid var(--border); overflow-x: auto; text-align: center; }
+
+        @media (max-width: 1024px) {
+            .sidebar { transform: translateX(-100%); }
+            .main-content { margin-left: 0; padding: 2rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h2>Module Two</h2>
+            <p>Machine Learning & Predictive Modeling</p>
+            <p style="margin-top: 0.5rem; font-size: 0.75rem;">Facilitator: Dr. Victor Wandera Lumumba</p>
+        </div>
+        <ul class="nav-links">
+            <li><a href="#intro">Introduction & Philosophy</a></li>
+            <li><a href="#ml-basics">1. What is Machine Learning?</a></li>
+            <li><a href="#ml-types" class="sub-link">1.1 Types of ML</a></li>
+            <li><a href="#ml-tasks" class="sub-link">1.2 Major ML Tasks</a></li>
+            <li><a href="#ml-workflow" class="sub-link">1.3 The ML Workflow</a></li>
+            <li><a href="#project-overview">2. Project Overview: AHD Prediction</a></li>
+            <li><a href="#evaluation-metrics" class="sub-link">2.1 Evaluation Metrics</a></li>
+            <li><a href="#stage1">3. Stage 1: Problem Formulation</a></li>
+            <li><a href="#stage2">4. Stage 2: Libraries & Data Import</a></li>
+            <li><a href="#stage3">5. Stage 3: Exploration & Preprocessing</a></li>
+            <li><a href="#stage4">6. Stage 4: Data Partitioning</a></li>
+            <li><a href="#stage5">7. Stage 5: Model Training & Tuning</a></li>
+            <li><a href="#stage6">8. Stage 6: Evaluation & Results</a></li>
+            <li><a href="#stage7">9. Stage 7: Visualization</a></li>
+            <li><a href="#xai">10. Explainable AI (XAI) & SHAP</a></li>
+        </ul>
+    </aside>
+
+    <main class="main-content">
+        <header id="intro">
+            <h1>Module Two: Machine Learning & Predictive Modeling</h1>
+            <p><strong>Building Data Excellence Since 2020</strong><br>
+            Beyond Data Analytics is a premier training organization founded by Dr. Victor Wandera Lumumba, a seasoned Statistician, Data Analyst, and Machine Learning Expert. We are committed to bridging the critical gap between academic knowledge and industry-ready data science skills.</p>
+            
+            <div class="callout info">
+                <div class="callout-title">💡 Our Training Philosophy</div>
+                <p>Our curriculum seamlessly integrates strong theoretical foundations with hands-on practical experience in statistical modeling, machine learning, survival analysis, and explainable AI. We believe that true mastery comes from doing—not just learning. Every concept taught is immediately applied through real-world projects, case studies, and industry scenarios.</p>
+            </div>
+        </header>
+
+        <section id="ml-basics">
+            <h2>1. What is Machine Learning?</h2>
+            <p>Machine Learning (ML) is a branch of Artificial Intelligence (AI) that enables computer systems to learn from data and improve their performance without being explicitly programmed for every possible scenario. Rather than relying solely on predefined rules, ML algorithms identify patterns, relationships, and trends within historical data to make predictions, classifications, and data-driven decisions.</p>
+            
+            <h3>The AI Hierarchy</h3>
+            <ul>
+                <li><strong>Artificial Intelligence (AI):</strong> The broader field concerned with creating systems capable of performing tasks that typically require human intelligence.</li>
+                <li><strong>Machine Learning (ML):</strong> A practical approach to achieving AI by allowing systems to learn directly from data through training.</li>
+                <li><strong>Deep Learning (DL):</strong> A specialized subset of ML using multi-layered artificial neural networks that mimic aspects of human brain functioning.</li>
+            </ul>
+        </section>
+
+        <section id="ml-types">
+            <h2>1.1 Types of Machine Learning</h2>
+            <div class="callout success">
+                <div class="callout-title">🎯 The Four Major Learning Paradigms</div>
+                <ul>
+                    <li><strong>Supervised Learning:</strong> Trained using labeled data (input variables and desired outputs are known). Examples: Logistic Regression, Random Forests, XGBoost.</li>
+                    <li><strong>Unsupervised Learning:</strong> Works with unlabeled data to discover hidden structures or patterns. Examples: K-Means Clustering, PCA.</li>
+                    <li><strong>Semi-Supervised Learning:</strong> Combines a small amount of labeled data with a large amount of unlabeled data.</li>
+                    <li><strong>Reinforcement Learning:</strong> Trains an intelligent agent to make decisions through interaction with an environment via rewards and penalties.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="ml-tasks">
+            <h2>1.2 Major Machine Learning Tasks</h2>
+            <table>
+                <thead>
+                    <tr><th>Task</th><th>Description</th><th>Common Algorithms</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td><strong>Classification</strong></td><td>Predicting categorical outcomes (e.g., Disease vs. No Disease).</td><td>Logistic Regression, SVM, Random Forest</td></tr>
+                    <tr><td><strong>Regression</strong></td><td>Predicting continuous numerical values (e.g., House Prices).</td><td>Linear Regression, Ridge, Lasso</td></tr>
+                    <tr><td><strong>Clustering</strong></td><td>Grouping similar observations without prior labels.</td><td>K-Means, DBSCAN, Hierarchical</td></tr>
+                    <tr><td><strong>Dimensionality Reduction</strong></td><td>Simplifying datasets while preserving essential information.</td><td>PCA, t-SNE, UMAP</td></tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section id="ml-workflow">
+            <h2>1.3 The Machine Learning Workflow</h2>
+            <p>Successful machine learning projects follow a systematic workflow to ensure reliability and reproducibility:</p>
+            <ol>
+                <li><strong>Problem Definition:</strong> Clearly specify the objective (e.g., predict heart disease).</li>
+                <li><strong>Data Collection:</strong> Gather relevant information from databases, surveys, or APIs.</li>
+                <li><strong>Preprocessing:</strong> Handle missing values, encode categoricals, scale features, and treat outliers.</li>
+                <li><strong>Exploratory Data Analysis (EDA):</strong> Understand distributions, identify trends, and examine relationships.</li>
+                <li><strong>Feature Engineering:</strong> Create or transform variables to improve predictive performance.</li>
+                <li><strong>Model Development:</strong> Train algorithms and tune hyperparameters.</li>
+                <li><strong>Evaluation:</strong> Assess using metrics like Accuracy, Recall, ROC-AUC, or RMSE.</li>
+                <li><strong>Deployment & Monitoring:</strong> Deploy via Streamlit/Flask and monitor for concept drift.</li>
+            </ol>
+        </section>
+
+        <section id="project-overview">
+            <h2>2. Project Overview: Atherosclerotic Heart Disease (AHD)</h2>
+            <p>AHD remains a leading cause of cardiovascular mortality worldwide. Early identification of at-risk individuals is critical. This project applies advanced ML techniques to develop predictive models capable of identifying patients with AHD using demographic, clinical, and diagnostic information.</p>
+            
+            <h3>Clinical Significance & Error Costs</h3>
+            <div class="callout error">
+                <div class="callout-title">⚠️ The Cost of False Negatives</div>
+                <p>A <strong>False Negative</strong> occurs when a patient with heart disease is incorrectly classified as healthy. This may result in missed diagnoses, delayed treatment, and potentially life-threatening complications (e.g., myocardial infarction). Therefore, <strong>Recall (Sensitivity)</strong> is heavily prioritized.</p>
+            </div>
+            <div class="callout warning">
+                <div class="callout-title">⚠️ The Cost of False Positives</div>
+                <p>A <strong>False Positive</strong> occurs when a healthy patient is incorrectly classified as having AHD. This leads to unnecessary diagnostic procedures (e.g., angiography), increased healthcare costs, and patient anxiety. <strong>Precision</strong> is emphasized to minimize unwarranted interventions.</p>
+            </div>
+        </section>
+
+        <section id="evaluation-metrics">
+            <h2>2.1 Model Evaluation Strategy</h2>
+            <p>Because this is a clinical prediction problem, evaluating model performance requires more than measuring overall accuracy. We utilize a comprehensive suite of metrics:</p>
+            
+            <div class="math-block">
+                <p><strong>Recall (Sensitivity):</strong> Ability to correctly identify patients who truly have AHD.</p>
+                $$ \text{Recall} = \frac{TP}{TP + FN} $$
+                
+                <p style="margin-top: 1.5rem;"><strong>Precision:</strong> Proportion of predicted AHD cases that actually have the disease.</p>
+                $$ \text{Precision} = \frac{TP}{TP + FP} $$
+                
+                <p style="margin-top: 1.5rem;"><strong>F1-Score:</strong> Harmonic mean of Precision and Recall, crucial for imbalanced datasets.</p>
+                $$ F1 = 2 \times \frac{\text{Precision} \times \text{Recall}}{\text{Precision} + \text{Recall}} $$
+                
+                <p style="margin-top: 1.5rem;"><strong>ROC-AUC:</strong> Area Under the Receiver Operating Characteristic Curve. Measures discrimination ability across all thresholds.</p>
+            </div>
+        </section>
+
+        <section id="stage1">
+            <h2>3. Stage 1: Problem Formulation & Hypotheses</h2>
+            <p>The study is guided by three primary hypotheses:</p>
+            <ol>
+                <li><strong>Algorithm Performance:</strong> Extreme Gradient Boosting (XGBoost) is expected to outperform Random Forest in predictive discrimination (ROC-AUC) due to its gradient optimization framework and regularization capabilities.</li>
+                <li><strong>Key Predictors:</strong> Clinical variables such as Age, Maximum Heart Rate (MaxHR), ST Depression (Oldpeak), Chest Pain Type, Number of Major Vessels (Ca), and Thalassemia Status (Thal) will emerge as the strongest predictors.</li>
+                <li><strong>Imbalance Mitigation:</strong> Dynamic class weighting, stratified cross-validation, and hyperparameter optimization will reduce bias toward the majority class.</li>
+            </ol>
+        </section>
+
+        <section id="stage2">
+            <h2>4. Stage 2: Libraries & Data Importation</h2>
+            <p>The first step involves importing the necessary Python libraries and loading the <code>Heart.csv</code> dataset. We explicitly handle common placeholders for missing information (like <code>"NA"</code>, <code>"?"</code>, and blank cells) by converting them into <code>NaN</code> values.</p>
+
+            <h3>Loading the Required Libraries</h3>
+            <div class="code-wrapper">
+                <div class="code-header"><span>Python</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+                <pre><code class="language-python">import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+import shap
+import time
+import warnings
+
+from sklearn.model_selection import train_test_split, RandomizedSearchCV, StratifiedKFold
+from sklearn.calibration import calibration_curve
+from sklearn.preprocessing import OrdinalEncoder, StandardScaler
+from sklearn.impute import SimpleImputer
+from sklearn.compose import ColumnTransformer
+from sklearn.pipeline import Pipeline
+
+# Models
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.linear_model import LogisticRegression
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.svm import SVC
+from sklearn.naive_bayes import GaussianNB
+from sklearn.tree import DecisionTreeClassifier
+import xgboost as xgb
+
+# Metrics
+from sklearn.metrics import (accuracy_score, precision_score, recall_score, f1_score, 
+                             roc_auc_score, confusion_matrix, precision_recall_curve, auc)
+
+# Fix all randomness for full reproducibility
+SEED = 42
+np.random.seed(SEED)
+warnings.filterwarnings('ignore')</code></pre>
+            </div>
+
+            <h3>Loading the Data</h3>
+            <div class="code-wrapper">
+                <div class="code-header"><span>Python</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+                <pre><code class="language-python">print("Loading dataset with explicit NA handling...")
+# na_values ensures that 'NA', '?', and empty strings are treated as NaN
+df = pd.read_csv('Heart.csv', na_values=['NA', '?', ''])
+print(f"Dataset Shape: {df.shape}")</code></pre>
+            </div>
+            <div class="output-block">
+                <div class="output-label">Output</div>
+                Loading dataset with explicit NA handling...<br>
+                Dataset Shape: (303, 15)
+            </div>
+        </section>
+
+        <section id="stage3">
+            <h2>5. Stage 3: Data Exploration & Preprocessing</h2>
+            <p>Clinical datasets often contain missing values and variables measured on different scales. We build a <strong>pipeline-based preprocessing framework</strong> to ensure transformations are applied systematically and to prevent data leakage.</p>
+
+            <h3>Step 1: Numeric Transformer</h3>
+            <p>For numerical variables, we use <strong>median imputation</strong> (robust to outliers) followed by <strong>standardization</strong> (mean=0, std=1).</p>
+            <div class="code-wrapper">
+                <div class="code-header"><span>Python</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+                <pre><code class="language-python">numeric_transformer = Pipeline(steps=[
+    ('imputer', SimpleImputer(strategy='median')), 
+    ('scaler', StandardScaler())
+])</code></pre>
+            </div>
+
+            <h3>Step 2: Categorical Transformer</h3>
+            <p>For categorical variables, we fill missing values with the <strong>mode</strong> (most frequent) and convert categories into numerical codes using an <code>OrdinalEncoder</code>. We safely assign <code>-1</code> to any unseen categories during transformation.</p>
+            <div class="code-wrapper">
+                <div class="code-header"><span>Python</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+                <pre><code class="language-python">categorical_transformer = Pipeline(steps=[
+    ('imputer', SimpleImputer(strategy='most_frequent')), 
+    ('encoder', OrdinalEncoder(handle_unknown='use_encoded_value', unknown_value=-1))
+])</code></pre>
+            </div>
+
+            <h3>Step 3: Combining with ColumnTransformer</h3>
+            <p>We combine the separate preprocessing steps into a single <code>ColumnTransformer</code>. This applies the numeric pipeline to <code>num_features</code> and the categorical pipeline to <code>cat_features</code>, while dropping any columns not explicitly listed.</p>
+            <div class="code-wrapper">
+                <div class="code-header"><span>Python</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+                <pre><code class="language-python"># Define feature groups explicitly
+num_features = ['Age', 'RestBP', 'Chol', 'MaxHR', 'Oldpeak', 'Ca']
+cat_features = ['Sex', 'ChestPain', 'Fbs', 'RestECG', 'ExAng', 'Slope', 'Thal']
+
+preprocessor = ColumnTransformer(transformers=[
+    ('num', numeric_transformer, num_features), 
+    ('cat', categorical_transformer, cat_features)
+], remainder='drop') 
+
+print("✅ Preprocessing pipeline configured.")</code></pre>
+            </div>
+        </section>
+
+        <section id="stage4">
+            <h2>6. Stage 4: Data Partitioning & Leakage Prevention</h2>
+            <p>We use a <strong>stratified train-test split</strong> to preserve the original distribution of the AHD classes in both subsets. This prevents underrepresentation of disease cases during training.</p>
+            
+            <div class="callout warning">
+                <div class="callout-title">⚠️ Preventing Data Leakage</div>
+                <p>All preprocessing operations (imputation, scaling) are fitted <strong>exclusively within machine learning pipelines</strong> during cross-validation. This ensures the test data remains completely independent and unseen.</p>
+            </div>
+
+            <div class="code-wrapper">
+                <div class="code-header"><span>Python</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+                <pre><code class="language-python"># Separate features (X) and target (y)
+# Drop 'HD' to avoid redundancy and data leakage
+X = df.drop(columns=['AHD', 'HD'])
+y = df['AHD'].map({'No': 0, 'Yes': 1}) # Encode target
+
+# Stratified Split (80% Train, 20% Test)
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.20, random_state=SEED, stratify=y
+)
+
+print(f"Training set: {X_train.shape[0]} | Class dist: {y_train.value_counts().to_dict()}")
+print(f"Testing set:  {X_test.shape[0]} | Class dist: {y_test.value_counts().to_dict()}")</code></pre>
+            </div>
+            <div class="output-block">
+                <div class="output-label">Output</div>
+                Training set: 242 | Class dist: {0: 131, 1: 111}<br>
+                Testing set:  61 | Class dist: {0: 33, 1: 28}
+            </div>
+        </section>
+
+        <section id="stage5">
+            <h2>7. Stage 5: Model Training & Hyperparameter Tuning</h2>
+            <p>We evaluate seven algorithms. To handle class imbalance, we incorporate <code>class_weight='balanced'</code> for scikit-learn models and calculate <code>scale_pos_weight</code> for XGBoost.</p>
+
+            <h3>Initializing Pipelines & Class Weights</h3>
+            <div class="code-wrapper">
+                <div class="code-header"><span>Python</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+                <pre><code class="language-python"># Calculate positive class weight for XGBoost
+pos_weight_train = (y_train == 0).sum() / (y_train == 1).sum()
+
+# Define Pipelines (Preprocessor + Model)
+pipelines = {
+    'Logistic Regression': Pipeline([('pre', preprocessor), ('mdl', LogisticRegression(max_iter=1000, class_weight='balanced'))]),
+    'KNN': Pipeline([('pre', preprocessor), ('mdl', KNeighborsClassifier())]),
+    'SVM': Pipeline([('pre', preprocessor), ('mdl', SVC(probability=True, class_weight='balanced'))]),
+    'Naive Bayes': Pipeline([('pre', preprocessor), ('mdl', GaussianNB())]),
+    'Decision Tree': Pipeline([('pre', preprocessor), ('mdl', DecisionTreeClassifier(class_weight='balanced'))]),
+    'Random Forest': Pipeline([('pre', preprocessor), ('mdl', RandomForestClassifier(n_jobs=-1))]),
+    'XGBoost': Pipeline([('pre', preprocessor), ('mdl', xgb.XGBClassifier(eval_metric='logloss', scale_pos_weight=pos_weight_train))])
+}</code></pre>
+            </div>
+
+            <h3>Hyperparameter Distributions</h3>
+            <p>We define search spaces for <code>RandomizedSearchCV</code> to efficiently explore optimal configurations without exhaustively testing every combination.</p>
+            <div class="code-wrapper">
+                <div class="code-header"><span>Python</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+                <pre><code class="language-python">param_grids = {
+    'Logistic Regression': {'mdl__C': [0.1, 1, 10], 'mdl__solver': ['liblinear', 'saga']},
+    'KNN': {'mdl__n_neighbors': [3, 5, 7, 9], 'mdl__weights': ['uniform', 'distance']},
+    'SVM': {'mdl__C': [0.1, 1, 10], 'mdl__kernel': ['linear', 'rbf']},
+    'Naive Bayes': {'mdl__var_smoothing': [1e-9, 1e-8, 1e-7]},
+    'Decision Tree': {'mdl__max_depth': [None, 5, 10, 15], 'mdl__min_samples_split': [2, 5, 10]},
+    'Random Forest': {'mdl__n_estimators': [100, 200, 300], 'mdl__max_depth': [None, 10, 15]},
+    'XGBoost': {'mdl__n_estimators': [100, 200], 'mdl__max_depth': [3, 4, 5], 'mdl__learning_rate': [0.01, 0.1]}
+}</code></pre>
+            </div>
+
+            <h3>Executing Randomized Search CV</h3>
+            <p>We use 5-Fold Stratified Cross-Validation, optimizing for <strong>ROC-AUC</strong>, which is robust for imbalanced clinical datasets.</p>
+            <div class="code-wrapper">
+                <div class="code-header"><span>Python</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+                <pre><code class="language-python">cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=SEED)
+results = {}
+
+print("⏱️ Starting RandomizedSearchCV (5-Fold Stratified)...")
+for name, pipeline in pipelines.items():
+    search = RandomizedSearchCV(
+        estimator=pipeline, 
+        param_distributions=param_grids[name], 
+        n_iter=15, # Evaluate 15 random combinations
+        cv=cv, scoring='roc_auc', n_jobs=-1, random_state=SEED
+    )
+    search.fit(X_train, y_train)
+    results[name] = search
+    print(f"✅ {name} trained. Best CV ROC-AUC: {search.best_score_:.4f}")</code></pre>
+            </div>
+        </section>
+
+        <section id="stage6">
+            <h2>8. Stage 6: Evaluation & Results</h2>
+            <p>After training, we evaluate the best models on the independent hold-out test set to measure generalization ability.</p>
+
+            <div class="code-wrapper">
+                <div class="code-header"><span>Python</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+                <pre><code class="language-python">eval_metrics = {}
+for name, search in results.items():
+    model = search.best_estimator_
+    y_pred = model.predict(X_test)
+    y_prob = model.predict_proba(X_test)[:, 1]
+    
+    prec, rec, _ = precision_recall_curve(y_test, y_prob)
+    
+    eval_metrics[name] = {
+        'Accuracy': accuracy_score(y_test, y_pred),
+        'Precision': precision_score(y_test, y_pred),
+        'Recall': recall_score(y_test, y_pred),
+        'F1-Score': f1_score(y_test, y_pred),
+        'ROC-AUC': roc_auc_score(y_test, y_prob),
+        'PR-AUC': auc(rec, prec)
+    }
+
+# Display Results as a DataFrame
+results_df = pd.DataFrame(eval_metrics).T.round(4)
+print(results_df)</code></pre>
+            </div>
+
+            <h3>Model Performance Comparison</h3>
+            <table>
+                <thead>
+                    <tr><th>Model</th><th>Accuracy</th><th>Precision</th><th>Recall</th><th>F1-Score</th><th>ROC-AUC</th><th>PR-AUC</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td><strong>Naive Bayes</strong></td><td>0.9180</td><td>0.8485</td><td><strong>1.0000</strong></td><td>0.9180</td><td>0.9524</td><td>0.9218</td></tr>
+                    <tr><td><strong>KNN</strong></td><td>0.9016</td><td>0.8929</td><td>0.8929</td><td>0.8929</td><td><strong>0.9686</strong></td><td><strong>0.9570</strong></td></tr>
+                    <tr><td>Random Forest</td><td>0.9016</td><td>0.8667</td><td>0.9286</td><td>0.8966</td><td>0.9643</td><td>0.9539</td></tr>
+                    <tr><td>XGBoost</td><td>0.9016</td><td>0.8667</td><td>0.9286</td><td>0.8966</td><td>0.9578</td><td>0.9427</td></tr>
+                    <tr><td>SVM</td><td>0.9016</td><td>0.8667</td><td>0.9286</td><td>0.8966</td><td>0.9545</td><td>0.9215</td></tr>
+                    <tr><td>Logistic Reg.</td><td>0.8852</td><td>0.8387</td><td>0.9286</td><td>0.8814</td><td>0.9524</td><td>0.9194</td></tr>
+                    <tr><td>Decision Tree</td><td>0.7869</td><td>0.7778</td><td>0.7500</td><td>0.7636</td><td>0.8387</td><td>0.8374</td></tr>
+                </tbody>
+            </table>
+
+            <div class="callout success">
+                <div class="callout-title">🏆 Clinical Model Ranking & Selection</div>
+                <p><strong>1. Naive Bayes:</strong> Selected for <strong>Clinical Screening</strong>. It achieved perfect Recall (100%), meaning <em>zero</em> missed disease cases (False Negatives = 0). In healthcare, missing a high-risk patient is unacceptable.</p>
+                <p><strong>2. KNN:</strong> Selected for <strong>Risk Stratification</strong>. It achieved the highest ROC-AUC (0.9686) and PR-AUC, indicating superior probability ranking and discrimination.</p>
+                <p><strong>3. Random Forest:</strong> An excellent, robust alternative offering a great balance of sensitivity, precision, and stability.</p>
+            </div>
+        </section>
+
+        <section id="stage7">
+            <h2>9. Stage 7: Visualization</h2>
+            <p>Visualizing model performance helps communicate results effectively to clinical stakeholders.</p>
+
+            <h3>ROC Curves & Precision-Recall Curves</h3>
+            <div class="code-wrapper">
+                <div class="code-header"><span>Python</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+                <pre><code class="language-python">from sklearn.metrics import RocCurveDisplay, PrecisionRecallDisplay
+
+fig, axes = plt.subplots(1, 2, figsize=(14, 6))
+
+# Plot ROC Curves
+for name, res in eval_metrics.items():
+    model = results[name].best_estimator_
+    RocCurveDisplay.from_predictions(y_test, model.predict_proba(X_test)[:, 1], 
+                                     name=name, ax=axes[0])
+axes[0].plot([0, 1], [0, 1], 'k--', label='Random Chance')
+axes[0].set_title('Receiver Operating Characteristic (ROC) Curves')
+
+# Plot Precision-Recall Curves
+for name, res in eval_metrics.items():
+    model = results[name].best_estimator_
+    PrecisionRecallDisplay.from_predictions(y_test, model.predict_proba(X_test)[:, 1], 
+                                            name=name, ax=axes[1])
+axes[1].set_title('Precision-Recall Curves')
+
+plt.tight_layout()
+plt.show()</code></pre>
+            </div>
+
+            <h3>Feature Importance (XGBoost)</h3>
+            <p>Understanding which clinical factors drive predictions is crucial for medical domain alignment.</p>
+            <div class="code-wrapper">
+                <div class="code-header"><span>Python</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+                <pre><code class="language-python"># Extract feature importances from the XGBoost model
+importances = results['XGBoost'].best_estimator_.named_steps['mdl'].feature_importances_
+feature_names = num_features + cat_features
+
+feat_imp = pd.Series(importances, index=feature_names).sort_values(ascending=True)
+
+plt.figure(figsize=(10, 8))
+plt.barh(feat_imp.index, feat_imp.values, color='#2ca02c', edgecolor='black')
+plt.title('Feature Importances (XGBoost - Gain)')
+plt.xlabel('Importance Score')
+plt.grid(axis='x', alpha=0.3)
+plt.tight_layout()
+plt.show()</code></pre>
+            </div>
+            <p><strong>Key Insight:</strong> <code>Thal</code> (Thalassemia stress test) and <code>Ca</code> (Number of major vessels) emerge as the most significant predictors by a wide margin, aligning perfectly with cardiological expertise.</p>
+        </section>
+
+        <section id="xai">
+            <h2>10. Explainable AI (XAI) & SHAP</h2>
+            <p>Explainable Artificial Intelligence (XAI) makes "black-box" models transparent. In healthcare, clinicians must understand <em>why</em> a model flags a patient as high-risk before acting on it. We use <strong>SHAP (SHapley Additive Explanations)</strong>, based on cooperative game theory, to quantify each feature's contribution.</p>
+
+            <div class="callout info">
+                <div class="callout-title">🧠 Why XAI Matters in Healthcare</div>
+                <p>Unlike standard software, ML models can make decisions based on spurious correlations. XAI fosters trust, enables error detection, supports model debugging, and ensures that machine learning augments—rather than replaces—clinical expertise. It is also increasingly required for regulatory compliance (e.g., GDPR's "right to explanation").</p>
+            </div>
+
+            <h3>Step 1: Extracting the Model & Preprocessing Data</h3>
+            <p>To explain a prediction, we must isolate the trained algorithm from the preprocessing steps and apply the exact same transformations to the test data.</p>
+            <div class="code-wrapper">
+                <div class="code-header"><span>Python</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+                <pre><code class="language-python"># 1. Extract the model and preprocessor from the pipeline
+rf_model = results['Random Forest'].best_estimator_.named_steps['mdl']
+preprocessor = results['Random Forest'].best_estimator_.named_steps['pre']
+
+# 2. Transform test data to get clean numerical features
+X_test_trans = preprocessor.transform(X_test)
+feature_names = num_features + cat_features</code></pre>
+            </div>
+
+            <h3>Step 2: Initializing SHAP & Robust Extraction</h3>
+            <p>SHAP outputs can vary depending on the scikit-learn version (sometimes returning a list, sometimes a 3D array). We write a robust extraction block to safely isolate the positive class (Disease = 1).</p>
+            <div class="code-wrapper">
+                <div class="code-header"><span>Python</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+                <pre><code class="language-python"># Initialize the Tree Explainer
+explainer_rf = shap.TreeExplainer(rf_model)
+shap_values_rf = explainer_rf.shap_values(X_test_trans)
+
+# Robust Extraction: Handle both list and 3D array outputs
+if isinstance(shap_values_rf, list):
+    shap_values_pos = shap_values_rf[1]
+    base_value = explainer_rf.expected_value[1]
+elif len(shap_values_rf.shape) == 3:
+    shap_values_pos = shap_values_rf[:, :, 1]
+    base_value = explainer_rf.expected_value[1]
+else:
+    shap_values_pos = shap_values_rf
+    base_value = explainer_rf.expected_value</code></pre>
+            </div>
+
+            <h3>Step 3: Creating the Explanation Object & Waterfall Plot</h3>
+            <p>We select a specific patient (e.g., index 19) and create a SHAP Explanation object to visualize how the model moved from the baseline risk to the final prediction.</p>
+            <div class="code-wrapper">
+                <div class="code-header"><span>Python</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+                <pre><code class="language-python">sample_idx = 19
+
+# Create the Explanation object
+rf_exp = shap.Explanation(
+    values=shap_values_pos[sample_idx],
+    base_values=base_value,
+    data=X_test_trans[sample_idx],
+    feature_names=feature_names
+)
+
+# Plot the waterfall chart
+plt.figure(figsize=(12, 8))
+shap.plots.waterfall(rf_exp, max_display=15)
+plt.title(f"SHAP Waterfall: Why did the model predict Disease for Patient {sample_idx}?")
+plt.show()</code></pre>
+            </div>
+
+            <h3>Interpreting the SHAP Waterfall</h3>
+            <div class="math-block">
+                <p>The waterfall plot is a visual representation of the following equation:</p>
+                $$ f(x) = E[f(x)] + \sum_{i=1}^{n} \phi_i $$
+                <p style="margin-top: 1rem; text-align: left;">Where:</p>
+                <ul style="text-align: left;">
+                    <li><strong>$E[f(x)]$ (Base Value):</strong> The average predicted probability across the entire training dataset (e.g., 50.3%).</li>
+                    <li><strong>$\phi_i$ (SHAP Values):</strong> The contribution of each feature. <span style="color: #ef4444; font-weight: bold;">Red bars</span> push the prediction higher (increasing risk), while <span style="color: #3b82f6; font-weight: bold;">Blue bars</span> push it lower (decreasing risk).</li>
+                    <li><strong>$f(x)$ (Final Output):</strong> The final predicted probability for the specific patient (e.g., 91.3%).</li>
+                </ul>
+            </div>
+
+            <div class="callout success">
+                <div class="callout-title">💡 Teaching Analogy: The Courtroom</div>
+                <p>If you are explaining this to your class, you can use a "Courtroom" analogy:</p>
+                <ul>
+                    <li><strong>$E[f(x)]$</strong> is the starting assumption based on general population statistics (e.g., "In this hospital, about half the patients we test have heart disease, so we start with a 50/50 assumption").</li>
+                    <li><strong>The Red and Blue Bars</strong> are the specific pieces of evidence presented for this patient (e.g., "The fluoroscopy shows 3 blocked vessels, which strongly points to disease; however, their cholesterol is normal, which points away from it").</li>
+                    <li><strong>$f(x)$</strong> is the final verdict after all the evidence has been weighed (e.g., "Based on the heavy evidence of blocked vessels, we are now 91.3% certain this patient has the disease").</li>
+                </ul>
+            </div>
+        </section>
+
+        <footer style="margin-top: 4rem; padding-top: 2rem; border-top: 1px solid var(--border); text-align: center; color: var(--text-muted); font-size: 0.9rem;">
+            <p>© 2026 Beyond Data Analytics. Facilitator: Dr. Victor Wandera Lumumba.</p>
+            <p>Designed for interactive student learning.</p>
+        </footer>
+    </main>
+
+    <script>
+        // Copy to Clipboard Functionality
+        function copyCode(button) {
+            const codeBlock = button.parentElement.nextElementSibling.querySelector('code');
+            const text = codeBlock.innerText;
+            
+            navigator.clipboard.write

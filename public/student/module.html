@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Module Content - Beyond Data Analytics</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/main.css">
+    
+    <!-- KaTeX for Math Rendering -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+
+    <!-- Prism.js for Syntax Highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+
+    <style>
+        /* Scoped Study Notes Styles */
+        #notesContainer {
+            line-height: 1.7;
+            font-size: 1.05rem;
+            color: var(--text);
+        }
+        #notesContainer h1, #notesContainer h2, #notesContainer h3, #notesContainer h4 {
+            color: var(--text-main);
+            margin-top: 1.75rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+        #notesContainer h1 { font-size: 2rem; border-bottom: 2px solid var(--border); padding-bottom: 0.5rem; }
+        #notesContainer h2 { font-size: 1.5rem; border-bottom: 1px solid var(--border); padding-bottom: 0.3rem; }
+        #notesContainer h3 { font-size: 1.25rem; }
+        #notesContainer p { margin-bottom: 1.25rem; }
+        
+        #notesContainer .callout {
+            padding: 1.25rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+            border-left: 4px solid;
+            background-color: #f8fafc;
+        }
+        #notesContainer .callout.info {
+            border-color: #3b82f6;
+            background-color: #eff6ff;
+        }
+        #notesContainer .callout.warning {
+            border-color: #f59e0b;
+            background-color: #fffbeb;
+        }
+        #notesContainer .callout.success {
+            border-color: #10b981;
+            background-color: #ecfdf5;
+        }
+        #notesContainer .callout-title {
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-main);
+        }
+        #notesContainer .code-wrapper {
+            position: relative;
+            margin: 1.5rem 0;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        #notesContainer .code-header {
+            background-color: #0f172a;
+            color: #94a3b8;
+            padding: 0.5rem 1rem;
+            font-size: 0.8rem;
+            font-family: 'JetBrains Mono', monospace;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        #notesContainer .copy-btn {
+            background: transparent;
+            border: 1px solid #334155;
+            color: #94a3b8;
+            padding: 0.25rem 0.75rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.75rem;
+            transition: all 0.2s;
+        }
+        #notesContainer .copy-btn:hover {
+            background: #334155;
+            color: white;
+        }
+        #notesContainer pre {
+            margin: 0 !important;
+            border-radius: 0 0 8px 8px !important;
+        }
+        #notesContainer code {
+            font-family: 'JetBrains Mono', monospace !important;
+            font-size: 0.9rem !important;
+        }
+        #notesContainer table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            background: var(--bg-card);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        #notesContainer th, #notesContainer td {
+            padding: 0.75rem 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+        #notesContainer th {
+            background-color: #f1f5f9;
+            font-weight: 600;
+            color: var(--text-main);
+        }
+        #notesContainer tr:last-child td {
+            border-bottom: none;
+        }
+        #notesContainer .output-block {
+            background-color: #f1f5f9;
+            border: 1px solid var(--border);
+            border-left: 4px solid var(--accent);
+            padding: 1rem;
+            margin-top: -1rem;
+            margin-bottom: 1.5rem;
+            border-radius: 0 0 8px 8px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: #475569;
+        }
+        #notesContainer .output-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+        #notesContainer .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+        #notesContainer .summary-card {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            border: 1px solid var(--border);
+            transition: transform 0.2s, box-shadow 0.2s;
+            position: relative;
+            overflow: hidden;
+        }
+        #notesContainer .summary-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+        }
+        #notesContainer .summary-card.week1::before { background: #10b981; }
+        #notesContainer .summary-card.week2::before { background: #3b82f6; }
+        #notesContainer .summary-card.week3::before { background: #8b5cf6; }
+        #notesContainer .summary-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.08);
+        }
+        #notesContainer .summary-card .card-header {
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.5rem;
+        }
+        #notesContainer .summary-card.week1 .card-header { color: #10b981; }
+        #notesContainer .summary-card.week2 .card-header { color: #3b82f6; }
+        #notesContainer .summary-card.week3 .card-header { color: #8b5cf6; }
+        #notesContainer .summary-card h3 {
+            font-size: 1.15rem;
+            margin-top: 0;
+            margin-bottom: 1rem;
+            color: var(--text-main);
+        }
+        #notesContainer .summary-card ul {
+            padding-left: 1.2rem;
+            margin: 0;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            line-height: 1.7;
+        }
+        #notesContainer .competencies-section {
+            margin-top: 3rem;
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            padding: 2rem;
+            border-radius: 12px;
+            border: 1px solid #bae6fd;
+        }
+        #notesContainer .competencies-section h3 {
+            margin-top: 0;
+            color: #0369a1;
+            font-size: 1.3rem;
+        }
+        #notesContainer .competency-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        #notesContainer .competency-item {
+            background: white;
+            padding: 1rem 1.25rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            color: var(--text-main);
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+            border-left: 4px solid #3b82f6;
+            line-height: 1.5;
+        }
+        #notesContainer .next-steps-section {
+            margin-top: 3rem;
+        }
+        #notesContainer .next-steps-section h3 {
+            color: var(--text-main);
+            font-size: 1.3rem;
+        }
+        #notesContainer .next-steps-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        #notesContainer .step-card {
+            background: var(--bg-card);
+            border: 2px dashed var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.2s;
+        }
+        #notesContainer .step-card:hover {
+            border-color: var(--primary);
+            background: #eff6ff;
+            transform: scale(1.02);
+        }
+        #notesContainer .step-label {
+            display: inline-block;
+            background: var(--primary);
+            color: white;
+            font-size: 0.8rem;
+            font-weight: 700;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            margin-bottom: 0.75rem;
+        }
+        #notesContainer .step-card p {
+            margin: 0;
+            font-size: 0.95rem;
+            color: var(--text-main);
+            font-weight: 500;
+        }
+
+        .tabs-header { display: flex; border-bottom: 2px solid var(--border); margin-bottom: 1.5rem; gap: 0.5rem; overflow-x: auto; }
+        .tab-btn { padding: 1rem 1.5rem; border: none; background: transparent; cursor: pointer; font-weight: 600; font-size: 0.95rem; color: var(--text-light); border-bottom: 3px solid transparent; transition: var(--transition); white-space: nowrap; display: flex; align-items: center; gap: 0.5rem; }
+        .tab-btn:hover { color: var(--primary); }
+        .tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+        .tab-content { display: none; animation: fadeIn 0.4s ease; }
+        .tab-content.active { display: block; }
+        .material-item { display: flex; align-items: center; gap: 1rem; padding: 1rem; border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 1rem; transition: var(--transition); }
+        .material-item:hover { box-shadow: var(--shadow-sm); border-color: var(--accent-light); }
+        .material-icon { width: 40px; height: 40px; border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; font-size: 1.2rem; flex-shrink: 0; }
+        .material-info { flex: 1; }
+        .video-container { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%; background: #000; border-radius: var(--radius-lg); margin-bottom: 1.5rem; }
+        .video-container video { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
+    </style>
+</head>
+<body>
+    <button class="sidebar-toggle" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+    <div class="app-layout">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-auth-links" style="display: flex; justify-content: space-around; padding: 0.75rem 1rem; border-bottom: 1px solid rgba(255,255,255,0.08); font-size: 0.85rem; font-family: 'Outfit', sans-serif; background: rgba(0,0,0,0.15);">
+                <a href="/login.html" style="color: #63b3ed; font-weight: 600; text-decoration: none; display: flex; align-items: center; gap: 0.25rem; transition: opacity 0.2s;" onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'"><i class="fas fa-sign-in-alt"></i> Sign In</a>
+                <span style="color: rgba(255,255,255,0.2);">|</span>
+                <a href="https://forms.gle/iULxMYXieuC4px8p8" target="_blank" style="color: #48bb78; font-weight: 600; text-decoration: none; display: flex; align-items: center; gap: 0.25rem; transition: opacity 0.2s;" onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'"><i class="fas fa-user-plus"></i> Sign Up</a>
+            </div>
+            <div class="sidebar-header"><div class="sidebar-logo"><i class="fas fa-chart-line"></i></div><div class="sidebar-brand"><h2>BDA Platform</h2><p>Learning Portal</p></div></div>
+            <nav class="sidebar-nav">
+                <div class="nav-section"><div class="nav-section-title">Main</div><a href="/student/dashboard.html" class="nav-item"><i class="fas fa-tachometer-alt"></i> Dashboard</a><a href="/student/tutorials.html" class="nav-item active"><i class="fas fa-book-open"></i> My Tutorials</a><a href="/student/certificates.html" class="nav-item"><i class="fas fa-certificate"></i> Certificates</a></div>
+                <div class="nav-section"><div class="nav-section-title">Other</div><a href="/" class="nav-item"><i class="fas fa-globe"></i> Website</a></div>
+            </nav>
+            <div class="sidebar-footer"><div class="user-info"><div class="user-avatar" id="userAvatar">ST</div><div class="user-details"><h4 id="userName">Student</h4><p>Student</p></div></div><button class="btn btn-sm btn-outline" style="width:100%;margin-top:1rem;color:rgba(255,255,255,0.7);border-color:rgba(255,255,255,0.2);" onclick="API.logout()"><i class="fas fa-sign-out-alt"></i> Logout</button></div>
+        </aside>
+
+        <main class="main-content">
+            <div class="main-header">
+                <div>
+                    <button class="btn btn-sm btn-outline" id="backBtn" style="margin-bottom:1rem;"><i class="fas fa-arrow-left"></i> Back to Course</button>
+                    <h1 id="moduleTitle">Module Title</h1>
+                    <p id="tutName">Tutorial Name</p>
+                </div>
+            </div>
+
+            <!-- Tabs -->
+            <div class="tabs-header">
+                <button class="tab-btn active" onclick="switchTab('notesTab', this)"><i class="fas fa-sticky-note"></i> Study Notes</button>
+                <button class="tab-btn" onclick="switchTab('videosTab', this)"><i class="fas fa-video"></i> Video Tutorials</button>
+                <button class="tab-btn" onclick="switchTab('exercisesTab', this)"><i class="fas fa-code"></i> Exercises</button>
+                <button class="tab-btn" onclick="switchTab('materialsTab', this)"><i class="fas fa-file-pdf"></i> Reference Materials</button>
+                <button class="tab-btn" onclick="switchTab('examTab', this)" style="color:var(--red);"><i class="fas fa-file-signature"></i> Module Exam</button>
+            </div>
+
+            <!-- Tab Contents -->
+            <div class="card">
+                <div class="card-body">
+                    <!-- Study Notes -->
+                    <div id="notesTab" class="tab-content active">
+                        <div id="notesContainer"></div>
+                    </div>
+
+                    <!-- Videos -->
+                    <div id="videosTab" class="tab-content">
+                        <div id="videosContainer"></div>
+                    </div>
+
+                    <!-- Exercises -->
+                    <div id="exercisesTab" class="tab-content">
+                        <div id="exercisesContainer"></div>
+                    </div>
+
+                    <!-- Reference Materials -->
+                    <div id="materialsTab" class="tab-content">
+                        <div id="materialsContainer"></div>
+                    </div>
+
+                    <!-- Module Exam -->
+                    <div id="examTab" class="tab-content" style="text-align:center; padding:2rem 0;">
+                        <i class="fas fa-file-signature" style="font-size:4rem; color:var(--red); margin-bottom:1rem;"></i>
+                        <h2 style="margin-bottom:0.5rem;" id="examTitle">Module Quiz / Exam</h2>
+                        <p style="max-width:600px; margin:0 auto 1.5rem; color:var(--text-light);" id="examDesc">
+                            Please ensure you are in a quiet environment, have a stable internet connection, and are ready. Entering the exam will enforce fullscreen mode and anti-cheating monitoring.
+                        </p>
+                        <div style="display:inline-flex; gap:2rem; margin-bottom:2rem;" id="examStats">
+                            <div><strong>Time Limit:</strong> <span id="timeLimit">60</span> minutes</div>
+                            <div><strong>Pass Threshold:</strong> 70%</div>
+                        </div>
+                        <div id="examAction">
+                            <button class="btn btn-lg btn-danger" onclick="startExam()"><i class="fas fa-play"></i> Start Exam Now</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="/js/api.js"></script>
+    <script>
+        function copyCode(btn) {
+            const wrapper = btn.closest('.code-wrapper');
+            if (!wrapper) return;
+            const pre = wrapper.querySelector('pre');
+            if (!pre) return;
+            const code = pre.querySelector('code') || pre;
+            navigator.clipboard.writeText(code.innerText).then(() => {
+                const originalText = btn.textContent;
+                btn.textContent = 'Copied!';
+                setTimeout(() => { btn.textContent = originalText; }, 2000);
+            }).catch(() => {
+                alert('Failed to copy code');
+            });
+        }
+
+        if (!API.requireAuth(['student'])) throw new Error('Not authorized');
+        const user = API.getUser();
+        if (user) {
+            document.getElementById('userName').textContent = user.fullName || user.username;
+            document.getElementById('userAvatar').textContent = getInitials(user.fullName || user.username);
+        }
+
+        const params = new URLSearchParams(window.location.search);
+        const moduleId = params.get('id');
+        let currentExam = null;
+        let moduleData = null;
+
+        async function loadContent() {
+            if (!moduleId) { window.location.href = '/student/tutorials.html'; return; }
+            try {
+                const data = await API.get(`/student/modules/${moduleId}/content`);
+                moduleData = data;
+                
+                document.getElementById('moduleTitle').textContent = `Module ${data.module.module_number}: ${data.module.title}`;
+                document.getElementById('tutName').textContent = data.module.tutorial_name;
+                document.getElementById('backBtn').onclick = () => { window.location.href = `/student/tutorials.html?slug=${data.module.tutorial_slug}`; };
+
+                // Render notes
+                const notesContainer = document.getElementById('notesContainer');
+                if (data.content.notes.length === 0) {
+                    notesContainer.innerHTML = '<div class="empty-state"><i class="fas fa-sticky-note"></i><h3>No study notes uploaded yet</h3></div>';
+                } else {
+                    notesContainer.innerHTML = data.content.notes.map(n => {
+                        if (n.file_path) {
+                            return `
+                                <div style="margin-bottom:2rem; padding:2.5rem; text-align:center; border:1px solid var(--border); border-radius:var(--radius); background:var(--bg-card); box-shadow:var(--shadow-sm);">
+                                    <div style="font-size:3.5rem; color:#e34c26; margin-bottom:1rem;"><i class="fab fa-html5"></i></div>
+                                    <h3 style="margin-bottom:0.5rem;">${escapeHtml(n.title)}</h3>
+                                    <p style="color:var(--text-light); margin-bottom:1.5rem; font-size:1rem;">This module features interactive study notes. Open them in a new tab to view the full layout, interactive sidebar navigation, code samples, and descriptive explanations.</p>
+                                    <a href="${n.file_path}" target="_blank" class="btn btn-primary" style="display:inline-flex; align-items:center; gap:0.5rem; padding:0.75rem 1.5rem; text-decoration:none;">
+                                        <i class="fas fa-external-link-alt"></i> Open Study Notes in New Tab
+                                    </a>
+                                </div>
+                            `;
+                        }
+                        const isHtml = n.content_text && n.content_text.trim().startsWith('<');
+                        const notesHtml = isHtml ? n.content_text : `<div style="white-space:pre-line; color:var(--text);">${escapeHtml(n.content_text || '')}</div>`;
+                        return `
+                            <div style="margin-bottom:2rem; padding-bottom:1.5rem;">
+                                <h3 style="border-bottom:1px solid var(--border); padding-bottom:0.5rem; margin-bottom:1.5rem;">${escapeHtml(n.title)}</h3>
+                                ${notesHtml}
+                            </div>
+                        `;
+                    }).join('');
+
+                    // Trigger syntax highlighting
+                    if (window.Prism) {
+                        Prism.highlightAllUnder(notesContainer);
+                    }
+                    // Trigger KaTeX math rendering
+                    if (window.renderMathInElement) {
+                        renderMathInElement(notesContainer, {
+                            delimiters: [
+                                {left: '$$', right: '$$', display: true},
+                                {left: '$', right: '$', display: false},
+                                {left: '\\(', right: '\\)', display: false},
+                                {left: '\\[', right: '\\]', display: true}
+                            ],
+                            throwOnError: false
+                        });
+                    }
+                }
+
+                // Render videos
+                const videosContainer = document.getElementById('videosContainer');
+                if (data.content.videos.length === 0) {
+                    videosContainer.innerHTML = '<div class="empty-state"><i class="fas fa-video"></i><h3>No video lectures uploaded yet</h3></div>';
+                } else {
+                    videosContainer.innerHTML = data.content.videos.map(v => `
+                        <div style="margin-bottom:2.5rem; max-width:800px; margin-left:auto; margin-right:auto;">
+                            <h3>${escapeHtml(v.title)}</h3>
+                            <div class="video-container" style="margin-top:1rem;">
+                                <video controls controlsList="nodownload">
+                                    <source src="${v.file_path}" type="video/mp4">
+                                    Your browser does not support the video tag.
+                                </video>
+                            </div>
+                        </div>
+                    `).join('');
+                }
+
+                // Render exercises
+                const exercisesContainer = document.getElementById('exercisesContainer');
+                if (data.content.exercises.length === 0) {
+                    exercisesContainer.innerHTML = '<div class="empty-state"><i class="fas fa-code"></i><h3>No practical exercises uploaded yet</h3></div>';
+                } else {
+                    exercisesContainer.innerHTML = data.content.exercises.map(e => `
+                        <div style="margin-bottom:2rem; border-bottom:1px solid var(--border); padding-bottom:1.5rem;">
+                            <h3>${escapeHtml(e.title)}</h3>
+                            <div style="margin-top:1rem; white-space:pre-line; background:var(--bg-dark); padding:1rem; border-radius:var(--radius); font-family:monospace;">${escapeHtml(e.content_text || '')}</div>
+                            ${e.file_path ? `<button onclick="viewDocument('${e.file_path}', '${escapeHtml(e.title)}')" class="btn btn-sm btn-primary" style="margin-top:1rem;"><i class="fas fa-eye"></i> View Exercise Starter File</button>` : ''}
+                        </div>
+                    `).join('');
+                }
+
+                // Render reference materials
+                const materialsContainer = document.getElementById('materialsContainer');
+                if (data.content.materials.length === 0) {
+                    materialsContainer.innerHTML = '<div class="empty-state"><i class="fas fa-file-pdf"></i><h3>No reference materials uploaded yet</h3></div>';
+                } else {
+                    materialsContainer.innerHTML = data.content.materials.map(m => `
+                        <div class="material-item">
+                            <div class="material-icon" style="background:rgba(214,158,46,0.1); color:var(--golden);"><i class="fas fa-file-pdf"></i></div>
+                            <div class="material-info">
+                                <h4 style="margin:0;">${escapeHtml(m.title)}</h4>
+                                <span style="font-size:0.8rem; color:var(--text-muted);">${escapeHtml(m.file_name || 'PDF Document')}</span>
+                            </div>
+                            <button onclick="viewDocument('${m.file_path}', '${escapeHtml(m.title)}')" class="btn btn-sm btn-outline"><i class="fas fa-eye"></i> View Document</button>
+                        </div>
+                    `).join('');
+                }
+
+                // Exam Configuration
+                if (data.exam) {
+                    currentExam = data.exam;
+                    document.getElementById('examTitle').textContent = data.exam.title;
+                    document.getElementById('timeLimit').textContent = data.exam.time_limit;
+                    document.getElementById('examStats').style.display = 'inline-flex';
+                    
+                    if (data.progress.status === 'completed') {
+                        document.getElementById('examAction').innerHTML = `
+                            <div class="alert alert-success" style="display:inline-flex; align-items:center; gap:0.5rem; margin-bottom:1rem;">
+                                <i class="fas fa-check-circle"></i> Passed with ${data.progress.score}% score!
+                            </div><br/>
+                            <button class="btn btn-outline" onclick="startExam()"><i class="fas fa-redo"></i> Retake Exam</button>
+                        `;
+                    } else if (data.progress.status === 'failed') {
+                        document.getElementById('examAction').innerHTML = `
+                            <div class="alert alert-danger" style="display:inline-flex; align-items:center; gap:0.5rem; margin-bottom:1rem;">
+                                <i class="fas fa-times-circle"></i> Previous attempt failed (${data.progress.score}% score). You need at least 70% to pass.
+                            </div><br/>
+                            <button class="btn btn-lg btn-danger" onclick="startExam()"><i class="fas fa-redo"></i> Try Again</button>
+                        `;
+                    } else {
+                        document.getElementById('examAction').innerHTML = `
+                            <button class="btn btn-lg btn-danger" onclick="startExam()"><i class="fas fa-play"></i> Start Exam Now</button>
+                        `;
+                    }
+                } else {
+                    document.getElementById('examTitle').textContent = 'Exam Not Available';
+                    document.getElementById('examDesc').textContent = 'The examination for this module is not yet published by the administrator.';
+                    document.getElementById('examStats').style.display = 'none';
+                    document.getElementById('examAction').innerHTML = `<button class="btn btn-outline" disabled>Exam Unavailable</button>`;
+                }
+
+            } catch (err) {
+                showToast(err.error || 'Failed to load module details', 'error');
+            }
+        }
+
+        function switchTab(tabId, btn) {
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            btn.classList.add('active');
+        }
+
+        function startExam() {
+            if (!currentExam) return;
+            if (currentExam.file_path) {
+                if (confirm('Are you ready to start the interactive assessment? It will open in a new browser tab.')) {
+                    window.open(currentExam.file_path, '_blank');
+                }
+            } else {
+                if (confirm('Are you ready to start the exam? Close all other tabs/windows. Exiting fullscreen or shifting window focus will be flagged as cheating.')) {
+                    window.location.href = `/student/exam.html?id=${currentExam.id}`;
+                }
+            }
+        }
+
+        function viewDocument(url, title) {
+            if (url.toLowerCase().endsWith('.html') || !url.toLowerCase().endsWith('.pdf')) {
+                window.open(url, '_blank');
+                return;
+            }
+            const frame = document.getElementById('docViewerFrame');
+            const modal = document.getElementById('docViewerModal');
+            document.getElementById('docViewerTitle').textContent = title || 'Document Viewer';
+            let viewerUrl = url;
+            if (url.toLowerCase().endsWith('.pdf')) {
+                viewerUrl = url + '#toolbar=0';
+            }
+            frame.src = viewerUrl;
+            modal.classList.add('active');
+        }
+
+        function closeDocViewer() {
+            const frame = document.getElementById('docViewerFrame');
+            const modal = document.getElementById('docViewerModal');
+            frame.src = '';
+            modal.classList.remove('active');
+        }
+
+        loadContent();
+    </script>
+
+    <!-- Document Viewer Modal -->
+    <div class="modal-overlay" id="docViewerModal" style="z-index: 9999;">
+        <div class="modal" style="max-width: 90%; width: 1000px; height: 85vh; display: flex; flex-direction: column;">
+            <div class="modal-header">
+                <h3 id="docViewerTitle">Document Viewer</h3>
+                <button class="btn btn-icon btn-outline" onclick="closeDocViewer()"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body" style="flex: 1; padding: 0; overflow: hidden; position: relative;">
+                <iframe id="docViewerFrame" src="" style="width: 100%; height: 100%; border: none;" allow="autoplay"></iframe>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

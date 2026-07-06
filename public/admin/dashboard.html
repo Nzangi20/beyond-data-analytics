@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Beyond Data Analytics</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/main.css">
+</head>
+<body>
+    <button class="sidebar-toggle" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+    <div class="app-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-auth-links" style="display: flex; justify-content: space-around; padding: 0.75rem 1rem; border-bottom: 1px solid rgba(255,255,255,0.08); font-size: 0.85rem; font-family: 'Outfit', sans-serif; background: rgba(0,0,0,0.15);">
+                <a href="/login.html" style="color: #63b3ed; font-weight: 600; text-decoration: none; display: flex; align-items: center; gap: 0.25rem; transition: opacity 0.2s;" onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'"><i class="fas fa-sign-in-alt"></i> Sign In</a>
+                <span style="color: rgba(255,255,255,0.2);">|</span>
+                <a href="https://forms.gle/iULxMYXieuC4px8p8" target="_blank" style="color: #48bb78; font-weight: 600; text-decoration: none; display: flex; align-items: center; gap: 0.25rem; transition: opacity 0.2s;" onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'"><i class="fas fa-user-plus"></i> Sign Up</a>
+            </div>
+            <div class="sidebar-header"><div class="sidebar-logo"><i class="fas fa-chart-line"></i></div><div class="sidebar-brand"><h2>BDA Admin</h2><p>Management Console</p></div></div>
+            <nav class="sidebar-nav">
+                <div class="nav-section">
+                    <div class="nav-section-title">Main</div>
+                    <a href="/admin/dashboard.html" class="nav-item active"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+                    <a href="/admin/users.html" class="nav-item"><i class="fas fa-users"></i> Users</a>
+                    <a href="/admin/content.html" class="nav-item"><i class="fas fa-book-open"></i> Course Content</a>
+                    <a href="/admin/exams.html" class="nav-item"><i class="fas fa-file-signature"></i> Exams & Quizzes</a>
+                </div>
+                <div class="nav-section">
+                    <div class="nav-section-title">Operations</div>
+                    <a href="/admin/news-announcements.html" class="nav-item"><i class="fas fa-bullhorn"></i> News & Bulletins</a>
+                    <a href="/admin/billing.html" class="nav-item"><i class="fas fa-credit-card"></i> Payments & Fees</a>
+                    <a href="/admin/reports.html" class="nav-item"><i class="fas fa-chart-bar"></i> Reports</a>
+                </div>
+            </nav>
+            <div class="sidebar-footer"><div class="user-info"><div class="user-avatar" id="userAvatar">AD</div><div class="user-details"><h4 id="userName">Administrator</h4><p>System Admin</p></div></div><button class="btn btn-sm btn-outline" style="width:100%;margin-top:1rem;color:rgba(255,255,255,0.7);border-color:rgba(255,255,255,0.2);" onclick="API.logout()"><i class="fas fa-sign-out-alt"></i> Logout</button></div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="main-header">
+                <div>
+                    <h1><i class="fas fa-chart-pie" style="color:var(--accent);margin-right:0.5rem;"></i> Administration Central</h1>
+                    <p>Overview of student activity and platform financials</p>
+                </div>
+                <div style="display:flex; gap:0.5rem;">
+                    <button class="btn btn-outline" onclick="location.href='/admin/news-announcements.html'"><i class="fas fa-bullhorn"></i> New Bulletin</button>
+                    <button class="btn btn-primary" onclick="location.href='/admin/users.html'"><i class="fas fa-user-plus"></i> Create User</button>
+                </div>
+            </div>
+
+            <!-- Stats -->
+            <div class="stats-grid" style="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));">
+                <div class="stat-card blue"><div class="stat-icon"><i class="fas fa-users"></i></div><div class="stat-value" id="statUsers">-</div><div class="stat-label">Total Users</div></div>
+                <div class="stat-card green"><div class="stat-icon"><i class="fas fa-graduation-cap"></i></div><div class="stat-value" id="statStudents">-</div><div class="stat-label">Active Students</div></div>
+                <div class="stat-card golden"><div class="stat-icon"><i class="fas fa-wallet"></i></div><div class="stat-value" id="statRevenue">KES 0</div><div class="stat-label">Total Revenue</div></div>
+                <div class="stat-card purple"><div class="stat-icon"><i class="fas fa-award"></i></div><div class="stat-value" id="statCerts">-</div><div class="stat-label">Total Certificates Issued</div></div>
+            </div>
+
+            <div style="display:grid; grid-template-columns: 2fr 1.2fr; gap:1.5rem; margin-top:1.5rem;">
+                <!-- Quick Navigation & Management Actions -->
+                <div class="card">
+                    <div class="card-header"><h3><i class="fas fa-tools" style="color:var(--primary); margin-right:0.5rem;"></i> Quick Management Actions</h3></div>
+                    <div class="card-body" style="padding:1.5rem; display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <button class="btn btn-outline" onclick="location.href='/admin/users.html'" style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 1rem; gap: 0.5rem; border-radius: 8px;">
+                            <i class="fas fa-users-cog fa-2x" style="color: var(--primary);"></i>
+                            <span style="font-weight:600; font-size:0.9rem;">Manage Users</span>
+                        </button>
+                        <button class="btn btn-outline" onclick="location.href='/admin/content.html'" style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 1rem; gap: 0.5rem; border-radius: 8px;">
+                            <i class="fas fa-book-open fa-2x" style="color: var(--green);"></i>
+                            <span style="font-weight:600; font-size:0.9rem;">Course Content</span>
+                        </button>
+                        <button class="btn btn-outline" onclick="location.href='/admin/exams.html'" style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 1rem; gap: 0.5rem; border-radius: 8px;">
+                            <i class="fas fa-file-signature fa-2x" style="color: var(--golden);"></i>
+                            <span style="font-weight:600; font-size:0.9rem;">Exams & Quizzes</span>
+                        </button>
+                        <button class="btn btn-outline" onclick="location.href='/admin/reports.html'" style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 1rem; gap: 0.5rem; border-radius: 8px;">
+                            <i class="fas fa-chart-bar fa-2x" style="color: var(--accent);"></i>
+                            <span style="font-weight:600; font-size:0.9rem;">System Reports</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Financial Distribution Card -->
+                <div class="card">
+                    <div class="card-header"><h3><i class="fas fa-file-invoice-dollar" style="color:var(--green); margin-right:0.5rem;"></i> Revenue & Metrics</h3></div>
+                    <div class="card-body">
+                        <div style="font-size:0.9rem; line-height:2.2; padding: 0.5rem 1rem;">
+                            <div style="display:flex; justify-content:space-between; border-bottom:1px solid var(--border); padding:0.25rem 0;">
+                                <span>Certificate Fees:</span>
+                                <strong id="revenueCert">KES 0</strong>
+                            </div>
+                            <div style="display:flex; justify-content:space-between; border-bottom:1px solid var(--border); padding:0.25rem 0;">
+                                <span>Enrollment Fees:</span>
+                                <strong id="revenueEnrollment">KES 0</strong>
+                            </div>
+                            <div style="display:flex; justify-content:space-between; padding:0.25rem 0;">
+                                <span>Platform Pass Rate:</span>
+                                <strong id="statPassRate">0%</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="display:grid; grid-template-columns: 2fr 1fr; gap:1.5rem; margin-top:1.5rem;">
+                <!-- Recent Activity -->
+                <div class="card">
+                    <div class="card-header"><h3><i class="fas fa-history" style="color:var(--accent);margin-right:0.5rem;"></i> Recent Activity Log</h3></div>
+                    <div class="card-body" id="activityFeed" style="max-height:350px;overflow-y:auto;">
+                        <div class="empty-state"><div class="spinner"></div><p>Loading activity logs...</p></div>
+                    </div>
+                </div>
+                <!-- Recent Users -->
+                <div class="card">
+                    <div class="card-header"><h3><i class="fas fa-user-clock" style="color:var(--green);margin-right:0.5rem;"></i> Recent Logins</h3></div>
+                    <div class="card-body" id="recentUsers" style="max-height:350px;overflow-y:auto;">
+                        <div class="empty-state"><div class="spinner"></div><p>Loading user logins...</p></div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="/js/api.js"></script>
+    <script>
+        if (!API.requireAuth(['admin'])) throw new Error('Not authorized');
+
+        const user = API.getUser();
+        if (user) {
+            document.getElementById('userName').textContent = user.fullName || user.username;
+            document.getElementById('userAvatar').textContent = getInitials(user.fullName || user.username);
+        }
+
+        async function loadDashboard() {
+            try {
+                const data = await API.get('/admin/stats');
+
+                document.getElementById('statUsers').textContent = data.stats.totalUsers;
+                document.getElementById('statStudents').textContent = data.stats.activeStudents;
+                document.getElementById('statRevenue').textContent = 'KES ' + (data.stats.totalRevenue || 0).toLocaleString();
+                document.getElementById('statCerts').textContent = data.stats.totalCerts;
+
+                // Additional details
+                document.getElementById('revenueCert').textContent = 'KES ' + (data.stats.certRevenue || 0).toLocaleString();
+                document.getElementById('revenueEnrollment').textContent = 'KES ' + (data.stats.enrollmentRevenue || 0).toLocaleString();
+                document.getElementById('statPassRate').textContent = data.stats.passRate + '%';
+
+                // Activity feed
+                const feed = document.getElementById('activityFeed');
+                if (data.recentActivity.length === 0) {
+                    feed.innerHTML = '<div class="empty-state"><i class="fas fa-inbox"></i><h3>No activity yet</h3></div>';
+                } else {
+                    feed.innerHTML = data.recentActivity.map(a => {
+                        const iconMap = {
+                            login: 'fa-sign-in-alt', logout: 'fa-sign-out-alt',
+                            login_failed: 'fa-exclamation-triangle', password_changed: 'fa-key',
+                            user_created: 'fa-user-plus', exam_started: 'fa-play-circle',
+                            exam_completed: 'fa-check-circle', exam_auto_submitted: 'fa-exclamation-circle',
+                            payment_completed: 'fa-wallet', announcement_created: 'fa-bullhorn'
+                        };
+                        const colorMap = {
+                            login: 'var(--green)', logout: 'var(--text-muted)',
+                            login_failed: 'var(--red)', exam_completed: 'var(--green)',
+                            exam_auto_submitted: 'var(--golden)', user_created: 'var(--accent)',
+                            payment_completed: 'var(--golden)'
+                        };
+                        return `<div style="display:flex;gap:0.75rem;padding:0.6rem 0;border-bottom:1px solid var(--border);align-items:center;">
+                            <i class="fas ${iconMap[a.action]||'fa-circle'}" style="color:${colorMap[a.action]||'var(--accent)'};width:20px;text-align:center;"></i>
+                            <div style="flex:1;"><span style="font-weight:600;font-size:0.85rem;">${escapeHtml(a.full_name||a.username||'System')}</span>
+                            <span style="color:var(--text-light);font-size:0.8rem;"> — ${escapeHtml(a.details||a.action)}</span></div>
+                            <span style="font-size:0.75rem;color:var(--text-muted);white-space:nowrap;">${formatDateTime(a.created_at)}</span>
+                        </div>`;
+                    }).join('');
+                }
+
+                // Recent users
+                const usersDiv = document.getElementById('recentUsers');
+                if (data.recentUsers.length === 0) {
+                    usersDiv.innerHTML = '<div class="empty-state"><i class="fas fa-users"></i><h3>No users yet</h3></div>';
+                } else {
+                    usersDiv.innerHTML = data.recentUsers.map(u => `
+                        <div style="display:flex;gap:0.75rem;padding:0.6rem 0;border-bottom:1px solid var(--border);align-items:center;">
+                            <div class="user-avatar" style="width:32px;height:32px;font-size:0.7rem;">${getInitials(u.full_name)}</div>
+                            <div style="flex:1;">
+                                <div style="font-weight:600;font-size:0.85rem;">${escapeHtml(u.full_name)}</div>
+                                <div style="font-size:0.75rem;color:var(--text-muted);">@${escapeHtml(u.username)}</div>
+                            </div>
+                            <span class="badge badge-${u.role_name==='admin'?'danger':u.role_name==='mentor'?'purple':'primary'}">${u.role_name}</span>
+                        </div>
+                    `).join('');
+                }
+            } catch (err) {
+                console.error(err);
+                showToast('Failed to load dashboard data', 'error');
+            }
+        }
+
+        loadDashboard();
+    </script>
+</body>
+</html>

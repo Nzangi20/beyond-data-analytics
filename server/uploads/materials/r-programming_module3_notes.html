@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Module 3: Regression Analysis | Beyond Data Analytics</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Highlight.js for Code Syntax Highlighting -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark.min.css">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary-color: #0d6efd;
+            --secondary-color: #6c757d;
+            --rstudio-bg: #282c34;
+            --accent-color: #0dcaf0;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+            padding-top: 70px;
+        }
+
+        /* Navbar Styling */
+        .navbar {
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            background: linear-gradient(90deg, #0d6efd 0%, #0a58ca 100%);
+        }
+        .navbar-brand { font-weight: 700; letter-spacing: 1px; }
+        .nav-link { font-weight: 500; transition: all 0.3s; }
+        .nav-link:hover { color: #ffc107 !important; transform: translateY(-2px); }
+
+        /* Hero Section */
+        .hero-section {
+            background: url('https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80') no-repeat center center/cover;
+            height: 450px;
+            position: relative;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+        .hero-overlay {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.75);
+        }
+        .hero-content { position: relative; z-index: 2; }
+
+        /* Content Cards */
+        .card {
+            border: none;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            transition: transform 0.3s;
+            margin-bottom: 20px;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        .card-header {
+            background-color: #fff;
+            border-bottom: 2px solid #0d6efd;
+            font-weight: 700;
+            color: #0d6efd;
+        }
+
+        /* Code Blocks */
+        pre {
+            border-radius: 8px;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+        }
+        code { font-family: 'Consolas', 'Monaco', monospace; }
+
+        /* MathJax Customization */
+        .math-block {
+            overflow-x: auto;
+            padding: 15px;
+            background: #fff;
+            border-left: 4px solid #0d6efd;
+            margin: 15px 0;
+            text-align: center;
+            font-size: 1.1em;
+        }
+
+        /* Footer */
+        footer {
+            background-color: #212529;
+            color: white;
+            padding: 40px 0;
+            margin-top: 50px;
+        }
+        
+        .section-title {
+            position: relative;
+            padding-bottom: 15px;
+            margin-bottom: 30px;
+            font-weight: 700;
+        }
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 4px;
+            background-color: #0d6efd;
+        }
+
+        .sub-section-title {
+            border-left: 4px solid #0dcaf0;
+            padding-left: 15px;
+            margin-top: 30px;
+            margin-bottom: 20px;
+            color: #0a58ca;
+        }
+        
+        .history-card {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-left: 5px solid #ffc107;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="#"><i class="fas fa-chart-line me-2"></i>Beyond Data Analytics</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link active" href="#home">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#history">History</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#linear-reg">Linear Regression</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#logistic-reg">Logistic Regression</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header id="home" class="hero-section">
+        <div class="hero-overlay"></div>
+        <div class="hero-content container">
+            <h1 class="display-3 fw-bold">Module 3: Regression Analysis</h1>
+            <p class="lead fs-4">Linear & Logistic Regression, Diagnostics, and Predictive Modeling</p>
+            <p class="fs-5"><i class="fas fa-user me-2"></i> Trainer: <strong>Lumumba W. Victor</strong></p>
+            <h3 class="text-info fw-light fst-italic">Beyond Data Analytics</h3>
+            <p class="fs-5 text-light">Transforming Data Into Insights</p>
+            <a href="#history" class="btn btn-primary btn-lg mt-3 px-5 rounded-pill">Start Module</a>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <div class="container my-5">
+
+        <!-- Historical Context -->
+        <section id="history" class="mb-5">
+            <h2 class="section-title">Historical Context of Regression</h2>
+            <p class="lead">Regression is not just a mathematical tool; it is a concept born from observing the natural world and the need to predict planetary orbits and human traits.</p>
+            
+            <div class="row g-4">
+                <div class="col-md-6">
+                    <div class="card history-card h-100">
+                        <div class="card-body">
+                            <h4 class="card-title"><i class="fas fa-history text-warning me-2"></i>The Origins: Gauss & Legendre (1805)</h4>
+                            <p>The mathematical foundation of regression—the <strong>Method of Least Squares</strong>—was first published by Adrien-Marie Legendre in 1805 and independently by Carl Friedrich Gauss in 1809. They used it to predict the orbits of planets and comets from astronomical observations, minimizing the sum of squared errors between observed and predicted positions.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card history-card h-100">
+                        <div class="card-body">
+                            <h4 class="card-title"><i class="fas fa-dna text-warning me-2"></i>"Regression to Mediocrity": Francis Galton (1886)</h4>
+                            <p>The actual term <strong>"Regression"</strong> was coined by Sir Francis Galton in the 19th century. While studying the heights of parents and their children, he noticed that exceptionally tall parents tended to have children who were shorter than them (closer to the average), and vice versa. He called this phenomenon "regression to mediocrity" (now known as regression to the mean).</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card history-card h-100">
+                        <div class="card-body">
+                            <h4 class="card-title"><i class="fas fa-chart-area text-warning me-2"></i>The Logistic Function: Pierre-François Verhulst (1838)</h4>
+                            <p>The mathematical S-curve used in logistic regression was first described by Belgian mathematician Pierre-François Verhulst between 1838 and 1847. He created the "logistic equation" to model population growth, recognizing that populations grow exponentially at first but eventually level off due to resource constraints (carrying capacity).</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card history-card h-100">
+                        <div class="card-body">
+                            <h4 class="card-title"><i class="fas fa-cogs text-warning me-2"></i>Generalized Linear Models: Nelder & Wedderburn (1972)</h4>
+                            <p>Logistic regression as a unified statistical framework was formalized in 1972 by John Nelder and Robert Wedderburn. They introduced the term <strong>Generalized Linear Models (GLMs)</strong>, which elegantly combined linear regression, logistic regression, and Poisson regression under one mathematical umbrella using "link functions" and maximum likelihood estimation.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-5">
+
+        <!-- Linear Regression Section -->
+        <section id="linear-reg" class="mb-5">
+            <h2 class="section-title">Linear Regression Analysis</h2>
+            <p class="lead">Linear regression models the relationship between a continuous dependent variable ($Y$) and one or more independent variables ($X$) by fitting a linear equation to observed data.</p>
+
+            <!-- Simple Linear Regression -->
+            <h3 class="sub-section-title">1. Simple Linear Regression (SLR)</h3>
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h5>Concept & Equation</h5>
+                            <p>SLR models the relationship between <strong>one</strong> predictor and <strong>one</strong> continuous outcome.</p>
+                            <div class="math-block">$$ Y = \beta_0 + \beta_1X + \epsilon $$</div>
+                            <ul>
+                                <li><strong>$Y$:</strong> Dependent variable (Response)</li>
+                                <li><strong>$X$:</strong> Independent variable (Predictor)</li>
+                                <li><strong>$\beta_0$:</strong> Y-intercept (Value of $Y$ when $X=0$)</li>
+                                <li><strong>$\beta_1$:</strong> Slope (Change in $Y$ for a 1-unit increase in $X$)</li>
+                                <li><strong>$\epsilon$:</strong> Error term (Residuals)</li>
+                            </ul>
+                            <h6 class="mt-3">Core Assumptions (LINE)</h6>
+                            <ul>
+                                <li><strong>L</strong>inearity: The relationship between $X$ and $Y$ is linear.</li>
+                                <li><strong>I</strong>ndependence: Observations are independent of each other.</li>
+                                <li><strong>N</strong>ormality: The residuals ($\epsilon$) are normally distributed.</li>
+                                <li><strong>E</strong>qual Variance (Homoscedasticity): The variance of residuals is constant across all levels of $X$.</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h5>R Implementation (Using `cars` dataset)</h5>
+                            <p>The built-in <code>cars</code> dataset contains the speed of cars and the distances taken to stop.</p>
+                            <pre><code class="language-r"># Load built-in data
+data(cars)
+
+# Fit Simple Linear Regression: Predict distance based on speed
+model_slr <- lm(dist ~ speed, data = cars)
+
+# View comprehensive summary
+summary(model_slr)
+
+# Interpretation:
+# Coefficients: Estimate for 'speed' tells us how much 
+# 'dist' increases for every 1 mph increase in speed.
+# Multiple R-squared: Tells us the % of variance in 'dist' 
+# explained by 'speed'.
+
+# Predict stopping distance for a car going 25 mph
+predict(model_slr, newdata = data.frame(speed = 25))</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Multiple Linear Regression -->
+            <h3 class="sub-section-title">2. Multiple Linear Regression (MLR)</h3>
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h5>Concept & Equation</h5>
+                            <p>MLR extends SLR by including <strong>two or more</strong> predictors. It allows us to understand the effect of each predictor while holding the others constant.</p>
+                            <div class="math-block">$$ Y = \beta_0 + \beta_1X_1 + \beta_2X_2 + \dots + \beta_pX_p + \epsilon $$</div>
+                            <h6 class="mt-3">Additional Assumptions</h6>
+                            <ul>
+                                <li><strong>No Multicollinearity:</strong> Predictors should not be highly correlated with each other. If they are, it becomes impossible to isolate their individual effects.</li>
+                                <li><strong>No Autocorrelation:</strong> Residuals should not be correlated with each other (crucial for time-series data).</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h5>R Implementation (Using `mtcars` dataset)</h5>
+                            <p>The built-in <code>mtcars</code> dataset contains fuel consumption (`mpg`) and 10 other aspects of automobile design. We will predict `mpg` using weight (`wt`), horsepower (`hp`), and cylinders (`cyl`).</p>
+                            <pre><code class="language-r"># Load built-in data
+data(mtcars)
+
+# Fit Multiple Linear Regression
+model_mlr <- lm(mpg ~ wt + hp + cyl, data = mtcars)
+
+# View summary
+summary(model_mlr)
+
+# Interpretation:
+# Look at the p-values for each predictor. 
+# If 'hp' has a p-value > 0.05, it means horsepower 
+# is not a statistically significant predictor of mpg 
+# when weight and cylinders are already in the model.
+
+# Check overall model significance via F-statistic at the bottom.</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Diagnostics for Linear Regression -->
+            <h3 class="sub-section-title">3. Diagnostic Tests for Linear Regression</h3>
+            <p>A model is only as good as its assumptions. We must visually and statistically verify that our model is valid.</p>
+            
+            <ul class="nav nav-tabs" id="linDiagTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="plots-tab" data-bs-toggle="tab" data-bs-target="#plots-pane" type="button">Base R Diagnostic Plots</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="vif-tab" data-bs-toggle="tab" data-bs-target="#vif-pane" type="button">Multicollinearity (VIF)</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="outliers-tab" data-bs-toggle="tab" data-bs-target="#outliers-pane" type="button">Outliers & Influence</button>
+                </li>
+            </ul>
+
+            <div class="tab-content border border-top-0 p-4 rounded-bottom bg-white" id="linDiagTabsContent">
+                <!-- Plots Pane -->
+                <div class="tab-pane fade show active" id="plots-pane" role="tabpanel">
+                    <p>Base R provides a built-in function to generate 4 critical diagnostic plots.</p>
+                    <pre><code class="language-r"># Generate the 4-in-1 diagnostic plot
+par(mfrow = c(2, 2)) # Set up a 2x2 grid
+plot(model_mlr)
+par(mfrow = c(1, 1)) # Reset grid</code></pre>
+                    <div class="row mt-3">
+                        <div class="col-md-6">
+                            <h6>1. Residuals vs Fitted</h6>
+                            <p><strong>Checks:</strong> Linearity and Homoscedasticity.</p>
+                            <p><strong>What to look for:</strong> The red dashed line should be roughly horizontal and flat around the zero line. If there is a curve (U-shape), the relationship is non-linear. If the spread of points widens or narrows (funnel shape), variance is unequal (heteroscedasticity).</p>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>2. Normal Q-Q</h6>
+                            <p><strong>Checks:</strong> Normality of residuals.</p>
+                            <p><strong>What to look for:</strong> The points should closely follow the straight dashed diagonal line. If points deviate significantly at the tails (S-shape), the residuals are not normally distributed.</p>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>3. Scale-Location (Spread-Location)</h6>
+                            <p><strong>Checks:</strong> Homoscedasticity (Equal Variance).</p>
+                            <p><strong>What to look for:</strong> Similar to plot 1, but uses square-root of standardized residuals. The red line should be horizontal. A rising trend indicates increasing variance.</p>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>4. Residuals vs Leverage</h6>
+                            <p><strong>Checks:</strong> Influential observations.</p>
+                            <p><strong>What to look for:</strong> Identifies data points that disproportionately affect the regression line. Look for points falling outside the dashed red lines representing <strong>Cook's Distance</strong>.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- VIF Pane -->
+                <div class="tab-pane fade" id="vif-pane" role="tabpanel">
+                    <h5>Variance Inflation Factor (VIF)</h5>
+                    <p>VIF quantifies how much the variance of a regression coefficient is inflated due to multicollinearity (correlation among predictors).</p>
+                    <div class="math-block">$$ VIF_i = \frac{1}{1 - R_i^2} $$ <small>Where $R_i^2$ is the R-squared from regressing predictor $X_i$ on all other predictors.</small></div>
+                    <pre><code class="language-r"># Install and load the 'car' package
+# install.packages("car")
+library(car)
+
+# Calculate VIF for the Multiple Linear Regression model
+vif(model_mlr)
+
+# Interpretation:
+# VIF = 1: No correlation with other predictors.
+# VIF < 5: Moderate correlation (usually acceptable).
+# VIF > 5 (or > 10): High multicollinearity. 
+# Action: Consider removing one of the highly correlated variables 
+# or combining them (e.g., using PCA).</code></pre>
+                </div>
+
+                <!-- Outliers Pane -->
+                <div class="tab-pane fade" id="outliers-pane" role="tabpanel">
+                    <h5>Cook's Distance & DFFITS</h5>
+                    <p>These metrics measure how much the model's coefficients change if a specific data point is removed. High values indicate "influential points" that might be skewing your results.</p>
+                    <pre><code class="language-r"># Calculate Cook's Distance for all observations
+cooks_d <- cooks.distance(model_mlr)
+
+# Plot Cook's Distance
+plot(cooks_d, type = "h", lwd = 3, col = "blue",
+     main = "Cook's Distance", ylab = "Cook's Distance", xlab = "Observation Index")
+abline(h = 4/nrow(mtcars), col = "red", lty = 2) # Threshold line
+
+# Identify the row numbers of influential points
+which(cooks_d > (4 / nrow(mtcars)))
+
+# Alternative: DFFITS
+dffits_vals <- dffits(model_mlr)
+which(abs(dffits_vals) > (2 * sqrt(length(coef(model_mlr)) / nrow(mtcars))))
+
+# Action: Investigate these specific rows in your dataset. 
+# Are they data entry errors? Or are they genuine extreme cases? 
+# If errors, remove them. If genuine, consider robust regression methods.</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-5">
+
+        <!-- Logistic Regression Section -->
+        <section id="logistic-reg" class="mb-5">
+            <h2 class="section-title">Binary Logistic Regression</h2>
+            <p class="lead">When the dependent variable is categorical (specifically binary: Yes/No, 0/1, Success/Failure), linear regression fails because it can predict values outside the 0-1 probability range. Logistic regression solves this by using the <strong>logit link function</strong> to model the log-odds of the event occurring.</p>
+
+            <!-- Simple Logistic Regression -->
+            <h3 class="sub-section-title">1. Simple Binary Logistic Regression</h3>
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h5>Concept & Equation</h5>
+                            <p>Instead of predicting $Y$ directly, we predict the probability $p$ that $Y=1$. To keep the output bounded between 0 and 1, we model the <strong>log-odds</strong>.</p>
+                            <div class="math-block">$$ \ln\left(\frac{p}{1-p}\right) = \beta_0 + \beta_1X $$</div>
+                            <ul>
+                                <li><strong>$p$:</strong> Probability that the event occurs ($Y=1$).</li>
+                                <li><strong>$\frac{p}{1-p}$:</strong> Odds of the event occurring.</li>
+                                <li><strong>$\beta_1$:</strong> Change in the log-odds for a 1-unit increase in $X$.</li>
+                            </ul>
+                            <h6 class="mt-3">Odds Ratios (OR)</h6>
+                            <p>To interpret the coefficients easily, we exponentiate them: $e^{\beta_1}$. This gives the <strong>Odds Ratio</strong>.</p>
+                            <ul>
+                                <li><strong>OR > 1:</strong> Increases the odds of the event.</li>
+                                <li><strong>OR < 1:</strong> Decreases the odds of the event.</li>
+                                <li><strong>OR = 1:</strong> No effect on the odds.</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h5>R Implementation (Using `mtcars` dataset)</h5>
+                            <p>The <code>mtcars</code> dataset has a binary variable <code>vs</code> (0 = V-shaped engine, 1 = Straight engine). We will predict engine shape based on miles per gallon (<code>mpg</code>).</p>
+                            <pre><code class="language-r"># Load data
+data(mtcars)
+
+# Ensure the outcome is a factor (optional but good practice)
+mtcars$vs <- as.factor(mtcars$vs)
+
+# Fit Simple Logistic Regression using glm() with family = binomial
+model_slog <- glm(vs ~ mpg, data = mtcars, family = binomial(link = "logit"))
+
+# View summary
+summary(model_slog)
+
+# Calculate and interpret Odds Ratios
+exp(coef(model_slog))
+# If exp(mpg) = 1.2, it means for every 1 unit increase in mpg, 
+# the odds of having a straight engine increase by 20%.</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Multiple Logistic Regression -->
+            <h3 class="sub-section-title">2. Multiple Binary Logistic Regression</h3>
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h5>Concept & Equation</h5>
+                            <p>Extends simple logistic regression to include multiple predictors. The interpretation of Odds Ratios remains the same, but now represents the effect of one predictor <em>holding all other predictors constant</em>.</p>
+                            <div class="math-block">$$ \ln\left(\frac{p}{1-p}\right) = \beta_0 + \beta_1X_1 + \beta_2X_2 + \dots + \beta_pX_p $$</div>
+                            <h6 class="mt-3">Core Assumptions</h6>
+                            <ul>
+                                <li><strong>Binary Outcome:</strong> The dependent variable must be binary.</li>
+                                <li><strong>Independence:</strong> Observations are independent (no repeated measures).</li>
+                                <li><strong>Little/No Multicollinearity:</strong> Predictors are not highly correlated.</li>
+                                <li><strong>Linearity of Logits:</strong> Continuous predictors must have a linear relationship with the <em>log-odds</em> of the outcome (not the outcome itself).</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h5>R Implementation (Using `mtcars` dataset)</h5>
+                            <p>Predicting engine shape (<code>vs</code>) using miles per gallon (<code>mpg</code>), horsepower (<code>hp</code>), and weight (<code>wt</code>).</p>
+                            <pre><code class="language-r"># Fit Multiple Logistic Regression
+model_mlog <- glm(vs ~ mpg + hp + wt, data = mtcars, family = binomial)
+
+# View summary
+summary(model_mlog)
+
+# Calculate Odds Ratios with 95% Confidence Intervals
+exp(cbind(OR = coef(model_mlog), confint(model_mlog)))
+
+# Predict probabilities for new data
+new_cars <- data.frame(mpg = c(20, 30), hp = c(100, 150), wt = c(3.0, 2.5))
+predict(model_mlog, newdata = new_cars, type = "response")
+# 'type = "response"' returns probabilities (0 to 1) instead of log-odds.</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Diagnostics for Logistic Regression -->
+            <h3 class="sub-section-title">3. Diagnostic Tests for Logistic Regression</h3>
+            <p>Because logistic regression uses Maximum Likelihood Estimation (MLE) instead of Ordinary Least Squares (OLS), the diagnostics are different from linear regression.</p>
+
+            <ul class="nav nav-tabs" id="logDiagTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="fit-tab" data-bs-toggle="tab" data-bs-target="#fit-pane" type="button">Model Fit & Power</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="roc-tab" data-bs-toggle="tab" data-bs-target="#roc-pane" type="button">ROC Curve & AUC</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="class-tab" data-bs-toggle="tab" data-bs-target="#class-pane" type="button">Classification & Confusion Matrix</button>
+                </li>
+            </ul>
+
+            <div class="tab-content border border-top-0 p-4 rounded-bottom bg-white" id="logDiagTabsContent">
+                <!-- Fit Pane -->
+                <div class="tab-pane fade show active" id="fit-pane" role="tabpanel">
+                    <h5>1. Hosmer-Lemeshow Goodness-of-Fit Test</h5>
+                    <p>This test compares the observed event rates to expected event rates in subgroups of the model population (usually deciles). </p>
+                    <ul>
+                        <li><strong>Null Hypothesis ($H_0$):</strong> The model fits the data well.</li>
+                        <li><strong>Interpretation:</strong> A <strong>p-value > 0.05</strong> indicates a good fit (we fail to reject $H_0$). *Note: This is the opposite of most statistical tests!*</li>
+                    </ul>
+                    <pre><code class="language-r"># Install and load ResourceSelection package
+# install.packages("ResourceSelection")
+library(ResourceSelection)
+
+# Perform Hosmer-Lemeshow test (requires g = 10 for deciles)
+hoslem.test(model_mlog$y, fitted(model_mlog), g = 10)
+
+# Check Pseudo R-Squared (McFadden's)
+# install.packages("pscl")
+library(pscl)
+pR2(model_mlog)
+# McFadden's R-squared between 0.2 and 0.4 indicates excellent model fit.</code></pre>
+
+                    <h5 class="mt-4">2. Linearity of Continuous Predictors and Log-Odds</h5>
+                    <p>Logistic regression assumes a linear relationship between continuous predictors and the <em>log-odds</em> of the outcome. We check this using the <strong>Box-Tidwell test</strong>.</p>
+                    <pre><code class="language-r"># install.packages("boxTidwell")
+library(boxTidwell)
+
+# Test if 'mpg' and 'wt' have a linear relationship with log-odds of 'vs'
+# Note: Box-Tidwell requires the outcome to be numeric (0/1), not factor
+mtcars$vs_num <- as.numeric(as.character(mtcars$vs))
+
+boxTidwell(vs_num ~ mpg + wt, data = mtcars)
+# If p-value > 0.05, the linearity assumption is met.</code></pre>
+                </div>
+
+                <!-- ROC Pane -->
+                <div class="tab-pane fade" id="roc-pane" role="tabpanel">
+                    <h5>ROC Curve and Area Under the Curve (AUC)</h5>
+                    <p>The Receiver Operating Characteristic (ROC) curve plots the True Positive Rate (Sensitivity) against the False Positive Rate (1 - Specificity) at various threshold settings. The AUC provides a single number summarizing the model's discriminatory power.</p>
+                    <ul>
+                        <li><strong>AUC = 0.5:</strong> No discrimination (random guessing).</li>
+                        <li><strong>0.7 ≤ AUC < 0.8:</strong> Acceptable discrimination.</li>
+                        <li><strong>0.8 ≤ AUC < 0.9:</strong> Excellent discrimination.</li>
+                        <li><strong>AUC ≥ 0.9:</strong> Outstanding discrimination.</li>
+                    </ul>
+                    <pre><code class="language-r"># Install and load pROC package
+# install.packages("pROC")
+library(pROC)
+
+# Calculate ROC object
+# Direction="<" means higher predicted values indicate the event (1)
+roc_obj <- roc(mtcars$vs_num, fitted(model_mlog), direction = "<")
+
+# Plot the ROC Curve
+plot(roc_obj, 
+     main = "ROC Curve for Logistic Regression",
+     col = "blue", 
+     lwd = 2, 
+     print.auc = TRUE) # Prints the AUC value on the plot
+
+# Get the exact AUC value
+auc(roc_obj)</code></pre>
+                </div>
+
+                <!-- Class Pane -->
+                <div class="tab-pane fade" id="class-pane" role="tabpanel">
+                    <h5>Confusion Matrix & Classification Metrics</h5>
+                    <p>To evaluate how well the model predicts actual categories, we convert the predicted probabilities into classes (0 or 1) using a cutoff (usually 0.5) and compare them to the actual values.</p>
+                    <pre><code class="language-r"># Predict probabilities
+probs <- fitted(model_mlog)
+
+# Convert to classes using 0.5 threshold
+predicted_classes <- ifelse(probs > 0.5, 1, 0)
+
+# Create Confusion Matrix
+# install.packages("caret")
+library(caret)
+
+actual_classes <- mtcars$vs_num
+confusionMatrix(as.factor(predicted_classes), as.factor(actual_classes), positive = "1")
+
+# Key Metrics Explained:
+# Accuracy: Overall correctness of the model.
+# Sensitivity (Recall): True Positive Rate (How well it predicts '1's).
+# Specificity: True Negative Rate (How well it predicts '0's).
+# Precision: When it predicts '1', how often is it actually '1'?</code></pre>
+                    <div class="alert alert-info mt-3">
+                        <strong>Pro Tip:</strong> If your data is imbalanced (e.g., 90% 0s and 10% 1s), accuracy is a misleading metric. Focus instead on <strong>Sensitivity</strong>, <strong>Precision</strong>, and the <strong>F1-Score</strong> (the harmonic mean of Precision and Recall).
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>Beyond Data Analytics</h5>
+                    <p class="fst-italic text-info">Transforming Data Into Insights</p>
+                    <p>Empowering the next generation of data professionals in Kenya and beyond.</p>
+                </div>
+                <div class="col-md-3">
+                    <h5>Resources</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="https://cran.r-project.org/manuals.html" class="text-white text-decoration-none">R Manuals</a></li>
+                        <li><a href="https://stat.ethz.ch/R-manual/R-patched/library/stats/html/00Index.html" class="text-white text-decoration-none">R Stats Package</a></li>
+                        <li><a href="https://www.rdocumentation.org/" class="text-white text-decoration-none">R Documentation</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3">
+                    <h5>Contact Trainer</h5>
+                    <p><i class="fas fa-user me-2"></i> Lumumba W. Victor</p>
+                    <p><i class="fas fa-envelope me-2"></i> lumumbavictor172@gmail.com</p>
+                </div>
+            </div>
+            <div class="text-center mt-4 pt-3 border-top border-secondary">
+                <small>&copy; 2026 Beyond Data Analytics. All Rights Reserved.</small>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Highlight.js JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/languages/r.min.js"></script>
+    <script>hljs.highlightAll();</script>
+    <!-- MathJax for LaTeX Equations -->
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+</body>
+</html>

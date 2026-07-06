@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Module 2: Exploratory Data Analysis (EDA) and Data Visualization | Beyond Data Analytics</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Highlight.js for Code Syntax Highlighting -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark.min.css">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary-color: #0d6efd;
+            --secondary-color: #6c757d;
+            --accent-color: #0dcaf0;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+            padding-top: 70px; /* Space for fixed navbar */
+        }
+
+        /* Navbar Styling */
+        .navbar {
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            background: linear-gradient(90deg, #0d6efd 0%, #0a58ca 100%);
+        }
+        .navbar-brand {
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+        .nav-link {
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        .nav-link:hover {
+            color: #ffc107 !important;
+            transform: translateY(-2px);
+        }
+
+        /* Hero Section */
+        .hero-section {
+            background: url('https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80') no-repeat center center/cover;
+            height: 450px;
+            position: relative;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+        .hero-overlay {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.75);
+        }
+        .hero-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Content Cards */
+        .card {
+            border: none;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            transition: transform 0.3s;
+            margin-bottom: 20px;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        .card-header {
+            background-color: #fff;
+            border-bottom: 2px solid #0d6efd;
+            font-weight: 700;
+            color: #0d6efd;
+        }
+
+        /* Code Blocks */
+        pre {
+            border-radius: 8px;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+        }
+        code {
+            font-family: 'Consolas', 'Monaco', monospace;
+        }
+
+        /* Section Titles */
+        .section-title {
+            position: relative;
+            padding-bottom: 15px;
+            margin-bottom: 30px;
+            font-weight: 700;
+        }
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 4px;
+            background-color: #0d6efd;
+        }
+
+        /* Tables */
+        .table-custom {
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .table-custom thead {
+            background: linear-gradient(90deg, #0d6efd 0%, #0a58ca 100%);
+            color: white;
+        }
+
+        /* Footer */
+        footer {
+            background-color: #212529;
+            color: white;
+            padding: 40px 0;
+            margin-top: 50px;
+        }
+        
+        /* Exercise Area */
+        .exercise-area {
+            background: #f8f9fa;
+            border: 1px dashed #0d6efd;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 10px;
+        }
+
+        /* Beyond Data Section */
+        .beyond-data-section {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 30px 35px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            border-left: 6px solid #28a745;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            position: relative;
+            overflow: hidden;
+        }
+        .beyond-data-section::before {
+            content: "📊";
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 5em;
+            opacity: 0.1;
+        }
+        .beyond-data-section h2 {
+            color: #1e3c72;
+            font-size: 1.6em;
+            margin-bottom: 15px;
+        }
+        .beyond-data-section .highlight {
+            color: #28a745;
+            font-weight: bold;
+        }
+
+        /* Math Blocks (Pure HTML/CSS Equations) */
+        .math-block {
+            background: #f8f9fa;
+            border-left: 4px solid #6f42c1;
+            padding: 15px 25px;
+            margin: 20px 0;
+            border-radius: 0 8px 8px 0;
+            font-family: 'Cambria Math', 'Times New Roman', serif;
+            font-size: 1.25rem;
+            color: #212529;
+            overflow-x: auto;
+            line-height: 1.8;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="#"><i class="fas fa-chart-line me-2"></i>Beyond Data Analytics</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="#eda-intro">2.1 EDA Intro</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#descriptive">2.2 Descriptive Stats</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#frequency">2.3 Frequency</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#visualization">2.4 Visualization</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#correlation">2.5 Correlation</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#best-practices">2.6 Best Practices</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#practical">2.7 Practical</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="#exercises">Exercises</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header id="home" class="hero-section">
+        <div class="hero-overlay"></div>
+        <div class="hero-content container">
+            <h1 class="display-3 fw-bold">Module 2: EDA & Data Visualization</h1>
+            <p class="lead fs-4">Uncovering hidden patterns, anomalies, and insights through visual and numerical exploration</p>
+            <h3 class="text-info fw-light fst-italic">Beyond Data Analytics</h3>
+            <p class="fs-5 text-light">Transforming Raw Data into Insights</p>
+            <a href="#objectives" class="btn btn-primary btn-lg mt-3 px-5 rounded-pill">Start Learning</a>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <div class="container my-5">
+
+        <!-- Beyond Data Analytics Section -->
+        <section class="beyond-data-section mb-5">
+            <h2>🌐 Beyond Data Analytics</h2>
+            <p>At <span class="highlight">Beyond Data Analytics</span>, we believe that data is more than just numbers and tables—it is the strategic foundation of modern decision-making. Our curriculum is meticulously designed to bridge the gap between theoretical knowledge and real-world application, empowering professionals to extract actionable insights, drive business value, and innovate across industries.</p>
+            <p>Before building predictive models, you must deeply understand your data. This module equips you with the art and science of <span class="highlight">Exploratory Data Analysis (EDA)</span> and the <span class="highlight">Grammar of Graphics</span>, enabling you to communicate complex findings clearly, detect hidden biases, and lay the groundwork for robust, defensible analytics.</p>
+        </section>
+
+        <!-- Learning Objectives -->
+        <section id="objectives" class="mb-5">
+            <h2 class="section-title">Learning Objectives</h2>
+            <div class="card bg-light">
+                <div class="card-body">
+                    <p class="lead mb-3">By the end of this comprehensive module, participants will be able to:</p>
+                    <ul class="list-unstyled mb-0">
+                        <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> Summarize datasets efficiently using advanced descriptive statistics and automated profiling tools in R.</li>
+                        <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> Explore patterns, distributions, and relationships in data using frequency tables and cross-tabulations.</li>
+                        <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> Create publication-quality, informative visualizations using the <code>ggplot2</code> package.</li>
+                        <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> Conduct and interpret correlation analyses to quantify linear and monotonic relationships.</li>
+                        <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> Apply data visualization best practices to avoid misleading representations and maximize data-ink ratios.</li>
+                        <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> Identify trends, clusters, and outliers visually and numerically to inform subsequent modeling steps.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-5">
+
+        <!-- 2.1 Introduction to EDA -->
+        <section id="eda-intro" class="mb-5">
+            <h2 class="section-title">2.1 Introduction to Exploratory Data Analysis (EDA)</h2>
+            <p class="lead">EDA is a critical philosophy and approach to analyzing datasets, pioneered by statistician John Tukey in the 1970s. Its primary goal is to maximize insight into a dataset, uncover underlying structure, extract important variables, detect outliers and anomalies, and test underlying assumptions.</p>
+            <div class="card">
+                <div class="card-body">
+                    <h5>The EDA Mindset vs. Confirmatory Data Analysis</h5>
+                    <table class="table table-custom">
+                        <thead>
+                            <tr><th>Feature</th><th>Exploratory Data Analysis (EDA)</th><th>Confirmatory Data Analysis (CDA)</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Goal</strong></td>
+                                <td>Generate hypotheses, find patterns, understand data.</td>
+                                <td>Test specific hypotheses, prove/disprove theories.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Approach</strong></td>
+                                <td>Flexible, iterative, visual, open-ended.</td>
+                                <td>Rigid, pre-planned, statistical, structured.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Tools</strong></td>
+                                <td>Summary stats, boxplots, scatterplots, histograms.</td>
+                                <td>p-values, confidence intervals, ANOVA, regression.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Timing</strong></td>
+                                <td>Done <em>before</em> formal modeling.</td>
+                                <td>Done <em>after</em> hypotheses are formed.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="alert alert-info mt-3">
+                        <strong><i class="fas fa-lightbulb me-2"></i>The Golden Rule of EDA:</strong> Never skip EDA. Jumping straight into machine learning or hypothesis testing on unexamined data is like building a house without inspecting the foundation. You will inevitably encounter garbage-in-garbage-out scenarios, violated assumptions, and misleading conclusions.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-5">
+
+        <!-- 2.2 Descriptive Statistics -->
+        <section id="descriptive" class="mb-5">
+            <h2 class="section-title">2.2 Descriptive Statistics in R</h2>
+            <p class="lead">Descriptive statistics condense large datasets into manageable, interpretable summaries. They describe the central point, the spread, and the shape of the data distribution.</p>
+            <div class="card">
+                <div class="card-body">
+                    <h5>1. Measures of Central Tendency</h5>
+                    <p>These metrics identify the "center" or typical value of a dataset.</p>
+                    <ul>
+                        <li><strong>Mean (<i>&mu;</i> or <i>x&#772;</i>):</strong> The arithmetic average. Highly sensitive to outliers.
+                            <div class="math-block"><i>x&#772;</i> = (1 / <i>n</i>) &Sigma;<sub><i>i</i>=1</sub><sup><i>n</i></sup> <i>x<sub>i</sub></i></div>
+                        </li>
+                        <li><strong>Median (<i>x&#775;</i>):</strong> The middle value when sorted. Robust to extreme outliers. Preferred for skewed distributions (e.g., income, house prices).</li>
+                        <li><strong>Mode:</strong> The most frequently occurring value. Useful for categorical data.</li>
+                    </ul>
+
+                    <h5 class="mt-4">2. Measures of Dispersion (Variability)</h5>
+                    <p>Central tendency alone is misleading. We must understand how spread out the data is.</p>
+                    <ul>
+                        <li><strong>Variance (<i>s</i><sup>2</sup>):</strong> The average of the squared deviations from the mean.</li>
+                        <li><strong>Standard Deviation (<i>s</i>):</strong> The square root of the variance. Expressed in the original units of the data.
+                            <div class="math-block"><i>s</i> = &radic; [ &Sigma;(<i>x<sub>i</sub></i> - <i>x&#772;</i>)<sup>2</sup> / (<i>n</i> - 1) ]</div>
+                        </li>
+                        <li><strong>Interquartile Range (IQR):</strong> The spread of the middle 50% of the data (<i>Q<sub>3</sub></i> - <i>Q<sub>1</sub></i>). Highly robust to outliers.</li>
+                        <li><strong>Range:</strong> Maximum value minus Minimum value.</li>
+                    </ul>
+
+                    <h5 class="mt-4">3. Measures of Shape</h5>
+                    <ul>
+                        <li><strong>Skewness:</strong> Measures asymmetry.
+                            <ul>
+                                <li><strong>Right-skewed (Positive):</strong> Tail extends to the right. Mean &gt; Median. (e.g., Wealth distribution).</li>
+                                <li><strong>Left-skewed (Negative):</strong> Tail extends to the left. Mean &lt; Median. (e.g., Age at death).</li>
+                                <li><strong>Symmetric:</strong> Skewness &asymp; 0. Mean &asymp; Median.</li>
+                            </ul>
+                        </li>
+                        <li><strong>Kurtosis:</strong> Measures the "tailedness" (outlier propensity) and peakedness.
+                            <ul>
+                                <li><strong>Leptokurtic (High Kurtosis):</strong> Heavy tails, sharp peak. Prone to extreme outliers.</li>
+                                <li><strong>Platykurtic (Low Kurtosis):</strong> Light tails, flat peak. Fewer extreme outliers.</li>
+                            </ul>
+                        </li>
+                    </ul>
+
+                    <h5 class="mt-4">Automated EDA Profiling in R</h5>
+                    <p>While you can calculate these manually, modern R workflows use specialized packages for rapid, comprehensive profiling.</p>
+                    <pre><code class="language-r"># Install packages if necessary
+# install.packages(c("tidyverse", "skimr", "psych"))
+library(tidyverse)
+library(skimr)
+library(psych)
+
+# 1. Base R Summary
+summary(heart_data)
+
+# 2. The 'skimr' package (Highly recommended for quick, beautiful summaries)
+skim(heart_data)
+# Provides: missing values, complete rows, factor levels, histograms (in text), 
+# min, max, mean, median, and standard deviation for numeric variables.
+
+# 3. The 'psych' package (Great for detailed statistical moments)
+psych::describe(heart_data)
+# Provides: mean, sd, median, mad, min, max, skew, kurtosis, and se.</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-5">
+
+        <!-- 2.3 Frequency Tables & Cross-tabulations -->
+        <section id="frequency" class="mb-5">
+            <h2 class="section-title">2.3 Frequency Tables and Cross-tabulations</h2>
+            <p class="lead">Before plotting categorical data, we must understand the distribution of counts and proportions across categories.</p>
+            <div class="card">
+                <div class="card-body">
+                    <h5>Frequency Tables</h5>
+                    <p>A frequency table counts the occurrences of each unique value in a categorical variable.</p>
+                    <pre><code class="language-r">library(tidyverse)
+library(janitor)
+
+# Base R table()
+table(heart_data$ChestPain)
+
+# Proportions and Percentages
+prop.table(table(heart_data$ChestPain)) * 100
+
+# The 'janitor' package (Cleaner output for data frames)
+heart_data %>%
+  tabyl(ChestPain) %>%
+  adorn_totals("row") %>%
+  adorn_percentages("row") %>%
+  adorn_pct_formatting(digits = 1) %>%
+  adorn_ns() # Adds counts in parentheses</code></pre>
+
+                    <h5 class="mt-4">Cross-tabulations (Contingency Tables)</h5>
+                    <p>Cross-tabs examine the relationship between <strong>two or more</strong> categorical variables.</p>
+                    <pre><code class="language-r"># Base R cross-tabulation
+table(heart_data$ChestPain, heart_data$AHD)
+
+# Using janitor for a formatted, readable cross-tab
+heart_data %>%
+  tabyl(ChestPain, AHD) %>%
+  adorn_percentages("col") %>%  # Calculate column percentages
+  adorn_pct_formatting(digits = 1) %>%
+  adorn_ns() %>%
+  adorn_title("combined")</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-5">
+
+        <!-- 2.4 Data Visualization with ggplot2 -->
+        <section id="visualization" class="mb-5">
+            <h2 class="section-title">2.4 Data Visualization: The Grammar of Graphics</h2>
+            <p class="lead">In R, the undisputed king of data visualization is <code>ggplot2</code>. It builds plots layer by layer using a structured "Grammar of Graphics", allowing for infinite customization and publication-quality outputs.</p>
+            <div class="card">
+                <div class="card-body">
+                    <h5>The Core Anatomy of ggplot2</h5>
+                    <pre><code class="language-r">library(ggplot2)
+
+# The basic structure:
+ggplot(data = <DATA>, aes(x = <X_VAR>, y = <Y_VAR>, color = <GROUP>)) +
+  geom_<TYPE>() +            # The geometric object (points, lines, bars)
+  labs(title = "...") +      # Labels and titles
+  theme_minimal()            # Visual theme</code></pre>
+
+                    <h5 class="mt-4">1. Histograms & Density Plots (Continuous Distributions)</h5>
+                    <p>Used to visualize the distribution, skewness, and modality of a single continuous variable.</p>
+                    <pre><code class="language-r"># Histogram
+ggplot(heart_data, aes(x = Age, fill = AHD)) +
+  geom_histogram(bins = 20, color = "black", alpha = 0.7, position = "identity") +
+  labs(title = "Distribution of Age by Heart Disease Status",
+       x = "Age (Years)", y = "Count") +
+  theme_minimal()
+
+# Density Plot (Smoothed histogram)
+ggplot(heart_data, aes(x = MaxHR, fill = AHD)) +
+  geom_density(alpha = 0.5) +
+  labs(title = "Density Plot of Maximum Heart Rate")</code></pre>
+
+                    <h5 class="mt-4">2. Boxplots & Violin Plots (Comparing Distributions)</h5>
+                    <p>Excellent for comparing distributions across categorical groups and identifying outliers.</p>
+                    <pre><code class="language-r"># Boxplot
+ggplot(heart_data, aes(x = AHD, y = Chol, fill = AHD)) +
+  geom_boxplot(outlier.color = "red", outlier.shape = 1) +
+  labs(title = "Cholesterol Levels by Heart Disease Status",
+       x = "Heart Disease", y = "Serum Cholesterol (mg/dL)") +
+  theme_light() +
+  theme(legend.position = "none")
+
+# Violin Plot (Shows density shape + boxplot summary)
+ggplot(heart_data, aes(x = AHD, y = Oldpeak, fill = AHD)) +
+  geom_violin(trim = FALSE, alpha = 0.7) +
+  geom_boxplot(width = 0.1, fill = "white") +
+  labs(title = "ST Depression (Oldpeak) Distribution")</code></pre>
+
+                    <h5 class="mt-4">3. Bar Charts & Column Charts (Categorical Counts)</h5>
+                    <p>Used for categorical variables. <code>geom_bar()</code> counts rows; <code>geom_col()</code> uses pre-calculated y-values.</p>
+                    <pre><code class="language-r"># Bar Chart (Counts)
+ggplot(heart_data, aes(x = ChestPain, fill = ChestPain)) +
+  geom_bar(color = "black") +
+  labs(title = "Count of Patients by Chest Pain Type",
+       x = "Chest Pain Type", y = "Number of Patients") +
+  coord_flip() + # Flip coordinates for horizontal bars (better for long labels)
+  theme_minimal() +
+  theme(legend.position = "none")</code></pre>
+
+                    <h5 class="mt-4">4. Scatter Plots (Bivariate Relationships)</h5>
+                    <p>The workhorse for exploring the relationship between two continuous variables.</p>
+                    <pre><code class="language-r"># Scatter Plot with Trendline
+ggplot(heart_data, aes(x = Age, y = MaxHR, color = AHD)) +
+  geom_point(alpha = 0.6, size = 2) +
+  geom_smooth(method = "lm", color = "black", linetype = "dashed") + # Linear trendline
+  labs(title = "Relationship Between Age and Maximum Heart Rate",
+       x = "Age", y = "Max Heart Rate (bpm)", color = "Heart Disease") +
+  theme_classic()</code></pre>
+
+                    <h5 class="mt-4">5. Line Graphs (Time Series / Trends)</h5>
+                    <p>Used when the X-axis represents time or a continuous sequence.</p>
+                    <pre><code class="language-r"># Example: Monthly sales trend
+ggplot(monthly_sales, aes(x = Month, y = Revenue, group = 1)) +
+  geom_line(color = "blue", size = 1.2) +
+  geom_point(size = 3, color = "blue") +
+  labs(title = "Monthly Revenue Trend", x = "Month", y = "Revenue ($)")</code></pre>
+
+                    <h5 class="mt-4">6. Pie Charts (A Warning on Best Practices)</h5>
+                    <p>While <code>ggplot2</code> can create pie charts using <code>coord_polar()</code>, data visualization experts (like Edward Tufte) strongly advise <strong>against</strong> them. The human eye is poor at comparing angles and areas. <em>Always prefer a sorted bar chart.</em></p>
+                    <pre><code class="language-r"># If you absolutely MUST make a pie chart:
+ggplot(heart_data, aes(x = "", fill = ChestPain)) +
+  geom_bar(width = 1) +
+  coord_polar("y", start = 0) +
+  theme_void() + # Removes background axes
+  labs(title = "Chest Pain Distribution (Use Bar Charts Instead!)")</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-5">
+
+        <!-- 2.5 Correlation Analysis -->
+        <section id="correlation" class="mb-5">
+            <h2 class="section-title">2.5 Correlation Analysis</h2>
+            <p class="lead">Correlation quantifies the strength and direction of the relationship between two continuous variables. It ranges from -1 (perfect negative) to +1 (perfect positive), with 0 indicating no linear relationship.</p>
+            <div class="card">
+                <div class="card-body">
+                    <h5>Pearson vs. Spearman Correlation</h5>
+                    <table class="table table-custom">
+                        <thead>
+                            <tr><th>Metric</th><th>Assumptions</th><th>Use Case</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Pearson (<i>r</i>)</strong></td>
+                                <td>Continuous, normally distributed, linear relationship, no extreme outliers.</td>
+                                <td>Standard parametric correlation (e.g., Height vs. Weight).</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Spearman (<i>&rho;</i>)</strong></td>
+                                <td>Ordinal or continuous, monotonic relationship (not necessarily linear), robust to outliers.</td>
+                                <td>Skewed data, ordinal scales (e.g., Likert scales), or non-linear monotonic trends.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h5 class="mt-4">Correlation Matrices in R</h5>
+                    <pre><code class="language-r"># 1. Calculate the correlation matrix (Numeric variables only)
+numeric_data <- heart_data %>% select(Age, RestBP, Chol, MaxHR, Oldpeak)
+
+# Pearson Correlation
+cor_matrix_pearson <- cor(numeric_data, use = "complete.obs")
+
+# Spearman Correlation (Robust to outliers)
+cor_matrix_spearman <- cor(numeric_data, method = "spearman", use = "complete.obs")
+
+# 2. Visualize using the 'corrplot' package
+# install.packages("corrplot")
+library(corrplot)
+
+# Beautiful, clustered correlation heatmap
+corrplot(cor_matrix_pearson, 
+         method = "color",       # Use color shading
+         type = "upper",         # Only show upper triangle
+         order = "hclust",       # Cluster correlated variables together
+         tl.col = "black",       # Text label color
+         tl.srt = 45,            # Text label rotation
+         addCoef.col = "black",  # Add correlation coefficients
+         number.cex = 0.8,       # Size of coefficients
+         title = "Pearson Correlation Matrix of Clinical Variables",
+         mar = c(0,0,2,0))       # Margins
+
+# 3. Pairwise Scatterplots using 'GGally'
+# install.packages("GGally")
+library(GGally)
+
+ggpairs(heart_data, 
+        columns = c("Age", "MaxHR", "Oldpeak", "AHD"),
+        title = "Pairwise Relationships and Distributions",
+        aes(color = AHD, alpha = 0.5)) +
+  theme_minimal()</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-5">
+
+        <!-- 2.6 Visualization Best Practices -->
+        <section id="best-practices" class="mb-5">
+            <h2 class="section-title">2.6 Data Visualization Best Practices</h2>
+            <p class="lead">A poorly designed chart can mislead stakeholders, obscure critical insights, or destroy credibility. Follow these principles to ensure your visualizations are accurate, accessible, and impactful.</p>
+            <div class="card">
+                <div class="card-body">
+                    <h5>1. Maximize the Data-Ink Ratio</h5>
+                    <p>Coined by Edward Tufte, the data-ink ratio is the proportion of ink used to display actual data versus non-data elements (gridlines, 3D effects, decorative borders). <strong>Erase non-data ink wherever possible.</strong></p>
+                    <ul>
+                        <li>Remove default gray backgrounds (<code>theme_minimal()</code> or <code>theme_classic()</code>).</li>
+                        <li>Remove unnecessary gridlines or make them very faint.</li>
+                        <li>Never use 3D charts. They distort perspective and make accurate reading impossible.</li>
+                    </ul>
+
+                    <h5 class="mt-4">2. Choose the Right Chart for the Data</h5>
+                    <ul>
+                        <li><strong>Distribution:</strong> Histogram, Density, Boxplot, Violin.</li>
+                        <li><strong>Comparison:</strong> Bar chart, Column chart.</li>
+                        <li><strong>Relationship:</strong> Scatter plot, Bubble chart, Heatmap.</li>
+                        <li><strong>Trend over time:</strong> Line chart, Area chart.</li>
+                        <li><strong>Composition:</strong> Stacked bar chart, Waffle chart (Avoid Pie charts!).</li>
+                    </ul>
+
+                    <h5 class="mt-4">3. Accessibility and Colorblind-Friendly Palettes</h5>
+                    <p>Approximately 8% of men have some form of color vision deficiency (most commonly red-green). Never rely solely on red/green distinctions.</p>
+                    <pre><code class="language-r"># Use the 'viridis' or 'RColorBrewer' packages for safe palettes
+library(viridis)
+
+ggplot(heart_data, aes(x = Age, y = MaxHR, color = AHD)) +
+  geom_point(size = 2) +
+  scale_color_viridis_d(begin = 0.1, end = 0.9) + # Colorblind friendly
+  theme_minimal()</code></pre>
+
+                    <h5 class="mt-4">4. Clear, Descriptive Labeling</h5>
+                    <ul>
+                        <li>Always include a clear Title, Subtitle (optional), and Axis Labels.</li>
+                        <li>Include units on axes (e.g., "Age (Years)", "Cholesterol (mg/dL)").</li>
+                        <li>Add a caption for data sources or notes.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-5">
+
+        <!-- 2.7 Practical Session -->
+        <section id="practical" class="mb-5">
+            <h2 class="section-title">2.7 Practical Session: End-to-End EDA in R</h2>
+            <p class="lead">Let's combine descriptive statistics, visual exploration, and correlation analysis into a comprehensive, reproducible EDA workflow using the <code>Heart.csv</code> dataset.</p>
+            <div class="card">
+                <div class="card-body">
+                    <h5>Scenario: Clinical Risk Factor Exploration</h5>
+                    <p>We want to understand the distribution of patient demographics, identify outliers in vital signs, and explore how physiological markers correlate with Heart Disease (AHD).</p>
+                    <pre><code class="language-r"># ==============================================================================
+# 1. SETUP AND DATA LOADING
+# ==============================================================================
+library(tidyverse)
+library(skimr)
+library(janitor)
+library(corrplot)
+library(GGally)
+library(viridis)
+
+# Load and clean data
+heart <- read_csv("Heart.csv") %>%
+  clean_names() %>%
+  drop_na() # Remove rows with missing values for clean EDA
+
+# Convert target to factor
+heart <- heart %>%
+  mutate(ahd = factor(ahd, levels = c("No", "Yes")))
+
+# ==============================================================================
+# 2. AUTOMATED PROFILING & DESCRIPTIVE STATISTICS
+# ==============================================================================
+cat("--- Automated Data Profiling ---\n")
+skim(heart)
+
+# Detailed statistical moments for key continuous variables
+psych::describe(heart %>% select(age, chol, maxhr, oldpeak))
+
+# ==============================================================================
+# 3. UNIVARIATE EXPLORATION (Distributions & Outliers)
+# ==============================================================================
+# A. Age Distribution
+ggplot(heart, aes(x = age, fill = ahd)) +
+  geom_density(alpha = 0.5) +
+  scale_fill_viridis_d() +
+  labs(title = "Age Distribution by Heart Disease Status",
+       x = "Age (Years)", y = "Density") +
+  theme_minimal()
+
+# B. Cholesterol Boxplot (Outlier Detection)
+ggplot(heart, aes(x = "", y = chol)) +
+  geom_boxplot(fill = "lightblue", outlier.color = "red", outlier.shape = 1) +
+  labs(title = "Boxplot of Serum Cholesterol",
+       y = "Cholesterol (mg/dL)") +
+  theme_minimal() +
+  theme(axis.title.x = element_blank())
+
+# ==============================================================================
+# 4. BIVARIATE EXPLORATION (Relationships)
+# ==============================================================================
+# Scatter Plot: MaxHR vs. Oldpeak (ST Depression)
+ggplot(heart, aes(x = maxhr, y = oldpeak, color = ahd)) +
+  geom_point(alpha = 0.7, size = 2) +
+  geom_smooth(method = "loess", color = "black", linetype = "dashed", se = FALSE) +
+  scale_color_viridis_d() +
+  labs(title = "Max Heart Rate vs. ST Depression",
+       x = "Max Heart Rate (bpm)", y = "ST Depression (mm)", color = "AHD") +
+  theme_classic()
+
+# ==============================================================================
+# 5. MULTIVARIATE EXPLORATION (Correlation Matrix)
+# ==============================================================================
+# Calculate Pearson Correlation
+num_vars <- heart %>% select(age, restbp, chol, maxhr, oldpeak)
+cor_mat <- cor(num_vars, use = "complete.obs")
+
+# Plot Correlation Heatmap
+corrplot(cor_mat, 
+         method = "circle", 
+         type = "upper", 
+         order = "hclust",
+         tl.col = "black",
+         addCoef.col = "black",
+         number.cex = 0.9,
+         title = "Correlation Matrix of Continuous Clinical Variables",
+         mar = c(0,0,2,0))
+
+# Pairwise Scatterplot Matrix (GGally)
+ggpairs(heart, 
+        columns = c("age", "maxhr", "oldpeak", "ahd"),
+        aes(color = ahd, alpha = 0.6),
+        title = "Pairwise Relationships with AHD") +
+  scale_color_viridis_d() +
+  theme_minimal()
+
+cat("\n✅ EDA Complete. Insights ready for reporting.\n")</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-5">
+
+        <!-- Practical Exercises -->
+        <section id="exercises" class="mb-5">
+            <h2 class="section-title">Practical Exercises</h2>
+            <p class="lead">Test your EDA and visualization skills. Write your R code in the provided text areas, then click "Submit & Check Answer" to reveal the optimal <code>ggplot2</code> and <code>dplyr</code> solutions.</p>
+            
+            <!-- Exercise 1 -->
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">Exercise 1: Descriptive Statistics & Skewness</div>
+                <div class="card-body">
+                    <div class="mb-0">
+                        <label class="form-label fw-bold">1. You are analyzing the <code>income</code> variable in a dataset. The mean is $85,000, but the median is $42,000. What does this tell you about the shape of the distribution? Write the R code using the <code>psych</code> package to formally calculate the skewness and kurtosis of the <code>income</code> column in a dataframe named <code>df</code>.</label>
+                        <div class="exercise-area">
+                            <textarea class="form-control font-monospace" rows="4" placeholder="Write your interpretation and R code here..."></textarea>
+                            <button class="btn btn-outline-primary btn-sm mt-2" type="button" data-bs-toggle="collapse" data-bs-target="#ans1_1">Submit & Check Answer</button>
+                            <div class="collapse mt-3" id="ans1_1">
+                                <div class="alert alert-success mb-0">
+                                    <strong><i class="fas fa-check-circle me-2"></i>Correct Answer:</strong>
+                                    <p class="mt-2 mb-1"><strong>Interpretation:</strong> Because the mean is significantly higher than the median, the distribution is <strong>right-skewed (positively skewed)</strong>. A small number of extremely high incomes are pulling the mean upward, while the median remains robust and represents the "typical" person better.</p>
+                                    <pre class="mb-0 mt-2"><code class="language-r">library(psych)
+
+# Calculate skewness and kurtosis
+psych::describe(df$income)
+# Look at the 'skew' and 'kurtosis' columns in the output.</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Exercise 2 -->
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">Exercise 2: Publication-Quality Boxplot</div>
+                <div class="card-body">
+                    <div class="mb-0">
+                        <label class="form-label fw-bold">1. Create a <code>ggplot2</code> boxplot comparing the <code>cholesterol</code> levels across different <code>chest_pain</code> categories. <br> Requirements: <br> - Fill the boxes by <code>chest_pain</code>. <br> - Use a colorblind-friendly palette (e.g., <code>scale_fill_viridis_d()</code>). <br> - Apply <code>theme_minimal()</code>. <br> - Remove the legend (since the x-axis already shows the categories).</label>
+                        <div class="exercise-area">
+                            <textarea class="form-control font-monospace" rows="8" placeholder="Write your R code here..."></textarea>
+                            <button class="btn btn-outline-primary btn-sm mt-2" type="button" data-bs-toggle="collapse" data-bs-target="#ans2_1">Submit & Check Answer</button>
+                            <div class="collapse mt-3" id="ans2_1">
+                                <div class="alert alert-success mb-0">
+                                    <strong><i class="fas fa-check-circle me-2"></i>Correct Answer:</strong>
+                                    <pre class="mb-0 mt-2"><code class="language-r">library(ggplot2)
+library(viridis)
+
+ggplot(df, aes(x = chest_pain, y = cholesterol, fill = chest_pain)) +
+  geom_boxplot(outlier.color = "darkred", outlier.shape = 1) +
+  scale_fill_viridis_d(discrete = TRUE) +
+  labs(title = "Cholesterol Distribution by Chest Pain Type",
+       x = "Chest Pain Type",
+       y = "Serum Cholesterol (mg/dL)") +
+  theme_minimal() +
+  theme(legend.position = "none")</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Exercise 3 -->
+            <div class="card mb-4">
+                <div class="card-header bg-danger text-white">Exercise 3: Interpreting Correlation</div>
+                <div class="card-body">
+                    <div class="mb-0">
+                        <label class="form-label fw-bold">1. You run a Pearson correlation between <code>max_heart_rate</code> and <code>age</code> and get <i>r</i> = -0.82. <br> a) Describe the strength and direction of this relationship. <br> b) Why might you choose to use Spearman's rank correlation instead of Pearson for this specific dataset if you know it contains extreme outliers in heart rate?</label>
+                        <div class="exercise-area">
+                            <textarea class="form-control font-monospace" rows="4" placeholder="Write your interpretation here..."></textarea>
+                            <button class="btn btn-outline-danger btn-sm mt-2" type="button" data-bs-toggle="collapse" data-bs-target="#ans3_1">Submit & Check Answer</button>
+                            <div class="collapse mt-3" id="ans3_1">
+                                <div class="alert alert-success mb-0">
+                                    <strong><i class="fas fa-check-circle me-2"></i>Correct Answer:</strong>
+                                    <ul class="mt-2 mb-0">
+                                        <li><strong>a) Strength & Direction:</strong> An <i>r</i> of -0.82 indicates a <strong>strong, negative (inverse) linear relationship</strong>. As age increases, maximum heart rate tends to decrease significantly.</li>
+                                        <li><strong>b) Spearman vs. Pearson:</strong> Pearson correlation is highly sensitive to extreme outliers, which can artificially inflate or deflate the <i>r</i> value. Spearman correlation uses the <em>ranks</em> of the data rather than the raw values, making it robust to outliers and better suited for non-linear but monotonic relationships.</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Exercise 4 -->
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">Exercise 4: Cross-tabulations & Proportions</div>
+                <div class="card-body">
+                    <div class="mb-0">
+                        <label class="form-label fw-bold">1. Using the <code>janitor</code> package, write an R pipeline to create a cross-tabulation of <code>gender</code> (rows) and <code>survived</code> (columns). Calculate the <strong>row percentages</strong> (to see the survival rate within each gender), format to 1 decimal place, and append the counts in parentheses.</label>
+                        <div class="exercise-area">
+                            <textarea class="form-control font-monospace" rows="6" placeholder="Write your R code here..."></textarea>
+                            <button class="btn btn-outline-primary btn-sm mt-2" type="button" data-bs-toggle="collapse" data-bs-target="#ans4_1">Submit & Check Answer</button>
+                            <div class="collapse mt-3" id="ans4_1">
+                                <div class="alert alert-success mb-0">
+                                    <strong><i class="fas fa-check-circle me-2"></i>Correct Answer:</strong>
+                                    <pre class="mb-0 mt-2"><code class="language-r">library(janitor)
+
+df %>%
+  tabyl(gender, survived) %>%
+  adorn_percentages("row") %>%
+  adorn_pct_formatting(digits = 1) %>%
+  adorn_ns() %>%
+  adorn_title("combined")</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-5">
+
+        <!-- Module Summary -->
+        <section id="summary" class="mb-5">
+            <h2 class="section-title">Module Summary & Next Steps</h2>
+            <div class="card bg-light">
+                <div class="card-body">
+                    <p>In Module 2, we transitioned from raw data to deep understanding. We mastered the philosophy of Exploratory Data Analysis, learning how to summarize data using robust descriptive statistics and frequency tables. We harnessed the power of <code>ggplot2</code> to create publication-quality visualizations that reveal distributions, relationships, and outliers. Finally, we quantified associations using correlation matrices and established strict best practices to ensure our visual communication is accurate, accessible, and impactful.</p>
+                    
+                    <div class="alert alert-info mt-3 mb-0">
+                        <strong>🚀 What's Next?</strong>
+                        In <strong>Module 3: Feature Engineering and Preprocessing for Modeling</strong>, we will take the insights gained from our EDA and use them to mathematically transform our data. We will learn how to encode categorical variables, scale numerical features, handle severe class imbalance, and build robust preprocessing pipelines that prevent data leakage before feeding data into machine learning algorithms.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>Beyond Data Analytics</h5>
+                    <p class="fst-italic text-info">Transforming Raw Data into Insights</p>
+                    <p>Empowering the next generation of data professionals to master the tools that drive modern decision-making.</p>
+                </div>
+                <div class="col-md-3">
+                    <h5>Resources</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="https://ggplot2.tidyverse.org/" class="text-white text-decoration-none">ggplot2 Documentation</a></li>
+                        <li><a href="https://r4ds.hadley.nz/eda.html" class="text-white text-decoration-none">R for Data Science: EDA</a></li>
+                        <li><a href="https://stackoverflow.com/questions/tagged/ggplot2" class="text-white text-decoration-none">Stack Overflow</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3">
+                    <h5>Program</h5>
+                    <ul class="list-unstyled">
+                        <li>Professional Certificate</li>
+                        <li>in Data Science</li>
+                        <li class="mt-2"><a href="#home" class="text-white text-decoration-none">Back to Top</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="text-center mt-4 pt-3 border-top border-secondary">
+                <small>&copy; 2026 Beyond Data Analytics. All Rights Reserved.</small>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Highlight.js JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/languages/r.min.js"></script>
+    <script>hljs.highlightAll();</script>
+
+</body>
+</html>

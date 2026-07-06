@@ -1,0 +1,998 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Module 3: Categorical Data Analysis and ANOVA | Beyond Data Analytics</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Highlight.js for Code Syntax Highlighting -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark.min.css">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary-color: #0d6efd;
+            --secondary-color: #6c757d;
+            --accent-color: #0dcaf0;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+            padding-top: 70px;
+        }
+
+        .navbar {
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            background: linear-gradient(90deg, #0d6efd 0%, #0a58ca 100%);
+        }
+        .navbar-brand { font-weight: 700; letter-spacing: 1px; }
+        .nav-link { font-weight: 500; transition: all 0.3s; }
+        .nav-link:hover { color: #ffc107 !important; transform: translateY(-2px); }
+
+        .hero-section {
+            background: url('https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80') no-repeat center center/cover;
+            height: 450px;
+            position: relative;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+        .hero-overlay {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.75);
+        }
+        .hero-content { position: relative; z-index: 2; }
+
+        .card {
+            border: none;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            transition: transform 0.3s;
+            margin-bottom: 20px;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        .card-header {
+            background-color: #fff;
+            border-bottom: 2px solid #0d6efd;
+            font-weight: 700;
+            color: #0d6efd;
+        }
+
+        pre {
+            border-radius: 8px;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+        }
+        code { font-family: 'Consolas', 'Monaco', monospace; }
+
+        .section-title {
+            position: relative;
+            padding-bottom: 15px;
+            margin-bottom: 30px;
+            font-weight: 700;
+        }
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 4px;
+            background-color: #0d6efd;
+        }
+
+        .table-custom {
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .table-custom thead {
+            background: linear-gradient(90deg, #0d6efd 0%, #0a58ca 100%);
+            color: white;
+        }
+
+        footer {
+            background-color: #212529;
+            color: white;
+            padding: 40px 0;
+            margin-top: 50px;
+        }
+        
+        .exercise-area {
+            background: #f8f9fa;
+            border: 1px dashed #0d6efd;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 10px;
+        }
+
+        .beyond-data-section {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 30px 35px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            border-left: 6px solid #28a745;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            position: relative;
+            overflow: hidden;
+        }
+        .beyond-data-section::before {
+            content: "📊";
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 5em;
+            opacity: 0.1;
+        }
+        .beyond-data-section h2 { color: #1e3c72; font-size: 1.6em; margin-bottom: 15px; }
+        .beyond-data-section .highlight { color: #28a745; font-weight: bold; }
+
+        .math-block {
+            background: #f8f9fa;
+            border-left: 4px solid #6f42c1;
+            padding: 15px 25px;
+            margin: 20px 0;
+            border-radius: 0 8px 8px 0;
+            font-family: 'Cambria Math', 'Times New Roman', serif;
+            font-size: 1.25rem;
+            color: #212529;
+            overflow-x: auto;
+            line-height: 1.8;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="#"><i class="fas fa-chart-bar me-2"></i>Beyond Data Analytics</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="#chi-gof">3.1 Chi-Square GOF</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#chi-indep">3.2 Chi-Square Indep</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#fisher">3.3 Fisher's Exact</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#anova-intro">3.4 ANOVA Intro</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#anova-assum">3.5 Assumptions</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#one-way">3.6 One-Way</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#two-way">3.7 Two-Way</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#rep-measures">3.8 Repeated</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#posthoc">3.9 Post-Hoc</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#effect-size">3.10 Effect Size</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#practical">3.11 Practical</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="#exercises">Exercises</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header id="home" class="hero-section">
+        <div class="hero-overlay"></div>
+        <div class="hero-content container">
+            <h1 class="display-3 fw-bold">Module 3: Categorical Data & ANOVA</h1>
+            <p class="lead fs-4">Mastering Chi-Square Tests and Analysis of Variance for Group Comparisons</p>
+            <h3 class="text-info fw-light fst-italic">Beyond Data Analytics</h3>
+            <p class="fs-5 text-light">Transforming Raw Data into Insights</p>
+            <a href="#objectives" class="btn btn-primary btn-lg mt-3 px-5 rounded-pill">Start Learning</a>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <div class="container my-5">
+
+        <!-- Beyond Data Analytics Section -->
+        <section class="beyond-data-section mb-5">
+            <h2>🌐 Beyond Data Analytics</h2>
+            <p>At <span class="highlight">Beyond Data Analytics</span>, we believe that data is more than just numbers and tables—it is the strategic foundation of modern decision-making. Our curriculum is meticulously designed to bridge the gap between theoretical knowledge and real-world application, empowering professionals to extract actionable insights, drive business value, and innovate across industries.</p>
+            <p>By mastering categorical data analysis and ANOVA, you transition from comparing just two groups to evaluating complex, multi-factorial relationships. This module equips you with the statistical rigor to test associations between clinical categories, evaluate the efficacy of multiple treatment arms simultaneously, and control for confounding variables in experimental designs.</p>
+        </section>
+
+        <!-- Learning Objectives -->
+        <section id="objectives" class="mb-5">
+            <h2 class="section-title">Learning Objectives</h2>
+            <div class="card bg-light">
+                <div class="card-body">
+                    <p class="lead mb-3">By the end of this comprehensive module, participants will be able to:</p>
+                    <ul class="list-unstyled mb-0">
+                        <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> Analyze relationships and distributions among categorical variables using Chi-Square and Fisher's Exact tests.</li>
+                        <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> Compare means across three or more independent groups using One-Way and Two-Way ANOVA.</li>
+                        <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> Rigorously check model assumptions (Normality, Homogeneity of Variance) and apply corrective measures.</li>
+                        <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> Perform and interpret post-hoc multiple comparison procedures (Tukey's HSD, Bonferroni) to control Type I error inflation.</li>
+                        <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> Calculate and interpret effect sizes (Eta-squared, Cramer's V) to determine the practical significance of findings.</li>
+                        <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> Implement these advanced statistical techniques using R and Python on real-world clinical datasets.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-5">
+
+        <!-- 3.1 Chi-Square Goodness-of-Fit Test -->
+        <section id="chi-gof" class="mb-5">
+            <h2 class="section-title">3.1 Chi-Square Goodness-of-Fit Test</h2>
+            <p class="lead">The Chi-Square Goodness-of-Fit test determines whether a single categorical variable follows a specified theoretical distribution. It compares the <strong>observed</strong> frequencies in your sample to the <strong>expected</strong> frequencies if the null hypothesis were true.</p>
+            <div class="card">
+                <div class="card-body">
+                    <h5>The Hypotheses</h5>
+                    <ul>
+                        <li><strong>Null Hypothesis (<i>H<sub>0</sub></i>):</strong> The observed frequencies match the expected frequencies (the data follows the theoretical distribution).</li>
+                        <li><strong>Alternative Hypothesis (<i>H<sub>A</sub></i>):</strong> The observed frequencies do not match the expected frequencies.</li>
+                    </ul>
+
+                    <h5 class="mt-4">The Test Statistic</h5>
+                    <p>The Chi-Square statistic measures the squared deviation between observed (<i>O</i>) and expected (<i>E</i>) counts, scaled by the expected count:</p>
+                    <div class="math-block">
+                        <i>&chi;</i><sup>2</sup> = &Sigma; [ (<i>O<sub>i</sub></i> - <i>E<sub>i</sub></i>)<sup>2</sup> / <i>E<sub>i</sub></i> ]
+                    </div>
+                    <p>Where <i>df</i> = <i>k</i> - 1 (<i>k</i> is the number of categories).</p>
+
+                    <h5 class="mt-4">Clinical Example: Genetic Ratios</h5>
+                    <p>Suppose a genetic theory predicts that a certain trait should appear in a 3:1 ratio (Dominant:Recessive). In a sample of 100 patients, you observe 78 Dominant and 22 Recessive. Does the data fit the theory?</p>
+                    <ul>
+                        <li><strong>Expected:</strong> 75 Dominant, 25 Recessive.</li>
+                        <li><strong>Calculation:</strong> <i>&chi;</i><sup>2</sup> = [(78-75)<sup>2</sup>/75] + [(22-25)<sup>2</sup>/25] = 0.12 + 0.36 = 0.48.</li>
+                        <li><strong>Conclusion:</strong> With <i>df</i> = 1, the critical value at &alpha;=0.05 is 3.84. Since 0.48 &lt; 3.84, we fail to reject <i>H<sub>0</sub></i>. The data fits the 3:1 genetic model.</li>
+                    </ul>
+
+                    <h5 class="mt-4">R Implementation</h5>
+                    <pre><code class="language-r"># Observed counts
+observed <- c(Dominant = 78, Recessive = 22)
+
+# Expected probabilities (3:1 ratio)
+expected_probs <- c(0.75, 0.25)
+
+# Perform Chi-Square Goodness-of-Fit Test
+chisq.test(observed, p = expected_probs)</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-5">
+
+        <!-- 3.2 Chi-Square Test of Independence -->
+        <section id="chi-indep" class="mb-5">
+            <h2 class="section-title">3.2 Chi-Square Test of Independence</h2>
+            <p class="lead">This test evaluates whether there is a significant association between <strong>two categorical variables</strong>. It uses a contingency table (cross-tabulation) to compare observed joint frequencies against expected frequencies assuming the variables are independent.</p>
+            <div class="card">
+                <div class="card-body">
+                    <h5>Calculating Expected Frequencies</h5>
+                    <p>If the two variables are truly independent, the expected count for any cell in the contingency table is calculated as:</p>
+                    <div class="math-block">
+                        <i>E<sub>ij</sub></i> = (<i>Row Total<sub>i</sub></i> &times; <i>Column Total<sub>j</sub></i>) / <i>Grand Total</i>
+                    </div>
+
+                    <h5 class="mt-4">Degrees of Freedom</h5>
+                    <p>For a table with <i>r</i> rows and <i>c</i> columns:</p>
+                    <div class="math-block">
+                        <i>df</i> = (<i>r</i> - 1) &times; (<i>c</i> - 1)
+                    </div>
+
+                    <h5 class="mt-4">Clinical Example: Thalassemia Stress Test vs. Heart Disease</h5>
+                    <p>Using the <code>Heart.csv</code> dataset, we want to know if the <code>Thal</code> result (Normal, Fixed Defect, Reversible Defect) is independent of <code>AHD</code> (No Disease, Disease).</p>
+                    
+                    <div class="alert alert-info">
+                        <strong>Interpretation Rule of Thumb:</strong> If the p-value &lt; 0.05, we reject the null hypothesis of independence and conclude that the two variables are <strong>associated</strong>. In clinical terms, the stress test result provides diagnostic information about the presence of heart disease.
+                    </div>
+
+                    <h5 class="mt-4">R Implementation</h5>
+                    <pre><code class="language-r"># Load data
+heart <- read.csv("Heart.csv")
+heart <- na.omit(heart) # Remove missing values for Chi-Square
+
+# Create contingency table
+tab <- table(heart$Thal, heart$AHD)
+print(tab)
+
+# Perform Chi-Square Test of Independence
+chi_test <- chisq.test(tab)
+print(chi_test)
+
+# Extract Expected Counts to verify assumptions
+print(chi_test$expected)</code></pre>
+
+                    <h5 class="mt-4">Python Implementation</h5>
+                    <pre><code class="language-python">import pandas as pd
+from scipy.stats import chi2_contingency
+
+# Load and clean data
+df = pd.read_csv("Heart.csv").dropna(subset=['Thal', 'AHD'])
+
+# Create contingency table
+contingency_table = pd.crosstab(df['Thal'], df['AHD'])
+
+# Perform Chi-Square Test
+chi2, p, dof, expected = chi2_contingency(contingency_table)
+
+print(f"Chi2 Statistic: {chi2:.4f}")
+print(f"P-value: {p:.6f}")
+print(f"Degrees of Freedom: {dof}")</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-5">
+
+        <!-- 3.3 Fisher's Exact Test -->
+        <section id="fisher" class="mb-5">
+            <h2 class="section-title">3.3 Fisher's Exact Test</h2>
+            <p class="lead">The Chi-Square test is an <em>approximation</em> that relies on large sample sizes. A common rule of thumb is that the Chi-Square test is invalid if more than 20% of the cells have <strong>expected frequencies less than 5</strong>. In these cases, we must use Fisher's Exact Test.</p>
+            <div class="card">
+                <div class="card-body">
+                    <h5>When to Use Fisher's Exact Test</h5>
+                    <ul>
+                        <li>Small sample sizes (e.g., <i>n</i> &lt; 20).</li>
+                        <li>Highly imbalanced contingency tables (e.g., a rare disease vs. a rare exposure).</li>
+                        <li>Any cell in a 2x2 table has an expected count &lt; 5.</li>
+                    </ul>
+
+                    <h5 class="mt-4">How It Works</h5>
+                    <p>Unlike Chi-Square, Fisher's Exact Test does not rely on an approximation. It calculates the <strong>exact probability</strong> of observing the specific arrangement of data in the table, assuming the null hypothesis of independence is true, using the <strong>Hypergeometric Distribution</strong>.</p>
+                    <div class="math-block">
+                        <i>p</i> = [ (<i>a+b</i>)! (<i>c+d</i>)! (<i>a+c</i>)! (<i>b+d</i>)! ] / [ <i>a</i>! <i>b</i>! <i>c</i>! <i>d</i>! <i>n</i>! ]
+                    </div>
+                    <p>Where <i>a, b, c, d</i> are the counts in the four cells of a 2x2 table, and <i>n</i> is the grand total.</p>
+
+                    <h5 class="mt-4">R Implementation</h5>
+                    <pre><code class="language-r"># Example: Rare side effect of a new drug
+# Rows: Drug vs Placebo
+# Cols: Side Effect vs No Side Effect
+rare_table <- matrix(c(2, 8, 1, 19), nrow = 2, 
+                     dimnames = list(Treatment = c("Drug", "Placebo"), 
+                                     Outcome = c("SideEffect", "NoSideEffect")))
+
+# Perform Fisher's Exact Test
+fisher.test(rare_table)</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-5">
+
+        <!-- 3.4 Introduction to ANOVA -->
+        <section id="anova-intro" class="mb-5">
+            <h2 class="section-title">3.4 Introduction to Analysis of Variance (ANOVA)</h2>
+            <p class="lead">ANOVA is a statistical method used to test differences between two or more means. It was developed by Ronald Fisher to solve a critical problem: <strong>Why not just use multiple t-tests?</strong></p>
+            <div class="card">
+                <div class="card-body">
+                    <h5>The Problem with Multiple t-Tests</h5>
+                    <p>If you want to compare the mean cholesterol levels of 4 different diet plans, you would need to run 6 separate t-tests (Plan 1 vs 2, 1 vs 3, 1 vs 4, 2 vs 3, 2 vs 4, 3 vs 4). If you set your significance level (&alpha;) to 0.05 for each test, the probability of making <strong>at least one Type I error (False Positive)</strong> across all 6 tests skyrockets to nearly 26%! This is called the <strong>Family-Wise Error Rate (FWER)</strong> inflation.</p>
+                    
+                    <h5 class="mt-4">The ANOVA Solution</h5>
+                    <p>ANOVA tests the <strong>global null hypothesis</strong> that all group means are equal in a single step, protecting the overall &alpha; level.</p>
+                    <ul>
+                        <li><i>H<sub>0</sub></i>: <i>&mu;<sub>1</sub></i> = <i>&mu;<sub>2</sub></i> = ... = <i>&mu;<sub>k</sub></i></li>
+                        <li><i>H<sub>A</sub></i>: At least one mean is different from the others.</li>
+                    </ul>
+
+                    <h5 class="mt-4">The F-Statistic: Partitioning Variance</h5>
+                    <p>ANOVA works by partitioning the total variability in the data into two components:</p>
+                    <ol>
+                        <li><strong>Between-Group Variance (SSB):</strong> Variability due to the differences between the treatment groups (the "signal").</li>
+                        <li><strong>Within-Group Variance (SSW):</strong> Variability due to random error or individual differences within the same group (the "noise").</li>
+                    </ol>
+                    <div class="math-block">
+                        <i>SST</i> (Total) = <i>SSB</i> (Between) + <i>SSW</i> (Within)
+                    </div>
+                    <p>The F-statistic is the ratio of the Mean Square Between to the Mean Square Within:</p>
+                    <div class="math-block">
+                        <i>F</i> = <i>MSB</i> / <i>MSW</i> = (<i>SSB</i> / <i>df<sub>B</sub></i>) / (<i>SSW</i> / <i>df<sub>W</sub></i>)
+                    </div>
+                    <p>If the treatment has a real effect, the Between-Group variance will be much larger than the Within-Group variance, resulting in a large <i>F</i>-value and a small p-value.</p>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-5">
+
+        <!-- 3.5 Assumptions of ANOVA -->
+        <section id="anova-assum" class="mb-5">
+            <h2 class="section-title">3.5 Assumptions of ANOVA</h2>
+            <p class="lead">Like all parametric tests, ANOVA relies on strict mathematical assumptions. Violating these assumptions can lead to invalid p-values and incorrect conclusions.</p>
+            <div class="card">
+                <div class="card-body">
+                    <div class="accordion" id="anovaAssumptions">
+                        <!-- Assumption 1 -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="headAssum1">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#colAssum1">
+                                    <span class="badge bg-primary me-2">1</span> Independence of Observations
+                                </button>
+                            </h2>
+                            <div id="colAssum1" class="accordion-collapse collapse" data-bs-parent="#anovaAssumptions">
+                                <div class="accordion-body">
+                                    <p>The data points in different groups must be independent. A subject in Group A cannot influence a subject in Group B. Furthermore, there is no "repeated measures" (one subject measured multiple times) in a standard One-Way ANOVA.</p>
+                                    <p><strong>How to ensure:</strong> Proper randomization and experimental design.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Assumption 2 -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="headAssum2">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#colAssum2">
+                                    <span class="badge bg-primary me-2">2</span> Normality
+                                </button>
+                            </h2>
+                            <div id="colAssum2" class="accordion-collapse collapse" data-bs-parent="#anovaAssumptions">
+                                <div class="accordion-body">
+                                    <p>The dependent variable should be approximately normally distributed <em>within each group</em>.</p>
+                                    <p><strong>How to check:</strong></p>
+                                    <ul>
+                                        <li><strong>Visual:</strong> Q-Q plots, Histograms.</li>
+                                        <li><strong>Statistical:</strong> Shapiro-Wilk test (<i>H<sub>0</sub></i>: Data is normal. If <i>p</i> &lt; 0.05, normality is violated).</li>
+                                    </ul>
+                                    <p><strong>Remedy:</strong> If violated, apply a data transformation (e.g., Log, Square Root) or use a non-parametric alternative like the <strong>Kruskal-Wallis test</strong>.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Assumption 3 -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="headAssum3">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#colAssum3">
+                                    <span class="badge bg-primary me-2">3</span> Homogeneity of Variance (Homoscedasticity)
+                                </button>
+                            </h2>
+                            <div id="colAssum3" class="accordion-collapse collapse" data-bs-parent="#anovaAssumptions">
+                                <div class="accordion-body">
+                                    <p>The variance of the dependent variable must be equal across all groups. (<i>&sigma;<sub>1</sub><sup>2</sup></i> = <i>&sigma;<sub>2</sub><sup>2</sup></i> = ... = <i>&sigma;<sub>k</sub><sup>2</sup></i>).</p>
+                                    <p><strong>How to check:</strong></p>
+                                    <ul>
+                                        <li><strong>Levene's Test:</strong> More robust to departures from normality. (<i>H<sub>0</sub></i>: Variances are equal. If <i>p</i> &lt; 0.05, variances are unequal).</li>
+                                        <li><strong>Bartlett's Test:</strong> More powerful but highly sensitive to non-normality.</li>
+                                    </ul>
+                                    <p><strong>Remedy:</strong> If violated, use <strong>Welch's ANOVA</strong>, which does not assume equal variances.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-5">
+
+        <!-- 3.6 One-Way ANOVA -->
+        <section id="one-way" class="mb-5">
+            <h2 class="section-title">3.6 One-Way ANOVA</h2>
+            <p class="lead">A One-Way ANOVA is used when you have <strong>one categorical independent variable</strong> (factor) with three or more levels, and a continuous dependent variable.</p>
+            <div class="card">
+                <div class="card-body">
+                    <h5>Clinical Example: Maximum Heart Rate by Chest Pain Type</h5>
+                    <p>We want to know if the mean Maximum Heart Rate (<code>MaxHR</code>) differs across the three types of Chest Pain (<code>ChestPain</code>: typical, nonanginal, asymptomatic).</p>
+
+                    <h5 class="mt-4">R Implementation</h5>
+                    <pre><code class="language-r"># Load data and filter for complete cases
+heart <- na.omit(read.csv("Heart.csv"))
+
+# 1. Check Assumptions
+# Normality (Shapiro-Wilk on residuals)
+model_aov <- aov(MaxHR ~ ChestPain, data = heart)
+shapiro.test(residuals(model_aov))
+
+# Homogeneity of Variance (Levene's Test)
+library(car)
+leveneTest(MaxHR ~ ChestPain, data = heart)
+
+# 2. Run One-Way ANOVA
+anova_result <- aov(MaxHR ~ ChestPain, data = heart)
+summary(anova_result)
+
+# 3. Interpret Output
+# Look at the "Pr(>F)" column. If < 0.05, at least one group mean is significantly different.</code></pre>
+
+                    <h5 class="mt-4">Python Implementation</h5>
+                    <pre><code class="language-python">import pandas as pd
+import scipy.stats as stats
+from statsmodels.formula.api import ols
+from statsmodels.stats.anova import anova_lm
+
+# Load data
+df = pd.read_csv("Heart.csv").dropna()
+
+# 1. Check Homogeneity of Variance (Levene's Test)
+groups = [group['MaxHR'].values for name, group in df.groupby('ChestPain')]
+stat, p = stats.levene(*groups)
+print(f"Levene's Test p-value: {p:.4f}")
+
+# 2. Run One-Way ANOVA
+# Method A: SciPy (Returns F-stat and p-value only)
+f_stat, p_val = stats.f_oneway(*groups)
+print(f"ANOVA F-stat: {f_stat:.4f}, p-value: {p_val:.6f}")
+
+# Method B: Statsmodels (Returns full ANOVA table)
+model = ols('MaxHR ~ C(ChestPain)', data=df).fit()
+anova_table = anova_lm(model, typ=2)
+print(anova_table)</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-5">
+
+        <!-- 3.7 Two-Way ANOVA -->
+        <section id="two-way" class="mb-5">
+            <h2 class="section-title">3.7 Two-Way ANOVA</h2>
+            <p class="lead">A Two-Way ANOVA is used when you have <strong>two categorical independent variables</strong>. This allows you to test the <strong>main effects</strong> of each variable, but more importantly, it tests the <strong>interaction effect</strong> between them.</p>
+            <div class="card">
+                <div class="card-body">
+                    <h5>Understanding Interaction Effects</h5>
+                    <p>An interaction occurs when the effect of one independent variable on the dependent variable <strong>depends on the level</strong> of the other independent variable.</p>
+                    <p><em>Example:</em> Does the effect of a Diet Plan on Cholesterol depend on the patient's Sex? If a diet works brilliantly for men but has no effect on women, that is a significant Diet &times; Sex interaction.</p>
+
+                    <h5 class="mt-4">R Implementation</h5>
+                    <pre><code class="language-r"># The '*' operator includes both main effects and the interaction term
+# Equivalent to: MaxHR ~ ChestPain + Sex + ChestPain:Sex
+model_2way <- aov(MaxHR ~ ChestPain * Sex, data = heart)
+summary(model_2way)
+
+# Interpretation:
+# 1. Look at the interaction term (ChestPain:Sex) first.
+# 2. If interaction is significant (p < 0.05), the main effects cannot be interpreted in isolation.
+# 3. If interaction is NOT significant, you can interpret the main effects of ChestPain and Sex.</code></pre>
+
+                    <h5 class="mt-4">Visualizing Interactions in R</h5>
+                    <pre><code class="language-r">library(ggplot2)
+library(rstatix)
+
+# Calculate means and standard errors for plotting
+plot_data <- heart %>%
+  group_by(ChestPain, Sex) %>%
+  get_summary_stats(MaxHR, type = "mean_se")
+
+ggplot(plot_data, aes(x = ChestPain, y = MaxHR, fill = Sex)) +
+  geom_bar(stat = "identity", position = "dodge", color = "black") +
+  geom_errorbar(aes(ymin = MaxHR - se, ymax = MaxHR + se), 
+                position = position_dodge(0.9), width = 0.2) +
+  labs(title = "Interaction Plot: MaxHR by Chest Pain and Sex",
+       y = "Mean Maximum Heart Rate") +
+  theme_minimal()</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-5">
+
+        <!-- 3.8 Repeated Measures ANOVA -->
+        <section id="rep-measures" class="mb-5">
+            <h2 class="section-title">3.8 Repeated Measures ANOVA (Introduction)</h2>
+            <p class="lead">Standard ANOVA assumes independence of observations. But what if you measure the <strong>same patients</strong> at multiple time points (e.g., Baseline, Week 4, Week 8)? The data points are correlated. Repeated Measures ANOVA handles this within-subjects design.</p>
+            <div class="card">
+                <div class="card-body">
+                    <h5>Key Concept: Partitioning Out Individual Differences</h5>
+                    <p>Because the same people are measured repeatedly, we can isolate the variance due to "Subject ID" and remove it from the error term. This dramatically increases statistical power.</p>
+
+                    <h5 class="mt-4">The Sphericity Assumption</h5>
+                    <p>Repeated Measures ANOVA introduces a new assumption: <strong>Sphericity</strong>. This assumes that the variances of the <em>differences</em> between all possible pairs of within-subject conditions are equal.</p>
+                    <ul>
+                        <li><strong>Mauchly's Test:</strong> Tests for sphericity. If <i>p</i> &lt; 0.05, sphericity is violated.</li>
+                        <li><strong>Correction:</strong> If violated, apply the <strong>Greenhouse-Geisser</strong> or <strong>Huynh-Feldt</strong> correction to the degrees of freedom.</li>
+                    </ul>
+
+                    <h5 class="mt-4">R Implementation (Using ezANOVA)</h5>
+                    <pre><code class="language-r">library(ez)
+
+# Data must be in "long" format: SubjectID, TimePoint, Cholesterol
+# Example:
+# Subject  Time   Chol
+# 1        Pre    240
+# 1        Post   210
+# 2        Pre    230 ...
+
+rm_anova <- ezANOVA(
+  data = df_long,
+  dv = Chol,             # Dependent Variable
+  wid = SubjectID,       # Within-subject ID
+  within = .(TimePoint), # The repeated factor
+  detailed = TRUE
+)
+
+print(rm_anova$anova) # Look for Mauchly's Test and Greenhouse-Geisser p-value</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-5">
+
+        <!-- 3.9 Multiple Comparison Procedures -->
+        <section id="posthoc" class="mb-5">
+            <h2 class="section-title">3.9 Multiple Comparison Procedures (Post-Hoc Tests)</h2>
+            <p class="lead">A significant ANOVA tells you that <em>at least one</em> group mean is different, but it doesn't tell you <strong>which ones</strong>. To find out, you must perform pairwise comparisons. However, doing multiple t-tests inflates the Type I error rate. Post-hoc tests correct for this.</p>
+            <div class="card">
+                <div class="card-body">
+                    <h5>1. Tukey's Honestly Significant Difference (HSD)</h5>
+                    <p>Tukey's HSD is the most common post-hoc test. It controls the <strong>Family-Wise Error Rate (FWER)</strong> at exactly &alpha; (e.g., 0.05) across <em>all possible pairwise comparisons</em>. It is highly recommended when you want to compare every group to every other group.</p>
+                    
+                    <h5 class="mt-4">2. Bonferroni Adjustment</h5>
+                    <p>The Bonferroni correction is a simple, conservative method. You divide your desired overall &alpha; level by the number of comparisons you are making.</p>
+                    <div class="math-block">
+                        <i>&alpha;</i><sub>adjusted</sub> = <i>&alpha;</i><sub>overall</sub> / <i>m</i> &nbsp;&nbsp; (where <i>m</i> is the number of pairwise tests)
+                    </div>
+                    <p>If you do 3 comparisons and want &alpha;=0.05, you only declare a result significant if its p-value is &lt; 0.0167. It is very safe but can increase Type II errors (missing real differences).</p>
+
+                    <h5 class="mt-4">R Implementation</h5>
+                    <pre><code class="language-r"># Assuming 'anova_result' is your significant One-Way ANOVA model
+
+# Tukey's HSD
+tukey_results <- TukeyHSD(anova_result, conf.level = 0.95)
+print(tukey_results)
+plot(tukey_results) # Visualize the confidence intervals
+
+# Bonferroni Adjustment (using pairwise.t.test)
+pairwise.t.test(heart$MaxHR, heart$ChestPain, p.adjust.method = "bonferroni")</code></pre>
+
+                    <h5 class="mt-4">Interpreting Tukey's Output</h5>
+                    <p>The output provides a p-value for every pair (e.g., typical vs asymptomatic). If the <code>p adj</code> &lt; 0.05, those two specific groups have significantly different means. The 95% Family-Wise Confidence Interval that does not contain zero also indicates significance.</p>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-5">
+
+        <!-- 3.10 Effect Size -->
+        <section id="effect-size" class="mb-5">
+            <h2 class="section-title">3.10 Effect Size</h2>
+            <p class="lead">A p-value only tells you if an effect exists (statistical significance). It does <strong>not</strong> tell you if the effect is large enough to matter in the real world (clinical/practical significance). For this, we need Effect Sizes.</p>
+            <div class="card">
+                <div class="card-body">
+                    <h5>Eta-Squared (<i>&eta;</i><sup>2</sup>) for ANOVA</h5>
+                    <p>Eta-squared represents the proportion of the total variance in the dependent variable that is explained by the independent variable.</p>
+                    <div class="math-block">
+                        <i>&eta;</i><sup>2</sup> = <i>SSB</i> / <i>SST</i>
+                    </div>
+                    <p><strong>Cohen's Guidelines for <i>&eta;</i><sup>2</sup>:</strong></p>
+                    <ul>
+                        <li>Small effect: 0.01</li>
+                        <li>Medium effect: 0.06</li>
+                        <li>Large effect: 0.14</li>
+                    </ul>
+
+                    <h5 class="mt-4">Cramer's V for Chi-Square</h5>
+                    <p>For contingency tables, Cramer's V measures the strength of association between two categorical variables, ranging from 0 (no association) to 1 (perfect association).</p>
+                    <div class="math-block">
+                        <i>V</i> = &radic; [ <i>&chi;</i><sup>2</sup> / (<i>n</i> &times; <i>df</i><sup>*</sup>) ] &nbsp;&nbsp; (where <i>df</i><sup>*</sup> = min(<i>r</i>-1, <i>c</i>-1))
+                    </div>
+
+                    <h5 class="mt-4">R Implementation</h5>
+                    <pre><code class="language-r"># Eta-Squared for ANOVA
+library(rstatix)
+eta_squared(anova_result)
+
+# Cramer's V for Chi-Square
+library(rstatix)
+# Assuming 'tab' is your contingency table
+chisq_result <- chisq.test(tab)
+cramer_v <- sqrt(chisq_result$statistic / (sum(tab) * min(nrow(tab)-1, ncol(tab)-1)))
+print(cramer_v)</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-5">
+
+        <!-- 3.11 Practical Session -->
+        <section id="practical" class="mb-5">
+            <h2 class="section-title">3.11 Practical Session: Comprehensive Workflow</h2>
+            <p class="lead">Let's combine everything we've learned into a robust, reproducible statistical analysis pipeline using the <code>Heart.csv</code> dataset.</p>
+            <div class="card">
+                <div class="card-body">
+                    <h5>Scenario: Evaluating Diagnostic Markers and Treatment Efficacy</h5>
+                    <p>We will perform two analyses:</p>
+                    <ol>
+                        <li><strong>Categorical:</strong> Is the Thalassemia stress test (<code>Thal</code>) associated with Heart Disease (<code>AHD</code>)?</li>
+                        <li><strong>Continuous:</strong> Does Maximum Heart Rate (<code>MaxHR</code>) differ significantly across Chest Pain types, and which specific types differ?</li>
+                    </ol>
+
+                    <h5 class="mt-4">Complete R Script</h5>
+                    <pre><code class="language-r"># ==============================================================================
+# 1. SETUP AND DATA LOADING
+# ==============================================================================
+library(tidyverse)
+library(car)       # For Levene's Test
+library(rstatix)   # For effect sizes and post-hoc
+library(ggpubr)    # For publication-ready plots
+
+heart <- read.csv("Heart.csv") %>% na.omit()
+
+# ==============================================================================
+# 2. CATEGORICAL ANALYSIS: Chi-Square Test of Independence
+# ==============================================================================
+cat("\n--- CHI-SQUARE ANALYSIS ---\n")
+tab <- table(heart$Thal, heart$AHD)
+chi_res <- chisq.test(tab)
+
+cat("Chi-Square Statistic:", chi_res$statistic, "\n")
+cat("P-value:", chi_res$p.value, "\n")
+
+# Calculate Cramer's V
+n <- sum(tab)
+df_star <- min(nrow(tab)-1, ncol(tab)-1)
+cramer_v <- sqrt(chi_res$statistic / (n * df_star))
+cat("Cramer's V (Effect Size):", cramer_v, "\n")
+
+# Interpretation
+if(chi_res$p.value < 0.05) {
+  cat("Conclusion: Thal and AHD are significantly associated.\n")
+} else {
+  cat("Conclusion: No significant association found.\n")
+}
+
+# ==============================================================================
+# 3. CONTINUOUS ANALYSIS: One-Way ANOVA
+# ==============================================================================
+cat("\n--- ONE-WAY ANOVA ANALYSIS ---\n")
+
+# A. Check Assumptions
+# 1. Normality of Residuals
+model_aov <- aov(MaxHR ~ ChestPain, data = heart)
+shapiro_p <- shapiro.test(residuals(model_aov))$p.value
+cat("Shapiro-Wilk P-value (Normality):", shapiro_p, "\n")
+
+# 2. Homogeneity of Variance
+levene_res <- leveneTest(MaxHR ~ ChestPain, data = heart)
+levene_p <- levene_res[1, "Pr(>F)"]
+cat("Levene's P-value (Homogeneity):", levene_p, "\n")
+
+# B. Run ANOVA
+anova_sum <- summary(model_aov)
+f_val <- anova_sum[[1]]$`F value`[1]
+p_val <- anova_sum[[1]]$`Pr(>F)`[1]
+cat("F-Statistic:", f_val, "| P-value:", p_val, "\n")
+
+# C. Effect Size
+eta_sq <- eta_squared(model_aov)
+cat("Eta-Squared:", eta_sq$eta2[1], "\n")
+
+# D. Post-Hoc Test (Tukey's HSD)
+if(p_val < 0.05) {
+  cat("\nPerforming Tukey's HSD...\n")
+  tukey <- TukeyHSD(model_aov)
+  print(tukey)
+  
+  # Visualize Post-Hoc Results
+  plot(tukey, las = 1, col = "blue")
+}</code></pre>
+
+                    <h5 class="mt-4">Complete Python Script</h5>
+                    <pre><code class="language-python">import pandas as pd
+import numpy as np
+import scipy.stats as stats
+from statsmodels.formula.api import ols
+from statsmodels.stats.anova import anova_lm
+from statsmodels.stats.multicomp import pairwise_tukeyhsd
+
+# 1. Load Data
+df = pd.read_csv("Heart.csv").dropna()
+
+# ==============================================================================
+# 2. CATEGORICAL ANALYSIS: Chi-Square
+# ==============================================================================
+print("--- CHI-SQUARE ANALYSIS ---")
+contingency = pd.crosstab(df['Thal'], df['AHD'])
+chi2, p_chi, dof, expected = stats.chi2_contingency(contingency)
+
+# Cramer's V
+n = contingency.sum().sum()
+v = np.sqrt(chi2 / (n * min(contingency.shape[0]-1, contingency.shape[1]-1)))
+
+print(f"Chi2: {chi2:.4f}, P-value: {p_chi:.6f}")
+print(f"Cramer's V: {v:.4f}")
+
+# ==============================================================================
+# 3. CONTINUOUS ANALYSIS: One-Way ANOVA
+# ==============================================================================
+print("\n--- ONE-WAY ANOVA ANALYSIS ---")
+
+# A. Check Assumptions
+groups = [group['MaxHR'].values for name, group in df.groupby('ChestPain')]
+
+# Normality (Shapiro-Wilk on residuals)
+model = ols('MaxHR ~ C(ChestPain)', data=df).fit()
+residuals = model.resid
+stat_shap, p_shap = stats.shapiro(residuals)
+print(f"Shapiro-Wilk P-value: {p_shap:.6f}")
+
+# Homogeneity of Variance (Levene's)
+stat_lev, p_lev = stats.levene(*groups)
+print(f"Levene's P-value: {p_lev:.6f}")
+
+# B. Run ANOVA
+anova_results = anova_lm(model, typ=2)
+print("\nANOVA Table:")
+print(anova_results)
+
+# C. Effect Size (Eta-Squared)
+ss_between = anova_results.loc['C(ChestPain)', 'sum_sq']
+ss_total = anova_results['sum_sq'].sum()
+eta_sq = ss_between / ss_total
+print(f"\nEta-Squared: {eta_sq:.4f}")
+
+# D. Post-Hoc Test (Tukey's HSD)
+tukey = pairwise_tukeyhsd(endog=df['MaxHR'],    # Response variable
+                          groups=df['ChestPain'], # Grouping variable
+                          alpha=0.05)             # Significance level
+print("\nTukey's HSD Results:")
+print(tukey)</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-5">
+
+        <!-- Practical Exercises -->
+        <section id="exercises" class="mb-5">
+            <h2 class="section-title">Practical Exercises</h2>
+            <p class="lead">Test your mastery of categorical analysis and ANOVA. Write your answers or code, then reveal the solutions.</p>
+            
+            <!-- Exercise 1 -->
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">Exercise 1: Choosing the Right Test</div>
+                <div class="card-body">
+                    <div class="mb-0">
+                        <label class="form-label fw-bold">1. Match the research scenario to the correct statistical test: <br> a) Comparing the mean blood pressure across 4 different age groups (Young, Mid, Senior, Elderly). <br> b) Determining if there is an association between Blood Type (A, B, AB, O) and Susceptibility to a specific virus (Yes, No). <br> c) Comparing the proportion of patients who recovered (Yes/No) against a theoretical 50% recovery rate. <br> d) Testing if a new drug reduces anxiety scores in the same 20 patients before and after a 4-week treatment.</label>
+                        <div class="exercise-area">
+                            <textarea class="form-control font-monospace" rows="4" placeholder="Write your matches here..."></textarea>
+                            <button class="btn btn-outline-primary btn-sm mt-2" type="button" data-bs-toggle="collapse" data-bs-target="#ans1_1">Submit & Check Answer</button>
+                            <div class="collapse mt-3" id="ans1_1">
+                                <div class="alert alert-success mb-0">
+                                    <strong><i class="fas fa-check-circle me-2"></i>Correct Answer:</strong>
+                                    <ul class="mt-2 mb-0">
+                                        <li>a) <strong>One-Way ANOVA</strong> (Continuous DV, 1 categorical IV with >2 levels).</li>
+                                        <li>b) <strong>Chi-Square Test of Independence</strong> (Two categorical variables).</li>
+                                        <li>c) <strong>Chi-Square Goodness-of-Fit</strong> (One categorical variable compared to a theoretical distribution).</li>
+                                        <li>d) <strong>Paired t-test</strong> or <strong>Repeated Measures ANOVA</strong> (Same subjects measured twice).</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Exercise 2 -->
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">Exercise 2: Interpreting ANOVA Output</div>
+                <div class="card-body">
+                    <div class="mb-0">
+                        <label class="form-label fw-bold">1. You run a One-Way ANOVA comparing Cholesterol across 3 diets. The output shows: <i>F</i>(2, 87) = 4.56, <i>p</i> = 0.013, <i>&eta;</i><sup>2</sup> = 0.09. <br> a) What is your statistical conclusion regarding the null hypothesis? <br> b) How many total patients were in the study? <br> c) How do you interpret the effect size?</label>
+                        <div class="exercise-area">
+                            <textarea class="form-control font-monospace" rows="4" placeholder="Write your interpretation here..."></textarea>
+                            <button class="btn btn-outline-primary btn-sm mt-2" type="button" data-bs-toggle="collapse" data-bs-target="#ans2_1">Submit & Check Answer</button>
+                            <div class="collapse mt-3" id="ans2_1">
+                                <div class="alert alert-success mb-0">
+                                    <strong><i class="fas fa-check-circle me-2"></i>Correct Answer:</strong>
+                                    <ul class="mt-2 mb-0">
+                                        <li>a) Since <i>p</i> = 0.013 &lt; 0.05, we <strong>reject the null hypothesis</strong>. There is a statistically significant difference in mean cholesterol levels among the three diets.</li>
+                                        <li>b) The degrees of freedom are <i>df<sub>B</sub></i> = 2, <i>df<sub>W</sub></i> = 87. Total <i>N</i> = <i>df<sub>B</sub></i> + <i>df<sub>W</sub></i> + 1 = 2 + 87 + 1 = <strong>90 patients</strong>.</li>
+                                        <li>c) <i>&eta;</i><sup>2</sup> = 0.09. According to Cohen's guidelines (0.01=small, 0.06=medium, 0.14=large), this represents a <strong>medium effect size</strong>. The type of diet explains 9% of the variance in cholesterol levels, which is a clinically meaningful impact.</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Exercise 3 -->
+            <div class="card mb-4">
+                <div class="card-header bg-danger text-white">Exercise 3: Assumption Violations</div>
+                <div class="card-body">
+                    <div class="mb-0">
+                        <label class="form-label fw-bold">1. You are analyzing the effect of a training program on Reaction Time. Your Levene's Test yields a p-value of 0.002. Your Shapiro-Wilk test yields a p-value of 0.15. What assumption is violated, and what specific ANOVA variant or alternative should you use?</label>
+                        <div class="exercise-area">
+                            <textarea class="form-control font-monospace" rows="4" placeholder="Write your answer here..."></textarea>
+                            <button class="btn btn-outline-danger btn-sm mt-2" type="button" data-bs-toggle="collapse" data-bs-target="#ans3_1">Submit & Check Answer</button>
+                            <div class="collapse mt-3" id="ans3_1">
+                                <div class="alert alert-success mb-0">
+                                    <strong><i class="fas fa-check-circle me-2"></i>Correct Answer:</strong>
+                                    <ul class="mt-2 mb-0">
+                                        <li><strong>Violated Assumption:</strong> Homogeneity of Variance (Homoscedasticity). The p-value (0.002) is &lt; 0.05, meaning the variances across groups are significantly unequal.</li>
+                                        <li><strong>Normality:</strong> The Shapiro-Wilk p-value (0.15) is > 0.05, so the normality assumption is met.</li>
+                                        <li><strong>Solution:</strong> You should use <strong>Welch's ANOVA</strong>, which does not assume equal variances. (Alternatively, a data transformation like Log or Square Root could be attempted, but Welch's is the direct and robust solution).</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Exercise 4 -->
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">Exercise 4: Post-Hoc Interpretation</div>
+                <div class="card-body">
+                    <div class="mb-0">
+                        <label class="form-label fw-bold">1. After a significant ANOVA, you run Tukey's HSD. The output shows: <br> - Diet A vs Diet B: <i>p adj</i> = 0.04 <br> - Diet A vs Diet C: <i>p adj</i> = 0.12 <br> - Diet B vs Diet C: <i>p adj</i> = 0.65 <br> Which diets are significantly different from each other, and how do you explain the relationship between Diet A and Diet C?</label>
+                        <div class="exercise-area">
+                            <textarea class="form-control font-monospace" rows="4" placeholder="Write your interpretation here..."></textarea>
+                            <button class="btn btn-outline-primary btn-sm mt-2" type="button" data-bs-toggle="collapse" data-bs-target="#ans4_1">Submit & Check Answer</button>
+                            <div class="collapse mt-3" id="ans4_1">
+                                <div class="alert alert-success mb-0">
+                                    <strong><i class="fas fa-check-circle me-2"></i>Correct Answer:</strong>
+                                    <ul class="mt-2 mb-0">
+                                        <li><strong>Significant Difference:</strong> Only Diet A and Diet B are significantly different from each other (<i>p adj</i> = 0.04 &lt; 0.05).</li>
+                                        <li><strong>Non-Significant Differences:</strong> Diet A vs Diet C, and Diet B vs Diet C are not significantly different.</li>
+                                        <li><strong>Interpretation:</strong> Even though the overall ANOVA was significant (meaning not all diets are equal), Tukey's test reveals that the difference is driven entirely by the gap between Diet A and Diet B. Diet C's mean falls somewhere in between, and its difference from either A or B is not large enough to be statistically significant after correcting for multiple comparisons.</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-5">
+
+        <!-- Module Summary -->
+        <section id="summary" class="mb-5">
+            <h2 class="section-title">Module Summary & Next Steps</h2>
+            <div class="card bg-light">
+                <div class="card-body">
+                    <p>In Module 3, we expanded our statistical toolkit beyond comparing two groups. We mastered the Chi-Square family of tests for analyzing categorical associations, ensuring we use Fisher's Exact test when sample sizes are small. We then delved into the powerful world of ANOVA, learning how to partition variance to compare multiple group means simultaneously while controlling the Type I error rate. We rigorously checked assumptions, calculated effect sizes to determine clinical relevance, and applied post-hoc corrections to pinpoint exactly where differences lie.</p>
+                    
+                    <div class="alert alert-success mt-3 mb-0">
+                        <strong><i class="fas fa-rocket me-2"></i>What's Next?</strong>
+                        In <strong>Module 4: Correlation and Simple Linear Regression</strong>, we will shift from comparing groups to modeling continuous relationships. We will learn how to quantify the strength of association between two continuous variables (Pearson/Spearman correlation) and build predictive mathematical models using Ordinary Least Squares (OLS) regression.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>Beyond Data Analytics</h5>
+                    <p class="fst-italic text-info">Transforming Raw Data into Insights</p>
+                    <p>Empowering the next generation of data professionals to master the tools that drive modern decision-making.</p>
+                </div>
+                <div class="col-md-3">
+                    <h5>Resources</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="https://cran.r-project.org/manuals.html" class="text-white text-decoration-none">R Manuals</a></li>
+                        <li><a href="https://docs.scipy.org/doc/scipy/reference/stats.html" class="text-white text-decoration-none">SciPy Stats</a></li>
+                        <li><a href="https://stackoverflow.com/questions/tagged/statistics" class="text-white text-decoration-none">Stack Overflow</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3">
+                    <h5>Program</h5>
+                    <ul class="list-unstyled">
+                        <li>Professional Certificate</li>
+                        <li>in Data Science</li>
+                        <li class="mt-2"><a href="#home" class="text-white text-decoration-none">Back to Top</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="text-center mt-4 pt-3 border-top border-secondary">
+                <small>&copy; 2026 Beyond Data Analytics. All Rights Reserved.</small>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Highlight.js JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/languages/r.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/languages/python.min.js"></script>
+    <script>hljs.highlightAll();</script>
+
+</body>
+</html>

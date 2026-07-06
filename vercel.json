@@ -1,0 +1,53 @@
+{
+  "cleanUrls": true,
+  "rewrites": [
+    {
+      "source": "/api/:path*",
+      "destination": "https://YOUR_BACKEND_URL.onrender.com/api/:path*"
+    },
+    {
+      "source": "/uploads/:path*",
+      "destination": "https://YOUR_BACKEND_URL.onrender.com/uploads/:path*"
+    },
+    {
+      "source": "/login",
+      "destination": "/login.html"
+    },
+    {
+      "source": "/change-password",
+      "destination": "/change-password.html"
+    },
+    {
+      "source": "/admin",
+      "destination": "/admin/dashboard.html"
+    },
+    {
+      "source": "/admin/",
+      "destination": "/admin/dashboard.html"
+    },
+    {
+      "source": "/student",
+      "destination": "/student/dashboard.html"
+    },
+    {
+      "source": "/student/",
+      "destination": "/student/dashboard.html"
+    },
+    {
+      "source": "/mentor",
+      "destination": "/mentor/dashboard.html"
+    },
+    {
+      "source": "/mentor/",
+      "destination": "/mentor/dashboard.html"
+    },
+    {
+      "source": "/instructor",
+      "destination": "/instructor/dashboard.html"
+    },
+    {
+      "source": "/instructor/",
+      "destination": "/instructor/dashboard.html"
+    }
+  ]
+}

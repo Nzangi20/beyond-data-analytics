@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exam Portal - Beyond Data Analytics</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/main.css">
+    <style>
+        body { background: var(--bg-dark); user-select: none; -webkit-user-select: none; }
+        .exam-layout { display: flex; flex-direction: column; min-height: 100vh; }
+        .exam-nav { background: var(--primary); color: var(--white); padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; box-shadow: var(--shadow); position: sticky; top: 0; z-index: 1000; }
+        .timer-badge { background: rgba(255,255,255,0.15); padding: 0.5rem 1rem; border-radius: var(--radius-full); font-weight: 700; font-size: 1.1rem; display: flex; align-items: center; gap: 0.5rem; }
+        .timer-badge.warning { background: var(--red); color: var(--white); animation: blink 1s infinite alternate; }
+        @keyframes blink { from { opacity: 1; } to { opacity: 0.7; } }
+        .exam-body { flex: 1; padding: 2rem; display: grid; grid-template-columns: 3fr 1fr; gap: 1.5rem; max-width: 1400px; width: 100%; margin: 0 auto; }
+        .question-card { background: var(--white); border-radius: var(--radius-xl); padding: 2rem; box-shadow: var(--shadow); position: relative; color: var(--text); }
+        .question-card h2, .question-card h3 { color: var(--text) !important; }
+        .option-item { display: flex; align-items: center; gap: 1rem; padding: 1rem; border: 2px solid var(--border); border-radius: var(--radius); margin-bottom: 0.75rem; cursor: pointer; transition: var(--transition); }
+        .option-item:hover { border-color: var(--accent-light); background: rgba(49,130,206,0.02); }
+        .option-item.selected { border-color: var(--accent); background: rgba(49,130,206,0.05); }
+        .option-item input { display: none; }
+        .option-item.correct { border-color: var(--green); background: rgba(56,161,105,0.05); }
+        .option-item.incorrect { border-color: var(--red); background: rgba(229,62,62,0.05); }
+        .q-navigation { display: grid; grid-template-columns: repeat(auto-fill, minmax(40px, 1fr)); gap: 0.5rem; }
+        .q-nav-btn { height: 40px; border-radius: var(--radius-sm); border: 1px solid var(--border-dark); background: var(--white); cursor: pointer; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 0.9rem; transition: var(--transition); }
+        .q-nav-btn.answered { background: var(--primary-light); color: var(--white); border-color: var(--primary-light); }
+        .q-nav-btn.correct { background: var(--green); color: var(--white); border-color: var(--green); }
+        .q-nav-btn.incorrect { background: var(--red); color: var(--white); border-color: var(--red); }
+        .q-nav-btn.current { outline: 2px solid var(--accent); outline-offset: 2px; }
+        
+        /* Fullscreen lock overlay */
+        .lock-overlay { position: fixed; inset: 0; background: rgba(26,32,44,0.98); z-index: 99999; display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--white); text-align: center; padding: 2rem; }
+
+        @media print {
+            body { display: none !important; }
+        }
+    </style>
+</head>
+<body oncontextmenu="return false;" oncopy="return false;" oncut="return false;" onpaste="return false;" onselectstart="return false;">
+    
+    <!-- Lock Overlay for Enforcing Fullscreen -->
+    <div id="lockOverlay" class="lock-overlay">
+        <i class="fas fa-expand" style="font-size: 4rem; color: var(--yellow); margin-bottom: 1.5rem;"></i>
+        <h1 style="color: var(--white); margin-bottom: 1rem;">Fullscreen Mode Required</h1>
+        <p style="max-width: 500px; margin-bottom: 2rem; color: var(--text-muted);">
+            To start or continue the exam, you must enter fullscreen mode. Exiting fullscreen or navigating away from the page will trigger an anti-cheating strike.
+        </p>
+        <button class="btn btn-lg btn-golden" onclick="enterExamFullscreen()">Enter Fullscreen & Begin</button>
+    </div>
+
+    <!-- Main Exam UI -->
+    <div class="exam-layout" id="examLayout" style="display:none;">
+        <nav class="exam-nav">
+            <div>
+                <h2 id="examName" style="color:var(--white);">Module Exam</h2>
+                <p style="font-size:0.8rem; opacity:0.8;" id="tutorialDetails"></p>
+            </div>
+            <div class="timer-badge" id="timerBadge">
+                <i class="fas fa-clock"></i> <span id="timeLeft">00:00</span>
+            </div>
+        </nav>
+
+        <div class="exam-body">
+            <!-- Left Panel: Current Question -->
+            <div style="display:flex; flex-direction:column; gap:1.5rem;">
+                <div class="question-card" id="qCard">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem; border-bottom:1px solid var(--border); padding-bottom:1rem;">
+                        <h3 id="questionNum">Question 1 of 1</h3>
+                        <span class="badge badge-primary" id="qMarks">1 Mark</span>
+                    </div>
+                    <h2 id="qText" style="margin-bottom:2rem; font-weight:600; line-height:1.4;">Question Content?</h2>
+                    
+                    <div id="optionsContainer"></div>
+
+                    <!-- Question Status Feedbacks (Attempt retry logic) -->
+                    <div id="feedbackAlert" class="alert" style="display:none; margin-top:1.5rem;"></div>
+
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-top:2rem; border-top:1px solid var(--border); padding-top:1.5rem;">
+                        <button class="btn btn-outline" id="prevBtn" onclick="prevQuestion()"><i class="fas fa-arrow-left"></i> Previous</button>
+                        <div style="display:flex; gap:0.75rem;">
+                            <button class="btn btn-success" id="submitAnsBtn" onclick="submitAnswer()">Submit Answer</button>
+                            <button class="btn btn-primary" id="nextBtn" onclick="nextQuestion()">Next <i class="fas fa-arrow-right"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Panel: Navigation and Anti-Cheat Info -->
+            <div style="display:flex; flex-direction:column; gap:1.5rem;">
+                <!-- Navigation Grid -->
+                <div class="card">
+                    <div class="card-header"><h3>Questions</h3></div>
+                    <div class="card-body">
+                        <div class="q-navigation" id="qNavGrid"></div>
+                    </div>
+                </div>
+
+                <!-- Anti-Cheat Monitoring Card -->
+                <div class="card">
+                    <div class="card-header" style="border-bottom-color:rgba(229,62,62,0.1);"><h3 style="color:var(--red);"><i class="fas fa-shield-alt"></i> Security Monitor</h3></div>
+                    <div class="card-body" style="font-size:0.85rem;">
+                        <div style="display:flex; justify-content:space-between; margin-bottom:0.75rem;">
+                            <span>Strikes Limit:</span><strong>3</strong>
+                        </div>
+                        <div style="display:flex; justify-content:space-between; margin-bottom:0.75rem; color:var(--red);">
+                            <span>Current Violations:</span><strong id="violationCount">0 / 3</strong>
+                        </div>
+                        <p style="color:var(--text-light); line-height:1.4; border-top:1px solid var(--border); padding-top:0.75rem; margin-top:0.5rem;">
+                            <i class="fas fa-exclamation-triangle" style="color:var(--golden);"></i> switching tabs, changing focus, or leaving fullscreen mode will result in an immediate violation strike. Reaching 3 strikes submits the exam automatically.
+                        </p>
+                    </div>
+                </div>
+
+                <button class="btn btn-danger" style="width:100%;" onclick="finishExam(false)"><i class="fas fa-check-double"></i> Submit Entire Exam</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/api.js"></script>
+    <script>
+        if (!API.requireAuth(['student'])) throw new Error('Not authorized');
+
+        const params = new URLSearchParams(window.location.search);
+        const examId = params.get('id');
+        
+        let examDetails = null;
+        let attemptDetails = null;
+        let questions = [];
+        let curIdx = 0;
+        let timer = null;
+        let timeRemainingSeconds = 0;
+        let violations = 0;
+        let examSubmitted = false;
+
+        async function initExam() {
+            if (!examId) { window.location.href = '/student/tutorials.html'; return; }
+            try {
+                const data = await API.get(`/exams/${examId}/start`);
+                examDetails = data.exam;
+                attemptDetails = data.attempt;
+                questions = data.questions;
+
+                document.getElementById('examName').textContent = examDetails.title;
+                document.getElementById('tutorialDetails').textContent = `${examDetails.tutorialName} · ${examDetails.moduleName}`;
+
+                // Setup Timer
+                const timeLimitMinutes = examDetails.timeLimit || 60;
+                const startedTime = new Date(attemptDetails.startedAt).getTime();
+                const now = Date.now();
+                const elapsedSeconds = Math.floor((now - startedTime) / 1000);
+                timeRemainingSeconds = (timeLimitMinutes * 60) - elapsedSeconds;
+
+                if (timeRemainingSeconds <= 0) {
+                    finishExam(true);
+                    return;
+                }
+
+                startTimer();
+                renderNavGrid();
+                showQuestion(0);
+
+                // Anti-cheat setup
+                setupAntiCheat();
+
+            } catch (err) {
+                alert(err.error || 'Failed to start exam');
+                window.location.href = '/student/dashboard.html';
+            }
+        }
+
+        function enterExamFullscreen() {
+            const el = document.documentElement;
+            if (el.requestFullscreen) el.requestFullscreen();
+            else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
+            else if (el.msRequestFullscreen) el.msRequestFullscreen();
+
+            document.getElementById('lockOverlay').style.display = 'none';
+            document.getElementById('examLayout').style.display = 'flex';
+
+            if (!attemptDetails) {
+                initExam();
+            }
+        }
+
+        // Fullscreen listener
+        document.addEventListener('fullscreenchange', () => {
+            if (!document.fullscreenElement) {
+                // User exited fullscreen
+                document.getElementById('lockOverlay').style.display = 'flex';
+                document.getElementById('examLayout').style.display = 'none';
+                logViolation('fullscreen_exit', 'Exited fullscreen mode');
+            }
+        });
+
+        function setupAntiCheat() {
+            // Visibility change (tab switching)
+            document.addEventListener('visibilitychange', () => {
+                if (document.hidden) {
+                    logViolation('tab_switch', 'Switched focus / left browser tab');
+                }
+            });
+
+            // Blur event (moving focus to dev tools, search bars, overlays, etc)
+            window.addEventListener('blur', () => {
+                logViolation('window_blur', 'Window lost focus');
+            });
+
+            // Minimize check via window resize
+            window.addEventListener('resize', () => {
+                if (window.outerWidth === 0 || window.outerHeight === 0) {
+                    logViolation('minimize', 'Window minimized');
+                }
+            });
+        }
+
+        async function logViolation(type, details) {
+            if (examSubmitted) return;
+            try {
+                const res = await API.post(`/exams/${examId}/violation`, {
+                    attemptId: attemptDetails.id,
+                    violationType: type,
+                    details: details
+                });
+                
+                violations = res.violationsCount;
+                document.getElementById('violationCount').textContent = `${violations} / 3`;
+
+                if (violations >= 3) {
+                    showToast('Violation limit reached! Submitting exam automatically.', 'error');
+                    finishExam(true);
+                } else {
+                    showToast(`Warning: Violation detected (${details}). Strike ${violations}/3`, 'warning');
+                }
+            } catch (e) {}
+        }
+
+        function startTimer() {
+            updateTimerDisplay();
+            timer = setInterval(() => {
+                timeRemainingSeconds--;
+                if (timeRemainingSeconds <= 0) {
+                    clearInterval(timer);
+                    finishExam(true);
+                } else {
+                    updateTimerDisplay();
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timeRemainingSeconds / 60);
+            const seconds = timeRemainingSeconds % 60;
+            const text = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            const display = document.getElementById('timeLeft');
+            display.textContent = text;
+
+            if (timeRemainingSeconds < 300) { // Under 5 minutes
+                document.getElementById('timerBadge').classList.add('warning');
+            }
+        }
+
+        function renderNavGrid() {
+            const grid = document.getElementById('qNavGrid');
+            grid.innerHTML = questions.map((q, idx) => {
+                let statusClass = '';
+                if (q.answered) {
+                    statusClass = q.isCorrect ? 'correct' : 'incorrect';
+                }
+                return `<button class="q-nav-btn ${statusClass} ${idx === curIdx ? 'current' : ''}" onclick="showQuestion(${idx})">${idx + 1}</button>`;
+            }).join('');
+        }
+
+        function showQuestion(idx) {
+            if (idx < 0 || idx >= questions.length) return;
+            
+            // Remove current highlighting
+            document.querySelectorAll('.q-nav-btn').forEach(btn => btn.classList.remove('current'));
+            curIdx = idx;
+            document.getElementById('qNavGrid').children[idx]?.classList.add('current');
+
+            const q = questions[idx];
+            document.getElementById('questionNum').textContent = `Question ${idx + 1} of ${questions.length}`;
+            document.getElementById('qMarks').textContent = `${q.marks} Mark${q.marks > 1 ? 's' : ''}`;
+            document.getElementById('qText').textContent = q.question_text;
+
+            // Render options
+            const container = document.getElementById('optionsContainer');
+            container.innerHTML = q.answers.map((ans, i) => `
+                <label class="option-item" id="opt-${ans.id}">
+                    <input type="radio" name="options" value="${ans.id}" onchange="selectOption(${ans.id})">
+                    <span style="font-weight:700; color:var(--accent);">${String.fromCharCode(65 + i)}.</span>
+                    <span>${escapeHtml(ans.answer_text)}</span>
+                </label>
+            `).join('');
+
+            // Hide/Show Buttons
+            document.getElementById('prevBtn').disabled = idx === 0;
+            document.getElementById('nextBtn').disabled = idx === questions.length - 1;
+
+            const feedback = document.getElementById('feedbackAlert');
+            feedback.style.display = 'none';
+
+            // Check if already answered in this session/attempt
+            if (q.answered) {
+                document.getElementById('submitAnsBtn').disabled = true;
+                
+                // Show correctness if answered
+                const selectedOpt = container.querySelector(`[id="opt-${q.selectedAnswerId}"]`);
+                if (q.isCorrect) {
+                    feedback.className = 'alert alert-success';
+                    feedback.innerHTML = '<i class="fas fa-check-circle"></i> Correct answer!';
+                    feedback.style.display = 'block';
+                } else {
+                    feedback.className = 'alert alert-danger';
+                    feedback.innerHTML = `<i class="fas fa-times-circle"></i> Incorrect. ${q.attemptsUsed < 2 ? 'You have 1 attempt remaining.' : 'All attempts used.'}`;
+                    feedback.style.display = 'block';
+                }
+
+                // Lock answers visually
+                document.querySelectorAll('.option-item').forEach(el => {
+                    el.style.pointerEvents = 'none';
+                    if (el.id === `opt-${q.selectedAnswerId}`) {
+                        el.classList.add(q.isCorrect ? 'correct' : 'incorrect');
+                    }
+                });
+            } else {
+                document.getElementById('submitAnsBtn').disabled = false;
+            }
+        }
+
+        let selectedAnswerId = null;
+        function selectOption(ansId) {
+            selectedAnswerId = ansId;
+            document.querySelectorAll('.option-item').forEach(el => el.classList.remove('selected'));
+            document.getElementById(`opt-${ansId}`).classList.add('selected');
+        }
+
+        async function submitAnswer() {
+            if (selectedAnswerId === null) {
+                showToast('Please select an option', 'warning');
+                return;
+            }
+
+            const q = questions[curIdx];
+            const btn = document.getElementById('submitAnsBtn');
+            btn.disabled = true;
+
+            try {
+                const res = await API.post(`/exams/${examId}/answer`, {
+                    attemptId: attemptDetails.id,
+                    questionId: q.id,
+                    answerId: selectedAnswerId
+                });
+
+                q.answered = true;
+                q.isCorrect = res.isCorrect;
+                q.selectedAnswerId = selectedAnswerId;
+                q.attemptsUsed = res.attemptsUsed;
+
+                const feedback = document.getElementById('feedbackAlert');
+                feedback.style.display = 'block';
+
+                if (res.isCorrect) {
+                    feedback.className = 'alert alert-success';
+                    feedback.innerHTML = `<i class="fas fa-check-circle"></i> ${res.message}`;
+                    document.getElementById(`opt-${selectedAnswerId}`).classList.add('correct');
+                } else {
+                    feedback.className = 'alert alert-danger';
+                    feedback.innerHTML = `<i class="fas fa-times-circle"></i> ${res.message}`;
+                    document.getElementById(`opt-${selectedAnswerId}`).classList.add('incorrect');
+                    
+                    if (res.attemptsUsed < 2) {
+                        // Let them retry (do not lock button, clear selection)
+                        btn.disabled = false;
+                        q.answered = false; // Reset to allow second attempt
+                        return;
+                    }
+                }
+
+                // Lock choices
+                document.querySelectorAll('.option-item').forEach(el => el.style.pointerEvents = 'none');
+                
+                renderNavGrid();
+
+                // Auto-advance after 1.5 seconds if answer is correct or 2nd attempt is incorrect
+                setTimeout(() => {
+                    if (res.isCorrect || res.attemptsUsed >= 2) {
+                        if (curIdx < questions.length - 1) {
+                            showQuestion(curIdx + 1);
+                        }
+                    }
+                }, 1500);
+
+            } catch (err) {
+                showToast(err.error || 'Failed to submit answer', 'error');
+                btn.disabled = false;
+            }
+        }
+
+        function prevQuestion() {
+            if (curIdx > 0) showQuestion(curIdx - 1);
+        }
+
+        function nextQuestion() {
+            if (curIdx < questions.length - 1) showQuestion(curIdx + 1);
+        }
+
+        async function finishExam(autoSubmitted = false) {
+            if (examSubmitted) return;
+            if (!autoSubmitted && !confirm('Are you sure you want to finish and submit the exam? Any unanswered questions will be marked incorrect.')) return;
+            
+            examSubmitted = true;
+            clearInterval(timer);
+
+            try {
+                const res = await API.post(`/exams/${examId}/submit`, {
+                    attemptId: attemptDetails.id,
+                    autoSubmitted: autoSubmitted
+                });
+
+                // Exit fullscreen
+                if (document.fullscreenElement) {
+                    document.exitFullscreen().catch(() => {});
+                }
+
+                // Show results view
+                document.getElementById('examLayout').style.display = 'none';
+                document.getElementById('lockOverlay').innerHTML = `
+                    <i class="fas ${res.passed ? 'fa-award' : 'fa-clipboard-list'}" style="font-size: 5rem; color: ${res.passed ? 'var(--yellow)' : 'var(--red)'}; margin-bottom: 2rem;"></i>
+                    <h1 style="color: var(--white); margin-bottom: 1rem;">Exam Completed</h1>
+                    <h2 style="color: var(--white); margin-bottom: 2rem;">Your Score: ${res.percentage}%</h2>
+                    <div class="alert alert-${res.passed ? 'success' : 'danger'}" style="max-width:500px; margin-bottom:2rem; display:inline-block;">
+                        <i class="fas ${res.passed ? 'fa-check-circle' : 'fa-times-circle'}"></i> ${res.message}
+                    </div>
+                    <br/>
+                    <button class="btn btn-lg btn-primary" onclick="window.location.href='/student/dashboard.html'"><i class="fas fa-home"></i> Back to Dashboard</button>
+                `;
+                document.getElementById('lockOverlay').style.display = 'flex';
+
+            } catch (err) {
+                alert('Error submitting exam. Please contact support.');
+            }
+        }
+    </script>
+</body>
+</html>

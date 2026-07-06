@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Billing & Payments - BDA Admin</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/main.css">
+</head>
+<body>
+    <button class="sidebar-toggle" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+    <div class="app-layout">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-auth-links" style="display: flex; justify-content: space-around; padding: 0.75rem 1rem; border-bottom: 1px solid rgba(255,255,255,0.08); font-size: 0.85rem; font-family: 'Outfit', sans-serif; background: rgba(0,0,0,0.15);">
+                <a href="/login.html" style="color: #63b3ed; font-weight: 600; text-decoration: none; display: flex; align-items: center; gap: 0.25rem; transition: opacity 0.2s;" onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'"><i class="fas fa-sign-in-alt"></i> Sign In</a>
+                <span style="color: rgba(255,255,255,0.2);">|</span>
+                <a href="https://forms.gle/iULxMYXieuC4px8p8" target="_blank" style="color: #48bb78; font-weight: 600; text-decoration: none; display: flex; align-items: center; gap: 0.25rem; transition: opacity 0.2s;" onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'"><i class="fas fa-user-plus"></i> Sign Up</a>
+            </div>
+            <div class="sidebar-header"><div class="sidebar-logo"><i class="fas fa-chart-line"></i></div><div class="sidebar-brand"><h2>BDA Admin</h2><p>Management Console</p></div></div>
+            <nav class="sidebar-nav">
+                <div class="nav-section">
+                    <div class="nav-section-title">Main</div>
+                    <a href="/admin/dashboard.html" class="nav-item"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+                    <a href="/admin/users.html" class="nav-item"><i class="fas fa-users"></i> Users</a>
+                    <a href="/admin/content.html" class="nav-item"><i class="fas fa-book-open"></i> Course Content</a>
+                    <a href="/admin/exams.html" class="nav-item"><i class="fas fa-file-signature"></i> Exams & Quizzes</a>
+                </div>
+                <div class="nav-section">
+                    <div class="nav-section-title">Operations</div>
+                    <a href="/admin/news-announcements.html" class="nav-item"><i class="fas fa-bullhorn"></i> News & Bulletins</a>
+                    <a href="/admin/billing.html" class="nav-item active"><i class="fas fa-credit-card"></i> Payments & Fees</a>
+                    <a href="/admin/reports.html" class="nav-item"><i class="fas fa-chart-bar"></i> Reports</a>
+                </div>
+            </nav>
+            <div class="sidebar-footer"><div class="user-info"><div class="user-avatar" id="userAvatar">AD</div><div class="user-details"><h4 id="userName">Administrator</h4><p>System Admin</p></div></div><button class="btn btn-sm btn-outline" style="width:100%;margin-top:1rem;color:rgba(255,255,255,0.7);border-color:rgba(255,255,255,0.2);" onclick="API.logout()"><i class="fas fa-sign-out-alt"></i> Logout</button></div>
+        </aside>
+
+        <main class="main-content">
+            <div class="main-header">
+                <div>
+                    <h1>Billing & Payments Control</h1>
+                    <p>Configure course certificate pricing and audit student transactions</p>
+                </div>
+            </div>
+
+            <div style="display:grid; grid-template-columns: 1fr 2fr; gap:1.5rem; align-items:start;">
+                <!-- Program Pricing Configuration -->
+                <div class="card">
+                    <div class="card-header"><h3>Program Pricing Controls</h3></div>
+                    <div class="card-body">
+                        <div class="table-wrapper">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Learning Program</th>
+                                        <th>Enroll Fee</th>
+                                        <th>Cert Fee</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="feesTableBody">
+                                    <tr><td colspan="4" class="empty-state">Loading prices...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Payments Audit Log -->
+                <div class="card">
+                    <div class="card-header"><h3>Audit Transaction Logs</h3></div>
+                    <div class="card-body">
+                        <div class="table-wrapper">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Student / User</th>
+                                        <th>Item</th>
+                                        <th>Amount</th>
+                                        <th>Method</th>
+                                        <th>Reference</th>
+                                        <th>Status</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="paymentsTableBody">
+                                    <tr><td colspan="8" class="empty-state">No transaction logs available.</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Edit Price Modal -->
+    <div class="modal-overlay" id="priceModal">
+        <div class="modal" style="max-width:400px;">
+            <div class="modal-header">
+                <h3>Set Program Fees</h3>
+                <button class="btn btn-icon btn-outline" onclick="closePriceModal()"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <form id="priceForm" onsubmit="updatePrice(event)">
+                    <input type="hidden" id="editTutorialId">
+                    <div class="form-group">
+                        <label for="courseName">Learning Program</label>
+                        <input type="text" class="form-control" id="courseName" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="enrollFee">Premium Enrollment Fee (KES) *</label>
+                        <input type="number" class="form-control" id="enrollFee" min="0" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="courseFee">Certificate Certification Fee (KES) *</label>
+                        <input type="number" class="form-control" id="courseFee" min="0" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width:100%; margin-top:1rem;">Save Pricing Changes</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/api.js"></script>
+    <script>
+        if (!API.requireAuth(['admin'])) throw new Error('Not authorized');
+        const user = API.getUser();
+        if (user) {
+            document.getElementById('userName').textContent = user.fullName || user.username;
+            document.getElementById('userAvatar').textContent = getInitials(user.fullName || user.username);
+        }
+
+        let tutorials = [];
+        let payments = [];
+
+        async function init() {
+            await loadFees();
+            await loadPayments();
+        }
+
+        async function loadFees() {
+            try {
+                const res = await API.get('/admin/tutorials');
+                tutorials = res.tutorials;
+
+                const tbody = document.getElementById('feesTableBody');
+                tbody.innerHTML = tutorials.map(t => `
+                    <tr>
+                        <td><strong>${escapeHtml(t.name)}</strong></td>
+                        <td>KES ${(t.enrollment_fee || 5000).toLocaleString()}</td>
+                        <td>KES ${(t.certificate_fee || 2000).toLocaleString()}</td>
+                        <td>
+                            <button class="btn btn-sm btn-outline" onclick="openPriceModal(${t.id})">Edit Prices</button>
+                        </td>
+                    </tr>
+                `).join('');
+            } catch (err) {}
+        }
+
+        async function loadPayments() {
+            try {
+                const res = await API.get('/payments/list');
+                payments = res.list;
+
+                const tbody = document.getElementById('paymentsTableBody');
+                if (payments.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="8" class="empty-state">No payment records found.</td></tr>';
+                    return;
+                }
+
+                tbody.innerHTML = payments.map(p => `
+                    <tr>
+                        <td style="font-size:0.8rem; color:var(--text-light);">${formatDate(p.created_at)}</td>
+                        <td><strong>${escapeHtml(p.user_full_name || p.user_name)}</strong></td>
+                        <td><span style="font-size:0.85rem;">${p.target_type === 'certificate' ? '🎓 ' : '💼 '}${escapeHtml(p.target_name || 'Item')}</span></td>
+                        <td><strong>KES ${p.amount.toLocaleString()}</strong></td>
+                        <td>${p.payment_method}</td>
+                        <td style="font-family:monospace; font-size:0.8rem;">${p.transaction_ref}</td>
+                        <td><span class="badge badge-${p.status === 'completed' ? 'success' : 'danger'}">${p.status}</span></td>
+                        <td>
+                            ${p.status === 'completed' ? `
+                                <button class="btn btn-sm btn-outline" style="color:var(--red); border-color:rgba(235,94,85,0.2);" onclick="refundPayment(${p.id})">Refund</button>
+                            ` : '<span style="font-size:0.75rem; color:var(--text-muted);">N/A</span>'}
+                        </td>
+                    </tr>
+                `).join('');
+            } catch (err) {}
+        }
+
+        function openPriceModal(id) {
+            const tut = tutorials.find(t => t.id === id);
+            if (!tut) return;
+
+            document.getElementById('editTutorialId').value = tut.id;
+            document.getElementById('courseName').value = tut.name;
+            document.getElementById('enrollFee').value = tut.enrollment_fee || 5000;
+            document.getElementById('courseFee').value = tut.certificate_fee || 2000;
+
+            document.getElementById('priceModal').classList.add('active');
+        }
+
+        function closePriceModal() {
+            document.getElementById('priceModal').classList.remove('active');
+        }
+
+        async function updatePrice(e) {
+            e.preventDefault();
+            const id = document.getElementById('editTutorialId').value;
+            const certFee = document.getElementById('courseFee').value;
+            const enrollFee = document.getElementById('enrollFee').value;
+
+            try {
+                await API.put(`/admin/tutorials/${id}/fee`, { 
+                    certificateFee: parseFloat(certFee),
+                    enrollmentFee: parseFloat(enrollFee)
+                });
+                showToast('Pricing updated successfully!', 'success');
+                closePriceModal();
+                await loadFees();
+            } catch (err) {
+                showToast(err.error || 'Failed to update pricing details', 'error');
+            }
+        }
+
+        async function refundPayment(id) {
+            if (!confirm('Are you sure you want to refund this payment? This will lock the student\'s certificate and register the refund.')) return;
+            try {
+                await API.post(`/payments/${id}/refund`);
+                showToast('Transaction successfully refunded', 'success');
+                await loadPayments();
+            } catch (e) {
+                showToast('Refund action failed', 'error');
+            }
+        }
+
+        init();
+    </script>
+</body>
+</html>
