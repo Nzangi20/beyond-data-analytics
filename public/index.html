@@ -4617,7 +4617,7 @@ class="btn btn-primary">
 </div>
 </div>
 <div class="footer-bottom">
-<p>&copy; 2025 Beyond Data Analytics. All rights reserved.</p>
+<p>&copy; <span id="currentYear">2025</span> Beyond Data Analytics. All rights reserved.</p>
 </div>
 </footer>
 <!-- Scroll to Top Button -->
@@ -4840,8 +4840,12 @@ document.body.style.overflow = 'auto';
 }
 });
 // ==================== INITIALIZE ====================
+
 document.addEventListener('DOMContentLoaded', function() {
+const yearElement = document.getElementById('currentYear');
+if(yearElement) { yearElement.textContent = new Date().getFullYear(); }
 typeText();
+
 console.log('Beyond Data Analytics Website Loaded Successfully!');
 });
 // ==================== NEWS MODAL FUNCTIONS ====================
