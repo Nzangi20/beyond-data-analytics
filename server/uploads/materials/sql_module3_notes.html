@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Module 3: Database Design and Administration | Beyond Data Analytics</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Highlight.js for Code Syntax Highlighting -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark.min.css">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary-color: #0d6efd;
+            --secondary-color: #6c757d;
+            --accent-color: #0dcaf0;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+            padding-top: 70px; /* Space for fixed navbar */
+        }
+
+        /* Navbar Styling */
+        .navbar {
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            background: linear-gradient(90deg, #0d6efd 0%, #0a58ca 100%);
+        }
+        .navbar-brand {
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+        .nav-link {
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        .nav-link:hover {
+            color: #ffc107 !important;
+            transform: translateY(-2px);
+        }
+
+        /* Hero Section */
+        .hero-section {
+            background: url('https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80') no-repeat center center/cover;
+            height: 450px;
+            position: relative;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+        .hero-overlay {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.75);
+        }
+        .hero-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Content Cards */
+        .card {
+            border: none;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            transition: transform 0.3s;
+            margin-bottom: 20px;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        .card-header {
+            background-color: #fff;
+            border-bottom: 2px solid #0d6efd;
+            font-weight: 700;
+            color: #0d6efd;
+        }
+
+        /* Code Blocks */
+        pre {
+            border-radius: 8px;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+        }
+        code {
+            font-family: 'Consolas', 'Monaco', monospace;
+        }
+
+        /* Section Titles */
+        .section-title {
+            position: relative;
+            padding-bottom: 15px;
+            margin-bottom: 30px;
+            font-weight: 700;
+        }
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 4px;
+            background-color: #0d6efd;
+        }
+
+        /* Tables */
+        .table-custom {
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .table-custom thead {
+            background: linear-gradient(90deg, #0d6efd 0%, #0a58ca 100%);
+            color: white;
+        }
+
+        /* Footer */
+        footer {
+            background-color: #212529;
+            color: white;
+            padding: 40px 0;
+            margin-top: 50px;
+        }
+        
+        /* Exercise Area */
+        .exercise-area {
+            background: #f8f9fa;
+            border: 1px dashed #0d6efd;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 10px;
+        }
+
+        /* Beyond Data Section */
+        .beyond-data-section {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 30px 35px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            border-left: 6px solid #28a745;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            position: relative;
+            overflow: hidden;
+        }
+        .beyond-data-section::before {
+            content: "📊";
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 5em;
+            opacity: 0.1;
+        }
+        .beyond-data-section h2 {
+            color: #1e3c72;
+            font-size: 1.6em;
+            margin-bottom: 15px;
+        }
+        .beyond-data-section .highlight {
+            color: #28a745;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="#"><i class="fas fa-database me-2"></i>Beyond Data Analytics</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="#db-mgmt">3.1 DB Mgmt</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#table-mgmt">3.2 Tables</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#constraints">3.3 Constraints</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#auto-inc">3.4 Auto Inc</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#dates">3.5 Dates</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#indexes-views">3.6 Index/Views</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="#exercises">Exercises</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header id="home" class="hero-section">
+        <div class="hero-overlay"></div>
+        <div class="hero-content container">
+            <h1 class="display-3 fw-bold">Module 3: Database Design & Administration</h1>
+            <p class="lead fs-4">Architecting robust, secure, and efficient relational databases</p>
+            <h3 class="text-info fw-light fst-italic">Beyond Data Analytics</h3>
+            <p class="fs-5 text-light">Transforming Raw Data into Insights</p>
+            <a href="#objectives" class="btn btn-primary btn-lg mt-3 px-5 rounded-pill">Start Learning</a>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <div class="container my-5">
+
+        <!-- Beyond Data Analytics Section -->
+        <section class="beyond-data-section mb-5">
+            <h2>🌐 Beyond Data Analytics</h2>
+            <p>At <span class="highlight">Beyond Data Analytics</span>, we believe that data is more than just numbers and tables—it is the strategic foundation of modern decision-making. Our curriculum is meticulously designed to bridge the gap between theoretical knowledge and real-world application, empowering professionals to extract actionable insights, drive business value, and innovate across industries.</p>
+            <p>By mastering database design and administration, you move beyond simple querying to become a <span class="highlight">data architect</span>. This module equips you with the skills to build scalable, secure, and highly optimized database systems that serve as the backbone for advanced analytics and machine learning pipelines.</p>
+        </section>
+
+        <!-- Learning Objectives -->
+        <section id="objectives" class="mb-5">
+            <h2 class="section-title">Learning Objectives</h2>
+            <div class="card bg-light">
+                <div class="card-body">
+                    <p class="lead mb-3">By the end of this module, participants will be able to:</p>
+                    <ul class="list-unstyled mb-0">
+                        <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> Create, manage, and backup relational databases.</li>
+                        <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> Design and modify database tables using appropriate data types.</li>
+                        <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> Apply constraints (Primary Key, Foreign Key, Check, etc.) to enforce data integrity.</li>
+                        <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> Implement auto-incrementing identity columns for unique record generation.</li>
+                        <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> Manipulate, format, and calculate dates using built-in SQL date functions.</li>
+                        <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> Optimize query performance using indexes and create reusable virtual tables (Views).</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-5">
+
+        <!-- 3.1 Database Management -->
+        <section id="db-mgmt" class="mb-5">
+            <h2 class="section-title">3.1 Database Management</h2>
+            <p class="lead">Before working with tables and data, you must first create the database environment that will house them.</p>
+            <div class="card">
+                <div class="card-body">
+                    <h5>CREATE DATABASE</h5>
+                    <p>Creates a new, empty database on the server.</p>
+                    <pre><code class="language-sql">CREATE DATABASE UniversityDB;</code></pre>
+
+                    <h5 class="mt-4">DROP DATABASE</h5>
+                    <p>Deletes an existing database along with <strong>all</strong> its tables and data. Use with extreme caution!</p>
+                    <pre><code class="language-sql">DROP DATABASE UniversityDB;</code></pre>
+
+                    <h5 class="mt-4">BACKUP DATABASE</h5>
+                    <p>Creates a full backup of an existing database for disaster recovery. <em>Note: Syntax varies by RDBMS.</em></p>
+                    <pre><code class="language-sql">-- SQL Server
+BACKUP DATABASE UniversityDB
+TO DISK = 'D:\Backups\UniversityDB_Full.bak';
+
+-- MySQL (Command Line)
+-- mysqldump -u username -p UniversityDB > backup.sql</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-5">
+
+        <!-- 3.2 Table Management -->
+        <section id="table-mgmt" class="mb-5">
+            <h2 class="section-title">3.2 Table Management</h2>
+            <div class="card">
+                <div class="card-body">
+                    <h5>CREATE TABLE</h5>
+                    <p>Defines a new table, its columns, and their respective data types.</p>
+                    <pre><code class="language-sql">CREATE TABLE Students (
+    StudentID INT,
+    FirstName VARCHAR(50),
+    LastName VARCHAR(50),
+    EnrollmentDate DATE,
+    GPA DECIMAL(3, 2)
+);</code></pre>
+
+                    <h5 class="mt-4">ALTER TABLE</h5>
+                    <p>Modifies an existing table structure (adding, deleting, or changing columns).</p>
+                    <pre><code class="language-sql">-- Add a new column
+ALTER TABLE Students ADD Email VARCHAR(100);
+
+-- Modify a column's data type (Syntax varies by RDBMS)
+ALTER TABLE Students MODIFY COLUMN GPA DECIMAL(4, 2); -- MySQL
+ALTER TABLE Students ALTER COLUMN GPA DECIMAL(4, 2);  -- SQL Server
+
+-- Drop a column
+ALTER TABLE Students DROP COLUMN Email;</code></pre>
+
+                    <h5 class="mt-4">DROP TABLE</h5>
+                    <p>Deletes the table structure and all its data permanently.</p>
+                    <pre><code class="language-sql">DROP TABLE Students;</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-5">
+
+        <!-- 3.3 Constraints -->
+        <section id="constraints" class="mb-5">
+            <h2 class="section-title">3.3 Constraints</h2>
+            <p class="lead">Constraints are rules applied to table columns to ensure the accuracy, reliability, and integrity of the data.</p>
+            <div class="card">
+                <div class="card-body">
+                    <table class="table table-bordered">
+                        <thead class="table-dark"><tr><th>Constraint</th><th>Description</th></tr></thead>
+                        <tbody>
+                            <tr><td><code>NOT NULL</code></td><td>Ensures a column cannot have a NULL value.</td></tr>
+                            <tr><td><code>UNIQUE</code></td><td>Ensures all values in a column are different.</td></tr>
+                            <tr><td><code>PRIMARY KEY</code></td><td>A combination of NOT NULL and UNIQUE. Uniquely identifies each row.</td></tr>
+                            <tr><td><code>FOREIGN KEY</code></td><td>Prevents actions that would destroy links between tables.</td></tr>
+                            <tr><td><code>CHECK</code></td><td>Ensures that the values in a column satisfy a specific condition.</td></tr>
+                            <tr><td><code>DEFAULT</code></td><td>Sets a default value for a column if none is specified.</td></tr>
+                        </tbody>
+                    </table>
+
+                    <h5 class="mt-4">Applying Constraints during Table Creation</h5>
+                    <pre><code class="language-sql">CREATE TABLE Students (
+    StudentID INT PRIMARY KEY,
+    FirstName VARCHAR(50) NOT NULL,
+    Email VARCHAR(100) UNIQUE,
+    Age INT CHECK (Age >= 18),
+    EnrollmentStatus VARCHAR(20) DEFAULT 'Active'
+);</code></pre>
+
+                    <h5 class="mt-4">Foreign Key Constraint (Relational Integrity)</h5>
+                    <pre><code class="language-sql">CREATE TABLE Courses (
+    CourseID INT PRIMARY KEY,
+    CourseName VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE Enrollments (
+    EnrollmentID INT PRIMARY KEY,
+    StudentID INT,
+    CourseID INT,
+    -- Define Foreign Keys
+    FOREIGN KEY (StudentID) REFERENCES Students(StudentID),
+    FOREIGN KEY (CourseID) REFERENCES Courses(CourseID)
+);</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-5">
+
+        <!-- 3.4 Auto Increment -->
+        <section id="auto-inc" class="mb-5">
+            <h2 class="section-title">3.4 Auto Increment</h2>
+            <p class="lead">Auto-increment allows a unique number to be generated automatically when a new record is inserted into a table. This is often used for Primary Keys.</p>
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h5>MySQL (<code>AUTO_INCREMENT</code>)</h5>
+                            <pre><code class="language-sql">CREATE TABLE Students (
+    StudentID INT AUTO_INCREMENT PRIMARY KEY,
+    FirstName VARCHAR(50)
+);</code></pre>
+                        </div>
+                        <div class="col-md-6">
+                            <h5>SQL Server (<code>IDENTITY</code>)</h5>
+                            <pre><code class="language-sql">CREATE TABLE Students (
+    StudentID INT IDENTITY(1,1) PRIMARY KEY,
+    FirstName VARCHAR(50)
+);</code></pre>
+                        </div>
+                    </div>
+                    <div class="alert alert-info mt-3">
+                        <strong>Note for PostgreSQL:</strong> PostgreSQL uses the <code>SERIAL</code> pseudo-type (e.g., <code>StudentID SERIAL PRIMARY KEY</code>) to achieve the same auto-incrementing behavior.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-5">
+
+        <!-- 3.5 Working with Dates -->
+        <section id="dates" class="mb-5">
+            <h2 class="section-title">3.5 Working with Dates</h2>
+            <p class="lead">SQL provides a rich set of functions for querying, formatting, and manipulating date and time data.</p>
+            <div class="card">
+                <div class="card-body">
+                    <h5>Common Date Functions</h5>
+                    <table class="table table-striped">
+                        <thead><tr><th>Function (MySQL / SQL Server)</th><th>Description</th></tr></thead>
+                        <tbody>
+                            <tr><td><code>NOW()</code> / <code>GETDATE()</code></td><td>Returns the current date and time.</td></tr>
+                            <tr><td><code>CURDATE()</code> / <code>CAST(GETDATE() AS DATE)</code></td><td>Returns the current date only.</td></tr>
+                            <tr><td><code>DATE_ADD()</code> / <code>DATEADD()</code></td><td>Adds a specified time interval to a date.</td></tr>
+                            <tr><td><code>DATEDIFF()</code></td><td>Returns the number of days between two dates.</td></tr>
+                        </tbody>
+                    </table>
+
+                    <h5 class="mt-4">Date Formatting and Calculations</h5>
+                    <pre><code class="language-sql">-- MySQL Examples
+SELECT NOW();                                  -- Current Date & Time
+SELECT DATE_FORMAT(NOW(), '%M %d, %Y');        -- Format: 'July 03, 2026'
+SELECT DATEDIFF('2026-12-31', CURDATE());      -- Days until end of year
+SELECT DATE_ADD(CURDATE(), INTERVAL 30 DAY);   -- Date 30 days from now
+
+-- SQL Server Examples
+SELECT FORMAT(GETDATE(), 'MMMM dd, yyyy');     -- Format: 'July 03, 2026'
+SELECT DATEDIFF(day, GETDATE(), '2026-12-31'); -- Days until end of year
+SELECT DATEADD(day, 30, GETDATE());            -- Date 30 days from now</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-5">
+
+        <!-- 3.6 Indexes and Views -->
+        <section id="indexes-views" class="mb-5">
+            <h2 class="section-title">3.6 Indexes and Views</h2>
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="card h-100">
+                        <div class="card-header">Indexes (Performance Optimization)</div>
+                        <div class="card-body">
+                            <p>Indexes are special lookup tables that the database search engine can use to speed up data retrieval. Think of them like the index at the back of a textbook.</p>
+                            <pre><code class="language-sql">-- Create an index on a single column
+CREATE INDEX idx_lastname 
+ON Students(LastName);
+
+-- Create a unique index
+CREATE UNIQUE INDEX idx_email 
+ON Students(Email);
+
+-- Drop an index
+DROP INDEX idx_lastname ON Students;</code></pre>
+                            <div class="alert alert-warning mt-2 mb-0">
+                                <strong>Trade-off:</strong> Indexes speed up <code>SELECT</code> queries but slow down <code>INSERT</code> and <code>UPDATE</code> operations because the index must be updated every time the data changes.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="card h-100">
+                        <div class="card-header">Views (Virtual Tables)</div>
+                        <div class="card-body">
+                            <p>A View is a virtual table based on the result-set of an SQL statement. It contains rows and columns, but does not store data itself (unless materialized).</p>
+                            <pre><code class="language-sql">-- Create a View
+CREATE VIEW ActiveStudents AS
+SELECT StudentID, FirstName, LastName, Email
+FROM Students
+WHERE EnrollmentStatus = 'Active';
+
+-- Query the View just like a table
+SELECT * FROM ActiveStudents 
+WHERE LastName LIKE 'S%';
+
+-- Drop a View
+DROP VIEW ActiveStudents;</code></pre>
+                            <div class="alert alert-success mt-2 mb-0">
+                                <strong>Use Cases:</strong> Simplify complex queries, restrict access to sensitive data (security), and present data in a specific format.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-5">
+
+        <!-- Practical Exercises -->
+        <section id="exercises" class="mb-5">
+            <h2 class="section-title">Practical Exercises</h2>
+            <p class="lead">Test your database design skills. Use the space provided to write your SQL queries, then click "Submit & Check Answer" to reveal the correct syntax.</p>
+            
+            <!-- Exercise 1 -->
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">Exercise 1: Design a Student Database</div>
+                <div class="card-body">
+                    <div class="mb-0">
+                        <label class="form-label fw-bold">1. Create a new database named <code>UniversityDB</code>.</label>
+                        <div class="exercise-area">
+                            <textarea class="form-control font-monospace" rows="2" placeholder="Write your SQL query here..."></textarea>
+                            <button class="btn btn-outline-primary btn-sm mt-2" type="button" data-bs-toggle="collapse" data-bs-target="#ans1_1">Submit & Check Answer</button>
+                            <div class="collapse mt-3" id="ans1_1">
+                                <div class="alert alert-success mb-0">
+                                    <strong><i class="fas fa-check-circle me-2"></i>Correct Answer:</strong>
+                                    <pre class="mb-0 mt-2"><code class="language-sql">CREATE DATABASE UniversityDB;</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Exercise 2 -->
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">Exercise 2: Create Relational Tables</div>
+                <div class="card-body">
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">1. Create a <code>Students</code> table with: <code>StudentID</code> (INT, Auto Increment, Primary Key), <code>FirstName</code> (VARCHAR 50), <code>LastName</code> (VARCHAR 50), and <code>DOB</code> (DATE).</label>
+                        <div class="exercise-area">
+                            <textarea class="form-control font-monospace" rows="6" placeholder="Write your SQL query here..."></textarea>
+                            <button class="btn btn-outline-primary btn-sm mt-2" type="button" data-bs-toggle="collapse" data-bs-target="#ans2_1">Submit & Check Answer</button>
+                            <div class="collapse mt-3" id="ans2_1">
+                                <div class="alert alert-success mb-0">
+                                    <strong><i class="fas fa-check-circle me-2"></i>Correct Answer (MySQL):</strong>
+                                    <pre class="mb-0 mt-2"><code class="language-sql">CREATE TABLE Students (
+    StudentID INT AUTO_INCREMENT PRIMARY KEY,
+    FirstName VARCHAR(50),
+    LastName VARCHAR(50),
+    DOB DATE
+);</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-0">
+                        <label class="form-label fw-bold">2. Create a <code>Courses</code> table with: <code>CourseID</code> (INT, Primary Key), <code>CourseName</code> (VARCHAR 100), and <code>Credits</code> (INT).</label>
+                        <div class="exercise-area">
+                            <textarea class="form-control font-monospace" rows="5" placeholder="Write your SQL query here..."></textarea>
+                            <button class="btn btn-outline-primary btn-sm mt-2" type="button" data-bs-toggle="collapse" data-bs-target="#ans2_2">Submit & Check Answer</button>
+                            <div class="collapse mt-3" id="ans2_2">
+                                <div class="alert alert-success mb-0">
+                                    <strong><i class="fas fa-check-circle me-2"></i>Correct Answer:</strong>
+                                    <pre class="mb-0 mt-2"><code class="language-sql">CREATE TABLE Courses (
+    CourseID INT PRIMARY KEY,
+    CourseName VARCHAR(100),
+    Credits INT
+);</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Exercise 3 -->
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">Exercise 3: Define Keys and Constraints</div>
+                <div class="card-body">
+                    <div class="mb-0">
+                        <label class="form-label fw-bold">1. Create an <code>Enrollments</code> table with an <code>EnrollmentID</code> (Primary Key), <code>StudentID</code>, <code>CourseID</code>, and a <code>Grade</code> (DECIMAL 4,2). Add a <code>CHECK</code> constraint to ensure the Grade is between 0.00 and 100.00. Add <code>FOREIGN KEY</code> constraints linking to the Students and Courses tables.</label>
+                        <div class="exercise-area">
+                            <textarea class="form-control font-monospace" rows="10" placeholder="Write your SQL query here..."></textarea>
+                            <button class="btn btn-outline-primary btn-sm mt-2" type="button" data-bs-toggle="collapse" data-bs-target="#ans3_1">Submit & Check Answer</button>
+                            <div class="collapse mt-3" id="ans3_1">
+                                <div class="alert alert-success mb-0">
+                                    <strong><i class="fas fa-check-circle me-2"></i>Correct Answer:</strong>
+                                    <pre class="mb-0 mt-2"><code class="language-sql">CREATE TABLE Enrollments (
+    EnrollmentID INT PRIMARY KEY,
+    StudentID INT,
+    CourseID INT,
+    Grade DECIMAL(4,2),
+    CHECK (Grade >= 0.00 AND Grade <= 100.00),
+    FOREIGN KEY (StudentID) REFERENCES Students(StudentID),
+    FOREIGN KEY (CourseID) REFERENCES Courses(CourseID)
+);</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Exercise 4 -->
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">Exercise 4: Build Reusable Views</div>
+                <div class="card-body">
+                    <div class="mb-0">
+                        <label class="form-label fw-bold">1. Create a view named <code>StudentTranscript</code> that displays the Student's FirstName, LastName, CourseName, and Grade by joining the Students, Enrollments, and Courses tables.</label>
+                        <div class="exercise-area">
+                            <textarea class="form-control font-monospace" rows="8" placeholder="Write your SQL query here..."></textarea>
+                            <button class="btn btn-outline-primary btn-sm mt-2" type="button" data-bs-toggle="collapse" data-bs-target="#ans4_1">Submit & Check Answer</button>
+                            <div class="collapse mt-3" id="ans4_1">
+                                <div class="alert alert-success mb-0">
+                                    <strong><i class="fas fa-check-circle me-2"></i>Correct Answer:</strong>
+                                    <pre class="mb-0 mt-2"><code class="language-sql">CREATE VIEW StudentTranscript AS
+SELECT s.FirstName, s.LastName, c.CourseName, e.Grade
+FROM Students s
+JOIN Enrollments e ON s.StudentID = e.StudentID
+JOIN Courses c ON e.CourseID = c.CourseID;</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Exercise 5 -->
+            <div class="card mb-4">
+                <div class="card-header bg-danger text-white">Exercise 5: Optimize Queries Using Indexes</div>
+                <div class="card-body">
+                    <div class="mb-0">
+                        <label class="form-label fw-bold">1. The university frequently searches for students by their last name. Create an index on the <code>LastName</code> column in the <code>Students</code> table to speed up these queries.</label>
+                        <div class="exercise-area">
+                            <textarea class="form-control font-monospace" rows="3" placeholder="Write your SQL query here..."></textarea>
+                            <button class="btn btn-outline-danger btn-sm mt-2" type="button" data-bs-toggle="collapse" data-bs-target="#ans5_1">Submit & Check Answer</button>
+                            <div class="collapse mt-3" id="ans5_1">
+                                <div class="alert alert-success mb-0">
+                                    <strong><i class="fas fa-check-circle me-2"></i>Correct Answer:</strong>
+                                    <pre class="mb-0 mt-2"><code class="language-sql">CREATE INDEX idx_lastname 
+ON Students(LastName);</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-5">
+
+        <!-- Module Summary -->
+        <section id="summary" class="mb-5">
+            <h2 class="section-title">Module Summary</h2>
+            <div class="card bg-light">
+                <div class="card-body">
+                    <p>In this module, you have transitioned from a database user to a database architect, mastering the structural foundations of relational systems:</p>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><i class="fas fa-server text-primary me-2"></i> <strong>Database Management</strong> — Create, drop, and backup entire database environments.</li>
+                        <li class="mb-2"><i class="fas fa-table text-primary me-2"></i> <strong>Table Management</strong> — Design schemas and alter structures using DDL commands.</li>
+                        <li class="mb-2"><i class="fas fa-shield-alt text-primary me-2"></i> <strong>Constraints</strong> — Enforce data integrity using PKs, FKs, Checks, and Defaults.</li>
+                        <li class="mb-2"><i class="fas fa-sort-numeric-up text-primary me-2"></i> <strong>Auto Increment</strong> — Generate unique identifiers automatically.</li>
+                        <li class="mb-2"><i class="fas fa-calendar-alt text-primary me-2"></i> <strong>Date Functions</strong> — Format, calculate, and manipulate temporal data.</li>
+                        <li class="mb-2"><i class="fas fa-tachometer-alt text-primary me-2"></i> <strong>Indexes & Views</strong> — Optimize query performance and create secure, reusable virtual tables.</li>
+                    </ul>
+                    <div class="alert alert-info mt-3 mb-0">
+                        <strong>🚀 What's Next?</strong> In Module 4, we will explore Advanced SQL Programming, including Subqueries, Window Functions, and Stored Procedures to build enterprise-grade data pipelines!
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>Beyond Data Analytics</h5>
+                    <p class="fst-italic text-info">Transforming Raw Data into Insights</p>
+                    <p>Empowering the next generation of data professionals to master the tools that drive modern decision-making.</p>
+                </div>
+                <div class="col-md-3">
+                    <h5>Resources</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="https://dev.mysql.com/doc/" class="text-white text-decoration-none">MySQL Documentation</a></li>
+                        <li><a href="https://www.postgresql.org/docs/" class="text-white text-decoration-none">PostgreSQL Docs</a></li>
+                        <li><a href="https://stackoverflow.com/questions/tagged/sql" class="text-white text-decoration-none">Stack Overflow</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3">
+                    <h5>Program</h5>
+                    <ul class="list-unstyled">
+                        <li>Professional Certificate</li>
+                        <li>in Data Science</li>
+                        <li class="mt-2"><a href="#home" class="text-white text-decoration-none">Back to Top</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="text-center mt-4 pt-3 border-top border-secondary">
+                <small>&copy; 2026 Beyond Data Analytics. All Rights Reserved.</small>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Highlight.js JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/languages/sql.min.js"></script>
+    <script>hljs.highlightAll();</script>
+
+</body>
+</html>

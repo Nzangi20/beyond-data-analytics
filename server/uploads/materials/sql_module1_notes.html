@@ -1,0 +1,927 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Module 1: SQL Fundamentals and Data Retrieval | Beyond Data Analytics</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Highlight.js for Code Syntax Highlighting -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark.min.css">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary-color: #0d6efd;
+            --secondary-color: #6c757d;
+            --accent-color: #0dcaf0;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+            padding-top: 70px; /* Space for fixed navbar */
+        }
+
+        /* Navbar Styling */
+        .navbar {
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            background: linear-gradient(90deg, #0d6efd 0%, #0a58ca 100%);
+        }
+        .navbar-brand {
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+        .nav-link {
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        .nav-link:hover {
+            color: #ffc107 !important;
+            transform: translateY(-2px);
+        }
+
+        /* Hero Section */
+        .hero-section {
+            background: url('https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80') no-repeat center center/cover;
+            height: 450px;
+            position: relative;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+        .hero-overlay {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.75);
+        }
+        .hero-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Content Cards */
+        .card {
+            border: none;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            transition: transform 0.3s;
+            margin-bottom: 20px;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        .card-header {
+            background-color: #fff;
+            border-bottom: 2px solid #0d6efd;
+            font-weight: 700;
+            color: #0d6efd;
+        }
+
+        /* Code Blocks */
+        pre {
+            border-radius: 8px;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+        }
+        code {
+            font-family: 'Consolas', 'Monaco', monospace;
+        }
+
+        /* Section Titles */
+        .section-title {
+            position: relative;
+            padding-bottom: 15px;
+            margin-bottom: 30px;
+            font-weight: 700;
+        }
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 4px;
+            background-color: #0d6efd;
+        }
+
+        /* Tables */
+        .table-custom {
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .table-custom thead {
+            background: linear-gradient(90deg, #0d6efd 0%, #0a58ca 100%);
+            color: white;
+        }
+
+        /* Footer */
+        footer {
+            background-color: #212529;
+            color: white;
+            padding: 40px 0;
+            margin-top: 50px;
+        }
+        
+        /* Exercise Area */
+        .exercise-area {
+            background: #f8f9fa;
+            border: 1px dashed #0d6efd;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="#"><i class="fas fa-database me-2"></i>Beyond Data Analytics</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="#intro">1.1 Intro</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#retrieval">1.2 Retrieval</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#logical">1.3 Logical</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#filtering">1.4 Filtering</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#limits">1.5 Limits</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#aliases">1.6 Aliases</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#ops">1.7 Operators</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="#exercises">Exercises</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header id="home" class="hero-section">
+        <div class="hero-overlay"></div>
+        <div class="hero-content container">
+            <h1 class="display-3 fw-bold">Module 1: SQL Fundamentals</h1>
+            <p class="lead fs-4">Master the language of databases — from basic queries to advanced filtering</p>
+            <h3 class="text-info fw-light fst-italic">Beyond Data Analytics</h3>
+            <p class="fs-5 text-light">Transforming Raw Data into Insights</p>
+            <a href="#intro" class="btn btn-primary btn-lg mt-3 px-5 rounded-pill">Start Learning</a>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <div class="container my-5">
+
+        <!-- Learning Objectives -->
+        <section id="objectives" class="mb-5">
+            <h2 class="section-title">Learning Objectives</h2>
+            <div class="card bg-light">
+                <div class="card-body">
+                    <ul class="list-unstyled mb-0">
+                        <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> Understand SQL syntax and fundamental database concepts.</li>
+                        <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> Retrieve data from relational databases using SELECT statements.</li>
+                        <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> Filter and sort records using WHERE and ORDER BY clauses.</li>
+                        <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> Use basic SQL operators and logical conditions effectively.</li>
+                        <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> Apply wildcards, aliases, and result-limiting techniques.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-5">
+
+        <!-- Sample Database Context -->
+        <section id="context" class="mb-5">
+            <h2 class="section-title">Sample Database Context</h2>
+            <p class="lead">Throughout this module, we will use a sample company database. Understanding this structure will help you follow along with all examples.</p>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">Employees Table</div>
+                        <div class="card-body p-0">
+                            <div class="table-responsive">
+                                <table class="table table-custom table-striped mb-0">
+                                    <thead><tr><th>EmployeeID</th><th>FirstName</th><th>Department</th><th>Salary</th><th>City</th></tr></thead>
+                                    <tbody>
+                                        <tr><td>1</td><td>John</td><td>IT</td><td>75000</td><td>Nairobi</td></tr>
+                                        <tr><td>2</td><td>Jane</td><td>HR</td><td>62000</td><td>Mombasa</td></tr>
+                                        <tr><td>3</td><td>Michael</td><td>IT</td><td>82000</td><td>Nairobi</td></tr>
+                                        <tr><td>4</td><td>Sarah</td><td>Finance</td><td>91000</td><td>Kisumu</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">Customers Table</div>
+                        <div class="card-body p-0">
+                            <div class="table-responsive">
+                                <table class="table table-custom table-striped mb-0">
+                                    <thead><tr><th>CustomerID</th><th>CustomerName</th><th>City</th><th>Country</th></tr></thead>
+                                    <tbody>
+                                        <tr><td>1</td><td>Alfreds Futterkiste</td><td>Berlin</td><td>Germany</td></tr>
+                                        <tr><td>2</td><td>Ana Trujillo</td><td>México D.F.</td><td>Mexico</td></tr>
+                                        <tr><td>3</td><td>Around the Horn</td><td>London</td><td>UK</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-5">
+
+        <!-- 1.1 Introduction to SQL -->
+        <section id="intro" class="mb-5">
+            <h2 class="section-title">1.1 Introduction to SQL</h2>
+            <div class="card">
+                <div class="card-body">
+                    <p><strong>SQL</strong> (Structured Query Language) is the standard language for accessing and manipulating databases. It allows you to create, read, update, and delete data in relational database management systems (RDBMS).</p>
+                    
+                    <h5 class="mt-4">Database Concepts</h5>
+                    <ul>
+                        <li><strong>Database:</strong> A structured collection of data.</li>
+                        <li><strong>Table:</strong> A collection of related data held in a structured format (rows and columns).</li>
+                        <li><strong>Row (Record):</strong> A single entry in a table.</li>
+                        <li><strong>Column (Field):</strong> A specific piece of data within a table.</li>
+                    </ul>
+
+                    <h5 class="mt-4">SQL Syntax Rules</h5>
+                    <pre><code class="language-sql">-- This is a single-line comment
+/* This is a 
+   multi-line comment */
+
+SELECT FirstName, LastName
+FROM Employees
+WHERE Department = 'IT';</code></pre>
+                    <div class="alert alert-info mt-3">
+                        <strong>Key Rules:</strong> SQL keywords are NOT case-sensitive, but it is convention to write them in UPPERCASE. Statements end with a semicolon (<code>;</code>). String values must be enclosed in single quotes.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-5">
+
+        <!-- 1.2 Retrieving Data -->
+        <section id="retrieval" class="mb-5">
+            <h2 class="section-title">1.2 Retrieving Data</h2>
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="card h-100">
+                        <div class="card-header">SELECT & SELECT DISTINCT</div>
+                        <div class="card-body">
+                            <p>The <code>SELECT</code> statement specifies which columns to retrieve. Use <code>*</code> for all columns (though specifying columns is best practice).</p>
+                            <pre><code class="language-sql">-- Select specific columns
+SELECT FirstName, LastName, Department
+FROM Employees;
+
+-- Select unique values only
+SELECT DISTINCT Department
+FROM Employees;</code></pre>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="card h-100">
+                        <div class="card-header">WHERE & ORDER BY</div>
+                        <div class="card-body">
+                            <p>Use <code>WHERE</code> to filter records, and <code>ORDER BY</code> to sort them.</p>
+                            <pre><code class="language-sql">-- Filter and Sort
+SELECT FirstName, Salary
+FROM Employees
+WHERE Department = 'IT'
+ORDER BY Salary DESC;</code></pre>
+                            <div class="alert alert-warning mt-3 mb-0">
+                                <strong>Note:</strong> <code>DESC</code> sorts in descending order. Omit it or use <code>ASC</code> for ascending (default).
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-5">
+
+        <!-- 1.3 Logical Operators -->
+        <section id="logical" class="mb-5">
+            <h2 class="section-title">1.3 Logical Operators</h2>
+            <div class="card">
+                <div class="card-body">
+                    <p>Logical operators combine multiple conditions in a <code>WHERE</code> clause.</p>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <h5>AND</h5>
+                            <p>Both conditions must be TRUE.</p>
+                            <pre><code class="language-sql">WHERE Department = 'IT' 
+AND Salary > 75000;</code></pre>
+                        </div>
+                        <div class="col-md-4">
+                            <h5>OR</h5>
+                            <p>At least one condition must be TRUE.</p>
+                            <pre><code class="language-sql">WHERE Department = 'IT' 
+OR Department = 'HR';</code></pre>
+                        </div>
+                        <div class="col-md-4">
+                            <h5>NOT</h5>
+                            <p>Reverses the result of a condition.</p>
+                            <pre><code class="language-sql">WHERE NOT Department = 'IT';
+-- or
+WHERE Department <> 'IT';</code></pre>
+                        </div>
+                    </div>
+                    <div class="alert alert-info mt-3">
+                        <strong>Pro Tip:</strong> Always use parentheses <code>()</code> when combining AND and OR to control the order of evaluation.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-5">
+
+        <!-- 1.4 Filtering Data -->
+        <section id="filtering" class="mb-5">
+            <h2 class="section-title">1.4 Filtering Data</h2>
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h5>LIKE & Wildcards</h5>
+                            <p>Search for patterns using <code>%</code> (multiple chars) or <code>_</code> (single char).</p>
+                            <pre><code class="language-sql">-- Starts with 'J'
+WHERE FirstName LIKE 'J%'
+
+-- Second character is 'a'
+WHERE FirstName LIKE '_a%'</code></pre>
+                        </div>
+                        <div class="col-md-6">
+                            <h5>IN & BETWEEN</h5>
+                            <p>Filter by lists or ranges.</p>
+                            <pre><code class="language-sql">-- In a list
+WHERE Department IN ('IT', 'HR')
+
+-- In a range (inclusive)
+WHERE Salary BETWEEN 60000 AND 80000</code></pre>
+                        </div>
+                    </div>
+                    <h5 class="mt-4">NULL Values</h5>
+                    <pre><code class="language-sql">-- Find missing values
+WHERE City IS NULL
+
+-- Find non-missing values
+WHERE City IS NOT NULL</code></pre>
+                    <div class="alert alert-danger mt-2">
+                        <strong>Warning:</strong> Never use <code>= NULL</code>. Always use <code>IS NULL</code>.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-5">
+
+        <!-- 1.5 Limiting Results -->
+        <section id="limits" class="mb-5">
+            <h2 class="section-title">1.5 Limiting Results</h2>
+            <div class="card">
+                <div class="card-body">
+                    <p>Different database systems use different syntax to limit rows:</p>
+                    <pre><code class="language-sql">-- SQL Server / MS Access
+SELECT TOP 5 FirstName, Salary FROM Employees ORDER BY Salary DESC;
+
+-- MySQL, PostgreSQL, SQLite
+SELECT FirstName, Salary FROM Employees ORDER BY Salary DESC LIMIT 5;
+
+-- Oracle
+SELECT FirstName, Salary FROM Employees WHERE ROWNUM <= 5 ORDER BY Salary DESC;</code></pre>
+                    <div class="alert alert-success mt-3">
+                        <strong>Pagination:</strong> Use <code>LIMIT 5 OFFSET 5</code> to skip the first 5 rows and return the next 5.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-5">
+
+        <!-- 1.6 Aliases -->
+        <section id="aliases" class="mb-5">
+            <h2 class="section-title">1.6 Aliases</h2>
+            <div class="card">
+                <div class="card-body">
+                    <p>Aliases give a table or column a temporary name for readability.</p>
+                    <pre><code class="language-sql">-- Column Alias
+SELECT FirstName AS "First Name", 
+       Salary * 12 AS "Annual Salary"
+FROM Employees;
+
+-- Table Alias
+SELECT e.FirstName, e.Department 
+FROM Employees AS e
+WHERE e.Salary > 70000;</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-5">
+
+        <!-- 1.7 SQL Operators -->
+        <section id="ops" class="mb-5">
+            <h2 class="section-title">1.7 SQL Operators</h2>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card h-100">
+                        <div class="card-header">Arithmetic Operators</div>
+                        <div class="card-body">
+                            <table class="table table-bordered">
+                                <thead><tr><th>Op</th><th>Description</th><th>Example</th></tr></thead>
+                                <tbody>
+                                    <tr><td><code>+</code></td><td>Add</td><td><code>Salary + 5000</code></td></tr>
+                                    <tr><td><code>-</code></td><td>Subtract</td><td><code>Salary - 1000</code></td></tr>
+                                    <tr><td><code>*</code></td><td>Multiply</td><td><code>Salary * 1.1</code></td></tr>
+                                    <tr><td><code>/</code></td><td>Divide</td><td><code>Salary / 12</code></td></tr>
+                                    <tr><td><code>%</code></td><td>Modulus</td><td><code>ID % 2</code></td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card h-100">
+                        <div class="card-header">Comparison Operators</div>
+                        <div class="card-body">
+                            <table class="table table-bordered">
+                                <thead><tr><th>Op</th><th>Description</th></tr></thead>
+                                <tbody>
+                                    <tr><td><code>=</code></td><td>Equal to</td></tr>
+                                    <tr><td><code>&lt;&gt;</code> or <code>!=</code></td><td>Not equal to</td></tr>
+                                    <tr><td><code>&gt;</code></td><td>Greater than</td></tr>
+                                    <tr><td><code>&lt;</code></td><td>Less than</td></tr>
+                                    <tr><td><code>&gt;=</code></td><td>Greater than or equal to</td></tr>
+                                    <tr><td><code>&lt;=</code></td><td>Less than or equal to</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-5">
+
+        <!-- Practical Exercises -->
+        <section id="exercises" class="mb-5">
+            <h2 class="section-title">Practical Exercises</h2>
+            <p class="lead">Test your understanding by writing SQL queries. Use the space provided to write your answer, then click "Submit & Check Answer" to reveal the correct query.</p>
+            
+            <!-- Exercise 1 -->
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">Exercise 1: Basic Retrieval</div>
+                <div class="card-body">
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">1. Retrieve the first name, last name, and department of all employees.</label>
+                        <div class="exercise-area">
+                            <textarea class="form-control font-monospace" rows="3" placeholder="Write your SQL query here..."></textarea>
+                            <button class="btn btn-outline-primary btn-sm mt-2" type="button" data-bs-toggle="collapse" data-bs-target="#ans1_1">Submit & Check Answer</button>
+                            <div class="collapse mt-3" id="ans1_1">
+                                <div class="alert alert-success mb-0">
+                                    <strong><i class="fas fa-check-circle me-2"></i>Correct Answer:</strong>
+                                    <pre class="mb-0 mt-2"><code class="language-sql">SELECT FirstName, LastName, Department
+FROM Employees;</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">2. Retrieve all columns from the Customers table.</label>
+                        <div class="exercise-area">
+                            <textarea class="form-control font-monospace" rows="3" placeholder="Write your SQL query here..."></textarea>
+                            <button class="btn btn-outline-primary btn-sm mt-2" type="button" data-bs-toggle="collapse" data-bs-target="#ans1_2">Submit & Check Answer</button>
+                            <div class="collapse mt-3" id="ans1_2">
+                                <div class="alert alert-success mb-0">
+                                    <strong><i class="fas fa-check-circle me-2"></i>Correct Answer:</strong>
+                                    <pre class="mb-0 mt-2"><code class="language-sql">SELECT *
+FROM Customers;</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-0">
+                        <label class="form-label fw-bold">3. Retrieve only the unique cities from the Customers table.</label>
+                        <div class="exercise-area">
+                            <textarea class="form-control font-monospace" rows="3" placeholder="Write your SQL query here..."></textarea>
+                            <button class="btn btn-outline-primary btn-sm mt-2" type="button" data-bs-toggle="collapse" data-bs-target="#ans1_3">Submit & Check Answer</button>
+                            <div class="collapse mt-3" id="ans1_3">
+                                <div class="alert alert-success mb-0">
+                                    <strong><i class="fas fa-check-circle me-2"></i>Correct Answer:</strong>
+                                    <pre class="mb-0 mt-2"><code class="language-sql">SELECT DISTINCT City
+FROM Customers;</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Exercise 2 -->
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">Exercise 2: Filtering with WHERE</div>
+                <div class="card-body">
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">1. Find all employees who work in the IT department.</label>
+                        <div class="exercise-area">
+                            <textarea class="form-control font-monospace" rows="3" placeholder="Write your SQL query here..."></textarea>
+                            <button class="btn btn-outline-primary btn-sm mt-2" type="button" data-bs-toggle="collapse" data-bs-target="#ans2_1">Submit & Check Answer</button>
+                            <div class="collapse mt-3" id="ans2_1">
+                                <div class="alert alert-success mb-0">
+                                    <strong><i class="fas fa-check-circle me-2"></i>Correct Answer:</strong>
+                                    <pre class="mb-0 mt-2"><code class="language-sql">SELECT *
+FROM Employees
+WHERE Department = 'IT';</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">2. Find all employees whose salary is greater than 75,000.</label>
+                        <div class="exercise-area">
+                            <textarea class="form-control font-monospace" rows="3" placeholder="Write your SQL query here..."></textarea>
+                            <button class="btn btn-outline-primary btn-sm mt-2" type="button" data-bs-toggle="collapse" data-bs-target="#ans2_2">Submit & Check Answer</button>
+                            <div class="collapse mt-3" id="ans2_2">
+                                <div class="alert alert-success mb-0">
+                                    <strong><i class="fas fa-check-circle me-2"></i>Correct Answer:</strong>
+                                    <pre class="mb-0 mt-2"><code class="language-sql">SELECT *
+FROM Employees
+WHERE Salary > 75000;</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-0">
+                        <label class="form-label fw-bold">3. Find all customers from Germany.</label>
+                        <div class="exercise-area">
+                            <textarea class="form-control font-monospace" rows="3" placeholder="Write your SQL query here..."></textarea>
+                            <button class="btn btn-outline-primary btn-sm mt-2" type="button" data-bs-toggle="collapse" data-bs-target="#ans2_3">Submit & Check Answer</button>
+                            <div class="collapse mt-3" id="ans2_3">
+                                <div class="alert alert-success mb-0">
+                                    <strong><i class="fas fa-check-circle me-2"></i>Correct Answer:</strong>
+                                    <pre class="mb-0 mt-2"><code class="language-sql">SELECT *
+FROM Customers
+WHERE Country = 'Germany';</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Exercise 3 -->
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">Exercise 3: Sorting Results</div>
+                <div class="card-body">
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">1. List all employees ordered by salary in descending order.</label>
+                        <div class="exercise-area">
+                            <textarea class="form-control font-monospace" rows="3" placeholder="Write your SQL query here..."></textarea>
+                            <button class="btn btn-outline-primary btn-sm mt-2" type="button" data-bs-toggle="collapse" data-bs-target="#ans3_1">Submit & Check Answer</button>
+                            <div class="collapse mt-3" id="ans3_1">
+                                <div class="alert alert-success mb-0">
+                                    <strong><i class="fas fa-check-circle me-2"></i>Correct Answer:</strong>
+                                    <pre class="mb-0 mt-2"><code class="language-sql">SELECT *
+FROM Employees
+ORDER BY Salary DESC;</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">2. List employees ordered by department (ASC) and then by last name (ASC).</label>
+                        <div class="exercise-area">
+                            <textarea class="form-control font-monospace" rows="3" placeholder="Write your SQL query here..."></textarea>
+                            <button class="btn btn-outline-primary btn-sm mt-2" type="button" data-bs-toggle="collapse" data-bs-target="#ans3_2">Submit & Check Answer</button>
+                            <div class="collapse mt-3" id="ans3_2">
+                                <div class="alert alert-success mb-0">
+                                    <strong><i class="fas fa-check-circle me-2"></i>Correct Answer:</strong>
+                                    <pre class="mb-0 mt-2"><code class="language-sql">SELECT *
+FROM Employees
+ORDER BY Department ASC, LastName ASC;</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-0">
+                        <label class="form-label fw-bold">3. Find the top 3 highest-paid employees.</label>
+                        <div class="exercise-area">
+                            <textarea class="form-control font-monospace" rows="3" placeholder="Write your SQL query here..."></textarea>
+                            <button class="btn btn-outline-primary btn-sm mt-2" type="button" data-bs-toggle="collapse" data-bs-target="#ans3_3">Submit & Check Answer</button>
+                            <div class="collapse mt-3" id="ans3_3">
+                                <div class="alert alert-success mb-0">
+                                    <strong><i class="fas fa-check-circle me-2"></i>Correct Answer:</strong>
+                                    <pre class="mb-0 mt-2"><code class="language-sql">SELECT *
+FROM Employees
+ORDER BY Salary DESC
+LIMIT 3;</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Exercise 4 -->
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">Exercise 4: Logical Operators</div>
+                <div class="card-body">
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">1. Find employees in the IT department who earn more than 75,000.</label>
+                        <div class="exercise-area">
+                            <textarea class="form-control font-monospace" rows="3" placeholder="Write your SQL query here..."></textarea>
+                            <button class="btn btn-outline-primary btn-sm mt-2" type="button" data-bs-toggle="collapse" data-bs-target="#ans4_1">Submit & Check Answer</button>
+                            <div class="collapse mt-3" id="ans4_1">
+                                <div class="alert alert-success mb-0">
+                                    <strong><i class="fas fa-check-circle me-2"></i>Correct Answer:</strong>
+                                    <pre class="mb-0 mt-2"><code class="language-sql">SELECT *
+FROM Employees
+WHERE Department = 'IT' AND Salary > 75000;</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">2. Find employees who are either in IT or Finance.</label>
+                        <div class="exercise-area">
+                            <textarea class="form-control font-monospace" rows="3" placeholder="Write your SQL query here..."></textarea>
+                            <button class="btn btn-outline-primary btn-sm mt-2" type="button" data-bs-toggle="collapse" data-bs-target="#ans4_2">Submit & Check Answer</button>
+                            <div class="collapse mt-3" id="ans4_2">
+                                <div class="alert alert-success mb-0">
+                                    <strong><i class="fas fa-check-circle me-2"></i>Correct Answer:</strong>
+                                    <pre class="mb-0 mt-2"><code class="language-sql">SELECT *
+FROM Employees
+WHERE Department = 'IT' OR Department = 'Finance';</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">3. Find employees who are NOT in the HR department.</label>
+                        <div class="exercise-area">
+                            <textarea class="form-control font-monospace" rows="3" placeholder="Write your SQL query here..."></textarea>
+                            <button class="btn btn-outline-primary btn-sm mt-2" type="button" data-bs-toggle="collapse" data-bs-target="#ans4_3">Submit & Check Answer</button>
+                            <div class="collapse mt-3" id="ans4_3">
+                                <div class="alert alert-success mb-0">
+                                    <strong><i class="fas fa-check-circle me-2"></i>Correct Answer:</strong>
+                                    <pre class="mb-0 mt-2"><code class="language-sql">SELECT *
+FROM Employees
+WHERE NOT Department = 'HR';
+-- OR
+WHERE Department <> 'HR';</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-0">
+                        <label class="form-label fw-bold">4. Find employees in IT or Finance who earn between 70,000 and 90,000.</label>
+                        <div class="exercise-area">
+                            <textarea class="form-control font-monospace" rows="3" placeholder="Write your SQL query here..."></textarea>
+                            <button class="btn btn-outline-primary btn-sm mt-2" type="button" data-bs-toggle="collapse" data-bs-target="#ans4_4">Submit & Check Answer</button>
+                            <div class="collapse mt-3" id="ans4_4">
+                                <div class="alert alert-success mb-0">
+                                    <strong><i class="fas fa-check-circle me-2"></i>Correct Answer:</strong>
+                                    <pre class="mb-0 mt-2"><code class="language-sql">SELECT *
+FROM Employees
+WHERE Department IN ('IT', 'Finance')
+AND Salary BETWEEN 70000 AND 90000;</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Exercise 5 -->
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">Exercise 5: Pattern Matching and Advanced Filtering</div>
+                <div class="card-body">
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">1. Find all employees whose first name starts with 'J'.</label>
+                        <div class="exercise-area">
+                            <textarea class="form-control font-monospace" rows="3" placeholder="Write your SQL query here..."></textarea>
+                            <button class="btn btn-outline-primary btn-sm mt-2" type="button" data-bs-toggle="collapse" data-bs-target="#ans5_1">Submit & Check Answer</button>
+                            <div class="collapse mt-3" id="ans5_1">
+                                <div class="alert alert-success mb-0">
+                                    <strong><i class="fas fa-check-circle me-2"></i>Correct Answer:</strong>
+                                    <pre class="mb-0 mt-2"><code class="language-sql">SELECT * FROM Employees WHERE FirstName LIKE 'J%';</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">2. Find all employees whose last name contains the letter 'o'.</label>
+                        <div class="exercise-area">
+                            <textarea class="form-control font-monospace" rows="3" placeholder="Write your SQL query here..."></textarea>
+                            <button class="btn btn-outline-primary btn-sm mt-2" type="button" data-bs-toggle="collapse" data-bs-target="#ans5_2">Submit & Check Answer</button>
+                            <div class="collapse mt-3" id="ans5_2">
+                                <div class="alert alert-success mb-0">
+                                    <strong><i class="fas fa-check-circle me-2"></i>Correct Answer:</strong>
+                                    <pre class="mb-0 mt-2"><code class="language-sql">SELECT * FROM Employees WHERE LastName LIKE '%o%';</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">3. Find employees in IT, HR, or Finance using the IN operator.</label>
+                        <div class="exercise-area">
+                            <textarea class="form-control font-monospace" rows="3" placeholder="Write your SQL query here..."></textarea>
+                            <button class="btn btn-outline-primary btn-sm mt-2" type="button" data-bs-toggle="collapse" data-bs-target="#ans5_3">Submit & Check Answer</button>
+                            <div class="collapse mt-3" id="ans5_3">
+                                <div class="alert alert-success mb-0">
+                                    <strong><i class="fas fa-check-circle me-2"></i>Correct Answer:</strong>
+                                    <pre class="mb-0 mt-2"><code class="language-sql">SELECT * FROM Employees WHERE Department IN ('IT', 'HR', 'Finance');</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">4. Find employees hired between January 1, 2019 and December 31, 2020.</label>
+                        <div class="exercise-area">
+                            <textarea class="form-control font-monospace" rows="3" placeholder="Write your SQL query here..."></textarea>
+                            <button class="btn btn-outline-primary btn-sm mt-2" type="button" data-bs-toggle="collapse" data-bs-target="#ans5_4">Submit & Check Answer</button>
+                            <div class="collapse mt-3" id="ans5_4">
+                                <div class="alert alert-success mb-0">
+                                    <strong><i class="fas fa-check-circle me-2"></i>Correct Answer:</strong>
+                                    <pre class="mb-0 mt-2"><code class="language-sql">SELECT * FROM Employees WHERE HireDate BETWEEN '2019-01-01' AND '2020-12-31';</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-0">
+                        <label class="form-label fw-bold">5. Find employees whose city is NOT NULL.</label>
+                        <div class="exercise-area">
+                            <textarea class="form-control font-monospace" rows="3" placeholder="Write your SQL query here..."></textarea>
+                            <button class="btn btn-outline-primary btn-sm mt-2" type="button" data-bs-toggle="collapse" data-bs-target="#ans5_5">Submit & Check Answer</button>
+                            <div class="collapse mt-3" id="ans5_5">
+                                <div class="alert alert-success mb-0">
+                                    <strong><i class="fas fa-check-circle me-2"></i>Correct Answer:</strong>
+                                    <pre class="mb-0 mt-2"><code class="language-sql">SELECT * FROM Employees WHERE City IS NOT NULL;</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Exercise 6 -->
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">Exercise 6: Aliases and Calculations</div>
+                <div class="card-body">
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">1. Display employee full names (first + last) with the alias "Full Name".</label>
+                        <div class="exercise-area">
+                            <textarea class="form-control font-monospace" rows="3" placeholder="Write your SQL query here..."></textarea>
+                            <button class="btn btn-outline-primary btn-sm mt-2" type="button" data-bs-toggle="collapse" data-bs-target="#ans6_1">Submit & Check Answer</button>
+                            <div class="collapse mt-3" id="ans6_1">
+                                <div class="alert alert-success mb-0">
+                                    <strong><i class="fas fa-check-circle me-2"></i>Correct Answer:</strong>
+                                    <pre class="mb-0 mt-2"><code class="language-sql">SELECT FirstName || ' ' || LastName AS "Full Name"
+FROM Employees;
+-- Note: Use CONCAT(FirstName, ' ', LastName) in MySQL</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">2. Calculate the annual salary (monthly × 12) with the alias "Annual Salary".</label>
+                        <div class="exercise-area">
+                            <textarea class="form-control font-monospace" rows="3" placeholder="Write your SQL query here..."></textarea>
+                            <button class="btn btn-outline-primary btn-sm mt-2" type="button" data-bs-toggle="collapse" data-bs-target="#ans6_2">Submit & Check Answer</button>
+                            <div class="collapse mt-3" id="ans6_2">
+                                <div class="alert alert-success mb-0">
+                                    <strong><i class="fas fa-check-circle me-2"></i>Correct Answer:</strong>
+                                    <pre class="mb-0 mt-2"><code class="language-sql">SELECT Salary * 12 AS "Annual Salary"
+FROM Employees;</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-0">
+                        <label class="form-label fw-bold">3. Use table aliases to select employee names and departments.</label>
+                        <div class="exercise-area">
+                            <textarea class="form-control font-monospace" rows="3" placeholder="Write your SQL query here..."></textarea>
+                            <button class="btn btn-outline-primary btn-sm mt-2" type="button" data-bs-toggle="collapse" data-bs-target="#ans6_3">Submit & Check Answer</button>
+                            <div class="collapse mt-3" id="ans6_3">
+                                <div class="alert alert-success mb-0">
+                                    <strong><i class="fas fa-check-circle me-2"></i>Correct Answer:</strong>
+                                    <pre class="mb-0 mt-2"><code class="language-sql">SELECT e.FirstName, e.LastName, e.Department
+FROM Employees AS e;</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Exercise 7 -->
+            <div class="card mb-4">
+                <div class="card-header bg-danger text-white">Exercise 7: Challenge — Combine Everything</div>
+                <div class="card-body">
+                    <div class="mb-0">
+                        <label class="form-label fw-bold">Retrieve the top 5 employees from Nairobi who work in IT or Finance, earn more than 70,000, and were hired after January 1, 2019. Display their full name (alias), department, monthly salary, and hire date. Order by salary descending.</label>
+                        <div class="exercise-area">
+                            <textarea class="form-control font-monospace" rows="6" placeholder="Write your SQL query here..."></textarea>
+                            <button class="btn btn-outline-danger btn-sm mt-2" type="button" data-bs-toggle="collapse" data-bs-target="#ans7_1">Submit & Check Answer</button>
+                            <div class="collapse mt-3" id="ans7_1">
+                                <div class="alert alert-success mb-0">
+                                    <strong><i class="fas fa-check-circle me-2"></i>Correct Answer:</strong>
+                                    <pre class="mb-0 mt-2"><code class="language-sql">SELECT DISTINCT 
+    FirstName || ' ' || LastName AS "Full Name",
+    Department,
+    Salary,
+    HireDate
+FROM Employees
+WHERE City = 'Nairobi'
+  AND Department IN ('IT', 'Finance')
+  AND Salary > 70000
+  AND HireDate > '2019-01-01'
+ORDER BY Salary DESC
+LIMIT 5;</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-5">
+
+        <!-- Module Summary -->
+        <section id="summary" class="mb-5">
+            <h2 class="section-title">Module Summary</h2>
+            <div class="card bg-light">
+                <div class="card-body">
+                    <p>In this module, you have mastered the foundational skills of SQL data retrieval:</p>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><i class="fas fa-database text-primary me-2"></i> <strong>SELECT</strong> — Retrieve specific columns or all columns.</li>
+                        <li class="mb-2"><i class="fas fa-filter text-primary me-2"></i> <strong>WHERE</strong> — Filter records based on conditions.</li>
+                        <li class="mb-2"><i class="fas fa-sort text-primary me-2"></i> <strong>ORDER BY</strong> — Sort results ascending or descending.</li>
+                        <li class="mb-2"><i class="fas fa-code-branch text-primary me-2"></i> <strong>AND, OR, NOT</strong> — Combine conditions logically.</li>
+                        <li class="mb-2"><i class="fas fa-search text-primary me-2"></i> <strong>LIKE, IN, BETWEEN</strong> — Advanced pattern and range filtering.</li>
+                        <li class="mb-2"><i class="fas fa-tag text-primary me-2"></i> <strong>Aliases</strong> — Rename columns and tables for clarity.</li>
+                    </ul>
+                    <div class="alert alert-info mt-3 mb-0">
+                        <strong>🚀 What's Next?</strong> In Module 2, you will learn about SQL aggregate functions (COUNT, SUM, AVG), the GROUP BY clause, and how to work with multiple tables using JOINs!
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>Beyond Data Analytics</h5>
+                    <p class="fst-italic text-info">Transforming Raw Data into Insights</p>
+                    <p>Empowering the next generation of data professionals to master the tools that drive modern decision-making.</p>
+                </div>
+                <div class="col-md-3">
+                    <h5>Resources</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="https://dev.mysql.com/doc/" class="text-white text-decoration-none">MySQL Documentation</a></li>
+                        <li><a href="https://www.postgresql.org/docs/" class="text-white text-decoration-none">PostgreSQL Docs</a></li>
+                        <li><a href="https://stackoverflow.com/questions/tagged/sql" class="text-white text-decoration-none">Stack Overflow</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3">
+                    <h5>Program</h5>
+                    <ul class="list-unstyled">
+                        <li>Professional Certificate</li>
+                        <li>in Data Science</li>
+                        <li class="mt-2"><a href="#home" class="text-white text-decoration-none">Back to Top</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="text-center mt-4 pt-3 border-top border-secondary">
+                <small>&copy; 2026 Beyond Data Analytics. All Rights Reserved.</small>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Highlight.js JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/languages/sql.min.js"></script>
+    <script>hljs.highlightAll();</script>
+
+</body>
+</html>

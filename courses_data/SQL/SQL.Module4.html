@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Module 4: Advanced SQL Programming, Security, and Best Practices | Beyond Data Analytics</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Highlight.js for Code Syntax Highlighting -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark.min.css">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary-color: #0d6efd;
+            --secondary-color: #6c757d;
+            --accent-color: #0dcaf0;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+            padding-top: 70px; /* Space for fixed navbar */
+        }
+
+        /* Navbar Styling */
+        .navbar {
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            background: linear-gradient(90deg, #0d6efd 0%, #0a58ca 100%);
+        }
+        .navbar-brand {
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+        .nav-link {
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        .nav-link:hover {
+            color: #ffc107 !important;
+            transform: translateY(-2px);
+        }
+
+        /* Hero Section */
+        .hero-section {
+            background: url('https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80') no-repeat center center/cover;
+            height: 450px;
+            position: relative;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+        .hero-overlay {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.75);
+        }
+        .hero-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Content Cards */
+        .card {
+            border: none;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            transition: transform 0.3s;
+            margin-bottom: 20px;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        .card-header {
+            background-color: #fff;
+            border-bottom: 2px solid #0d6efd;
+            font-weight: 700;
+            color: #0d6efd;
+        }
+
+        /* Code Blocks */
+        pre {
+            border-radius: 8px;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+        }
+        code {
+            font-family: 'Consolas', 'Monaco', monospace;
+        }
+
+        /* Section Titles */
+        .section-title {
+            position: relative;
+            padding-bottom: 15px;
+            margin-bottom: 30px;
+            font-weight: 700;
+        }
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 4px;
+            background-color: #0d6efd;
+        }
+
+        /* Tables */
+        .table-custom {
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .table-custom thead {
+            background: linear-gradient(90deg, #0d6efd 0%, #0a58ca 100%);
+            color: white;
+        }
+
+        /* Footer */
+        footer {
+            background-color: #212529;
+            color: white;
+            padding: 40px 0;
+            margin-top: 50px;
+        }
+        
+        /* Exercise Area */
+        .exercise-area {
+            background: #f8f9fa;
+            border: 1px dashed #0d6efd;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 10px;
+        }
+
+        /* Beyond Data Section */
+        .beyond-data-section {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 30px 35px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            border-left: 6px solid #28a745;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            position: relative;
+            overflow: hidden;
+        }
+        .beyond-data-section::before {
+            content: "📊";
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 5em;
+            opacity: 0.1;
+        }
+        .beyond-data-section h2 {
+            color: #1e3c72;
+            font-size: 1.6em;
+            margin-bottom: 15px;
+        }
+        .beyond-data-section .highlight {
+            color: #28a745;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="#"><i class="fas fa-database me-2"></i>Beyond Data Analytics</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="#stored-procedures">4.1 Procedures</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#parameters">4.2 Parameters</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#prepared">4.3 Prepared</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#sql-injection">4.4 Injection</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#comments">4.5 Comments</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#data-transfer">4.6 Transfer</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#hosting">4.7 Hosting</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#capstone">Capstone</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="#exercises">Exercises</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header id="home" class="hero-section">
+        <div class="hero-overlay"></div>
+        <div class="hero-content container">
+            <h1 class="display-3 fw-bold">Module 4: Advanced SQL & Security</h1>
+            <p class="lead fs-4">Mastering Stored Procedures, Security, and Best Practices</p>
+            <h3 class="text-info fw-light fst-italic">Beyond Data Analytics</h3>
+            <p class="fs-5 text-light">Transforming Raw Data into Insights</p>
+            <a href="#objectives" class="btn btn-primary btn-lg mt-3 px-5 rounded-pill">Start Learning</a>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <div class="container my-5">
+
+        <!-- Beyond Data Analytics Section -->
+        <section class="beyond-data-section mb-5">
+            <h2>🌐 Beyond Data Analytics</h2>
+            <p>At <span class="highlight">Beyond Data Analytics</span>, we believe that data is more than just numbers and tables—it is the strategic foundation of modern decision-making. Our curriculum is meticulously designed to bridge the gap between theoretical knowledge and real-world application, empowering professionals to extract actionable insights, drive business value, and innovate across industries.</p>
+            <p>By mastering advanced SQL programming and security, you transition from writing simple queries to building <span class="highlight">enterprise-grade, secure data architectures</span>. This module equips you with the skills to automate workflows, protect sensitive information from malicious attacks, and deploy scalable database solutions in professional environments.</p>
+        </section>
+
+        <!-- Learning Objectives -->
+        <section id="objectives" class="mb-5">
+            <h2 class="section-title">Learning Objectives</h2>
+            <div class="card bg-light">
+                <div class="card-body">
+                    <p class="lead mb-3">By the end of this module, participants will be able to:</p>
+                    <ul class="list-unstyled mb-0">
+                        <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> Develop reusable and modular SQL code using Stored Procedures.</li>
+                        <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> Improve database security and prevent SQL Injection attacks.</li>
+                        <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> Write efficient, secure, and optimized SQL applications using Prepared Statements.</li>
+                        <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> Transfer data efficiently between tables using advanced DML techniques.</li>
+                        <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> Understand database hosting, deployment, and connection concepts.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-5">
+
+        <!-- 4.1 Stored Procedures -->
+        <section id="stored-procedures" class="mb-5">
+            <h2 class="section-title">4.1 Stored Procedures</h2>
+            <p class="lead">A stored procedure is a prepared SQL code that you can save, so the code can be reused over and over again. It acts like a function for your database.</p>
+            <div class="card">
+                <div class="card-body">
+                    <h5>Creating Stored Procedures</h5>
+                    <pre><code class="language-sql">CREATE PROCEDURE GetAllCustomers
+AS
+SELECT * FROM Customers
+GO;</code></pre>
+
+                    <h5 class="mt-4">Executing Procedures</h5>
+                    <pre><code class="language-sql">EXEC GetAllCustomers;</code></pre>
+
+                    <h5 class="mt-4">Procedures with Parameters</h5>
+                    <pre><code class="language-sql">CREATE PROCEDURE GetCustomerByCity @City VARCHAR(50)
+AS
+SELECT * FROM Customers WHERE City = @City
+GO;
+
+-- Execute with parameter
+EXEC GetCustomerByCity @City = 'London';</code></pre>
+
+                    <h5 class="mt-4">Modifying Procedures</h5>
+                    <p>Use <code>ALTER PROCEDURE</code> to modify the logic without dropping and recreating it.</p>
+                    <pre><code class="language-sql">ALTER PROCEDURE GetCustomerByCity @City VARCHAR(50)
+AS
+SELECT CustomerName, ContactName, City 
+FROM Customers 
+WHERE City = @City
+ORDER BY CustomerName;
+GO;</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-5">
+
+        <!-- 4.2 SQL Parameters -->
+        <section id="parameters" class="mb-5">
+            <h2 class="section-title">4.2 SQL Parameters</h2>
+            <div class="card">
+                <div class="card-body">
+                    <p>Parameters are used to pass values into stored procedures or dynamic SQL statements. They ensure that user input is treated strictly as data, not as executable code.</p>
+                    
+                    <h5>Input Parameters</h5>
+                    <p>Input parameters allow the caller to pass data into the procedure.</p>
+                    <pre><code class="language-sql">CREATE PROCEDURE UpdateEmployeeSalary 
+    @EmpID INT, 
+    @NewSalary DECIMAL(10,2)
+AS
+BEGIN
+    UPDATE Employees
+    SET Salary = @NewSalary
+    WHERE EmployeeID = @EmpID;
+END;
+GO
+
+-- Execution
+EXEC UpdateEmployeeSalary @EmpID = 1, @NewSalary = 85000.00;</code></pre>
+
+                    <div class="alert alert-info mt-3">
+                        <strong>Best Practice:</strong> Always define the data type and size for parameters to ensure data integrity and prevent overflow errors.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-5">
+
+        <!-- 4.3 Prepared Statements -->
+        <section id="prepared" class="mb-5">
+            <h2 class="section-title">4.3 Prepared Statements</h2>
+            <div class="card">
+                <div class="card-body">
+                    <p>Prepared statements (or parameterized statements) are pre-compiled SQL queries that separate the SQL logic from the data provided.</p>
+                    
+                    <h5>Benefits</h5>
+                    <ul>
+                        <li><strong>Security:</strong> The primary defense against SQL Injection. Parameters are treated as literal values, not executable code.</li>
+                        <li><strong>Performance:</strong> The database compiles the query plan once and reuses it for subsequent executions with different parameters, reducing overhead.</li>
+                        <li><strong>Maintainability:</strong> Code is cleaner and easier to read when logic and data are separated.</li>
+                    </ul>
+
+                    <h5 class="mt-4">Conceptual Example (Application Side)</h5>
+                    <pre><code class="language-sql">-- The application sends the query template and parameters separately
+-- Query Template:
+SELECT * FROM Employees WHERE Department = ? AND Salary > ?;
+
+-- Parameters passed securely by the application driver:
+-- Param 1: 'IT'
+-- Param 2: 70000</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-5">
+
+        <!-- 4.4 SQL Injection -->
+        <section id="sql-injection" class="mb-5">
+            <h2 class="section-title">4.4 SQL Injection</h2>
+            <div class="card">
+                <div class="card-body">
+                    <div class="alert alert-danger">
+                        <strong><i class="fas fa-exclamation-triangle me-2"></i> Critical Security Threat</strong>
+                        SQL Injection (SQLi) is a code injection technique that might destroy your database. It is one of the most common and devastating web hacking techniques.
+                    </div>
+                    
+                    <h5>What is SQL Injection?</h5>
+                    <p>SQL injection occurs when malicious SQL statements are inserted into entry fields for execution (e.g., to dump the database contents to the attacker or bypass authentication).</p>
+                    
+                    <h5 class="mt-4">Common Vulnerability Example</h5>
+                    <p>If your application constructs queries by concatenating strings directly with user input:</p>
+                    <pre><code class="language-sql">-- VULNERABLE CODE (Conceptual Application Logic)
+query = "SELECT * FROM Users WHERE username = '" + userInput + "' AND password = '" + passwordInput + "'";</code></pre>
+                    <p>An attacker could input <code>' OR '1'='1</code> as the username, resulting in:</p>
+                    <pre><code class="language-sql">SELECT * FROM Users WHERE username = '' OR '1'='1' AND password = '...'</code></pre>
+                    <p>This condition is always true, granting the attacker unauthorized access!</p>
+
+                    <h5 class="mt-4">Prevention Techniques</h5>
+                    <ol>
+                        <li><strong>Parameterized Queries:</strong> Always use prepared statements so the database treats user input as data, not executable code.</li>
+                        <li><strong>Stored Procedures:</strong> Encapsulate SQL logic and use parameters.</li>
+                        <li><strong>Input Validation:</strong> Validate and sanitize all user inputs (e.g., allowlists).</li>
+                        <li><strong>Principle of Least Privilege:</strong> Ensure the database account used by the application has only the necessary permissions (e.g., no <code>DROP TABLE</code> rights).</li>
+                    </ol>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-5">
+
+        <!-- 4.5 SQL Comments -->
+        <section id="comments" class="mb-5">
+            <h2 class="section-title">4.5 SQL Comments</h2>
+            <div class="card">
+                <div class="card-body">
+                    <p>Comments are used to explain sections of SQL statements, or to prevent execution of some parts of the code. They are essential for maintainability and collaboration.</p>
+                    
+                    <h5>Single-line Comments</h5>
+                    <p>Start with <code>--</code>. Everything after <code>--</code> on that line is ignored.</p>
+                    <pre><code class="language-sql">-- Select all employees in the IT department
+SELECT * FROM Employees
+WHERE Department = 'IT'; -- Filter by IT department</code></pre>
+
+                    <h5 class="mt-4">Multi-line Comments</h5>
+                    <p>Enclosed between <code>/*</code> and <code>*/</code>. Can span multiple lines.</p>
+                    <pre><code class="language-sql">/* 
+   Author: Victor Lumumba
+   Date: 2026-07-03
+   Purpose: Calculate annual bonus for high-performing employees
+*/
+SELECT FirstName, Salary, (Salary * 0.10) AS Bonus
+FROM Employees
+WHERE PerformanceRating > 4;</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-5">
+
+        <!-- 4.6 Data Transfer -->
+        <section id="data-transfer" class="mb-5">
+            <h2 class="section-title">4.6 Data Transfer</h2>
+            <div class="card">
+                <div class="card-body">
+                    <h5>SELECT INTO</h5>
+                    <p>Copies data from one table into a <strong>new</strong> table. The new table is created automatically with the same column definitions.</p>
+                    <pre><code class="language-sql">-- Create a backup of all IT employees
+SELECT * INTO Employees_Backup
+FROM Employees
+WHERE Department = 'IT';
+
+-- Copy specific columns to a new table
+SELECT FirstName, LastName, Salary INTO HighEarners
+FROM Employees
+WHERE Salary > 80000;</code></pre>
+
+                    <h5 class="mt-4">INSERT INTO SELECT</h5>
+                    <p>Copies data from one table and inserts it into an <strong>existing</strong> table.</p>
+                    <pre><code class="language-sql">-- Insert German customers into an existing CustomerArchive table
+INSERT INTO CustomerArchive (CustomerName, City, Country)
+SELECT CustomerName, City, Country
+FROM Customers
+WHERE Country = 'Germany';</code></pre>
+                    
+                    <div class="alert alert-warning mt-3">
+                        <strong>Note:</strong> <code>SELECT INTO</code> requires appropriate permissions to create new tables in the database.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-5">
+
+        <!-- 4.7 SQL Hosting -->
+        <section id="hosting" class="mb-5">
+            <h2 class="section-title">4.7 SQL Hosting</h2>
+            <div class="card">
+                <div class="card-body">
+                    <h5>Database Hosting Concepts</h5>
+                    <p>SQL hosting refers to storing your database on a remote server managed by a hosting provider (e.g., AWS RDS, Azure SQL, Google Cloud SQL, or shared hosting like cPanel/MySQL).</p>
+                    
+                    <h5 class="mt-4">Connecting SQL Databases</h5>
+                    <p>To connect an application to a hosted database, you typically need a <strong>Connection String</strong>:</p>
+                    <pre><code class="language-sql">Server=myServerAddress;Database=myDataBase;User Id=myUsername;Password=myPassword;</code></pre>
+
+                    <h5 class="mt-4">Deployment Basics</h5>
+                    <ul>
+                        <li><strong>Migration Scripts:</strong> Use tools like Flyway or Liquibase, or manual SQL scripts to deploy schema changes.</li>
+                        <li><strong>Environment Separation:</strong> Maintain separate databases for Development, Testing, and Production.</li>
+                        <li><strong>Backups:</strong> Configure automated daily backups and point-in-time recovery.</li>
+                        <li><strong>Firewalls:</strong> Restrict database access to specific IP addresses (e.g., only your application server's IP).</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-5">
+
+        <!-- Capstone Project -->
+        <section id="capstone" class="mb-5">
+            <h2 class="section-title">Capstone Project</h2>
+            <div class="card border-primary">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0"><i class="fas fa-project-diagram me-2"></i> Comprehensive Database System Development</h4>
+                </div>
+                <div class="card-body">
+                    <p class="lead">In this capstone, you will design, build, and secure a complete SQL-based database system from scratch. This project integrates all concepts learned in Modules 1 through 4.</p>
+                    <h5>Project Requirements:</h5>
+                    <ul>
+                        <li><strong>Database Creation:</strong> Design and create a new database for a specific business scenario (e.g., Library, E-commerce, Hospital).</li>
+                        <li><strong>Table Design:</strong> Create at least 4 relational tables with appropriate data types, Primary Keys, and Foreign Keys.</li>
+                        <li><strong>Data Insertion:</strong> Populate your tables with meaningful sample data (at least 10 rows per table).</li>
+                        <li><strong>Complex Queries & Joins:</strong> Write queries that utilize INNER, LEFT, and RIGHT joins to extract combined insights.</li>
+                        <li><strong>Aggregate Reporting:</strong> Use GROUP BY, HAVING, and aggregate functions to generate business reports.</li>
+                        <li><strong>Views:</strong> Create at least 2 views to simplify complex queries and restrict access to sensitive columns.</li>
+                        <li><strong>Stored Procedures:</strong> Develop parameterized stored procedures for common data manipulation tasks (e.g., adding a new order, updating inventory).</li>
+                        <li><strong>Security Implementation:</strong> Document how your stored procedures and parameterized queries protect the database against SQL injection.</li>
+                    </ul>
+                    <div class="alert alert-info mt-3">
+                        <strong>Deliverable:</strong> A single <code>.sql</code> script file containing all DDL, DML, and procedural code, fully commented and organized.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-5">
+
+        <!-- Practical Exercises -->
+        <section id="exercises" class="mb-5">
+            <h2 class="section-title">Practical Exercises</h2>
+            <p class="lead">Test your advanced SQL skills. Use the space provided to write your SQL queries, then click "Submit & Check Answer" to reveal the correct syntax.</p>
+            
+            <!-- Exercise 1 -->
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">Exercise 1: Stored Procedures</div>
+                <div class="card-body">
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">1. Create a stored procedure named <code>GetEmployeeDetails</code> that takes an <code>EmployeeID</code> as an input parameter and returns the employee's first name, last name, and department.</label>
+                        <div class="exercise-area">
+                            <textarea class="form-control font-monospace" rows="6" placeholder="Write your SQL query here..."></textarea>
+                            <button class="btn btn-outline-primary btn-sm mt-2" type="button" data-bs-toggle="collapse" data-bs-target="#ans1_1">Submit & Check Answer</button>
+                            <div class="collapse mt-3" id="ans1_1">
+                                <div class="alert alert-success mb-0">
+                                    <strong><i class="fas fa-check-circle me-2"></i>Correct Answer:</strong>
+                                    <pre class="mb-0 mt-2"><code class="language-sql">CREATE PROCEDURE GetEmployeeDetails @EmpID INT
+AS
+BEGIN
+    SELECT FirstName, LastName, Department
+    FROM Employees
+    WHERE EmployeeID = @EmpID;
+END;
+GO</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-0">
+                        <label class="form-label fw-bold">2. Execute the <code>GetEmployeeDetails</code> procedure for <code>EmployeeID = 1</code>.</label>
+                        <div class="exercise-area">
+                            <textarea class="form-control font-monospace" rows="2" placeholder="Write your SQL query here..."></textarea>
+                            <button class="btn btn-outline-primary btn-sm mt-2" type="button" data-bs-toggle="collapse" data-bs-target="#ans1_2">Submit & Check Answer</button>
+                            <div class="collapse mt-3" id="ans1_2">
+                                <div class="alert alert-success mb-0">
+                                    <strong><i class="fas fa-check-circle me-2"></i>Correct Answer:</strong>
+                                    <pre class="mb-0 mt-2"><code class="language-sql">EXEC GetEmployeeDetails @EmpID = 1;</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Exercise 2 -->
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">Exercise 2: Data Transfer</div>
+                <div class="card-body">
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">1. Create a new table named <code>HighEarners</code> and copy all employees with a salary greater than 80000 from the <code>Employees</code> table.</label>
+                        <div class="exercise-area">
+                            <textarea class="form-control font-monospace" rows="4" placeholder="Write your SQL query here..."></textarea>
+                            <button class="btn btn-outline-primary btn-sm mt-2" type="button" data-bs-toggle="collapse" data-bs-target="#ans2_1">Submit & Check Answer</button>
+                            <div class="collapse mt-3" id="ans2_1">
+                                <div class="alert alert-success mb-0">
+                                    <strong><i class="fas fa-check-circle me-2"></i>Correct Answer:</strong>
+                                    <pre class="mb-0 mt-2"><code class="language-sql">SELECT * INTO HighEarners
+FROM Employees
+WHERE Salary > 80000;</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-0">
+                        <label class="form-label fw-bold">2. Insert all customers from Germany into an existing table named <code>GermanCustomers</code> (assume columns match).</label>
+                        <div class="exercise-area">
+                            <textarea class="form-control font-monospace" rows="4" placeholder="Write your SQL query here..."></textarea>
+                            <button class="btn btn-outline-primary btn-sm mt-2" type="button" data-bs-toggle="collapse" data-bs-target="#ans2_2">Submit & Check Answer</button>
+                            <div class="collapse mt-3" id="ans2_2">
+                                <div class="alert alert-success mb-0">
+                                    <strong><i class="fas fa-check-circle me-2"></i>Correct Answer:</strong>
+                                    <pre class="mb-0 mt-2"><code class="language-sql">INSERT INTO GermanCustomers (CustomerName, City, Country)
+SELECT CustomerName, City, Country
+FROM Customers
+WHERE Country = 'Germany';</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Exercise 3 -->
+            <div class="card mb-4">
+                <div class="card-header bg-danger text-white">Exercise 3: SQL Injection Prevention</div>
+                <div class="card-body">
+                    <div class="mb-0">
+                        <label class="form-label fw-bold">1. The following conceptual application code is vulnerable to SQL injection: <code>query = "SELECT * FROM Users WHERE username = '" + userInput + "'"</code>. Rewrite the SQL query using a parameterized approach (use <code>?</code> or <code>@param</code> as placeholders).</label>
+                        <div class="exercise-area">
+                            <textarea class="form-control font-monospace" rows="3" placeholder="Write your SQL query here..."></textarea>
+                            <button class="btn btn-outline-danger btn-sm mt-2" type="button" data-bs-toggle="collapse" data-bs-target="#ans3_1">Submit & Check Answer</button>
+                            <div class="collapse mt-3" id="ans3_1">
+                                <div class="alert alert-success mb-0">
+                                    <strong><i class="fas fa-check-circle me-2"></i>Correct Answer:</strong>
+                                    <pre class="mb-0 mt-2"><code class="language-sql">-- Using standard parameter placeholder (?)
+SELECT * FROM Users WHERE username = ?;
+
+-- OR using named parameter (@username)
+SELECT * FROM Users WHERE username = @username;</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Exercise 4 -->
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">Exercise 4: Comments and Best Practices</div>
+                <div class="card-body">
+                    <div class="mb-0">
+                        <label class="form-label fw-bold">1. Write a multi-line comment block explaining the purpose of a query that calculates the average salary per department, followed by the query itself.</label>
+                        <div class="exercise-area">
+                            <textarea class="form-control font-monospace" rows="8" placeholder="Write your SQL query here..."></textarea>
+                            <button class="btn btn-outline-primary btn-sm mt-2" type="button" data-bs-toggle="collapse" data-bs-target="#ans4_1">Submit & Check Answer</button>
+                            <div class="collapse mt-3" id="ans4_1">
+                                <div class="alert alert-success mb-0">
+                                    <strong><i class="fas fa-check-circle me-2"></i>Correct Answer:</strong>
+                                    <pre class="mb-0 mt-2"><code class="language-sql">/* 
+   Author: Data Science Team
+   Purpose: Calculate average salary per department
+   to identify compensation disparities.
+*/
+SELECT Department, AVG(Salary) AS AvgSalary
+FROM Employees
+GROUP BY Department;</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-5">
+
+        <!-- Module Summary -->
+        <section id="summary" class="mb-5">
+            <h2 class="section-title">Module Summary</h2>
+            <div class="card bg-light">
+                <div class="card-body">
+                    <p>In this module, you have elevated your SQL skills to a professional, enterprise level:</p>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><i class="fas fa-cogs text-primary me-2"></i> <strong>Stored Procedures</strong> — Automate and encapsulate complex SQL logic for reusability.</li>
+                        <li class="mb-2"><i class="fas fa-sliders-h text-primary me-2"></i> <strong>Parameters & Prepared Statements</strong> — Write secure, high-performance queries that separate logic from data.</li>
+                        <li class="mb-2"><i class="fas fa-shield-alt text-primary me-2"></i> <strong>SQL Injection</strong> — Understand and prevent one of the most critical security vulnerabilities in web applications.</li>
+                        <li class="mb-2"><i class="fas fa-comments text-primary me-2"></i> <strong>Comments</strong> — Document your code for maintainability and team collaboration.</li>
+                        <li class="mb-2"><i class="fas fa-exchange-alt text-primary me-2"></i> <strong>Data Transfer</strong> — Efficiently move and backup data using SELECT INTO and INSERT INTO SELECT.</li>
+                        <li class="mb-2"><i class="fas fa-server text-primary me-2"></i> <strong>Hosting & Deployment</strong> — Understand the fundamentals of connecting to and deploying databases in cloud or hosted environments.</li>
+                    </ul>
+                    <div class="alert alert-info mt-3 mb-0">
+                        <strong>🎓 Congratulations!</strong> You have completed the SQL Fundamentals track. You are now equipped to design, query, secure, and deploy relational databases. Proceed to the Capstone Project to solidify your expertise!
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>Beyond Data Analytics</h5>
+                    <p class="fst-italic text-info">Transforming Raw Data into Insights</p>
+                    <p>Empowering the next generation of data professionals to master the tools that drive modern decision-making.</p>
+                </div>
+                <div class="col-md-3">
+                    <h5>Resources</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="https://dev.mysql.com/doc/" class="text-white text-decoration-none">MySQL Documentation</a></li>
+                        <li><a href="https://www.postgresql.org/docs/" class="text-white text-decoration-none">PostgreSQL Docs</a></li>
+                        <li><a href="https://stackoverflow.com/questions/tagged/sql" class="text-white text-decoration-none">Stack Overflow</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3">
+                    <h5>Program</h5>
+                    <ul class="list-unstyled">
+                        <li>Professional Certificate</li>
+                        <li>in Data Science</li>
+                        <li class="mt-2"><a href="#home" class="text-white text-decoration-none">Back to Top</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="text-center mt-4 pt-3 border-top border-secondary">
+                <small>&copy; 2026 Beyond Data Analytics. All Rights Reserved.</small>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Highlight.js JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/languages/sql.min.js"></script>
+    <script>hljs.highlightAll();</script>
+
+</body>
+</html>

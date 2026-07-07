@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Module 2: Data Manipulation and Querying Multiple Tables | Beyond Data Analytics</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Highlight.js for Code Syntax Highlighting -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark.min.css">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary-color: #0d6efd;
+            --secondary-color: #6c757d;
+            --accent-color: #0dcaf0;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+            padding-top: 70px; /* Space for fixed navbar */
+        }
+
+        /* Navbar Styling */
+        .navbar {
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            background: linear-gradient(90deg, #0d6efd 0%, #0a58ca 100%);
+        }
+        .navbar-brand {
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+        .nav-link {
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        .nav-link:hover {
+            color: #ffc107 !important;
+            transform: translateY(-2px);
+        }
+
+        /* Hero Section */
+        .hero-section {
+            background: url('https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80') no-repeat center center/cover;
+            height: 450px;
+            position: relative;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+        .hero-overlay {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.75);
+        }
+        .hero-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Content Cards */
+        .card {
+            border: none;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            transition: transform 0.3s;
+            margin-bottom: 20px;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        .card-header {
+            background-color: #fff;
+            border-bottom: 2px solid #0d6efd;
+            font-weight: 700;
+            color: #0d6efd;
+        }
+
+        /* Code Blocks */
+        pre {
+            border-radius: 8px;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+        }
+        code {
+            font-family: 'Consolas', 'Monaco', monospace;
+        }
+
+        /* Section Titles */
+        .section-title {
+            position: relative;
+            padding-bottom: 15px;
+            margin-bottom: 30px;
+            font-weight: 700;
+        }
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 4px;
+            background-color: #0d6efd;
+        }
+
+        /* Tables */
+        .table-custom {
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .table-custom thead {
+            background: linear-gradient(90deg, #0d6efd 0%, #0a58ca 100%);
+            color: white;
+        }
+
+        /* Footer */
+        footer {
+            background-color: #212529;
+            color: white;
+            padding: 40px 0;
+            margin-top: 50px;
+        }
+        
+        /* Exercise Area */
+        .exercise-area {
+            background: #f8f9fa;
+            border: 1px dashed #0d6efd;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="#"><i class="fas fa-database me-2"></i>Beyond Data Analytics</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="#dml">2.1 DML</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#aggregate">2.2 Aggregates</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#grouping">2.3 Grouping</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#joins">2.4 Joins</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#union">2.5 Unions</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#advanced">2.6 Advanced</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="#exercises">Exercises</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header id="home" class="hero-section">
+        <div class="hero-overlay"></div>
+        <div class="hero-content container">
+            <h1 class="display-3 fw-bold">Module 2: Data Manipulation & Joins</h1>
+            <p class="lead fs-4">Master the language of databases — from modifying records to complex joins</p>
+            <h3 class="text-info fw-light fst-italic">Beyond Data Analytics</h3>
+            <p class="fs-5 text-light">Transforming Raw Data into Insights</p>
+            <a href="#objectives" class="btn btn-primary btn-lg mt-3 px-5 rounded-pill">Start Learning</a>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <div class="container my-5">
+
+        <!-- Beyond Data Analytics Section -->
+        <section class="beyond-data-section mb-5">
+            <h2>🌐 Beyond Data Analytics</h2>
+            <p>At <span class="highlight">Beyond Data Analytics</span>, we believe that data is more than just numbers and tables—it is the strategic foundation of modern decision-making. Our curriculum is meticulously designed to bridge the gap between theoretical knowledge and real-world application, empowering professionals to extract actionable insights, drive business value, and innovate across industries.</p>
+            <p>By mastering foundational tools like SQL, we move beyond simple data retrieval to unlock the full potential of relational databases. This module is your next step in transitioning from a data consumer to a <span class="highlight">data architect</span>, enabling you to manipulate records, connect disparate data sources, and solve complex, real-world problems with confidence and precision.</p>
+        </section>
+
+        <!-- Learning Objectives -->
+        <section id="objectives" class="mb-5">
+            <h2 class="section-title">Learning Objectives</h2>
+            <div class="card bg-light">
+                <div class="card-body">
+                    <p class="lead mb-3">By the end of this module, participants will be able to:</p>
+                    <ul class="list-unstyled mb-0">
+                        <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> Modify database records using INSERT, UPDATE, and DELETE statements.</li>
+                        <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> Summarize and group data using aggregate functions and the GROUP BY clause.</li>
+                        <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> Combine information from multiple tables using various types of JOINs.</li>
+                        <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> Combine query results using UNION and UNION ALL.</li>
+                        <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> Apply advanced querying techniques like EXISTS, CASE, and NULL functions.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-5">
+
+        <!-- Sample Database Context -->
+        <section id="context" class="mb-5">
+            <h2 class="section-title">Sample Database Context</h2>
+            <p class="lead">To demonstrate joins and data manipulation, we will use the <code>Customers</code> table from Module 1 and introduce a new <code>Orders</code> table.</p>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">Customers Table</div>
+                        <div class="card-body p-0">
+                            <div class="table-responsive">
+                                <table class="table table-custom table-striped mb-0">
+                                    <thead><tr><th>CustomerID</th><th>CustomerName</th><th>City</th><th>Country</th></tr></thead>
+                                    <tbody>
+                                        <tr><td>1</td><td>Alfreds Futterkiste</td><td>Berlin</td><td>Germany</td></tr>
+                                        <tr><td>2</td><td>Ana Trujillo</td><td>México D.F.</td><td>Mexico</td></tr>
+                                        <tr><td>3</td><td>Around the Horn</td><td>London</td><td>UK</td></tr>
+                                        <tr><td>4</td><td>Berglunds snabbköp</td><td>Luleå</td><td>Sweden</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">Orders Table</div>
+                        <div class="card-body p-0">
+                            <div class="table-responsive">
+                                <table class="table table-custom table-striped mb-0">
+                                    <thead><tr><th>OrderID</th><th>CustomerID</th><th>OrderDate</th><th>TotalAmount</th><th>Status</th></tr></thead>
+                                    <tbody>
+                                        <tr><td>101</td><td>1</td><td>2023-01-15</td><td>250.00</td><td>Shipped</td></tr>
+                                        <tr><td>102</td><td>2</td><td>2023-02-20</td><td>120.50</td><td>Delivered</td></tr>
+                                        <tr><td>103</td><td>1</td><td>2023-03-10</td><td>89.99</td><td>Pending</td></tr>
+                                        <tr><td>104</td><td>4</td><td>2023-03-15</td><td>450.00</td><td>Shipped</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-5">
+
+        <!-- 2.1 Data Manipulation Language (DML) -->
+        <section id="dml" class="mb-5">
+            <h2 class="section-title">2.1 Data Manipulation Language (DML)</h2>
+            <p class="lead">DML statements are used to add, change, or delete data within database tables.</p>
+            <div class="card">
+                <div class="card-body">
+                    <h5>INSERT INTO</h5>
+                    <p>Adds new rows of data into a table.</p>
+                    <pre><code class="language-sql">-- Insert a full row
+INSERT INTO Customers (CustomerID, CustomerName, ContactName, City, Country)
+VALUES (5, 'New Customer', 'John Doe', 'Nairobi', 'Kenya');
+
+-- Insert into specific columns
+INSERT INTO Customers (CustomerName, City)
+VALUES ('Jane Smith', 'Mombasa');</code></pre>
+
+                    <h5 class="mt-4">UPDATE</h5>
+                    <p>Modifies existing records in a table. Always use a <code>WHERE</code> clause to avoid updating all rows!</p>
+                    <pre><code class="language-sql">-- Update a specific record
+UPDATE Customers
+SET City = 'Kisumu', Country = 'Kenya'
+WHERE CustomerID = 2;
+
+-- Update multiple records
+UPDATE Orders
+SET Status = 'Delivered'
+WHERE Status = 'Shipped' AND OrderDate < '2023-03-01';</code></pre>
+
+                    <h5 class="mt-4">DELETE</h5>
+                    <p>Removes existing records from a table. Like <code>UPDATE</code>, always use a <code>WHERE</code> clause.</p>
+                    <pre><code class="language-sql">-- Delete a specific record
+DELETE FROM Customers
+WHERE CustomerID = 5;
+
+-- Delete based on condition
+DELETE FROM Orders
+WHERE Status = 'Cancelled';</code></pre>
+                    <div class="alert alert-danger mt-3">
+                        <strong>⚠️ Critical Warning:</strong> Running <code>UPDATE</code> or <code>DELETE</code> without a <code>WHERE</code> clause will modify or erase <strong>ALL</strong> records in the table!
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-5">
+
+        <!-- 2.2 Aggregate Functions -->
+        <section id="aggregate" class="mb-5">
+            <h2 class="section-title">2.2 Aggregate Functions</h2>
+            <p class="lead">Aggregate functions perform a calculation on a set of values and return a single value.</p>
+            <div class="card">
+                <div class="card-body">
+                    <table class="table table-bordered">
+                        <thead class="table-dark"><tr><th>Function</th><th>Description</th><th>Example</th></tr></thead>
+                        <tbody>
+                            <tr><td><code>COUNT()</code></td><td>Returns the number of rows</td><td><code>SELECT COUNT(CustomerID) FROM Customers;</code></td></tr>
+                            <tr><td><code>SUM()</code></td><td>Returns the total sum of a numeric column</td><td><code>SELECT SUM(TotalAmount) FROM Orders;</code></td></tr>
+                            <tr><td><code>AVG()</code></td><td>Returns the average value</td><td><code>SELECT AVG(TotalAmount) FROM Orders;</code></td></tr>
+                            <tr><td><code>MIN()</code></td><td>Returns the smallest value</td><td><code>SELECT MIN(TotalAmount) FROM Orders;</code></td></tr>
+                            <tr><td><code>MAX()</code></td><td>Returns the largest value</td><td><code>SELECT MAX(TotalAmount) FROM Orders;</code></td></tr>
+                        </tbody>
+                    </table>
+                    <pre><code class="language-sql">-- Count customers in Germany
+SELECT COUNT(CustomerID) AS GermanCustomers
+FROM Customers
+WHERE Country = 'Germany';
+
+-- Calculate total and average sales
+SELECT 
+    SUM(TotalAmount) AS TotalSales,
+    AVG(TotalAmount) AS AverageOrderValue,
+    MIN(TotalAmount) AS SmallestOrder,
+    MAX(TotalAmount) AS LargestOrder
+FROM Orders;</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-5">
+
+        <!-- 2.3 Grouping Data -->
+        <section id="grouping" class="mb-5">
+            <h2 class="section-title">2.3 Grouping Data</h2>
+            <div class="card">
+                <div class="card-body">
+                    <h5>GROUP BY</h5>
+                    <p>Groups rows that have the same values into summary rows. It is often used with aggregate functions.</p>
+                    <pre><code class="language-sql">-- Count customers per country
+SELECT Country, COUNT(CustomerID) AS CustomerCount
+FROM Customers
+GROUP BY Country;
+
+-- Calculate total sales per status
+SELECT Status, SUM(TotalAmount) AS TotalSales
+FROM Orders
+GROUP BY Status;</code></pre>
+
+                    <h5 class="mt-4">HAVING</h5>
+                    <p>The <code>HAVING</code> clause was added to SQL because the <code>WHERE</code> keyword could not be used with aggregate functions. It filters groups.</p>
+                    <pre><code class="language-sql">-- Find countries with more than 2 customers
+SELECT Country, COUNT(CustomerID) AS CustomerCount
+FROM Customers
+GROUP BY Country
+HAVING COUNT(CustomerID) > 2;
+
+-- Find statuses with total sales over 500
+SELECT Status, SUM(TotalAmount) AS TotalSales
+FROM Orders
+GROUP BY Status
+HAVING SUM(TotalAmount) > 500;</code></pre>
+                    <div class="alert alert-info mt-3">
+                        <strong>WHERE vs. HAVING:</strong> <code>WHERE</code> filters rows <em>before</em> they are grouped. <code>HAVING</code> filters groups <em>after</em> the aggregation is performed.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-5">
+
+        <!-- 2.4 Joining Tables -->
+        <section id="joins" class="mb-5">
+            <h2 class="section-title">2.4 Joining Tables</h2>
+            <p class="lead">Joins are used to combine rows from two or more tables based on a related column between them.</p>
+            <div class="card">
+                <div class="card-body">
+                    <h5>INNER JOIN</h5>
+                    <p>Returns records that have matching values in both tables.</p>
+                    <pre><code class="language-sql">SELECT Customers.CustomerName, Orders.OrderID
+FROM Customers
+INNER JOIN Orders ON Customers.CustomerID = Orders.CustomerID;</code></pre>
+
+                    <h5 class="mt-4">LEFT (OUTER) JOIN</h5>
+                    <p>Returns all records from the left table, and the matched records from the right table. Returns NULL for right side if no match.</p>
+                    <pre><code class="language-sql">SELECT Customers.CustomerName, Orders.OrderID
+FROM Customers
+LEFT JOIN Orders ON Customers.CustomerID = Orders.CustomerID;</code></pre>
+
+                    <h5 class="mt-4">RIGHT (OUTER) JOIN</h5>
+                    <p>Returns all records from the right table, and the matched records from the left table.</p>
+                    <pre><code class="language-sql">SELECT Customers.CustomerName, Orders.OrderID
+FROM Customers
+RIGHT JOIN Orders ON Customers.CustomerID = Orders.CustomerID;</code></pre>
+
+                    <h5 class="mt-4">FULL (OUTER) JOIN</h5>
+                    <p>Returns all records when there is a match in either left or right table.</p>
+                    <pre><code class="language-sql">SELECT Customers.CustomerName, Orders.OrderID
+FROM Customers
+FULL OUTER JOIN Orders ON Customers.CustomerID = Orders.CustomerID;</code></pre>
+
+                    <h5 class="mt-4">SELF JOIN</h5>
+                    <p>A table is joined with itself. Useful for finding hierarchical data or comparing rows within the same table.</p>
+                    <pre><code class="language-sql">-- Find customers in the same city
+SELECT A.CustomerName AS Customer1, B.CustomerName AS Customer2, A.City
+FROM Customers A, Customers B
+WHERE A.CustomerID <> B.CustomerID
+AND A.City = B.City;</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-5">
+
+        <!-- 2.5 Combining Queries -->
+        <section id="union" class="mb-5">
+            <h2 class="section-title">2.5 Combining Queries</h2>
+            <div class="card">
+                <div class="card-body">
+                    <h5>UNION</h5>
+                    <p>Combines the result-set of two or more <code>SELECT</code> statements. Each statement must have the same number of columns with similar data types. <code>UNION</code> removes duplicate rows.</p>
+                    <pre><code class="language-sql">SELECT City FROM Customers
+UNION
+SELECT City FROM Suppliers; -- Assuming a Suppliers table exists</code></pre>
+
+                    <h5 class="mt-4">UNION ALL</h5>
+                    <p>Combines the result-sets but <strong>allows duplicate rows</strong>. It is faster than <code>UNION</code> because it doesn't sort and remove duplicates.</p>
+                    <pre><code class="language-sql">SELECT City FROM Customers
+UNION ALL
+SELECT City FROM Suppliers;</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-5">
+
+        <!-- 2.6 Advanced Querying -->
+        <section id="advanced" class="mb-5">
+            <h2 class="section-title">2.6 Advanced Querying</h2>
+            <div class="card">
+                <div class="card-body">
+                    <h5>EXISTS</h5>
+                    <p>Tests for the existence of any record in a subquery. Returns true if the subquery returns one or more records.</p>
+                    <pre><code class="language-sql">-- Find customers who have placed at least one order
+SELECT CustomerName
+FROM Customers
+WHERE EXISTS (
+    SELECT 1 FROM Orders 
+    WHERE Orders.CustomerID = Customers.CustomerID
+);</code></pre>
+
+                    <h5 class="mt-4">ANY and ALL</h5>
+                    <p>Used with comparison operators and subqueries. <code>ANY</code> is true if the comparison is true for any value in the subquery. <code>ALL</code> is true if it's true for all values.</p>
+                    <pre><code class="language-sql">-- Find customers who have orders greater than ANY order from CustomerID = 1
+SELECT CustomerName
+FROM Customers
+WHERE CustomerID = ANY (
+    SELECT CustomerID FROM Orders WHERE TotalAmount > 200
+);</code></pre>
+
+                    <h5 class="mt-4">CASE Statement</h5>
+                    <p>Creates conditional logic within a query, similar to an IF-THEN-ELSE statement in programming.</p>
+                    <pre><code class="language-sql">SELECT OrderID, TotalAmount,
+    CASE 
+        WHEN TotalAmount > 300 THEN 'High Value'
+        WHEN TotalAmount > 100 THEN 'Medium Value'
+        ELSE 'Low Value'
+    END AS OrderCategory
+FROM Orders;</code></pre>
+
+                    <h5 class="mt-4">NULL Functions</h5>
+                    <p>Functions to handle NULL values gracefully.</p>
+                    <pre><code class="language-sql">-- COALESCE: Returns the first non-null value
+SELECT CustomerName, COALESCE(ContactName, 'Unknown Contact') AS Contact
+FROM Customers;
+
+-- IFNULL (MySQL) / ISNULL (SQL Server): Replaces NULL with a specified value
+SELECT CustomerName, IFNULL(City, 'No City Provided') AS City
+FROM Customers;</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-5">
+
+        <!-- Practical Exercises -->
+        <section id="exercises" class="mb-5">
+            <h2 class="section-title">Practical Exercises</h2>
+            <p class="lead">Test your understanding by writing SQL queries. Use the space provided to write your answer, then click "Submit & Check Answer" to reveal the correct query.</p>
+            
+            <!-- Exercise 1 -->
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">Exercise 1: Insert and Update Records</div>
+                <div class="card-body">
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">1. Insert a new customer with ID 5, Name 'Tech Corp', Contact 'Alice', City 'London', Country 'UK'.</label>
+                        <div class="exercise-area">
+                            <textarea class="form-control font-monospace" rows="3" placeholder="Write your SQL query here..."></textarea>
+                            <button class="btn btn-outline-primary btn-sm mt-2" type="button" data-bs-toggle="collapse" data-bs-target="#ans1_1">Submit & Check Answer</button>
+                            <div class="collapse mt-3" id="ans1_1">
+                                <div class="alert alert-success mb-0">
+                                    <strong><i class="fas fa-check-circle me-2"></i>Correct Answer:</strong>
+                                    <pre class="mb-0 mt-2"><code class="language-sql">INSERT INTO Customers (CustomerID, CustomerName, ContactName, City, Country)
+VALUES (5, 'Tech Corp', 'Alice', 'London', 'UK');</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-0">
+                        <label class="form-label fw-bold">2. Update the status of Order 103 to 'Delivered'.</label>
+                        <div class="exercise-area">
+                            <textarea class="form-control font-monospace" rows="3" placeholder="Write your SQL query here..."></textarea>
+                            <button class="btn btn-outline-primary btn-sm mt-2" type="button" data-bs-toggle="collapse" data-bs-target="#ans1_2">Submit & Check Answer</button>
+                            <div class="collapse mt-3" id="ans1_2">
+                                <div class="alert alert-success mb-0">
+                                    <strong><i class="fas fa-check-circle me-2"></i>Correct Answer:</strong>
+                                    <pre class="mb-0 mt-2"><code class="language-sql">UPDATE Orders
+SET Status = 'Delivered'
+WHERE OrderID = 103;</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Exercise 2 -->
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">Exercise 2: Delete Unwanted Records</div>
+                <div class="card-body">
+                    <div class="mb-0">
+                        <label class="form-label fw-bold">1. Delete all orders from the Orders table that have a status of 'Pending' and were placed before '2023-01-01'.</label>
+                        <div class="exercise-area">
+                            <textarea class="form-control font-monospace" rows="3" placeholder="Write your SQL query here..."></textarea>
+                            <button class="btn btn-outline-primary btn-sm mt-2" type="button" data-bs-toggle="collapse" data-bs-target="#ans2_1">Submit & Check Answer</button>
+                            <div class="collapse mt-3" id="ans2_1">
+                                <div class="alert alert-success mb-0">
+                                    <strong><i class="fas fa-check-circle me-2"></i>Correct Answer:</strong>
+                                    <pre class="mb-0 mt-2"><code class="language-sql">DELETE FROM Orders
+WHERE Status = 'Pending' AND OrderDate < '2023-01-01';</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Exercise 3 -->
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">Exercise 3: Analyze Sales Data</div>
+                <div class="card-body">
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">1. Calculate the total sales amount and the average order value from the Orders table.</label>
+                        <div class="exercise-area">
+                            <textarea class="form-control font-monospace" rows="3" placeholder="Write your SQL query here..."></textarea>
+                            <button class="btn btn-outline-primary btn-sm mt-2" type="button" data-bs-toggle="collapse" data-bs-target="#ans3_1">Submit & Check Answer</button>
+                            <div class="collapse mt-3" id="ans3_1">
+                                <div class="alert alert-success mb-0">
+                                    <strong><i class="fas fa-check-circle me-2"></i>Correct Answer:</strong>
+                                    <pre class="mb-0 mt-2"><code class="language-sql">SELECT 
+    SUM(TotalAmount) AS TotalSales,
+    AVG(TotalAmount) AS AverageOrderValue
+FROM Orders;</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-0">
+                        <label class="form-label fw-bold">2. Count the number of orders placed by each customer.</label>
+                        <div class="exercise-area">
+                            <textarea class="form-control font-monospace" rows="3" placeholder="Write your SQL query here..."></textarea>
+                            <button class="btn btn-outline-primary btn-sm mt-2" type="button" data-bs-toggle="collapse" data-bs-target="#ans3_2">Submit & Check Answer</button>
+                            <div class="collapse mt-3" id="ans3_2">
+                                <div class="alert alert-success mb-0">
+                                    <strong><i class="fas fa-check-circle me-2"></i>Correct Answer:</strong>
+                                    <pre class="mb-0 mt-2"><code class="language-sql">SELECT CustomerID, COUNT(OrderID) AS OrderCount
+FROM Orders
+GROUP BY CustomerID;</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Exercise 4 -->
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">Exercise 4: Generate Summary Reports</div>
+                <div class="card-body">
+                    <div class="mb-0">
+                        <label class="form-label fw-bold">1. Find the countries that have more than 2 customers. Display the Country and the count of customers.</label>
+                        <div class="exercise-area">
+                            <textarea class="form-control font-monospace" rows="3" placeholder="Write your SQL query here..."></textarea>
+                            <button class="btn btn-outline-primary btn-sm mt-2" type="button" data-bs-toggle="collapse" data-bs-target="#ans4_1">Submit & Check Answer</button>
+                            <div class="collapse mt-3" id="ans4_1">
+                                <div class="alert alert-success mb-0">
+                                    <strong><i class="fas fa-check-circle me-2"></i>Correct Answer:</strong>
+                                    <pre class="mb-0 mt-2"><code class="language-sql">SELECT Country, COUNT(CustomerID) AS CustomerCount
+FROM Customers
+GROUP BY Country
+HAVING COUNT(CustomerID) > 2;</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Exercise 5 -->
+            <div class="card mb-4">
+                <div class="card-header bg-danger text-white">Exercise 5: Join Customer and Order Tables</div>
+                <div class="card-body">
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">1. Retrieve the CustomerName and OrderDate for all customers who have placed an order.</label>
+                        <div class="exercise-area">
+                            <textarea class="form-control font-monospace" rows="3" placeholder="Write your SQL query here..."></textarea>
+                            <button class="btn btn-outline-primary btn-sm mt-2" type="button" data-bs-toggle="collapse" data-bs-target="#ans5_1">Submit & Check Answer</button>
+                            <div class="collapse mt-3" id="ans5_1">
+                                <div class="alert alert-success mb-0">
+                                    <strong><i class="fas fa-check-circle me-2"></i>Correct Answer:</strong>
+                                    <pre class="mb-0 mt-2"><code class="language-sql">SELECT Customers.CustomerName, Orders.OrderDate
+FROM Customers
+INNER JOIN Orders ON Customers.CustomerID = Orders.CustomerID;</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-0">
+                        <label class="form-label fw-bold">2. Retrieve all customers and their order details, including customers who have not placed any orders.</label>
+                        <div class="exercise-area">
+                            <textarea class="form-control font-monospace" rows="3" placeholder="Write your SQL query here..."></textarea>
+                            <button class="btn btn-outline-primary btn-sm mt-2" type="button" data-bs-toggle="collapse" data-bs-target="#ans5_2">Submit & Check Answer</button>
+                            <div class="collapse mt-3" id="ans5_2">
+                                <div class="alert alert-success mb-0">
+                                    <strong><i class="fas fa-check-circle me-2"></i>Correct Answer:</strong>
+                                    <pre class="mb-0 mt-2"><code class="language-sql">SELECT Customers.CustomerName, Orders.OrderID, Orders.TotalAmount
+FROM Customers
+LEFT JOIN Orders ON Customers.CustomerID = Orders.CustomerID;</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-5">
+
+        <!-- Module Summary -->
+        <section id="summary" class="mb-5">
+            <h2 class="section-title">Module Summary</h2>
+            <div class="card bg-light">
+                <div class="card-body">
+                    <p>In this module, you have advanced your SQL skills to manipulate data and query multiple tables:</p>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><i class="fas fa-edit text-primary me-2"></i> <strong>DML</strong> — Insert, update, and delete records safely.</li>
+                        <li class="mb-2"><i class="fas fa-calculator text-primary me-2"></i> <strong>Aggregates</strong> — Summarize data using COUNT, SUM, AVG, MIN, MAX.</li>
+                        <li class="mb-2"><i class="fas fa-layer-group text-primary me-2"></i> <strong>Grouping</strong> — Group data and filter groups using GROUP BY and HAVING.</li>
+                        <li class="mb-2"><i class="fas fa-link text-primary me-2"></i> <strong>Joins</strong> — Combine tables using INNER, LEFT, RIGHT, FULL, and SELF joins.</li>
+                        <li class="mb-2"><i class="fas fa-object-group text-primary me-2"></i> <strong>Set Operations</strong> — Combine query results using UNION and UNION ALL.</li>
+                        <li class="mb-2"><i class="fas fa-brain text-primary me-2"></i> <strong>Advanced Logic</strong> — Use EXISTS, CASE, and NULL functions for complex queries.</li>
+                    </ul>
+                    <div class="alert alert-info mt-3 mb-0">
+                        <strong>🚀 What's Next?</strong> In Module 3, you will dive into Subqueries, Window Functions, and Views to build even more powerful and modular SQL queries!
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>Beyond Data Analytics</h5>
+                    <p class="fst-italic text-info">Transforming Raw Data into Insights</p>
+                    <p>Empowering the next generation of data professionals to master the tools that drive modern decision-making.</p>
+                </div>
+                <div class="col-md-3">
+                    <h5>Resources</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="https://dev.mysql.com/doc/" class="text-white text-decoration-none">MySQL Documentation</a></li>
+                        <li><a href="https://www.postgresql.org/docs/" class="text-white text-decoration-none">PostgreSQL Docs</a></li>
+                        <li><a href="https://stackoverflow.com/questions/tagged/sql" class="text-white text-decoration-none">Stack Overflow</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3">
+                    <h5>Program</h5>
+                    <ul class="list-unstyled">
+                        <li>Professional Certificate</li>
+                        <li>in Data Science</li>
+                        <li class="mt-2"><a href="#home" class="text-white text-decoration-none">Back to Top</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="text-center mt-4 pt-3 border-top border-secondary">
+                <small>&copy; 2026 Beyond Data Analytics. All Rights Reserved.</small>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Highlight.js JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/languages/sql.min.js"></script>
+    <script>hljs.highlightAll();</script>
+
+</body>
+</html>
