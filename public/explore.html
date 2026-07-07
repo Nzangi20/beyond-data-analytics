@@ -46,7 +46,7 @@
             border-radius: 8px;
             font-size: 0.9rem;
             outline: none;
-            cursor: pointer;
+            
             transition: all 0.3s;
         }
         .program-picker select:focus {
@@ -58,7 +58,7 @@
             gap: 1rem;
             padding: 1rem;
             border-bottom: 1px solid var(--border);
-            cursor: pointer;
+            
             transition: all 0.2s;
             border-radius: 8px;
         }
@@ -87,7 +87,7 @@
             color: var(--text-light);
             font-weight: 600;
             font-size: 0.9rem;
-            cursor: pointer;
+            
             position: relative;
             white-space: nowrap;
             transition: all 0.2s;
@@ -184,14 +184,14 @@
                 </div>
                 <div class="cta-buttons">
                     <a href="/login.html" class="btn btn-outline" style="border-color: white; color: white; background: transparent; padding: 0.6rem 1.2rem; font-size: 0.85rem;"><i class="fas fa-sign-in-alt"></i> Login / Register</a>
-                    <button id="btnEnrollNow" onclick="openEnrollmentModalFromExplore()" class="btn btn-primary" style="background: #FACC15; color: #0F172A; border: none; padding: 0.6rem 1.2rem; font-size: 0.85rem; font-weight:700; cursor: pointer;"><i class="fas fa-rocket"></i> Enroll Now</button>
+                    
                 </div>
             </div>
 
             <!-- Program Info Card -->
             <div class="card" id="programInfoCard" style="margin-bottom: 1.5rem;">
                 <div class="card-body">
-                    <h1 id="programTitle" onclick="openEnrollmentModalFromExplore()" style="margin: 0 0 0.5rem 0; font-size: 1.8rem; color: var(--primary); cursor: pointer;" title="Click to view enrollment options">Loading Program...</h1>
+                    <h1 id="programTitle"  style="margin: 0 0 0.5rem 0; font-size: 1.8rem; color: var(--primary); " >Loading Program...</h1>
                     <p id="programDesc" style="color: var(--text-light); margin: 0; font-size: 0.95rem;">Select a course to start exploring its materials.</p>
                 </div>
             </div>
@@ -563,7 +563,7 @@
             
             let questionsHtml = currentQuestions.map((q, idx) => {
                 let answersHtml = q.answers.map(ans => `
-                    <label style="display: flex; align-items: flex-start; gap: 0.75rem; background: var(--bg-dark); border: 1px solid var(--border); border-radius: 8px; padding: 1rem; margin-bottom: 0.75rem; cursor: pointer; transition: all 0.2s;">
+                    <label style="display: flex; align-items: flex-start; gap: 0.75rem; background: var(--bg-dark); border: 1px solid var(--border); border-radius: 8px; padding: 1rem; margin-bottom: 0.75rem;  transition: all 0.2s;">
                         <input type="radio" name="question_${q.id}" value="${ans.id}" onclick="saveAnswer(${q.id}, ${ans.id})" style="margin-top: 0.25rem;">
                         <span style="color: var(--text);">${escapeHtml(ans.answer_text)}</span>
                     </label>
@@ -751,7 +751,7 @@
         <!-- Modal Header -->
         <div style="padding: 1.25rem 1.5rem; border-bottom: 1px solid rgba(255,255,255,0.1); display: flex; justify-content: space-between; align-items: center; background: #2d3748; flex-shrink: 0;">
             <h3 id="modalCourseTitle" style="margin: 0; color: white; font-size: 1.25rem; font-family: sans-serif;">Choose Enrollment Pathway</h3>
-            <button onclick="closeEnrollmentModal()" style="background: none; border: none; color: #a0aec0; font-size: 1.5rem; cursor: pointer; transition: color 0.2s;" onmouseover="this.style.color='white'" onmouseout="this.style.color='#a0aec0'">&times;</button>
+            <button onclick="closeEnrollmentModal()" style="background: none; border: none; color: #a0aec0; font-size: 1.5rem;  transition: color 0.2s;" onmouseover="this.style.color='white'" onmouseout="this.style.color='#a0aec0'">&times;</button>
         </div>
         <!-- Modal Body -->
         <div class="modal-body" style="padding: 1.5rem; display: flex; flex-direction: column; gap: 1.25rem; overflow-y: auto;">
